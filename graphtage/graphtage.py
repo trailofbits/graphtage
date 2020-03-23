@@ -109,10 +109,36 @@ class Edit(metaclass=ABCMeta):
         return Range(lb, ub)
 
 
+class TreeNode(metaclass=ABCMeta):
+    _total_size = None
+
+    @abstractmethod
+    def edits(self, node) -> Edit:
+        return None
+
+    @property
+    def total_size(self) -> int:
+        if self._total_size is None:
+            self._total_size = self.calculate_total_size()
+        return self._total_size
+
+    @abstractmethod
+    def calculate_total_size(self) -> int:
+        return 0
+
+
 class PossibleEdits(Edit):
-    def __init__(self, edits: Iterable[Edit] = ()):
+    def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterable[Edit] = ()):
         super().__init__()
-        self.possibilities: Tuple[Edit] = tuple(edits)
+        self.from_node: TreeNode = from_node
+        self.to_node: TreeNode = to_node
+        self._unprocessed: Iterator[Edit] = iter(edits)
+        self._untightened: List[Edit] = []
+        self._tightened: List[Edit] = []
+
+    @property
+    def possibilities(self) -> Iterable[Edit]:
+        return itertools.chain(iter(self._untightened), iter(self._tightened))
 
     @property
     def best_possibility(self) -> Edit:
@@ -123,14 +149,31 @@ class PossibleEdits(Edit):
         return best
 
     def tighten_bounds(self) -> bool:
-        if self.cost().definitive():
-            return False
-        for child in self.possibilities:
-            if child.tighten_bounds():
+        if self._unprocessed is not None:
+            try:
+                next_best = next(self._unprocessed)
+                if self._untightened and self._untightened[0] < next_best:
+                    # No need to add this new edit if it is strictly worse than the current best!
+                    pass
+                else:
+                    heapq.heappush(self._untightened, next_best)
                 return True
-        return False
+            except StopIteration:
+                self._unprocessed = None
+                pass
+        if self._untightened:
+            next_best = heapq.heappop(self._untightened)
+            if next_best.tighten_bounds():
+                heapq.heappush(self._untightened, next_best)
+            else:
+                self._tightened.append(next_best)
+            return True
+        else:
+            return False
 
     def cost(self) -> Range:
+        if self._unprocessed is not None:
+            return Range(0, max(self.from_node.total_size, self.to_node.total_size) + 1)
         lb = None
         ub = 0
         for e in self.possibilities:
@@ -143,16 +186,6 @@ class PossibleEdits(Edit):
         return Range(lb, ub)
 
 
-class TreeNode(metaclass=ABCMeta):
-    @abstractmethod
-    def edits(self, node) -> Edit:
-        return None
-
-    @abstractmethod
-    def total_size(self) -> int:
-        return 0
-
-
 class ContainerNode(TreeNode, metaclass=ABCMeta):
     pass
 
@@ -161,7 +194,7 @@ class LeafNode(TreeNode):
     def __init__(self, object):
         self.object = object
 
-    def total_size(self):
+    def calculate_total_size(self):
         return len(str(self.object))
 
     def edits(self, node: TreeNode) -> Edit:
@@ -202,8 +235,8 @@ class KeyValuePairNode(ContainerNode):
             raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
         return CompoundEdit(Match(self, node, 0), self.key.edits(node.key), self.value.edits(node.value))
 
-    def total_size(self):
-        return self.key.total_size() + self.value.total_size()
+    def calculate_total_size(self):
+        return self.key.total_size + self.value.total_size
 
     def __lt__(self, other):
         return (self.key < other.key) or (self.key == other.key and self.value < other.value)
@@ -255,7 +288,7 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            return PossibleEdits(self._match(self.children, node.children))
+            return PossibleEdits(self, node, self._match(self.children, node.children))
         else:
             return Replace(self, node)
 
@@ -279,8 +312,8 @@ class ListNode(ContainerNode):
                 for m, p in itertools.product(matches, possibilities):
                     yield CompoundEdit(m, p)
 
-    def total_size(self):
-        return sum(c.total_size() for c in self.children)
+    def calculate_total_size(self):
+        return sum(c.total_size for c in self.children)
 
     def __len__(self):
         return len(self.children)
@@ -331,7 +364,7 @@ class Match(Edit):
 
 class Replace(Edit):
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
-        cost = max(to_replace.total_size(), replace_with.total_size()) + 1
+        cost = max(to_replace.total_size, replace_with.total_size) + 1
         super().__init__(constant_cost=cost, cost_upper_bound=cost)
         self.to_replace: TreeNode = to_replace
         self.replace_with: TreeNode = replace_with
@@ -342,7 +375,7 @@ class Replace(Edit):
 
 class Remove(Edit):
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode):
-        super().__init__(constant_cost=to_remove.total_size() + 1, cost_upper_bound=to_remove.total_size() + 1)
+        super().__init__(constant_cost=to_remove.total_size + 1, cost_upper_bound=to_remove.total_size + 1)
         self.removed: TreeNode = to_remove
         self.remove_from: TreeNode = remove_from
 
@@ -352,7 +385,7 @@ class Remove(Edit):
 
 class Insert(Edit):
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode):
-        super().__init__(constant_cost=to_insert.total_size() + 1, cost_upper_bound=to_insert.total_size() + 1)
+        super().__init__(constant_cost=to_insert.total_size + 1, cost_upper_bound=to_insert.total_size + 1)
         self.inserted: TreeNode = to_insert
         self.into: TreeNode = insert_into
 
