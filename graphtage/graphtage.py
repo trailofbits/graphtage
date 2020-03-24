@@ -31,6 +31,9 @@ def levenshtein_distance(s: str, t: str) -> int:
 
 class Range:
     def __init__(self, lower_bound: int = None, upper_bound: int = None):
+        assert (lower_bound is None or lower_bound >= 0) and \
+               (upper_bound is None or upper_bound >= 0) and \
+               (lower_bound is None or upper_bound is None or upper_bound >= lower_bound)
         self.lower_bound: int = lower_bound
         self.upper_bound: int = upper_bound
 
@@ -39,6 +42,21 @@ class Range:
 
     def __bool__(self):
         return self.lower_bound is not None and self.upper_bound is not None
+
+    def __add__(self, other):
+        if isinstance(other, int):
+            return Range(self.lower_bound + other, self.upper_bound + other)
+        else:
+            return Range(self.lower_bound + other.lower_bound, self.upper_bound + other.upper_bound)
+
+    def __radd__(self, other):
+        return self + other
+
+    def __sub__(self, other):
+        if isinstance(other, int):
+            return Range(self.lower_bound - other, self.upper_bound - other)
+        else:
+            return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)
 
     def definitive(self) -> bool:
         return bool(self) and self.lower_bound == self.upper_bound
@@ -65,19 +83,17 @@ class Range:
 
 class Edit(metaclass=ABCMeta):
     def __init__(self,
+                 from_node,
+                 to_node = None,
                  constant_cost: Optional[int] = 0,
-                 cost_upper_bound: Optional[int] = None,
-                 sub_edits: Sequence = ()):
+                 cost_upper_bound: Optional[int] = None):
+        self.from_node: TreeNode = from_node
+        self.to_node: TreeNode = to_node
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
-        self.sub_edits: Tuple[Edit] = tuple(sub_edits)
+        self.initial_cost = self.cost()
 
     def tighten_bounds(self) -> bool:
-        if self.cost().definitive():
-            return False
-        for child in self.sub_edits:
-            if child.tighten_bounds():
-                return True
         return False
 
     def __lt__(self, other):
@@ -86,8 +102,8 @@ class Edit(metaclass=ABCMeta):
                 return True
             elif self.cost().definitive() and other.cost().definitive():
                 return False
-            self.tighten_bounds()
-            other.tighten_bounds()
+            if not self.tighten_bounds() and not other.tighten_bounds():
+                return False
 
     def __eq__(self, other):
         while True:
@@ -99,13 +115,12 @@ class Edit(metaclass=ABCMeta):
     def cost(self) -> Range:
         lb = self._constant_cost
         if self._cost_upper_bound is None:
-            ub = 0
+            if self.to_node is None:
+                ub = 0
+            else:
+                ub = self.from_node.total_size + self.to_node.total_size + 1
         else:
             ub = self._cost_upper_bound
-        for e in self.sub_edits:
-            cost = e.cost()
-            lb += cost.lower_bound
-            ub += cost.upper_bound
         return Range(lb, ub)
 
 
@@ -128,13 +143,11 @@ class TreeNode(metaclass=ABCMeta):
 
 
 class PossibleEdits(Edit):
-    def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterable[Edit] = ()):
-        super().__init__()
-        self.from_node: TreeNode = from_node
-        self.to_node: TreeNode = to_node
-        self._unprocessed: Iterator[Edit] = iter(edits)
+    def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterator[Edit] = ()):
+        self._unprocessed: Iterator[Edit] = edits
         self._untightened: List[Edit] = []
         self._tightened: List[Edit] = []
+        super().__init__(from_node=from_node, to_node=to_node)
 
     @property
     def possibilities(self) -> Iterable[Edit]:
@@ -233,7 +246,11 @@ class KeyValuePairNode(ContainerNode):
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
             raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
-        return CompoundEdit(Match(self, node, 0), self.key.edits(node.key), self.value.edits(node.value))
+        return CompoundEdit(
+            from_node=self,
+            to_node=node,
+            edits=iter((Match(self, node, 0), self.key.edits(node.key), self.value.edits(node.value)))
+        )
 
     def calculate_total_size(self):
         return self.key.total_size + self.value.total_size
@@ -262,24 +279,62 @@ class KeyValuePairNode(ContainerNode):
 
 
 class CompoundEdit(Edit):
-    def __init__(self, *edits: Edit):
-        sub_edits = []
-        for edit in edits:
-            if isinstance(edit, CompoundEdit):
-                sub_edits.extend(edit.edits)
+    def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
+        self._edit_iter = edits
+        self._sub_edits = []
+        cost_upper_bound = from_node.total_size + 1
+        if to_node is not None:
+            cost_upper_bound += to_node.total_size
+        self._cost = None
+        super().__init__(from_node=from_node,
+                         to_node=to_node,
+                         cost_upper_bound=cost_upper_bound)
+
+    @property
+    def sub_edits(self):
+        while self._edit_iter is not None and self.tighten_bounds():
+            pass
+        return self._sub_edits
+
+    def tighten_bounds(self) -> bool:
+        if self._edit_iter is not None:
+            try:
+                next_edit = next(self._edit_iter)
+                if isinstance(next_edit, CompoundEdit):
+                    self._sub_edits.extend(next_edit.sub_edits)
+                else:
+                    self._sub_edits.append(next_edit)
+                self._cost = None
+                return True
+            except StopIteration:
+                self._edit_iter = None
+        for child in self._sub_edits:
+            if child.tighten_bounds():
+                self._cost = None
+                return True
+        return False
+
+    def cost(self) -> Range:
+        if self._cost is None:
+            if self._edit_iter is None:
+                # We've expanded all of the sub-edits, so calculate the bounds explicitly:
+                self._cost = sum(e.cost() for e in self._sub_edits)
             else:
-                sub_edits.append(edit)
-        super().__init__(sub_edits=sub_edits)
-        self.edits = edits
+                # We have not yet expanded all of the sub-edits
+                bounds = super().cost()
+                for e in self._sub_edits:
+                    bounds = bounds + e.cost() - e.initial_cost
+                self._cost = bounds
+        return self._cost
 
     def __len__(self):
-        return len(self.edits)
+        return len(self.sub_edits)
 
     def __iter__(self) -> Iterator[Edit]:
-        return iter(self.edits)
+        return iter(self.sub_edits)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(*{self.edits!r})"
+        return f"{self.__class__.__name__}(*{self.sub_edits!r})"
 
 
 class ListNode(ContainerNode):
@@ -288,29 +343,29 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            return PossibleEdits(self, node, self._match(self.children, node.children))
+            return PossibleEdits(self, node, self._match(node, self.children, node.children))
         else:
             return Replace(self, node)
 
-    def _match(self, l1: Tuple[TreeNode], l2: Tuple[TreeNode]) -> Iterator[Edit]:
+    def _match(self, node: TreeNode, l1: Tuple[TreeNode], l2: Tuple[TreeNode]) -> Iterator[Edit]:
         if not l1 and not l2:
             return
         elif l1 and not l2:
-            yield CompoundEdit(*(Remove(n, remove_from=self) for n in l1))
+            yield CompoundEdit(from_node=self, to_node=None, edits=(Remove(n, remove_from=self) for n in l1))
         elif l2 and not l1:
-            yield CompoundEdit(*(Insert(n, insert_into=self) for n in l2))
+            yield CompoundEdit(from_node=self, to_node=node, edits=(Insert(n, insert_into=self) for n in l2))
         else:
-            for possibility in self._match(l1[1:], l2):
-                yield CompoundEdit(Remove(l1[0], remove_from=self), possibility)
-            for possibility in self._match(l1, l2[1:]):
-                yield CompoundEdit(Insert(l2[0], insert_into=self), possibility)
+            for possibility in self._match(node, l1[1:], l2):
+                yield CompoundEdit(from_node=self, to_node=node, edits=iter((Remove(l1[0], remove_from=self), possibility)))
+            for possibility in self._match(node, l1, l2[1:]):
+                yield CompoundEdit(from_node=self, to_node=node, edits=iter((Insert(l2[0], insert_into=self), possibility)))
             matches: List[Edit] = [Replace(l1[0], l2[0]), l1[0].edits(l2[0])]
             if len(l1) == 1 and len(l2) == 1:
                 yield from iter(matches)
             else:
-                possibilities = self._match(l1[1:], l2[1:])
-                for m, p in itertools.product(matches, possibilities):
-                    yield CompoundEdit(m, p)
+                possibilities = self._match(node, l1[1:], l2[1:])
+                for pair in itertools.product(matches, possibilities):
+                    yield CompoundEdit(from_node=self, to_node=node, edits=iter(pair))
 
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
@@ -345,52 +400,63 @@ class IntegerNode(LeafNode):
 
 class InitialState(Edit):
     def __init__(self, tree1_root: TreeNode, tree2_root: TreeNode):
-        self.tree1: TreeNode = tree1_root
-        self.tree2: TreeNode = tree2_root
+        super(tree1_root, tree2_root)
 
     def cost(self):
-        return 0
+        return Range(0, 0)
 
 
 class Match(Edit):
     def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
-        super().__init__(constant_cost=cost, cost_upper_bound=cost)
-        self.match_from = match_from
-        self.match_to = match_to
+        super().__init__(
+            from_node=match_from,
+            to_node=match_to,
+            constant_cost=cost,
+            cost_upper_bound=cost
+        )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(match_from={self.match_from!r}, match_to={self.match_to!r}, cost={self.cost().lower_bound!r})"
+        return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"
 
 
 class Replace(Edit):
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
         cost = max(to_replace.total_size, replace_with.total_size) + 1
-        super().__init__(constant_cost=cost, cost_upper_bound=cost)
-        self.to_replace: TreeNode = to_replace
-        self.replace_with: TreeNode = replace_with
+        super().__init__(
+            from_node=to_replace,
+            to_node=replace_with,
+            constant_cost=cost,
+            cost_upper_bound=cost
+        )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(to_replace={self.to_replace!r}, replace_with={self.replace_with!r})"
+        return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
 
 
 class Remove(Edit):
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode):
-        super().__init__(constant_cost=to_remove.total_size + 1, cost_upper_bound=to_remove.total_size + 1)
-        self.removed: TreeNode = to_remove
-        self.remove_from: TreeNode = remove_from
+        super().__init__(
+            from_node=to_remove,
+            to_node=remove_from,
+            constant_cost=to_remove.total_size + 1,
+            cost_upper_bound=to_remove.total_size + 1
+        )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.removed!r}, remove_from={self.remove_from!r})"
+        return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
 
 
 class Insert(Edit):
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode):
-        super().__init__(constant_cost=to_insert.total_size + 1, cost_upper_bound=to_insert.total_size + 1)
-        self.inserted: TreeNode = to_insert
-        self.into: TreeNode = insert_into
+        super().__init__(
+            from_node=to_insert,
+            to_node=insert_into,
+            constant_cost=to_insert.total_size + 1,
+            cost_upper_bound=to_insert.total_size + 1
+        )
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(to_insert={self.inserted!r}, insert_into={self.into!r})"
+        return f"{self.__class__.__name__}(to_insert={self.from_node!r}, insert_into={self.to_node!r})"
 
 
 AtomicEdit = Union[Insert, Remove, Replace, Match]
@@ -398,7 +464,7 @@ AtomicEdit = Union[Insert, Remove, Replace, Match]
 
 def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
     if isinstance(edit, CompoundEdit):
-        for sub_edit in edit.edits:
+        for sub_edit in edit.sub_edits:
             yield from explode_edits(sub_edit)
     elif isinstance(edit, PossibleEdits):
         while not edit.cost().definitive():
@@ -448,11 +514,12 @@ def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
 
 if __name__ == '__main__':
     obj1 = build_tree({
-        "test": "foo"
+        "test": "foo",
+        "baz": 1
     })
     obj2 = build_tree({
         "test": "bar",
-        "baz": 1337
+        "baz": 2
     })
 
     edits = diff(obj1, obj2)
