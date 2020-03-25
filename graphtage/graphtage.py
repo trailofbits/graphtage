@@ -455,17 +455,16 @@ class ListNode(ContainerNode):
         elif l2 and not l1:
             yield CompoundEdit(from_node=self, to_node=node, edits=(Insert(n, insert_into=self) for n in l2))
         else:
-            for possibility in self._match(node, l1[1:], l2):
-                yield CompoundEdit(from_node=self, to_node=node, edits=iter((Remove(l1[0], remove_from=self), possibility)))
-            for possibility in self._match(node, l1, l2[1:]):
-                yield CompoundEdit(from_node=self, to_node=node, edits=iter((Insert(l2[0], insert_into=self), possibility)))
-            matches: List[Edit] = [Replace(l1[0], l2[0]), l1[0].edits(l2[0])]
+            match = l1[0].edits(l2[0])
             if len(l1) == 1 and len(l2) == 1:
-                yield from iter(matches)
+                yield match
             else:
-                possibilities = self._match(node, l1[1:], l2[1:])
-                for pair in itertools.product(matches, possibilities):
-                    yield CompoundEdit(from_node=self, to_node=node, edits=iter(pair))
+                for remainder in self._match(node, l1[1:], l2[1:]):
+                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((match, remainder)))
+                for possibility in self._match(node, l1[1:], l2):
+                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((Remove(l1[0], remove_from=self), possibility)))
+                for possibility in self._match(node, l1, l2[1:]):
+                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((Insert(l2[0], insert_into=self), possibility)))
 
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
