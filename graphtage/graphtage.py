@@ -2,7 +2,8 @@ import heapq
 import itertools
 
 from abc import abstractmethod, ABCMeta
-from typing import Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from collections import defaultdict
+from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -27,6 +28,33 @@ def levenshtein_distance(s: str, t: str) -> int:
                                  dist[row - 1][col - 1] + cost)
 
     return dist[row][col]
+
+
+class Printer:
+    def __init__(self, out_stream: TextIO):
+        self.out_stream = out_stream
+        self.indents = 0
+
+    def write(self, s: str):
+        self.out_stream.write(s)
+
+    def newline(self):
+        self.write('\n')
+        self.write(' ' * (4 * self.indents))
+
+    def indent(self):
+        class Indent:
+            def __init__(self, printer):
+                self.printer = printer
+
+            def __enter__(self):
+                self.printer.indents += 1
+                return self.printer
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                self.printer.indents -= 1
+
+        return Indent(self)
 
 
 class Range:
@@ -96,6 +124,10 @@ class Edit(metaclass=ABCMeta):
     def tighten_bounds(self) -> bool:
         return False
 
+    @abstractmethod
+    def print(self, printer: Printer):
+        pass
+
     def __lt__(self, other):
         while True:
             if self.cost() < other.cost():
@@ -124,6 +156,31 @@ class Edit(metaclass=ABCMeta):
         return Range(lb, ub)
 
 
+class Diff:
+    def __init__(self, from_root, to_root, edits: Iterable[Edit]):
+        self.from_root: TreeNode = from_root
+        self.to_root: TreeNode = to_root
+        self.edits: Tuple[AtomicEdit] = tuple(itertools.chain(*(explode_edits(edit) for edit in edits)))
+        self.edits_by_node: Dict[TreeNode, List[Edit]] = defaultdict(list)
+        for e in self.edits:
+            self.edits_by_node[e.from_node].append(e)
+
+    def __contains__(self, node):
+        return node in self.edits_by_node
+
+    def __getitem__(self, node) -> Iterable[Edit]:
+        return self.edits_by_node[node]
+
+    def print(self, out_stream: TextIO):
+        self.from_root.print(out_stream, self)
+
+    def cost(self) -> int:
+        return sum(e.cost().upper_bound for e in self.edits)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(from_root={self.from_root!r}, to_root={self.to_root!r}, edits={self.edits!r})"
+
+
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
 
@@ -140,6 +197,10 @@ class TreeNode(metaclass=ABCMeta):
     @abstractmethod
     def calculate_total_size(self) -> int:
         return 0
+
+    @abstractmethod
+    def print(self, printer: Printer, diff: Optional[Diff] = None):
+        pass
 
 
 class PossibleEdits(Edit):
@@ -160,6 +221,9 @@ class PossibleEdits(Edit):
             if best is None or e.cost().upper_bound < best.cost().upper_bound:
                 best = e
         return best
+
+    def print(self, printer: Printer):
+        self.best_possibility.print(printer, diff=diff)
 
     def tighten_bounds(self) -> bool:
         if self._unprocessed is not None:
@@ -204,8 +268,8 @@ class ContainerNode(TreeNode, metaclass=ABCMeta):
 
 
 class LeafNode(TreeNode):
-    def __init__(self, object):
-        self.object = object
+    def __init__(self, obj):
+        self.object = obj
 
     def calculate_total_size(self):
         return len(str(self.object))
@@ -215,6 +279,13 @@ class LeafNode(TreeNode):
             return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
+
+    def print(self, printer: Printer, diff: Optional[Diff] = None):
+        if diff is None or self not in diff:
+            printer.write(repr(self.object))
+        else:
+            for edit in diff[self]:
+                edit.print(printer)
 
     def __lt__(self, other):
         if isinstance(other, LeafNode):
@@ -251,6 +322,15 @@ class KeyValuePairNode(ContainerNode):
             to_node=node,
             edits=iter((Match(self, node, 0), self.key.edits(node.key), self.value.edits(node.value)))
         )
+
+    def print(self, printer: Printer, diff: Optional[Diff] = None):
+        if diff is None or self not in diff:
+            self.key.print(printer, diff)
+            printer.write(": ")
+            self.value.print(printer, diff)
+        else:
+            for edit in diff[self]:
+                edit.print(printer)
 
     def calculate_total_size(self):
         return self.key.total_size + self.value.total_size
@@ -289,6 +369,10 @@ class CompoundEdit(Edit):
         super().__init__(from_node=from_node,
                          to_node=to_node,
                          cost_upper_bound=cost_upper_bound)
+
+    def print(self, printer: Printer):
+        for sub_edit in self.sub_edits:
+            sub_edit.print(printer)
 
     @property
     def sub_edits(self):
@@ -340,6 +424,22 @@ class CompoundEdit(Edit):
 class ListNode(ContainerNode):
     def __init__(self, list_like: Sequence[TreeNode]):
         self.children: Tuple[TreeNode] = tuple(list_like)
+
+    def print(self, printer: Printer, diff: Optional[Diff] = None):
+        if diff is None or self not in diff:
+            printer.write("[")
+            with printer.indent() as p:
+                for i, child in enumerate(self.children):
+                    if i > 0:
+                        p.write(',')
+                    p.newline()
+                    child.print(p, diff)
+            if self.children:
+                printer.newline()
+            printer.write("]")
+        else:
+            for edit in diff[self]:
+                edit.print(printer)
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
@@ -402,6 +502,9 @@ class InitialState(Edit):
     def __init__(self, tree1_root: TreeNode, tree2_root: TreeNode):
         super(tree1_root, tree2_root)
 
+    def print(self, printer: Printer):
+        pass
+
     def cost(self):
         return Range(0, 0)
 
@@ -414,6 +517,12 @@ class Match(Edit):
             constant_cost=cost,
             cost_upper_bound=cost
         )
+
+    def print(self, printer: Printer):
+        self.from_node.print(printer)
+        if self.cost() > 0:
+            printer.write(' -> ')
+            self.to_node.print(printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"
@@ -429,6 +538,12 @@ class Replace(Edit):
             cost_upper_bound=cost
         )
 
+    def print(self, printer: Printer):
+        self.from_node.print(printer)
+        if self.cost() > 0:
+            printer.write(' -> ')
+            self.to_node.print(printer)
+
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
 
@@ -442,6 +557,11 @@ class Remove(Edit):
             cost_upper_bound=to_remove.total_size + 1
         )
 
+    def print(self, printer: Printer):
+        printer.write('~~~~')
+        self.from_node.print(printer)
+        printer.write('~~~~')
+
     def __repr__(self):
         return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
 
@@ -454,6 +574,11 @@ class Insert(Edit):
             constant_cost=to_insert.total_size + 1,
             cost_upper_bound=to_insert.total_size + 1
         )
+
+    def print(self, printer: Printer):
+        printer.write('++++')
+        self.from_node.print(printer)
+        printer.write('++++')
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_insert={self.from_node!r}, insert_into={self.to_node!r})"
@@ -478,19 +603,6 @@ def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
         yield edit
 
 
-class Diff:
-    def __init__(self, from_root: TreeNode, to_root: TreeNode, edits: Iterable[Edit]):
-        self.from_root = from_root
-        self.to_root = to_root
-        self.edits: Tuple[AtomicEdit] = tuple(itertools.chain(*(explode_edits(edit) for edit in edits)))
-
-    def cost(self) -> int:
-        return sum(e.cost().upper_bound for e in self.edits)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(from_root={self.from_root!r}, to_root={self.to_root!r}, edits={self.edits!r})"
-
-
 def diff(tree1_root: TreeNode, tree2_root: TreeNode) -> Diff:
     return Diff(tree1_root, tree2_root, (tree1_root.edits(tree2_root),))
 
@@ -513,6 +625,8 @@ def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
 
 
 if __name__ == '__main__':
+    import sys
+
     obj1 = build_tree({
         "test": "foo",
         "baz": 1
@@ -522,6 +636,6 @@ if __name__ == '__main__':
         "baz": 2
     })
 
-    edits = diff(obj1, obj2)
-    print(edits.cost())
-    print(edits)
+    obj_diff = diff(obj1, obj2)
+    print(obj_diff)
+    obj_diff.print(Printer(sys.stdout))
