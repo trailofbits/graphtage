@@ -134,7 +134,7 @@ class Edit(metaclass=ABCMeta):
                 return True
             elif self.cost().definitive() and other.cost().definitive():
                 return False
-            if not self.tighten_bounds() and not other.tighten_bounds():
+            if not other.tighten_bounds():
                 return False
 
     def __eq__(self, other):
@@ -320,7 +320,7 @@ class KeyValuePairNode(ContainerNode):
         return CompoundEdit(
             from_node=self,
             to_node=node,
-            edits=iter((Match(self, node, 0), self.key.edits(node.key), self.value.edits(node.value)))
+            edits=iter((self.key.edits(node.key), self.value.edits(node.value)))
         )
 
     def print(self, printer: Printer, diff: Optional[Diff] = None):
@@ -443,13 +443,13 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            return PossibleEdits(self, node, self._match(node, self.children, node.children))
+            return next(self._match(node, self.children, node.children))
         else:
             return Replace(self, node)
 
     def _match(self, node: TreeNode, l1: Tuple[TreeNode], l2: Tuple[TreeNode]) -> Iterator[Edit]:
         if not l1 and not l2:
-            return
+            yield Match(self, node, 0)
         elif l1 and not l2:
             yield CompoundEdit(from_node=self, to_node=None, edits=(Remove(n, remove_from=self) for n in l1))
         elif l2 and not l1:
@@ -459,12 +459,36 @@ class ListNode(ContainerNode):
             if len(l1) == 1 and len(l2) == 1:
                 yield match
             else:
-                for remainder in self._match(node, l1[1:], l2[1:]):
-                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((match, remainder)))
-                for possibility in self._match(node, l1[1:], l2):
-                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((Remove(l1[0], remove_from=self), possibility)))
-                for possibility in self._match(node, l1, l2[1:]):
-                    yield CompoundEdit(from_node=self, to_node=node, edits=iter((Insert(l2[0], insert_into=self), possibility)))
+                yield PossibleEdits(
+                    from_node=self,
+                    to_node=node,
+                    edits=iter((
+                        CompoundEdit(
+                            from_node=self,
+                            to_node=node,
+                            edits=itertools.chain(
+                                iter((match,)),
+                                self._match(node, l1[1:], l2[1:])
+                            )
+                        ),
+                        CompoundEdit(
+                            from_node=self,
+                            to_node=node,
+                            edits=itertools.chain(
+                                iter((Remove(l1[0], remove_from=self),)),
+                                self._match(node, l1[1:], l2)
+                            )
+                        ),
+                        CompoundEdit(
+                            from_node=self,
+                            to_node=node,
+                            edits=itertools.chain(
+                                iter((Insert(l2[0], insert_into=self),)),
+                                self._match(node, l1, l2[1:])
+                            )
+                        )
+                    ))
+                )
 
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
@@ -519,7 +543,7 @@ class Match(Edit):
 
     def print(self, printer: Printer):
         self.from_node.print(printer)
-        if self.cost() > 0:
+        if self.cost() > Range(0, 0):
             printer.write(' -> ')
             self.to_node.print(printer)
 
@@ -635,6 +659,10 @@ if __name__ == '__main__':
         "baz": 2
     })
 
+    obj1 = build_tree(list(range(5)))
+    obj2 = build_tree(list(range(1, 5)))
+
     obj_diff = diff(obj1, obj2)
+    print(obj_diff.cost())
     print(obj_diff)
     obj_diff.print(Printer(sys.stdout))
