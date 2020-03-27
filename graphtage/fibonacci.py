@@ -99,6 +99,8 @@ class FibonacciHeap(Generic[T, Key]):
         return self._n > 0
 
     def __iter__(self) -> Iterator[T]:
+        if self._min is None:
+            return
         for node in self._min:
             yield node.item
 
@@ -122,14 +124,14 @@ class FibonacciHeap(Generic[T, Key]):
         node = HeapNode(data)
         node.left = node.right = node
         self._append_root(node)
-        if self._min is None or node.item < self._min.item:
+        if self._min is None or node < self._min:
             self._min = node
         self._n += 1
         return node
 
-    def _decrease_key(self, x: HeapNode[T, Key], k: Key):
-        if x.item < k:
-            raise ValueError(f"The key can only decrease! New key {k!r} >= old key {x.item!r}.")
+    def decrease_key(self, x: HeapNode[T, Key], k: Key):
+        if x.key < k:
+            raise ValueError(f"The key can only decrease! New key {k!r} > old key {x.item!r}.")
         x.key = k
         y = x.parent
         if y is not None and x < y:
@@ -145,6 +147,7 @@ class FibonacciHeap(Generic[T, Key]):
             return other
         merged = FibonacciHeap(key=self.key)
         merged._root, merged._min = self._root, self._min
+        merged.key = self.key
         last = other._root.left
         other._root.left = merged._root.left
         merged._root.left.right = other._root

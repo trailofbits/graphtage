@@ -1,9 +1,10 @@
-import heapq
 import itertools
 
 from abc import abstractmethod, ABCMeta
 from collections import defaultdict
 from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
+
+from .fibonacci import FibonacciHeap
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -17,6 +18,7 @@ def levenshtein_distance(s: str, t: str) -> int:
     for i in range(1, cols):
         dist[0][i] = i
 
+    col = row = 0
     for col in range(1, cols):
         for row in range(1, rows):
             if s[row - 1] == t[col - 1]:
@@ -206,7 +208,7 @@ class TreeNode(metaclass=ABCMeta):
 class PossibleEdits(Edit):
     def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterator[Edit] = ()):
         self._unprocessed: Iterator[Edit] = edits
-        self._untightened: List[Edit] = []
+        self._untightened: FibonacciHeap[Edit, Edit] = FibonacciHeap()
         self._tightened: List[Edit] = []
         super().__init__(from_node=from_node, to_node=to_node)
 
@@ -229,19 +231,19 @@ class PossibleEdits(Edit):
         if self._unprocessed is not None:
             try:
                 next_best = next(self._unprocessed)
-                if self._untightened and self._untightened[0] < next_best:
+                if self._untightened and self._untightened.peek() < next_best:
                     # No need to add this new edit if it is strictly worse than the current best!
                     pass
                 else:
-                    heapq.heappush(self._untightened, next_best)
+                    self._untightened.push(next_best)
                 return True
             except StopIteration:
                 self._unprocessed = None
                 pass
         if self._untightened:
-            next_best = heapq.heappop(self._untightened)
+            next_best = self._untightened.pop()
             if next_best.tighten_bounds():
-                heapq.heappush(self._untightened, next_best)
+                self._untightened.push(next_best)
             else:
                 self._tightened.append(next_best)
             return True
