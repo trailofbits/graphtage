@@ -8,7 +8,7 @@ DefaultKey = object()
 class HeapNode(Generic[T, Key]):
     def __init__(self, item: T, key: Key = DefaultKey):
         self.item: T = item
-        if key == DefaultKey:
+        if id(key) == id(DefaultKey):
             key = item
         self.key: Key = key
         self.parent: Optional[HeapNode[T, Key]] = None
@@ -84,8 +84,17 @@ class FibonacciHeap(Generic[T, Key]):
         self._root: Optional[HeapNode[T, Key]] = None
         self._n: int = 0
 
+    def clear(self):
+        self._min = None
+        self._root = None
+        self._n = 0
+
     def peek(self) -> T:
         return self._min.item
+
+    @property
+    def min_node(self) -> HeapNode[T, Key]:
+        return self._min
 
     @property
     def _roots(self) -> Iterator[HeapNode[T, Key]]:
@@ -120,8 +129,8 @@ class FibonacciHeap(Generic[T, Key]):
             self._n -= 1
         return z
 
-    def push(self, data) -> HeapNode[T, Key]:
-        node = HeapNode(data)
+    def push(self, item: T) -> HeapNode[T, Key]:
+        node = HeapNode(item=item, key=self.key(item))
         node.left = node.right = node
         self._append_root(node)
         if self._min is None or node < self._min:
