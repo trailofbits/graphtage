@@ -5,6 +5,7 @@ from collections import defaultdict
 from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .fibonacci import FibonacciHeap
+from .search import Bounded, Range
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -59,59 +60,7 @@ class Printer:
         return Indent(self)
 
 
-class Range:
-    def __init__(self, lower_bound: int = None, upper_bound: int = None):
-        assert (lower_bound is None or lower_bound >= 0) and \
-               (upper_bound is None or upper_bound >= 0) and \
-               (lower_bound is None or upper_bound is None or upper_bound >= lower_bound)
-        self.lower_bound: int = lower_bound
-        self.upper_bound: int = upper_bound
-
-    def __lt__(self, other):
-        return self.upper_bound is not None and other.lower_bound is not None and self.upper_bound < other.lower_bound
-
-    def __bool__(self):
-        return self.lower_bound is not None and self.upper_bound is not None
-
-    def __add__(self, other):
-        if isinstance(other, int):
-            return Range(self.lower_bound + other, self.upper_bound + other)
-        else:
-            return Range(self.lower_bound + other.lower_bound, self.upper_bound + other.upper_bound)
-
-    def __radd__(self, other):
-        return self + other
-
-    def __sub__(self, other):
-        if isinstance(other, int):
-            return Range(self.lower_bound - other, self.upper_bound - other)
-        else:
-            return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)
-
-    def definitive(self) -> bool:
-        return bool(self) and self.lower_bound == self.upper_bound
-
-    def intersect(self, other):
-        if not self or not other or self < other or other < self:
-            return Range()
-        elif self.lower_bound < other.lower_bound:
-            if self.upper_bound < other.upper_bound:
-                return Range(other.lower_bound, self.upper_bound)
-            else:
-                return other
-        elif self.upper_bound < other.upper_bound:
-            return self
-        else:
-            return Range(self.lower_bound, other.upper_bound)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.lower_bound!r}, {self.upper_bound!r})"
-
-    def __str__(self):
-        return f"[{self.lower_bound}, {self.upper_bound}]"
-
-
-class Edit(metaclass=ABCMeta):
+class Edit(Bounded):
     def __init__(self,
                  from_node,
                  to_node = None,
@@ -156,6 +105,8 @@ class Edit(metaclass=ABCMeta):
         else:
             ub = self._cost_upper_bound
         return Range(lb, ub)
+
+    bounds = cost
 
 
 class Diff:
