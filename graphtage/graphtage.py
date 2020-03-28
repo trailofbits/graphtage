@@ -4,8 +4,7 @@ from abc import abstractmethod, ABCMeta
 from collections import defaultdict
 from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
-from .fibonacci import FibonacciHeap
-from .search import Bounded, Range
+from .search import Bounded, IterativeTighteningSearch, Range
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -80,20 +79,7 @@ class Edit(Bounded):
         pass
 
     def __lt__(self, other):
-        while True:
-            if self.cost() < other.cost():
-                return True
-            elif self.cost().definitive() and other.cost().definitive():
-                return False
-            if not other.tighten_bounds():
-                return False
-
-    def __eq__(self, other):
-        while True:
-            if self.cost().definitive() and other.cost().definitive():
-                return self.cost().lower_bound == other.cost().lower_bound
-            self.tighten_bounds()
-            other.tighten_bounds()
+        return self.cost() < other.cost()
 
     def cost(self) -> Range:
         lb = self._constant_cost
@@ -158,62 +144,21 @@ class TreeNode(metaclass=ABCMeta):
 
 class PossibleEdits(Edit):
     def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterator[Edit] = ()):
-        self._unprocessed: Iterator[Edit] = edits
-        self._untightened: FibonacciHeap[Edit, Edit] = FibonacciHeap()
-        self._tightened: List[Edit] = []
+        self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(possibilities=edits)
         super().__init__(from_node=from_node, to_node=to_node)
 
     @property
-    def possibilities(self) -> Iterable[Edit]:
-        return itertools.chain(iter(self._untightened), iter(self._tightened))
-
-    @property
     def best_possibility(self) -> Edit:
-        best: Edit = None
-        for e in self.possibilities:
-            if best is None or e.cost().upper_bound < best.cost().upper_bound:
-                best = e
-        return best
+        return self._search.best_match
 
     def print(self, printer: Printer):
         self.best_possibility.print(printer, diff=diff)
 
     def tighten_bounds(self) -> bool:
-        if self._unprocessed is not None:
-            try:
-                next_best = next(self._unprocessed)
-                if self._untightened and self._untightened.peek() < next_best:
-                    # No need to add this new edit if it is strictly worse than the current best!
-                    pass
-                else:
-                    self._untightened.push(next_best)
-                return True
-            except StopIteration:
-                self._unprocessed = None
-                pass
-        if self._untightened:
-            next_best = self._untightened.pop()
-            if next_best.tighten_bounds():
-                self._untightened.push(next_best)
-            else:
-                self._tightened.append(next_best)
-            return True
-        else:
-            return False
+        return self._search.tighten_bounds()
 
     def cost(self) -> Range:
-        if self._unprocessed is not None:
-            return Range(0, max(self.from_node.total_size, self.to_node.total_size) + 1)
-        lb = None
-        ub = 0
-        for e in self.possibilities:
-            cost = e.cost()
-            if lb is None:
-                lb = cost.lower_bound
-            else:
-                lb = min(lb, cost.lower_bound)
-            ub = max(ub, cost.upper_bound)
-        return Range(lb, ub)
+        return self._search.bounds()
 
 
 class ContainerNode(TreeNode, metaclass=ABCMeta):

@@ -138,23 +138,26 @@ class Bounded(Protocol):
     bounds: Callable[[], Range]
 
 
-class IterativeTighteningSearch(Bounded):
+B = TypeVar('B', bound=Bounded)
+
+
+class IterativeTighteningSearch(Generic[B]):
     def __init__(self,
-                 possibilities: Iterator[Bounded],
+                 possibilities: Iterator[B],
                  initial_bounds: Optional[Range] = None):
-        def get_range(bounded: Bounded) -> Range:
+        def get_range(bounded: B) -> Range:
             return bounded.bounds()
 
-        self._unprocessed: Iterator[Bounded] = possibilities
-        self._untightened: FibonacciHeap[Bounded, Range] = FibonacciHeap(key=get_range)
-        self._tightened: FibonacciHeap[Bounded, Range] = FibonacciHeap(key=get_range)
-        self.best_match: Bounded = None
+        self._unprocessed: Iterator[B] = possibilities
+        self._untightened: FibonacciHeap[B, Range] = FibonacciHeap(key=get_range)
+        self._tightened: FibonacciHeap[B, Range] = FibonacciHeap(key=get_range)
+        self.best_match: B = None
         if initial_bounds is None:
             self.initial_bounds = Range(NegativeInfinity, PositiveInfinity)
         else:
             self.initial_bounds = initial_bounds
 
-    def search(self) -> Bounded:
+    def search(self) -> B:
         while self.tighten_bounds():
             pass
         return self.best_match
@@ -170,7 +173,7 @@ class IterativeTighteningSearch(Bounded):
         while True:
             if self._unprocessed is not None:
                 try:
-                    next_best: Bounded = next(self._unprocessed)
+                    next_best: B = next(self._unprocessed)
                     if self.initial_bounds.lower_bound > NegativeInfinity and \
                             self.initial_bounds.lower_bound > next_best.bounds().upper_bound:
                         # We can't do any better than this choice!
