@@ -19,7 +19,9 @@ setup(
     version=get_version_string(),
     packages=find_packages(),
     python_requires='>=3.6',
-    install_requires=[],
+    install_requires=[
+        'tqdm'
+    ],
     entry_points={
         'console_scripts': [
             'graphtage = graphtage.__main__:main'
