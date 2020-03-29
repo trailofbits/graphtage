@@ -6,25 +6,29 @@ from .fibonacci import FibonacciHeap, HeapNode
 
 class Infinity:
     def __init__(self, positive=True):
-        self.positive = positive
+        self._positive = positive
+
+    @property
+    def positive(self):
+        return self._positive
 
     def __eq__(self, other):
         if isinstance(other, Infinity):
-            return self.positive == other.positive
+            return self._positive == other._positive
         else:
             return False
 
     def __lt__(self, other):
         if isinstance(other, int):
-            return not self.positive
+            return not self._positive
         else:
-            return not self.positive and other.positive
+            return not self._positive and other.positive
 
     def __gt__(self, other):
         if isinstance(other, int):
-            return self.positive
+            return self._positive
         else:
-            return self.positive and not other.positive
+            return self._positive and not other.positive
 
     def __ge__(self, other):
         return self > other or self == other
@@ -33,55 +37,47 @@ class Infinity:
         return self < other or self == other
 
     def __add__(self, other):
-        if isinstance(other, Infinity) and other.positive != self.positive:
+        if isinstance(other, Infinity) and other._positive != self._positive:
             raise ValueError("-∞ + ∞ is undefined")
         else:
             return self
 
     def __sub__(self, other):
-        if isinstance(other, Infinity) and other.positive != self.positive:
+        if isinstance(other, Infinity) and other._positive != self._positive:
             raise ValueError("-∞ + ∞ is undefined")
         else:
             return self
 
     def __hash__(self):
-        return hash(self.positive)
+        return hash(self._positive)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(positive={self.positive!r})"
+        return f"{self.__class__.__name__}(positive={self._positive!r})"
 
     def __str__(self):
-        if self.positive:
+        if self._positive:
             return '∞'
         else:
             return '-∞'
 
 
-NegativeInfinity = Infinity(positive=False)
-PositiveInfinity = Infinity(positive=True)
+NEGATIVE_INFINITY: Infinity = Infinity(positive=False)
+POSITIVE_INFINITY = Infinity(positive=True)
 
 RangeValue = Union[int, Infinity]
 
 
 class Range:
-    def __init__(self, lower_bound: Optional[RangeValue] = None, upper_bound: Optional[RangeValue] = None):
-        assert lower_bound is None or upper_bound is None or upper_bound >= lower_bound
-        self.lower_bound: Optional[RangeValue] = lower_bound
-        self.upper_bound: Optional[RangeValue] = upper_bound
+    def __init__(self, lower_bound: RangeValue = NEGATIVE_INFINITY, upper_bound: RangeValue = POSITIVE_INFINITY):
+        if upper_bound < lower_bound:
+            raise ValueError(f"Upper bound ({upper_bound!s}) must be less than lower bound ({lower_bound!s})")
+        self.lower_bound: RangeValue = lower_bound
+        self.upper_bound: RangeValue = upper_bound
 
     def __eq__(self, other):
         return self.lower_bound == other.lower_bound and self.upper_bound == other.upper_bound
 
     def __lt__(self, other):
-        if not self or not other:
-            slb, sub = self.lower_bound is not None, self.upper_bound is not None
-            olb, oub = other.lower_bound is not None, other.upper_bound is not None
-            if sub and olb:
-                return self.upper_bound < other.lower_bound
-            elif sub and oub:
-                return self.upper_bound < other.upper_bound
-            else:
-                return False
         return self.upper_bound < other.upper_bound or \
             (self.upper_bound == other.upper_bound and self.lower_bound < other.lower_bound)
 
@@ -93,9 +89,6 @@ class Range:
 
     def hash(self):
         return hash((self.lower_bound, self.upper_bound))
-
-    def __bool__(self):
-        return self.lower_bound is not None and self.upper_bound is not None
 
     def __add__(self, other):
         if isinstance(other, int) or isinstance(other, Infinity):
@@ -113,7 +106,7 @@ class Range:
             return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)
 
     def definitive(self) -> bool:
-        return bool(self) and self.lower_bound == self.upper_bound
+        return self.lower_bound == self.upper_bound and not isinstance(self.lower_bound, Infinity)
 
     def intersect(self, other):
         if not self or not other or self < other or other < self:
@@ -132,17 +125,21 @@ class Range:
         return f"{self.__class__.__name__}({self.lower_bound!r}, {self.upper_bound!r})"
 
     def __str__(self):
-        return f"[{self.lower_bound}, {self.upper_bound}]"
+        return f"[{self.lower_bound!s}, {self.upper_bound!s}]"
 
 
-class MaxRange(Range):
+class InvertedRange(Range):
+    """A Range that orders itself based off of decreasing lower bounds
+       The default Range object orders itself based off of increasing upper bounds
+    """
     def __init__(self, range: Range):
         super().__init__(range.lower_bound, range.upper_bound)
         self._range = range
 
     def __lt__(self, other):
-        assert isinstance(other, MaxRange)
-        return not (self._range <= other._range)
+        assert isinstance(other, InvertedRange)
+        return self.lower_bound > other.lower_bound or \
+            (self.lower_bound == other.lower_bound and self.upper_bound > other.upper_bound)
 
 
 class Bounded(Protocol):
@@ -163,18 +160,23 @@ class IterativeTighteningSearch(Generic[B]):
         def negated_range(bounded: Bounded) -> Range:
             bounds: Bounded = bounded.bounds()
             #return Range(-1 * bounds.upper_bound, -1 * bounds.lower_bound)
-            return MaxRange(bounds)
+            return InvertedRange(bounds)
 
         self._unprocessed: Iterator[B] = possibilities
         self._untightened: FibonacciHeap[B, Range] = FibonacciHeap(key=get_range)
         self._tightened: FibonacciHeap[B, Range] = FibonacciHeap(key=get_range)
+
+        # Heap to track the ranges with the lowest upper bound
         self._best: FibonacciHeap[B, Range] = FibonacciHeap(key=get_range)
+
+        # Heap to track the ranges with the highest lower bound
         self._worst: FibonacciHeap[B, Range] = FibonacciHeap(key=negated_range)
+
+        # Mapping of nodes in the `_best` heap to nodes in the `_worst` heap
         self._worst_nodes: Dict[HeapNode[B, Range], HeapNode[B, Range]] = {}
-        #self.best_match: B = None
-        #self.worst_match: B = None
+
         if initial_bounds is None:
-            self.initial_bounds = Range(NegativeInfinity, PositiveInfinity)
+            self.initial_bounds = Range(NEGATIVE_INFINITY, POSITIVE_INFINITY)
         else:
             self.initial_bounds = initial_bounds
 
@@ -207,11 +209,11 @@ class IterativeTighteningSearch(Generic[B]):
             return Range(min(lb, self.best_match.bounds().upper_bound), self.best_match.bounds().upper_bound)
 
     def _delete_node(self, node: HeapNode[B, Range]):
-        self._best.decrease_key(node, Range(NegativeInfinity, NegativeInfinity))
+        self._best.decrease_key(node, Range(NEGATIVE_INFINITY, NEGATIVE_INFINITY))
         node.deleted = True
         self._best.pop()
         worst_node = self._worst_nodes[node]
-        self._worst.decrease_key(worst_node, MaxRange(Range(PositiveInfinity, PositiveInfinity)))
+        self._worst.decrease_key(worst_node, InvertedRange(Range(POSITIVE_INFINITY, POSITIVE_INFINITY)))
         worst_node.deleted = True
         self._worst.pop()
         del self._worst_nodes[node]
@@ -226,7 +228,7 @@ class IterativeTighteningSearch(Generic[B]):
         if bounds.lower_bound > node.key.lower_bound:
             # The lower bound increased, so we need to remove and re-add the node
             # because the Fibonacci heap only permits making keys smaller
-            self._best.decrease_key(node, Range(NegativeInfinity, NegativeInfinity))
+            self._best.decrease_key(node, Range(NEGATIVE_INFINITY, NEGATIVE_INFINITY))
             self._best.pop()
             best = self._best.push(node.item)
             self._worst_nodes[best] = self._worst_nodes[node]
@@ -234,7 +236,7 @@ class IterativeTighteningSearch(Generic[B]):
             node = best
         if bounds.upper_bound < node.key.upper_bound:
             worst = self._worst_nodes[node]
-            self._worst.decrease_key(worst, MaxRange(Range(PositiveInfinity, PositiveInfinity)))
+            self._worst.decrease_key(worst, InvertedRange(Range(POSITIVE_INFINITY, POSITIVE_INFINITY)))
             self._worst.pop()
             worst = self._worst.push(node.item)
             self._worst_nodes[node] = worst
@@ -245,7 +247,7 @@ class IterativeTighteningSearch(Generic[B]):
             if self._unprocessed is not None:
                 try:
                     next_best: B = next(self._unprocessed)
-                    if self.initial_bounds.lower_bound > NegativeInfinity and \
+                    if self.initial_bounds.lower_bound > NEGATIVE_INFINITY and \
                             self.initial_bounds.lower_bound >= next_best.bounds().upper_bound:
                         # We can't do any better than this choice!
                         self.best_match = next_best
