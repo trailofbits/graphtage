@@ -20,6 +20,7 @@ class HeapNode(Generic[T, Key]):
         self.deleted: bool = False
 
     def add_child(self, node):
+        assert node != self
         if self.child is None:
             self.child = node
         else:
@@ -42,27 +43,31 @@ class HeapNode(Generic[T, Key]):
 
     @property
     def siblings(self) -> Iterator:
-        node = stop = self
-        while True:
+        node = self.right
+        while node != self:
             yield node
-            if node.right == stop:
-                break
             node = node.right
 
     @property
     def children(self) -> Iterator:
-        assert (self.degree == 0 and self.child is None) or (self.degree == sum(1 for _ in self.child.siblings))
+        if not ((self.degree == 0 and self.child is None) or (self.degree == 1 + sum(1 for _ in self.child.siblings))):
+            breakpoint()
+        assert (self.degree == 0 and self.child is None) or (self.degree == 1 + sum(1 for _ in self.child.siblings))
         if self.child is not None:
+            yield self.child
             yield from self.child.siblings
 
     def __iter__(self):
+        yield self
         if self.child:
             yield from iter(self.child)
-        if self.right is not self:
-            yield from self.siblings
+        yield from self.siblings
 
     def __lt__(self, other):
         return self.deleted or self.key < other.key
+
+    def __le__(self, other):
+        return self < other or self.key == other.key
 
     def __eq__(self, other):
         return id(self) == id(other)
@@ -99,6 +104,7 @@ class FibonacciHeap(Generic[T, Key]):
     @property
     def _roots(self) -> Iterator[HeapNode[T, Key]]:
         if self._root is not None:
+            yield self._root
             yield from self._root.siblings
 
     def __len__(self):
@@ -108,10 +114,13 @@ class FibonacciHeap(Generic[T, Key]):
         return self._n > 0
 
     def __iter__(self) -> Iterator[T]:
-        if self._min is None:
-            return
-        for node in self._min:
+        for node in self:
             yield node.item
+
+    def nodes(self) -> Iterator[HeapNode[T, Key]]:
+        if self._root is None:
+            return
+        yield from iter(self._root)
 
     def _extract_min(self) -> HeapNode[T, Key]:
         z = self._min
@@ -140,7 +149,7 @@ class FibonacciHeap(Generic[T, Key]):
 
     def decrease_key(self, x: HeapNode[T, Key], k: Key):
         if x.key < k:
-            raise ValueError(f"The key can only decrease! New key {k!r} > old key {x.item!r}.")
+            raise ValueError(f"The key can only decrease! New key {k!r} > old key {x.key!r}.")
         x.key = k
         y = x.parent
         if y is not None and x < y:
@@ -168,7 +177,7 @@ class FibonacciHeap(Generic[T, Key]):
         return merged
 
     def _cut(self, x: HeapNode[T, Key], y: HeapNode[T, Key]):
-        y.remove_child(y, x)
+        y.remove_child(x)
         self._append_root(x)
         x.parent = None
         x.mark = False
@@ -196,7 +205,7 @@ class FibonacciHeap(Generic[T, Key]):
             a[d] = x
         for i in range(0, len(a)):
             if a[i] is not None:
-                if a[i] < self._min:
+                if a[i] <= self._min:
                     self._min = a[i]
 
     def _link(self, y: HeapNode[T, Key], x: HeapNode[T, Key]):
