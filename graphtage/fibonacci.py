@@ -95,6 +95,8 @@ class FibonacciHeap(Generic[T, Key]):
         self._n = 0
 
     def peek(self) -> T:
+        while self._min is not None and self._min.deleted:
+            self._extract_min()
         return self._min.item
 
     @property
@@ -114,7 +116,7 @@ class FibonacciHeap(Generic[T, Key]):
         return self._n > 0
 
     def __iter__(self) -> Iterator[T]:
-        for node in self:
+        for node in self._root:
             yield node.item
 
     def nodes(self) -> Iterator[HeapNode[T, Key]]:
@@ -231,6 +233,8 @@ class FibonacciHeap(Generic[T, Key]):
         node.right.left = node.left
 
     def pop(self) -> T:
+        while self._min is not None and self._min.deleted:
+            self._extract_min()
         return self._extract_min().item
 
 
