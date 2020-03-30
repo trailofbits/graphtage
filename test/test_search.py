@@ -63,12 +63,11 @@ class TestIterativeTighteningSearch(TestCase):
                     if best_range is None or r.final_value < best_range.final_value:
                         best_range = r
                 search = IterativeTighteningSearch(iter(ranges))
-                substatus = tqdm(desc=str(search.bounds()))
-                while search.tighten_bounds():
-                    substatus.total = search.bounds().upper_bound - search.bounds().lower_bound
-                    substatus.desc = f"Test {test_num}: {search.bounds()!s}"
-                    substatus.update(substatus.total - (search.bounds().upper_bound - search.bounds().lower_bound))
-                substatus.clear()
+                with tqdm(desc=str(search.bounds())) as substatus:
+                    while search.tighten_bounds():
+                        substatus.total = search.bounds().upper_bound - search.bounds().lower_bound
+                        substatus.desc = f"Test {test_num}: {search.bounds()!s}"
+                        substatus.update(substatus.total - (search.bounds().upper_bound - search.bounds().lower_bound))
                 result = search.best_match
                 tightenings = sum(r.tightenings for r in ranges)
                 untightened = 0
