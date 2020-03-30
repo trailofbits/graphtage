@@ -50,8 +50,6 @@ class HeapNode(Generic[T, Key]):
 
     @property
     def children(self) -> Iterator:
-        if not ((self.degree == 0 and self.child is None) or (self.degree == 1 + sum(1 for _ in self.child.siblings))):
-            breakpoint()
         assert (self.degree == 0 and self.child is None) or (self.degree == 1 + sum(1 for _ in self.child.siblings))
         if self.child is not None:
             yield self.child
@@ -61,7 +59,12 @@ class HeapNode(Generic[T, Key]):
         yield self
         if self.child:
             yield from iter(self.child)
-        yield from self.siblings
+        node = self.right
+        while node != self:
+            yield node
+            if node.child is not None:
+                yield from iter(node.child)
+            node = node.right
 
     def __lt__(self, other):
         return self.deleted or self.key < other.key
