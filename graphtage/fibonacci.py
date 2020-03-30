@@ -17,6 +17,7 @@ class HeapNode(Generic[T, Key]):
         self.right: HeapNode[T, Key] = self
         self.degree: int = 0
         self.mark: bool = False
+        # Warning: Do not set deleted to False unless the node has already been removed from the heap!
         self.deleted: bool = False
 
     def add_child(self, node):
