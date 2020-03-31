@@ -3,8 +3,12 @@ import json
 import os
 import sys
 import tempfile as tf
+from typing import Optional
+
+from tqdm import tqdm
 
 from . import graphtage
+from .search import Range
 from . import version
 
 
@@ -47,6 +51,34 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
+class Callback:
+    def __init__(self, status: tqdm):
+        self.total_set = False
+        self.status: tqdm = status
+
+    def __call__(self, range: Range):
+        if not range.finite:
+            return
+        if not self.total_set:
+            self.status.total = range.upper_bound - range.lower_bound
+            self.total_set = True
+        self.status.update(self.status.total - (range.upper_bound - range.lower_bound))
+
+
+class make_status_callback:
+    def __init__(self):
+        self.status = None
+
+    def __enter__(self):
+        if not sys.stdout.isatty():
+            return None
+        self.status = tqdm(desc="Diffing", leave=False)
+        return Callback(self.status.__enter__())
+
+    def __exit__(self, *args, **kwargs):
+        self.status.__exit__(*args, **kwargs)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description='A diff utility for tree-like files such as JSON and XML.')
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
@@ -77,7 +109,13 @@ def main(argv=None):
             with PathOrStdin(args.TO_PATH) as to_path:
                 with open(to_path, 'rb') as to_file:
                     to_json = json.load(to_file)
-                    diff = graphtage.diff(graphtage.build_tree(from_json), graphtage.build_tree(to_json))
+                    with make_status_callback() as callback:
+                        diff = graphtage.diff(
+                            graphtage.build_tree(from_json),
+                            graphtage.build_tree(to_json),
+                            callback=callback
+                        )
+
                     diff.print(graphtage.Printer(sys.stdout))
 
 

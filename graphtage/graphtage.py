@@ -2,9 +2,8 @@ import itertools
 
 from abc import abstractmethod, ABCMeta
 from collections import defaultdict
-from functools import reduce
 import sys
-from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .search import Bounded, IterativeTighteningSearch, Range
 
@@ -324,8 +323,12 @@ class CompoundEdit(Edit):
     def valid(self) -> bool:
         if not super().valid:
             return False
-        is_valid = self._edit_iter is not None or \
-            (self._sub_edits and reduce(lambda a, b: a and b, (e.valid for e in self._sub_edits), True))
+        is_valid = True
+        if self._edit_iter is None:
+            for e in self._sub_edits:
+                if not e.valid:
+                    is_valid = False
+                    break
         if not is_valid:
             self.valid = False
         return is_valid
@@ -547,7 +550,7 @@ class Replace(Edit):
 
     def print(self, printer: Printer):
         self.from_node.print(printer)
-        if self.cost() > 0:
+        if self.cost().upper_bound > 0:
             printer.write(' -> ')
             self.to_node.print(printer)
 
@@ -610,8 +613,22 @@ def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
         yield edit
 
 
-def diff(tree1_root: TreeNode, tree2_root: TreeNode) -> Diff:
-    return Diff(tree1_root, tree2_root, (tree1_root.edits(tree2_root),))
+def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable[[Range], Any]] = None) -> Diff:
+    root_edit = tree1_root.edits(tree2_root)
+    if callback is not None:
+        prev_bounds = root_edit.bounds()
+        callback(prev_bounds)
+    while root_edit.valid and not root_edit.bounds().definitive():
+        if not root_edit.tighten_bounds():
+            break
+        if root_edit.bounds().lower_bound != prev_bounds.lower_bound \
+                or root_edit.bounds().upper_bound != prev_bounds.upper_bound:
+            if callback is not None:
+                prev_bounds = root_edit.bounds()
+                callback(prev_bounds)
+    if callback is not None:
+        callback(root_edit.bounds())
+    return Diff(tree1_root, tree2_root, (root_edit,))
 
 
 def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
