@@ -62,7 +62,7 @@ class Printer:
 class Edit(Bounded):
     def __init__(self,
                  from_node,
-                 to_node = None,
+                 to_node=None,
                  constant_cost: Optional[int] = 0,
                  cost_upper_bound: Optional[int] = None):
         self.from_node: TreeNode = from_node
@@ -85,14 +85,15 @@ class Edit(Bounded):
         lb = self._constant_cost
         if self._cost_upper_bound is None:
             if self.to_node is None:
-                ub = 0
+                ub = self.initial_cost.upper_bound
             else:
                 ub = self.from_node.total_size + self.to_node.total_size + 1
         else:
             ub = self._cost_upper_bound
         return Range(lb, ub)
 
-    bounds = cost
+    def bounds(self):
+        return self.cost()
 
 
 class Diff:
@@ -143,8 +144,21 @@ class TreeNode(metaclass=ABCMeta):
 
 
 class PossibleEdits(Edit):
-    def __init__(self, from_node: TreeNode, to_node: TreeNode, edits: Iterator[Edit] = ()):
-        self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(possibilities=edits)
+    def __init__(
+            self,
+            from_node: TreeNode,
+            to_node: TreeNode,
+            edits: Iterator[Edit] = (),
+            initial_cost: Optional[Range] = None
+    ):
+        if initial_cost is not None:
+            self.initial_cost = initial_cost
+        self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
+            possibilities=edits,
+            initial_bounds=initial_cost
+        )
+        while not self._search.bounds().finite:
+            self._search.tighten_bounds()
         super().__init__(from_node=from_node, to_node=to_node)
 
     @property
@@ -155,10 +169,18 @@ class PossibleEdits(Edit):
         self.best_possibility.print(printer, diff=diff)
 
     def tighten_bounds(self) -> bool:
-        return self._search.tighten_bounds()
+        tightened = self._search.tighten_bounds()
+        #assert tightened or not self._search or self.cost().definitive()
+        return tightened
 
     def cost(self) -> Range:
-        return self._search.bounds()
+        bounds = self._search.bounds()
+        # if not (bounds.lower_bound >= self.initial_cost.lower_bound \
+        #        and bounds.upper_bound <= self.initial_cost.upper_bound):
+        #     breakpoint()
+        #assert bounds.lower_bound >= self.initial_cost.lower_bound \
+        #       and bounds.upper_bound <= self.initial_cost.upper_bound
+        return bounds
 
 
 class ContainerNode(TreeNode, metaclass=ABCMeta):
@@ -258,8 +280,8 @@ class KeyValuePairNode(ContainerNode):
 
 class CompoundEdit(Edit):
     def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
-        self._edit_iter = edits
-        self._sub_edits = []
+        self._edit_iter: Iterator[Edit] = edits
+        self._sub_edits: List[Edit] = []
         cost_upper_bound = from_node.total_size + 1
         if to_node is not None:
             cost_upper_bound += to_node.total_size
@@ -279,35 +301,47 @@ class CompoundEdit(Edit):
         return self._sub_edits
 
     def tighten_bounds(self) -> bool:
-        if self._edit_iter is not None:
-            try:
-                next_edit = next(self._edit_iter)
-                if isinstance(next_edit, CompoundEdit):
-                    self._sub_edits.extend(next_edit.sub_edits)
-                else:
-                    self._sub_edits.append(next_edit)
-                self._cost = None
-                return True
-            except StopIteration:
-                self._edit_iter = None
-        for child in self._sub_edits:
-            if child.tighten_bounds():
-                self._cost = None
-                return True
-        return False
+        starting_bounds: Range = self.cost()
+        while True:
+            if self._edit_iter is not None:
+                try:
+                    next_edit: Edit = next(self._edit_iter)
+                    if isinstance(next_edit, CompoundEdit):
+                        self._sub_edits.extend(next_edit.sub_edits)
+                    else:
+                        self._sub_edits.append(next_edit)
+                except StopIteration:
+                    self._edit_iter = None
+            tightened = False
+            for child in self._sub_edits:
+                if child.tighten_bounds():
+                    self._cost = None
+                    tightened = True
+                    new_cost = self.cost()
+                    #assert new_cost.lower_bound >= starting_bounds.lower_bound
+                    #assert new_cost.upper_bound <= starting_bounds.upper_bound
+                    if new_cost.lower_bound > starting_bounds.lower_bound or \
+                            new_cost.upper_bound < starting_bounds.upper_bound:
+                        return True
+            if not tightened and self._edit_iter is None:
+                return self.cost().lower_bound > starting_bounds.lower_bound or \
+                    self.cost().upper_bound < starting_bounds.upper_bound
 
     def cost(self) -> Range:
-        if self._cost is None:
-            if self._edit_iter is None:
-                # We've expanded all of the sub-edits, so calculate the bounds explicitly:
-                self._cost = sum(e.cost() for e in self._sub_edits)
-            else:
-                # We have not yet expanded all of the sub-edits
-                bounds = super().cost()
-                for e in self._sub_edits:
-                    bounds = bounds + e.cost() - e.initial_cost
-                self._cost = bounds
-        return self._cost
+        if self._cost is not None:
+            return self._cost
+        elif self._edit_iter is None:
+            # We've expanded all of the sub-edits, so calculate the bounds explicitly:
+            total_cost = sum(e.cost() for e in self._sub_edits)
+            if total_cost.definitive():
+                self._cost = total_cost
+        else:
+            # We have not yet expanded all of the sub-edits
+            total_cost = Range(0, self._cost_upper_bound)
+            for e in self._sub_edits:
+                total_cost.lower_bound += e.cost().lower_bound
+                total_cost.upper_bound -= e.initial_cost.upper_bound - e.cost().upper_bound
+        return total_cost
 
     def __len__(self):
         return len(self.sub_edits)
@@ -360,6 +394,7 @@ class ListNode(ContainerNode):
                 yield PossibleEdits(
                     from_node=self,
                     to_node=node,
+                    initial_cost=Range(0, sum(n.total_size for n in l1) + sum(n.total_size for n in l2) + 1),
                     edits=iter((
                         CompoundEdit(
                             from_node=self,

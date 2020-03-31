@@ -77,9 +77,8 @@ def main(argv=None):
             with PathOrStdin(args.TO_PATH) as to_path:
                 with open(to_path, 'rb') as to_file:
                     to_json = json.load(to_file)
-                    graphtage.diff(graphtage.build_tree(from_json), graphtage.build_tree(to_json)).print(
-                        graphtage.Printer(sys.stdout)
-                    )
+                    diff = graphtage.diff(graphtage.build_tree(from_json), graphtage.build_tree(to_json))
+                    diff.print(graphtage.Printer(sys.stdout))
 
 
 if __name__ == '__main__':

@@ -42,11 +42,20 @@ class Infinity:
         else:
             return self
 
+    def __neg__(self):
+        return Infinity(positive=not self._positive)
+
+    def __abs__(self):
+        return POSITIVE_INFINITY
+
     def __sub__(self, other):
         if isinstance(other, Infinity) and other._positive != self._positive:
             raise ValueError("-∞ + ∞ is undefined")
         else:
             return self
+
+    def __rsub__(self, _):
+        return -self
 
     def __hash__(self):
         return hash(self._positive)
@@ -105,6 +114,10 @@ class Range:
         else:
             return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)
 
+    @property
+    def finite(self) -> bool:
+        return not isinstance(self.lower_bound, Infinity) and not isinstance(self.upper_bound, Infinity)
+
     def definitive(self) -> bool:
         return self.lower_bound == self.upper_bound and not isinstance(self.lower_bound, Infinity)
 
@@ -156,6 +169,9 @@ class IterativeTighteningSearch(Generic[B]):
         else:
             self.initial_bounds = initial_bounds
 
+    def __bool__(self):
+        return bool(self._unprocessed or ((self._untightened or self._tightened) and not self.bounds().definitive()))
+
     @property
     def best_match(self) -> B:
         if self._unprocessed is not None or not (self._untightened or self._tightened):
@@ -201,6 +217,9 @@ class IterativeTighteningSearch(Generic[B]):
                 and self.best_match.bounds().dominates(node.item.bounds()):
             self._delete_node(node)
             return
+        elif self.initial_bounds.dominates(node.item.bounds()):
+            self._delete_node(node)
+            return
         bounds: Range = node.item.bounds()
         if bounds.definitive():
             self._delete_node(node)
@@ -237,7 +256,8 @@ class IterativeTighteningSearch(Generic[B]):
                         return True
                     if starting_bounds.dominates(next_best.bounds()) or \
                             (self.best_match is not None
-                             and self.best_match.bounds().dominates(next_best.bounds())):
+                             and self.best_match.bounds().dominates(next_best.bounds())) or \
+                            self.initial_bounds.dominates(next_best.bounds()):
                         # No need to add this new edit if it is strictly worse than the current best!
                         pass
                     if next_best.bounds().definitive():
@@ -272,20 +292,6 @@ class IterativeTighteningSearch(Generic[B]):
                     if tightened:
                         self._update_bounds(node)
                         break
-            # for node in list(self._best.nodes()):
-            #     if node.deleted:
-            #         continue
-            #     bounds_before: Range = node.key
-            #     if not node.item.tighten_bounds():
-            #         if self.best_match is not None \
-            #                 and self.best_match != node.item \
-            #                 and self.best_match.bounds().dominates(bounds_before):
-            #             self._delete_node(node)
-            #         continue
-            #     assert node.item.bounds().lower_bound >= bounds_before.lower_bound
-            #     assert node.item.bounds().upper_bound <= bounds_before.upper_bound
-            #     self._update_bounds(node)
-            #     tightened = True
             if starting_bounds.lower_bound < self.bounds().lower_bound \
                     or starting_bounds.upper_bound > self.bounds().upper_bound:
                 return True
