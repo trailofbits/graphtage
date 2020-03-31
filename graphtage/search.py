@@ -186,6 +186,21 @@ class IterativeTighteningSearch(Generic[B]):
         else:
             return self._untightened.peek()
 
+    def remove_best(self) -> B:
+        heap: Optional[FibonacciHeap[B, Range]] = None
+        if self._unprocessed is not None or not (self._untightened or self._tightened):
+            return None
+        elif self._tightened and self._untightened:
+            if self._untightened.peek().bounds() < self._tightened.peek().bounds():
+                heap = self._untightened
+            else:
+                heap = self._tightened
+        elif self._tightened:
+            heap = self._tightened
+        else:
+            heap = self._untightened
+        return heap.pop()
+
     def search(self) -> B:
         while self.tighten_bounds():
             pass
@@ -200,7 +215,7 @@ class IterativeTighteningSearch(Generic[B]):
             return self.initial_bounds
         else:
             if self._unprocessed is None and (self._untightened or self._tightened):
-                lb = min(node.item.bounds().lower_bound for node in self._nodes())
+                lb = min(node.key.lower_bound for node in self._nodes() if not node.deleted)
                 assert lb >= self.initial_bounds.lower_bound
             else:
                 lb = self.initial_bounds.lower_bound

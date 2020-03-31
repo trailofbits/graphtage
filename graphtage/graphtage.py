@@ -2,6 +2,7 @@ import itertools
 
 from abc import abstractmethod, ABCMeta
 from collections import defaultdict
+from functools import reduce
 from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .search import Bounded, IterativeTighteningSearch, Range
@@ -69,7 +70,16 @@ class Edit(Bounded):
         self.to_node: TreeNode = to_node
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
+        self._valid: bool = True
         self.initial_cost = self.cost()
+
+    @property
+    def valid(self) -> bool:
+        return self._valid
+
+    @valid.setter
+    def valid(self, is_valid: bool):
+        self._valid = is_valid
 
     def tighten_bounds(self) -> bool:
         return False
@@ -162,6 +172,21 @@ class PossibleEdits(Edit):
         super().__init__(from_node=from_node, to_node=to_node)
 
     @property
+    def valid(self) -> bool:
+        if not super().valid:
+            return False
+        while self._search.best_match is not None and not self._search.best_match.valid:
+            self._search.remove_best()
+        is_valid = self._search.best_match is not None
+        if not is_valid:
+            self.valid = False
+        return is_valid
+
+    @valid.setter
+    def valid(self, is_valid: bool):
+        self._valid = is_valid
+
+    @property
     def best_possibility(self) -> Edit:
         return self._search.best_match
 
@@ -170,17 +195,12 @@ class PossibleEdits(Edit):
 
     def tighten_bounds(self) -> bool:
         tightened = self._search.tighten_bounds()
-        #assert tightened or not self._search or self.cost().definitive()
+        # Calling self.valid checks whether our best match is invalid
+        self.valid
         return tightened
 
     def cost(self) -> Range:
-        bounds = self._search.bounds()
-        # if not (bounds.lower_bound >= self.initial_cost.lower_bound \
-        #        and bounds.upper_bound <= self.initial_cost.upper_bound):
-        #     breakpoint()
-        #assert bounds.lower_bound >= self.initial_cost.lower_bound \
-        #       and bounds.upper_bound <= self.initial_cost.upper_bound
-        return bounds
+        return self._search.bounds()
 
 
 class ContainerNode(TreeNode, metaclass=ABCMeta):
@@ -290,6 +310,20 @@ class CompoundEdit(Edit):
                          to_node=to_node,
                          cost_upper_bound=cost_upper_bound)
 
+    @property
+    def valid(self) -> bool:
+        if not super().valid:
+            return False
+        is_valid = self._edit_iter is not None or \
+            (self._sub_edits and reduce(lambda a, b: a and b, (e.valid for e in self._sub_edits), True))
+        if not is_valid:
+            self.valid = False
+        return is_valid
+
+    @valid.setter
+    def valid(self, is_valid: bool):
+        self._valid = is_valid
+
     def print(self, printer: Printer):
         for sub_edit in self.sub_edits:
             sub_edit.print(printer)
@@ -301,6 +335,8 @@ class CompoundEdit(Edit):
         return self._sub_edits
 
     def tighten_bounds(self) -> bool:
+        if not self.valid:
+            return False
         starting_bounds: Range = self.cost()
         while True:
             if self._edit_iter is not None:
@@ -316,6 +352,9 @@ class CompoundEdit(Edit):
             for child in self._sub_edits:
                 if child.tighten_bounds():
                     self._cost = None
+                    if not child.valid:
+                        self.valid = False
+                        return True
                     tightened = True
                     new_cost = self.cost()
                     #assert new_cost.lower_bound >= starting_bounds.lower_bound
@@ -324,10 +363,12 @@ class CompoundEdit(Edit):
                             new_cost.upper_bound < starting_bounds.upper_bound:
                         return True
             if not tightened and self._edit_iter is None:
-                return self.cost().lower_bound > starting_bounds.lower_bound or \
+                return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
                     self.cost().upper_bound < starting_bounds.upper_bound
 
     def cost(self) -> Range:
+        if not self.valid:
+            self._cost = Range()
         if self._cost is not None:
             return self._cost
         elif self._edit_iter is None:
