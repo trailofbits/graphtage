@@ -3,6 +3,7 @@ import itertools
 from abc import abstractmethod, ABCMeta
 from collections import defaultdict
 from functools import reduce
+import sys
 from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .search import Bounded, IterativeTighteningSearch, Range
@@ -34,7 +35,9 @@ def levenshtein_distance(s: str, t: str) -> int:
 
 
 class Printer:
-    def __init__(self, out_stream: TextIO):
+    def __init__(self, out_stream: Optional[TextIO] = None):
+        if out_stream is None:
+            out_stream = sys.stdout
         self.out_stream = out_stream
         self.indents = 0
 
@@ -58,6 +61,9 @@ class Printer:
                 self.printer.indents -= 1
 
         return Indent(self)
+
+
+DEFAULT_PRINTER: Printer = Printer()
 
 
 class Edit(Bounded):
@@ -121,7 +127,11 @@ class Diff:
     def __getitem__(self, node) -> Iterable[Edit]:
         return self.edits_by_node[node]
 
-    def print(self, out_stream: TextIO):
+    def print(self, out_stream: Optional[Union[TextIO, Printer]] = None):
+        if out_stream is None:
+            out_stream = DEFAULT_PRINTER
+        elif isinstance(out_stream, TextIO):
+            out_stream = Printer(out_stream)
         self.from_root.print(out_stream, self)
 
     def cost(self) -> int:
@@ -622,8 +632,6 @@ def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
 
 
 if __name__ == '__main__':
-    import sys
-
     obj1 = build_tree({
         "test": "foo",
         "baz": 1
@@ -639,4 +647,4 @@ if __name__ == '__main__':
     obj_diff = diff(obj1, obj2)
     print(obj_diff.cost())
     print(obj_diff)
-    obj_diff.print(Printer(sys.stdout))
+    obj_diff.print()
