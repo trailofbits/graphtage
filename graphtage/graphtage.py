@@ -566,13 +566,15 @@ class Match(Edit):
         )
 
     def print(self, printer: Printer):
-        with printer.bright().background(Back.RED).color(Fore.WHITE):
-            self.from_node.print(printer)
         if self.cost() > Range(0, 0):
+            with printer.bright().background(Back.RED).color(Fore.WHITE):
+                self.from_node.print(printer)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().background(Back.GREEN).color(Fore.WHITE):
                 self.to_node.print(printer)
+        else:
+            self.from_node.print(printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"

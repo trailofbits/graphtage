@@ -1,5 +1,6 @@
 import sys
-from typing import Optional, Union
+from collections import defaultdict
+from typing import Dict, List, Optional, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -29,26 +30,68 @@ class ANSIContext:
         self._fore: Optional[AnsiFore] = fore
         self._back: Optional[AnsiBack] = back
         self._style: Optional[AnsiStyle] = style
-        self.start_code: str = ''
-        self.end_code: str = ''
+        self._start_code: Optional[str] = None
+        self._end_code: Optional[str] = None
+        self.is_applied: bool = False
+        self._ancestors: List[ANSIContext] = []
+        ancestor = self.parent
+        while ancestor is not None:
+            self._ancestors.append(ancestor)
+            ancestor = ancestor.parent
+
+    @property
+    def start_code(self) -> str:
+        if self._start_code is None:
+            self._set_codes()
+        return self._start_code
+
+    @property
+    def end_code(self) -> str:
+        if self._end_code is None:
+            self._set_codes()
+        return self._end_code
+
+    def _set_codes(self):
+        if not self.is_applied:
+            raise ValueError("start_code and end_code should only be called after an ANSIContext has been __enter__'d")
+
+        self._start_code: str = ''
+        self._end_code: str = ''
+
+        contexts = ANSI_CONTEXT_STACK[self.stream]
+        if contexts:
+            if self._parent is None:
+                self._parent: Optional['ANSIContext'] = contexts[-1]
+            else:
+                if not self.root.is_applied:
+                    self.root._parent = contexts[-1]
+
+        parent_end_code: str = ''
+        if self.parent is not None and not self.parent.is_applied:
+            self.parent.is_applied = True
+            self._start_code += self.parent.start_code
+            parent_end_code = self.parent.end_code
+
         if self._fore is not None and (self._parent is None or self._fore != self.parent.fore):
-            self.start_code += self._fore
+            self._start_code += self._fore
             if self._parent is None or self.parent.fore is None:
-                self.end_code = Fore.RESET
+                self._end_code = Fore.RESET
             else:
-                self.end_code = self.parent.fore
+                self._end_code = self.parent.fore
         if self._back is not None and (self._parent is None or self._back != self.parent.back):
-            self.start_code += self._back
+            self._start_code += self._back
             if self._parent is None or self.parent.back is None:
-                self.end_code = Back.RESET
+                self._end_code = Back.RESET
             else:
-                self.end_code = self.parent.back
+                self._end_code = self.parent.back
         if self._style is not None and (self._parent is None or self._style != self.parent.style):
-            self.start_code += self._style
+            self._start_code += self._style
             if self._parent is None or self.parent.style is None:
-                self.end_code = Style.RESET_ALL
+                self._end_code = Style.RESET_ALL
             else:
-                self.end_code = self.parent.style
+                self._end_code = self.parent.style
+
+        self._end_code += parent_end_code
 
     @property
     def fore(self) -> Optional[AnsiFore]:
@@ -99,12 +142,28 @@ class ANSIContext:
             style=Style.DIM
         )
 
+    @property
+    def root(self):
+        root = self
+        while root._parent is not None:
+            root = root._parent
+        return root
+
     def __enter__(self) -> Writer:
+        assert not self.is_applied
+        self.is_applied = True
         self.stream.write(self.start_code)
+        ANSI_CONTEXT_STACK[self.stream].append(self)
         return self.stream
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        assert self.is_applied
         self.stream.write(self.end_code)
+        self.is_applied = False
+        self._start_code = None
+        self._end_code = None
+        assert ANSI_CONTEXT_STACK[self.stream] and ANSI_CONTEXT_STACK[self.stream][-1] == self
+        ANSI_CONTEXT_STACK[self.stream].pop()
 
 
 class NullANSIContext:
@@ -122,6 +181,9 @@ class NullANSIContext:
             return self
 
         return fake_fun
+
+
+ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
 class Printer:
