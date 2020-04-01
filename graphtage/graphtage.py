@@ -567,7 +567,7 @@ class Match(Edit):
 
     def print(self, printer: Printer):
         if self.cost() > Range(0, 0):
-            with printer.bright().background(Back.RED).color(Fore.WHITE):
+            with printer.bright().background(Back.RED).color(Fore.WHITE).strike():
                 self.from_node.print(printer)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')

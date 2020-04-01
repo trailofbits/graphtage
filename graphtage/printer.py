@@ -13,6 +13,14 @@ class Writer(Protocol):
         pass
 
 
+class StrikethroughWriter(Writer):
+    def __init__(self, parent: Writer):
+        self.parent = parent
+
+    def write(self, s: str) -> int:
+        return self.parent.write("".join(f"{c}\u0336" for c in s))
+
+
 class ANSIContext:
     def __init__(
             self,
@@ -20,6 +28,7 @@ class ANSIContext:
             fore: Optional[AnsiFore] = None,
             back: Optional[AnsiBack] = None,
             style: Optional[AnsiStyle] = None,
+            strikethrough: Optional[bool] = None
     ):
         if isinstance(stream, ANSIContext):
             self.stream: Writer = stream.stream
@@ -32,12 +41,9 @@ class ANSIContext:
         self._style: Optional[AnsiStyle] = style
         self._start_code: Optional[str] = None
         self._end_code: Optional[str] = None
+        self._strikethrough: Optional[bool] = strikethrough
+        self._strikethrough_before: bool = False
         self.is_applied: bool = False
-        self._ancestors: List[ANSIContext] = []
-        ancestor = self.parent
-        while ancestor is not None:
-            self._ancestors.append(ancestor)
-            ancestor = ancestor.parent
 
     @property
     def start_code(self) -> str:
@@ -115,6 +121,16 @@ class ANSIContext:
             return self._style
 
     @property
+    def strikethrough(self) -> bool:
+        if self._strikethrough is None:
+            if self._parent is not None:
+                return self._parent.strikethrough
+            else:
+                return False
+        else:
+            return self._strikethrough
+
+    @property
     def parent(self) -> Optional['ANSIContext']:
         return self._parent
 
@@ -142,6 +158,11 @@ class ANSIContext:
             style=Style.DIM
         )
 
+    def strike(self) -> 'ANSIContext':
+        if not isinstance(self.stream, Printer):
+            raise ValueError("Strikethrough is currently only supported with writers of type `Printer`")
+        return ANSIContext(stream=self, strikethrough=True)
+
     @property
     def root(self):
         root = self
@@ -149,16 +170,31 @@ class ANSIContext:
             root = root._parent
         return root
 
+    def _disable_strikethrough(self):
+        if isinstance(self.stream, Printer):
+            self.stream.strikethrough = False
+
+    def _reenable_strikethrough(self):
+        if isinstance(self.stream, Printer):
+            self.stream.strikethrough = self.strikethrough
+
     def __enter__(self) -> Writer:
         assert not self.is_applied
         self.is_applied = True
+        if isinstance(self.stream, Printer):
+            self._strikethrough_before = self.stream.strikethrough
+        self._disable_strikethrough()
         self.stream.write(self.start_code)
+        self._reenable_strikethrough()
         ANSI_CONTEXT_STACK[self.stream].append(self)
         return self.stream
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         assert self.is_applied
+        self._disable_strikethrough()
         self.stream.write(self.end_code)
+        if isinstance(self.stream, Printer):
+            self.stream.strikethrough = self._strikethrough_before
         self.is_applied = False
         self._start_code = None
         self._end_code = None
@@ -190,7 +226,7 @@ class Printer:
     def __init__(self, out_stream: Optional[Writer] = None, ansi_color: Optional[bool] = None):
         if out_stream is None:
             out_stream = sys.stdout
-        self.out_stream = out_stream
+        self.out_stream: Writer = out_stream
         self.indents = 0
         if ansi_color is None:
             self.ansi_color = out_stream.isatty()
@@ -198,6 +234,22 @@ class Printer:
             self.ansi_color = ansi_color
         if self.ansi_color:
             colorama.init()
+        self._strikethrough = False
+
+    @property
+    def strikethrough(self) -> bool:
+        return self._strikethrough
+
+    @strikethrough.setter
+    def strikethrough(self, value: bool):
+        if self._strikethrough and not value:
+            assert isinstance(self.out_stream, StrikethroughWriter)
+            self.out_stream = self.out_stream.parent
+            self._strikethrough = value
+        elif not self._strikethrough and value:
+            assert not isinstance(self.out_stream, StrikethroughWriter)
+            self.out_stream = StrikethroughWriter(self.out_stream)
+            self._strikethrough = value
 
     def write(self, s: str):
         self.out_stream.write(s)
@@ -212,21 +264,27 @@ class Printer:
         else:
             return NullANSIContext()    # type: ignore
 
-    def background(self, bg_color: AnsiBack) -> Optional[ANSIContext]:
+    def background(self, bg_color: AnsiBack) -> ANSIContext:
         if self.ansi_color:
             return ANSIContext(self, back=bg_color)
         else:
             return NullANSIContext()    # type: ignore
 
-    def bright(self) -> Optional[ANSIContext]:
+    def bright(self) -> ANSIContext:
         if self.ansi_color:
             return ANSIContext(self, style=Style.BRIGHT)
         else:
             return NullANSIContext()    # type: ignore
 
-    def dim(self) -> Optional[ANSIContext]:
+    def dim(self) -> ANSIContext:
         if self.ansi_color:
             return ANSIContext(self, style=Style.DIM)
+        else:
+            return NullANSIContext()    # type: ignore
+
+    def strike(self) -> ANSIContext:
+        if self.ansi_color:
+            return ANSIContext(self, strikethrough=True)
         else:
             return NullANSIContext()    # type: ignore
 
