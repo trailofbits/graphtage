@@ -498,11 +498,19 @@ class ListNode(ContainerNode):
                         )
                     )
                 ]
+                cost_lower_bound: int = min(
+                    match.cost().lower_bound,
+                    matched_node_from.total_size + 1,
+                    matched_node_to.total_size + 1
+                )
 
                 yield PossibleEdits(
                     from_node=self,
                     to_node=node,
-                    initial_cost=Range(0, sum(n.total_size for n in l1) + sum(n.total_size for n in l2) + 1),
+                    initial_cost=Range(
+                        cost_lower_bound,
+                        sum(n.total_size for n in l1) + sum(n.total_size for n in l2) + 1
+                    ),
                     edits=iter(possibilities)
                 )
 

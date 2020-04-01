@@ -215,8 +215,12 @@ class IterativeTighteningSearch(Generic[B]):
             return self.initial_bounds
         else:
             if self._unprocessed is None and (self._untightened or self._tightened):
-                lb = min(node.key.lower_bound for node in self._nodes() if not node.deleted)
-                assert lb >= self.initial_bounds.lower_bound
+                lb = POSITIVE_INFINITY
+                for node in self._nodes():
+                    if not node.deleted:
+                        lb = min(node.key.lower_bound, lb)
+                if lb == POSITIVE_INFINITY or lb < self.initial_bounds.lower_bound:
+                    lb = self.initial_bounds.lower_bound
             else:
                 lb = self.initial_bounds.lower_bound
             return Range(min(lb, self.best_match.bounds().upper_bound), self.best_match.bounds().upper_bound)
