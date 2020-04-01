@@ -1,6 +1,6 @@
 import sys
 from collections import defaultdict
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Set, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -12,37 +12,92 @@ class Writer(Protocol):
     def write(self, s: str) -> int:
         pass
 
+    def isatty(self) -> bool:
+        return True
 
-class StrikethroughWriter(Writer):
+
+class RawWriter(Writer, Protocol):
+    def raw_write(self, s: str) -> int:
+        pass
+
+
+STRIKETHROUGH = '\u0336'
+UNDER_PLUS = '\u031F'
+
+
+class CombiningMarkWriter(RawWriter):
     def __init__(self, parent: Writer):
         self.parent = parent
+        self._marks: Set[str] = set()
+        self.enabled = True
+
+    def add(self, combining_mark: str):
+        self._marks.add(combining_mark)
+
+    def remove(self, combining_mark: str):
+        self._marks.remove(combining_mark)
+
+    def context(self, *combining_marks: str) -> 'CombiningMarkContext':
+        return CombiningMarkContext(self, *combining_marks)
+
+    @property
+    def marks(self) -> Set[str]:
+        return self._marks
+
+    @property
+    def marks_str(self) -> str:
+        return ''.join(self._marks)
 
     def write(self, s: str) -> int:
-        return self.parent.write("".join(f"{c}\u0336" for c in s))
+        if self.enabled:
+            marks = self.marks_str
+            return self.parent.write("".join(f"{c}{marks}" for c in s))
+        else:
+            return self.raw_write(s)
+
+    def raw_write(self, s: str) -> int:
+        return self.parent.write(s)
+
+    def isatty(self) -> bool:
+        return self.parent.isatty()
+
+
+class CombiningMarkContext:
+    def __init__(self, writer: CombiningMarkWriter, *combining_marks: str):
+        self.writer: CombiningMarkWriter = writer
+        self.marks: Set[str] = set(combining_marks)
+        self._state_before: Set[str] = None
+
+    def __enter__(self) -> CombiningMarkWriter:
+        self._state_before = set(self.writer.marks)
+        for mark in self.marks:
+            self.writer.add(mark)
+        return self.writer
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for mark in self.marks - self._state_before:
+            self.writer.remove(mark)
 
 
 class ANSIContext:
     def __init__(
             self,
-            stream: Union[Writer, 'ANSIContext'],
+            stream: Union[RawWriter, 'ANSIContext'],
             fore: Optional[AnsiFore] = None,
             back: Optional[AnsiBack] = None,
             style: Optional[AnsiStyle] = None,
-            strikethrough: Optional[bool] = None
     ):
         if isinstance(stream, ANSIContext):
-            self.stream: Writer = stream.stream
+            self.stream: RawWriter = stream.stream
             self._parent: Optional['ANSIContext'] = stream
         else:
-            self.stream: Writer = stream
+            self.stream: RawWriter = stream
             self._parent: Optional['ANSIContext'] = None
         self._fore: Optional[AnsiFore] = fore
         self._back: Optional[AnsiBack] = back
         self._style: Optional[AnsiStyle] = style
         self._start_code: Optional[str] = None
         self._end_code: Optional[str] = None
-        self._strikethrough: Optional[bool] = strikethrough
-        self._strikethrough_before: bool = False
         self.is_applied: bool = False
 
     @property
@@ -121,16 +176,6 @@ class ANSIContext:
             return self._style
 
     @property
-    def strikethrough(self) -> bool:
-        if self._strikethrough is None:
-            if self._parent is not None:
-                return self._parent.strikethrough
-            else:
-                return False
-        else:
-            return self._strikethrough
-
-    @property
     def parent(self) -> Optional['ANSIContext']:
         return self._parent
 
@@ -158,11 +203,6 @@ class ANSIContext:
             style=Style.DIM
         )
 
-    def strike(self) -> 'ANSIContext':
-        if not isinstance(self.stream, Printer):
-            raise ValueError("Strikethrough is currently only supported with writers of type `Printer`")
-        return ANSIContext(stream=self, strikethrough=True)
-
     @property
     def root(self):
         root = self
@@ -170,31 +210,16 @@ class ANSIContext:
             root = root._parent
         return root
 
-    def _disable_strikethrough(self):
-        if isinstance(self.stream, Printer):
-            self.stream.strikethrough = False
-
-    def _reenable_strikethrough(self):
-        if isinstance(self.stream, Printer):
-            self.stream.strikethrough = self.strikethrough
-
-    def __enter__(self) -> Writer:
+    def __enter__(self) -> RawWriter:
         assert not self.is_applied
         self.is_applied = True
-        if isinstance(self.stream, Printer):
-            self._strikethrough_before = self.stream.strikethrough
-        self._disable_strikethrough()
-        self.stream.write(self.start_code)
-        self._reenable_strikethrough()
+        self.stream.raw_write(self.start_code)
         ANSI_CONTEXT_STACK[self.stream].append(self)
         return self.stream
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         assert self.is_applied
-        self._disable_strikethrough()
-        self.stream.write(self.end_code)
-        if isinstance(self.stream, Printer):
-            self.stream.strikethrough = self._strikethrough_before
+        self.stream.raw_write(self.end_code)
         self.is_applied = False
         self._start_code = None
         self._end_code = None
@@ -222,11 +247,11 @@ class NullANSIContext:
 ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
-class Printer:
+class Printer(RawWriter):
     def __init__(self, out_stream: Optional[Writer] = None, ansi_color: Optional[bool] = None):
         if out_stream is None:
             out_stream = sys.stdout
-        self.out_stream: Writer = out_stream
+        self.out_stream: CombiningMarkWriter = CombiningMarkWriter(out_stream)
         self.indents = 0
         if ansi_color is None:
             self.ansi_color = out_stream.isatty()
@@ -235,24 +260,16 @@ class Printer:
         if self.ansi_color:
             colorama.init()
         self._strikethrough = False
+        self._plusthrough = False
 
-    @property
-    def strikethrough(self) -> bool:
-        return self._strikethrough
+    def write(self, s: str) -> int:
+        return self.out_stream.write(s)
 
-    @strikethrough.setter
-    def strikethrough(self, value: bool):
-        if self._strikethrough and not value:
-            assert isinstance(self.out_stream, StrikethroughWriter)
-            self.out_stream = self.out_stream.parent
-            self._strikethrough = value
-        elif not self._strikethrough and value:
-            assert not isinstance(self.out_stream, StrikethroughWriter)
-            self.out_stream = StrikethroughWriter(self.out_stream)
-            self._strikethrough = value
+    def raw_write(self, s: str) -> int:
+        return self.out_stream.raw_write(s)
 
-    def write(self, s: str):
-        self.out_stream.write(s)
+    def isatty(self) -> bool:
+        return self.out_stream.isatty()
 
     def newline(self):
         self.write('\n')
@@ -282,9 +299,15 @@ class Printer:
         else:
             return NullANSIContext()    # type: ignore
 
-    def strike(self) -> ANSIContext:
+    def strike(self) -> CombiningMarkContext:
         if self.ansi_color:
-            return ANSIContext(self, strikethrough=True)
+            return self.out_stream.context(STRIKETHROUGH)
+        else:
+            return NullANSIContext()    # type: ignore
+
+    def under_plus(self):
+        if self.ansi_color:
+            return self.out_stream.context(UNDER_PLUS)
         else:
             return NullANSIContext()    # type: ignore
 
