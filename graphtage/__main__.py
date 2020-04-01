@@ -3,11 +3,11 @@ import json
 import os
 import sys
 import tempfile as tf
-from typing import Optional
 
 from tqdm import tqdm
 
 from . import graphtage
+from . import printer
 from .search import Range
 from . import version
 
@@ -76,7 +76,8 @@ class make_status_callback:
         return Callback(self.status.__enter__())
 
     def __exit__(self, *args, **kwargs):
-        self.status.__exit__(*args, **kwargs)
+        if self.status is not None:
+            self.status.__exit__(*args, **kwargs)
 
 
 def main(argv=None):
@@ -85,6 +86,9 @@ def main(argv=None):
                         help='The source file to diff; pass \'-\' to read from STDIN')
     parser.add_argument('TO_PATH', type=str, nargs='?', default='-',
                         help='The file to diff against; pass \'-\' to read from STDIN')
+    color_group = parser.add_mutually_exclusive_group()
+    color_group.add_argument('--color', '-c', action='store_true', default=None, help='Force the ANSI color output; this is turned on by default only if run from a TTY')
+    color_group.add_argument('--no-color', action='store_true', default=None, help='Do not use ANSI color in the output')
     parser.add_argument('--version', '-v', action='store_true', help='Print Graphtage\'s version information to STDERR')
     parser.add_argument('-dumpversion', action='store_true',
                         help='Print Graphtage\'s raw version information to STDOUT and exit')
@@ -103,6 +107,13 @@ def main(argv=None):
         if args.FROM_PATH == '-' and args.TO_PATH == '-':
             exit(0)
 
+    if args.no_color:
+        ansi_color = False
+    elif args.color:
+        ansi_color = True
+    else:
+        ansi_color = None
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with open(from_path, 'rb') as from_file:
             from_json = json.load(from_file)
@@ -116,7 +127,7 @@ def main(argv=None):
                             callback=callback
                         )
 
-                    diff.print(graphtage.Printer(sys.stdout))
+                    diff.print(printer.Printer(sys.stdout, ansi_color=ansi_color))
 
 
 if __name__ == '__main__':

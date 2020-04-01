@@ -2,9 +2,9 @@ import itertools
 
 from abc import abstractmethod, ABCMeta
 from collections import defaultdict
-import sys
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
+from .printer import Back, Fore, DEFAULT_PRINTER, Printer
 from .search import Bounded, IterativeTighteningSearch, Range
 
 
@@ -31,38 +31,6 @@ def levenshtein_distance(s: str, t: str) -> int:
                                  dist[row - 1][col - 1] + cost)
 
     return dist[row][col]
-
-
-class Printer:
-    def __init__(self, out_stream: Optional[TextIO] = None):
-        if out_stream is None:
-            out_stream = sys.stdout
-        self.out_stream = out_stream
-        self.indents = 0
-
-    def write(self, s: str):
-        self.out_stream.write(s)
-
-    def newline(self):
-        self.write('\n')
-        self.write(' ' * (4 * self.indents))
-
-    def indent(self):
-        class Indent:
-            def __init__(self, printer):
-                self.printer = printer
-
-            def __enter__(self):
-                self.printer.indents += 1
-                return self.printer
-
-            def __exit__(self, exc_type, exc_val, exc_tb):
-                self.printer.indents -= 1
-
-        return Indent(self)
-
-
-DEFAULT_PRINTER: Printer = Printer()
 
 
 class Edit(Bounded):
@@ -274,8 +242,13 @@ class KeyValuePairNode(ContainerNode):
 
     def print(self, printer: Printer, diff: Optional[Diff] = None):
         if diff is None or self not in diff:
-            self.key.print(printer, diff)
-            printer.write(": ")
+            if isinstance(self.key, LeafNode):
+                with printer.color(Fore.BLUE):
+                    self.key.print(printer, diff)
+            else:
+                self.key.print(printer, diff)
+            with printer.bright():
+                printer.write(": ")
             self.value.print(printer, diff)
         else:
             for edit in diff[self]:
@@ -413,16 +386,19 @@ class ListNode(ContainerNode):
 
     def print(self, printer: Printer, diff: Optional[Diff] = None):
         if diff is None or self not in diff:
-            printer.write("[")
+            with printer.bright():
+                printer.write("[")
             with printer.indent() as p:
                 for i, child in enumerate(self.children):
                     if i > 0:
-                        p.write(',')
+                        with printer.bright():
+                            p.write(',')
                     p.newline()
                     child.print(p, diff)
             if self.children:
                 printer.newline()
-            printer.write("]")
+            with printer.bright():
+                printer.write("]")
         else:
             for edit in diff[self]:
                 edit.print(printer)
@@ -529,10 +505,13 @@ class Match(Edit):
         )
 
     def print(self, printer: Printer):
-        self.from_node.print(printer)
+        with printer.bright().background(Back.RED).color(Fore.WHITE):
+            self.from_node.print(printer)
         if self.cost() > Range(0, 0):
-            printer.write(' -> ')
-            self.to_node.print(printer)
+            with printer.color(Fore.CYAN):
+                printer.write(' -> ')
+            with printer.bright().background(Back.GREEN).color(Fore.WHITE):
+                self.to_node.print(printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"
@@ -551,8 +530,14 @@ class Replace(Edit):
     def print(self, printer: Printer):
         self.from_node.print(printer)
         if self.cost().upper_bound > 0:
-            printer.write(' -> ')
-            self.to_node.print(printer)
+            with printer.bright().color(Fore.WHITE).background(Back.RED):
+                self.from_node.print(printer)
+            with printer.color(Fore.CYAN):
+                printer.write(' -> ')
+            with printer.bright().color(Fore.WHITE).background(Back.GREEN):
+                self.to_node.print(printer)
+        else:
+            self.from_node.print(printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
@@ -568,9 +553,14 @@ class Remove(Edit):
         )
 
     def print(self, printer: Printer):
-        printer.write('~~~~')
-        self.from_node.print(printer)
-        printer.write('~~~~')
+        with printer.bright():
+            with printer.background(Back.RED):
+                with printer.color(Fore.WHITE):
+                    if not printer.ansi_color:
+                        printer.write('~~~~')
+                    self.from_node.print(printer)
+                    if not printer.ansi_color:
+                        printer.write('~~~~')
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
