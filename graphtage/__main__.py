@@ -127,8 +127,6 @@ def main(argv=None):
                             callback=callback
                         )
 
-                    for d in diff.edits:
-                        print(d)
                     diff.print(printer.Printer(sys.stdout, ansi_color=ansi_color))
 
 
