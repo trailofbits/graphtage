@@ -168,7 +168,7 @@ class PossibleEdits(Edit):
         return self._search.best_match
 
     def print(self, printer: Printer):
-        self.best_possibility.print(printer, diff=diff)
+        self.best_possibility.print(printer)
 
     def tighten_bounds(self) -> bool:
         tightened = self._search.tighten_bounds()
@@ -405,52 +405,105 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            return next(self._match(node, self.children, node.children))
+            try:
+                return next(self._match(node, self.children, node.children))
+            except StopIteration:
+                return Match(self, node, 0)
         else:
             return Replace(self, node)
 
     def _match(self, node: TreeNode, l1: Tuple[TreeNode], l2: Tuple[TreeNode]) -> Iterator[Edit]:
         if not l1 and not l2:
-            yield Match(self, node, 0)
+            return
         elif l1 and not l2:
             yield CompoundEdit(from_node=self, to_node=None, edits=(Remove(n, remove_from=self) for n in l1))
         elif l2 and not l1:
             yield CompoundEdit(from_node=self, to_node=node, edits=(Insert(n, insert_into=self) for n in l2))
         else:
-            match = l1[0].edits(l2[0])
-            if len(l1) == 1 and len(l2) == 1:
-                yield match
+            leading_matches: List[Edit] = []
+            match: Optional[Edit] = None
+            matched_node_from: Optional[TreeNode] = None
+            matched_node_to: Optional[TreeNode] = None
+            # Pop off as many perfect matches as possible
+            while l1 and l2 and isinstance(l1[0], LeafNode) and isinstance(l2[0], LeafNode):
+                matched_node_from = l1[0]
+                matched_node_to = l2[0]
+                match = l1[0].edits(l2[0])
+                l1 = l1[1:]
+                l2 = l2[1:]
+                if match.cost().upper_bound == 0:
+                    leading_matches.append(match)
+                    match = None
+                else:
+                    break
+
+            if match is None and l1 and l2:
+                matched_node_from = l1[0]
+                matched_node_to = l2[0]
+                match = l1[0].edits(l2[0])
+                l1 = l1[1:]
+                l2 = l2[1:]
+
+            if match is not None:
+                leading_matches.append(match)
+
+            if not l1 or not l2:
+                yield CompoundEdit(
+                    from_node=self,
+                    to_node=node,
+                    edits=itertools.chain(
+                        iter(leading_matches),
+                        self._match(node, l1, l2)
+                    )
+                )
+            elif match is None:
+                assert not l1 and not l2
+                if not leading_matches:
+                    return
+                elif len(leading_matches) == 1:
+                    yield leading_matches[0]
+                else:
+                    yield CompoundEdit(
+                        from_node=self,
+                        to_node=node,
+                        edits=iter(leading_matches)
+                    )
             else:
+                assert matched_node_from is not None
+                possibilities = [
+                    CompoundEdit(
+                        from_node=self,
+                        to_node=node,
+                        edits=itertools.chain(
+                            iter(leading_matches),
+                            self._match(node, l1, l2)
+                        )
+                    ),
+                    CompoundEdit(
+                        from_node=self,
+                        to_node=node,
+                        edits=itertools.chain(
+                            iter(leading_matches[:-1]),
+                            iter((Remove(matched_node_from, remove_from=self),)),
+                            self._match(node, l1, (matched_node_to,) + l2)
+                        )
+                    ),
+                    CompoundEdit(
+                        from_node=self,
+                        to_node=node,
+                        edits=itertools.chain(
+                            iter(leading_matches[:-1]),
+                            iter((Insert(matched_node_to, insert_into=self),)),
+                            self._match(node, (matched_node_from,) + l1, l2)
+                        )
+                    )
+                ]
+
                 yield PossibleEdits(
                     from_node=self,
                     to_node=node,
                     initial_cost=Range(0, sum(n.total_size for n in l1) + sum(n.total_size for n in l2) + 1),
-                    edits=iter((
-                        CompoundEdit(
-                            from_node=self,
-                            to_node=node,
-                            edits=itertools.chain(
-                                iter((match,)),
-                                self._match(node, l1[1:], l2[1:])
-                            )
-                        ),
-                        CompoundEdit(
-                            from_node=self,
-                            to_node=node,
-                            edits=itertools.chain(
-                                iter((Remove(l1[0], remove_from=self),)),
-                                self._match(node, l1[1:], l2)
-                            )
-                        ),
-                        CompoundEdit(
-                            from_node=self,
-                            to_node=node,
-                            edits=itertools.chain(
-                                iter((Insert(l2[0], insert_into=self),)),
-                                self._match(node, l1, l2[1:])
-                            )
-                        )
-                    ))
+                    edits=iter(possibilities)
                 )
 
     def calculate_total_size(self):
