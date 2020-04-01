@@ -1,60 +1,110 @@
 import sys
-from collections import defaultdict
-from typing import Dict, List, Optional, TextIO
+from typing import Optional, Union
+from typing_extensions import Protocol
 
 import colorama
 from colorama import Back, Fore, Style
+from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
+
+
+class Writer(Protocol):
+    def write(self, s: str) -> int:
+        pass
 
 
 class ANSIContext:
-    def __init__(self, stream: TextIO, start_code: str, end_code: Optional[str] = None):
-        self.start_code = start_code
-        if end_code is None:
-            end_code = ''
-        self.end_code = end_code
-        self.stream = stream
+    def __init__(
+            self,
+            stream: Union[Writer, 'ANSIContext'],
+            fore: Optional[AnsiFore] = None,
+            back: Optional[AnsiBack] = None,
+            style: Optional[AnsiStyle] = None,
+    ):
+        if isinstance(stream, ANSIContext):
+            self.stream: Writer = stream.stream
+            self._parent: Optional['ANSIContext'] = stream
+        else:
+            self.stream: Writer = stream
+            self._parent: Optional['ANSIContext'] = None
+        self._fore: Optional[AnsiFore] = fore
+        self._back: Optional[AnsiBack] = back
+        self._style: Optional[AnsiStyle] = style
+        self.start_code: str = ''
+        self.end_code: str = ''
+        if self._fore is not None and (self._parent is None or self._fore != self.parent.fore):
+            self.start_code += self._fore
+            if self._parent is None or self.parent.fore is None:
+                self.end_code = Fore.RESET
+            else:
+                self.end_code = self.parent.fore
+        if self._back is not None and (self._parent is None or self._back != self.parent.back):
+            self.start_code += self._back
+            if self._parent is None or self.parent.back is None:
+                self.end_code = Back.RESET
+            else:
+                self.end_code = self.parent.back
+        if self._style is not None and (self._parent is None or self._style != self.parent.style):
+            self.start_code += self._style
+            if self._parent is None or self.parent.style is None:
+                self.end_code = Style.RESET_ALL
+            else:
+                self.end_code = self.parent.style
 
-    def color(self, foreground_color: Fore):
+    @property
+    def fore(self) -> Optional[AnsiFore]:
+        if self._fore is None and self._parent is not None:
+            return self._parent.fore
+        else:
+            return self._fore
+
+    @property
+    def back(self) -> Optional[AnsiBack]:
+        if self._back is None and self._parent is not None:
+            return self._parent.back
+        else:
+            return self._back
+
+    @property
+    def style(self) -> Optional[AnsiStyle]:
+        if self._style is None and self._parent is not None:
+            return self._parent.style
+        else:
+            return self._style
+
+    @property
+    def parent(self) -> Optional['ANSIContext']:
+        return self._parent
+
+    def color(self, foreground_color: AnsiFore) -> 'ANSIContext':
         return ANSIContext(
-            self.stream,
-            self.start_code + foreground_color,
-            Fore.RESET + self.end_code
+            stream=self,
+            fore=foreground_color
         )
 
-    def background(self, bg_color: Back):
+    def background(self, bg_color: AnsiBack) -> 'ANSIContext':
         return ANSIContext(
-            self.stream,
-            self.start_code + bg_color,
-            Back.RESET + self.end_code
+            stream=self,
+            back=bg_color
         )
 
-    def bright(self):
+    def bright(self) -> 'ANSIContext':
         return ANSIContext(
-            self.stream,
-            self.start_code + Style.BRIGHT,
-            Style.RESET_ALL + self.end_code
+            stream=self,
+            style=Style.BRIGHT
         )
 
-    def dim(self):
+    def dim(self) -> 'ANSIContext':
         return ANSIContext(
-            self.stream,
-            self.start_code + Style.DIM,
-            Style.RESET_ALL + self.end_code
+            stream=self,
+            style=Style.DIM
         )
 
-    def __enter__(self):
+    def __enter__(self) -> Writer:
         self.stream.write(self.start_code)
-        ANSI_CONTEXT_STACKS[self.stream].append(self)
         return self.stream
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        stack = ANSI_CONTEXT_STACKS[self.stream]
-        assert stack[-1] == self
-        if self.end_code is not None and self.end_code:
-            self.stream.write(self.end_code)
-        stack.pop()
-        for context in stack:
-            self.stream.write(context.start_code)
+        self.stream.write(self.end_code)
 
 
 class NullANSIContext:
@@ -74,11 +124,8 @@ class NullANSIContext:
         return fake_fun
 
 
-ANSI_CONTEXT_STACKS: Dict[TextIO, List[ANSIContext]] = defaultdict(list)
-
-
 class Printer:
-    def __init__(self, out_stream: Optional[TextIO] = None, ansi_color: Optional[bool] = None):
+    def __init__(self, out_stream: Optional[Writer] = None, ansi_color: Optional[bool] = None):
         if out_stream is None:
             out_stream = sys.stdout
         self.out_stream = out_stream
@@ -97,29 +144,29 @@ class Printer:
         self.write('\n')
         self.write(' ' * (4 * self.indents))
 
-    def color(self, foreground_color: Fore):
+    def color(self, foreground_color: AnsiFore) -> ANSIContext:
         if self.ansi_color:
-            return ANSIContext(self, foreground_color, Fore.RESET)
+            return ANSIContext(self, fore=foreground_color)
         else:
-            return NullANSIContext()
+            return NullANSIContext()    # type: ignore
 
-    def background(self, bg_color: Back) -> Optional[ANSIContext]:
+    def background(self, bg_color: AnsiBack) -> Optional[ANSIContext]:
         if self.ansi_color:
-            return ANSIContext(self, bg_color, Back.RESET)
+            return ANSIContext(self, back=bg_color)
         else:
-            return NullANSIContext()
+            return NullANSIContext()    # type: ignore
 
     def bright(self) -> Optional[ANSIContext]:
         if self.ansi_color:
-            return ANSIContext(self, Style.BRIGHT, Style.RESET_ALL)
+            return ANSIContext(self, style=Style.BRIGHT)
         else:
-            return NullANSIContext()
+            return NullANSIContext()    # type: ignore
 
     def dim(self) -> Optional[ANSIContext]:
         if self.ansi_color:
-            return ANSIContext(self, Style.DIM, Style.RESET_ALL)
+            return ANSIContext(self, style=Style.DIM)
         else:
-            return NullANSIContext()
+            return NullANSIContext()    # type: ignore
 
     def indent(self):
         class Indent:
