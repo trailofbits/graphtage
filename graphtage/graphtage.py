@@ -4,33 +4,9 @@ from abc import abstractmethod, ABCMeta
 from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
+from .levenshtein import levenshtein_distance
 from .printer import Back, Fore, DEFAULT_PRINTER, Printer
 from .search import Bounded, IterativeTighteningSearch, Range
-
-
-def levenshtein_distance(s: str, t: str) -> int:
-    rows = len(s) + 1
-    cols = len(t) + 1
-    dist: List[List[int]] = [[0] * cols for _ in range(rows)]
-
-    for i in range(1, rows):
-        dist[i][0] = i
-
-    for i in range(1, cols):
-        dist[0][i] = i
-
-    col = row = 0
-    for col in range(1, cols):
-        for row in range(1, rows):
-            if s[row - 1] == t[col - 1]:
-                cost = 0
-            else:
-                cost = 1
-            dist[row][col] = min(dist[row - 1][col] + 1,
-                                 dist[row][col - 1] + 1,
-                                 dist[row - 1][col - 1] + cost)
-
-    return dist[row][col]
 
 
 class Edit(Bounded):
@@ -315,7 +291,7 @@ class CompoundEdit(Edit):
             sub_edit.print(printer)
 
     @property
-    def sub_edits(self):
+    def sub_edits(self) -> List[Edit]:
         while self._edit_iter is not None and self.tighten_bounds():
             pass
         return self._sub_edits

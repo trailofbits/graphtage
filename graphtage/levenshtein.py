@@ -2,8 +2,33 @@ from typing import List, Optional, Sequence, Union
 
 from itertools import combinations
 
-from .graphtage import Edit, StringNode, TreeNode
+from .graphtage import CompoundEdit, Edit, Insert, ListNode, Remove, StringNode, TreeNode
 from .search import Bounded, POSITIVE_INFINITY, Range
+
+def levenshtein_distance(s: str, t: str) -> int:
+    """Canonical implementation of the Levenshtein distance metric"""
+    rows = len(s) + 1
+    cols = len(t) + 1
+    dist: List[List[int]] = [[0] * cols for _ in range(rows)]
+
+    for i in range(1, rows):
+        dist[i][0] = i
+
+    for i in range(1, cols):
+        dist[0][i] = i
+
+    col = row = 0
+    for col in range(1, cols):
+        for row in range(1, rows):
+            if s[row - 1] == t[col - 1]:
+                cost = 0
+            else:
+                cost = 1
+            dist[row][col] = min(dist[row - 1][col] + 1,
+                                 dist[row][col - 1] + 1,
+                                 dist[row - 1][col - 1] + cost)
+
+    return dist[row][col]
 
 
 class AbstractNode(Bounded):
@@ -113,10 +138,19 @@ class SearchNode(AbstractNode):
 class ConstantNode(AbstractNode):
     def __init__(
         self,
-        cost: int
+        node: Optional[TreeNode] = None,
+        is_from: Optional[bool] = None,
+        predecessor: Optional['ConstantNode'] = None
     ):
         super().__init__()
+        if node is None:
+            cost = 0
+        else:
+            cost = node.total_size + 1
         self._cost: Range = Range(cost, cost)
+        self.node = node
+        self.predecessor: Optional[ConstantNode] = predecessor
+        self.is_from: Optional[bool] = is_from
 
     def tighten_bounds(self) -> bool:
         return False
@@ -126,30 +160,40 @@ class ConstantNode(AbstractNode):
 
 
 class EditDistance(Bounded):
-    def __init__(self, from_seq: Sequence[TreeNode], to_seq: Sequence[TreeNode]):
-        self.from_seq: Sequence[TreeNode] = from_seq
-        self.to_seq: Sequence[TreeNode] = to_seq
+    def __init__(self, from_node: ListNode, to_node: ListNode):
+        self.from_node: ListNode = from_node
+        self.to_node: ListNode = to_node
+        from_seq: Sequence[TreeNode] = from_node.children
+        to_seq: Sequence[TreeNode] = to_node.children
         self._bounds = Range(0, POSITIVE_INFINITY)
         matrix: List[List[Union[ConstantNode, SearchNode]]] = []
-        for i in range(len(self.to_seq) + 1):
+        for i in range(len(to_seq) + 1):
             matrix.append([])
-            for j in range(len(self.from_seq) + 1):
+            for j in range(len(from_seq) + 1):
                 if i == 0:
                     if j == 0:
-                        matrix[i].append(ConstantNode(0))
+                        matrix[i].append(ConstantNode())
                     else:
-                        matrix[i].append(ConstantNode(self.from_seq[j-1].total_size + 1))
+                        matrix[i].append(ConstantNode(
+                            node=from_seq[j-1],
+                            is_from=True,
+                            predecessor=matrix[i][j-1]
+                        ))
                 elif j == 0:
-                    matrix[i].append(ConstantNode(self.to_seq[i-1].total_size + 1))
+                    matrix[i].append(ConstantNode(
+                        node=to_seq[i-1],
+                        is_from=False,
+                        predecessor=matrix[i-1][0]
+                    ))
                 else:
                     matrix[i].append(SearchNode(
-                        node_from=self.from_seq[j-1],
-                        node_to=self.to_seq[i-1],
+                        node_from=from_seq[j-1],
+                        node_to=to_seq[i-1],
                         up=matrix[i-1][j],
                         left=matrix[i][j-1],
                         diag=matrix[i-1][j-1]
                     ))
-        self._goal = matrix[len(self.to_seq)][len(self.from_seq)]
+        self._goal = matrix[len(to_seq)][len(from_seq)]
 
     def tighten_bounds(self) -> bool:
         return self._goal.tighten_bounds()
@@ -157,8 +201,32 @@ class EditDistance(Bounded):
     def bounds(self) -> Range:
         return self._goal.bounds()
 
+    def edits(self) -> CompoundEdit:
+        while not self.bounds().definitive() and self.tighten_bounds():
+            pass
+        edits: List[Edit] = []
+        node = self._goal
+        while not isinstance(node, ConstantNode):
+            best = node.best_predecessor()
+            if best is node.left:
+                edits.append(Remove(to_remove=node.node_from, remove_from=self.from_node))
+            elif best is node.up:
+                edits.append(Insert(to_insert=node.node_to, insert_into=self.from_node))
+            else:
+                assert best is node.diag
+                edits.append(node.match)
+            node = best
+        while node.predecessor is not None:
+            if node.is_from:
+                edits.append(Remove(to_remove=node.node, remove_from=self.from_node))
+            else:
+                edits.append(Insert(to_insert=node.node, insert_into=self.from_node))
+            node = node.predecessor
+
+        return CompoundEdit(self.from_node, self.to_node, reversed(edits))
+
 
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
-    list1 = [StringNode(c) for c in s1]
-    list2 = [StringNode(c) for c in s2]
+    list1 = ListNode([StringNode(c) for c in s1])
+    list2 = ListNode([StringNode(c) for c in s2])
     return EditDistance(list1, list2)
