@@ -1,6 +1,6 @@
 import sys
 from collections import defaultdict
-from typing import Dict, List, Optional, Set, Union
+from typing import Callable, Dict, List, Optional, Set, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -9,16 +9,12 @@ from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
 
 
 class Writer(Protocol):
-    def write(self, s: str) -> int:
-        pass
-
-    def isatty(self) -> bool:
-        return True
+    write: Callable[[str], int]
+    isatty: Callable[[], bool]
 
 
 class RawWriter(Writer, Protocol):
-    def raw_write(self, s: str) -> int:
-        pass
+    raw_write: Callable[[str], int]
 
 
 STRIKETHROUGH = '\u0336'
