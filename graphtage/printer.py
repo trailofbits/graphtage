@@ -258,6 +258,12 @@ class Printer(RawWriter):
         self._strikethrough = False
         self._plusthrough = False
 
+    def context(self) -> ANSIContext:
+        if ANSI_CONTEXT_STACK[self]:
+            return ANSI_CONTEXT_STACK[self][-1]
+        else:
+            return ANSIContext(self)
+
     def write(self, s: str) -> int:
         return self.out_stream.write(s)
 

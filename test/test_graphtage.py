@@ -1,6 +1,9 @@
+from io import StringIO
 from unittest import TestCase
 
 import graphtage
+
+from graphtage.printer import Printer
 
 
 class TestGraphtage(TestCase):
@@ -16,6 +19,20 @@ class TestGraphtage(TestCase):
         })
         cls.list_from = graphtage.build_tree([0, 1, 2, 3, 4, 5])
         cls.list_to = graphtage.build_tree([1, 2, 3, 4, 5])
+
+    def test_string_diff_printing(self):
+        s1 = graphtage.StringNode("abcdef")
+        s2 = graphtage.StringNode("azced")
+        diff = graphtage.Diff(
+            s1,
+            s2,
+            (graphtage.Match(s1, s2, graphtage.levenshtein_distance(s1.object, s2.object)),)
+        )
+        out_stream = StringIO()
+        p = Printer(ansi_color=True, out_stream=out_stream)
+        diff.print(p)
+        out_stream.flush()
+        self.assertEqual('"a[37m[41m[1mb̶[0m[49m[39m[37m[42m[1mz̟[0m[49m[39mc[37m[41m[1md̶[0m[49m[39me[37m[41m[1mf̶[0m[49m[39m[37m[42m[1md̟[0m[49m[39m"', out_stream.getvalue())
 
     def test_small_diff(self):
         diff = graphtage.diff(self.small_from, self.small_to)
@@ -45,6 +62,7 @@ class TestGraphtage(TestCase):
 
     def test_list_diff(self):
         diff = graphtage.diff(self.list_from, self.list_to)
+        print(diff.edits)
         for edit in diff.edits:
             if edit.cost().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Remove)

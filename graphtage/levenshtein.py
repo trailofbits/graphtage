@@ -65,12 +65,24 @@ class SearchNode(AbstractNode):
         assert diag.lower_right is None
         diag.lower_right = self
         self._fringe: List[SearchNode] = [up, left, diag]
-        to_remove = set()
-        for n1, n2 in combinations(self._fringe, 2):
-            if n1.bounds().dominates(n2.bounds()):
-                to_remove.add(n2)
-        for node in to_remove:
-            self._fringe.remove(node)
+        changed = True
+        while changed:
+            to_remove = set()
+            changed = False
+            for n1, n2 in combinations(self._fringe, 2):
+                if n1.bounds().dominates(n2.bounds()):
+                    if n1.bounds().lower_bound == n2.bounds().upper_bound:
+                        # there is a tie; try and save a direct match
+                        if n2 is self.diag:
+                            to_remove.add(n1)
+                        else:
+                            to_remove.add(n2)
+                    else:
+                        to_remove.add(n2)
+                    changed = True
+                    break
+            for node in to_remove:
+                self._fringe.remove(node)
         self._match: Optional[Edit] = None
         self._bounds: Optional[Range] = None
 
@@ -115,7 +127,13 @@ class SearchNode(AbstractNode):
                 return False
 
     def best_predecessor(self) -> 'SearchNode':
-        return min(self._fringe)
+        best = min(self._fringe)
+        if best is self.diag and best.bounds().lower_bound > 0:
+            # is there a tie? if so, give preference to either a remove or an insert:
+            for other in self._fringe:
+                if other is not best and other < best:
+                    return other
+        return best
 
     def bounds(self) -> Range:
         if self._bounds is None:
@@ -159,6 +177,9 @@ class ConstantNode(AbstractNode):
 
     def bounds(self) -> Range:
         return self._cost
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(node={self.node!r}, is_from={self.is_from!r})"
 
 
 class EditDistance(Bounded):

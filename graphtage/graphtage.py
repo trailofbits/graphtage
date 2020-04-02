@@ -3,8 +3,8 @@ from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .edits import CompoundEdit, Edit, Insert, Match, PossibleEdits, Remove, Replace
-from .levenshtein import EditDistance
-from .printer import DEFAULT_PRINTER, Fore, Printer
+from .levenshtein import EditDistance, levenshtein_distance
+from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
 from .search import Range
 from .tree import ContainerNode, TreeNode
 
@@ -47,13 +47,13 @@ class LeafNode(TreeNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, LeafNode):
-            if self.object == node.object:
-                return Match(self, node, 0)
-            elif len(str(self.object)) == len(str(node.object)) == 1:
-                return Match(self, node, 1)
-            else:
-                # return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
-                return EditedMatch(self, node)
+            # if self.object == node.object:
+            #     return Match(self, node, 0)
+            # elif len(str(self.object)) == len(str(node.object)) == 1:
+            #     return Match(self, node, 1)
+            # else:
+            #     return EditedMatch(self, node)
+            return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
 
@@ -152,7 +152,17 @@ class ListNode(ContainerNode):
                 for i, child in enumerate(self.children):
                     if i > 0:
                         with printer.bright():
-                            p.write(',')
+                            removed = False
+                            if self.children[i-1] in diff:
+                                for edit in diff[self.children[i-1]]:
+                                    if isinstance(edit, Remove) and edit.from_node is self.children[i-1]:
+                                        removed = True
+                                        break
+                            if removed:
+                                with p.strike():
+                                    p.write(',')
+                            else:
+                                p.write(',')
                     p.newline()
                     child.print(p, diff)
             if self.children:
@@ -165,10 +175,7 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            try:
-                return next(self._match(node, self.children, node.children))
-            except StopIteration:
-                return Match(self, node, 0)
+            return EditDistance(self, node, self.children, node.children).edits()
         else:
             return Replace(self, node)
 
@@ -298,6 +305,57 @@ class DictNode(ListNode):
 class StringNode(LeafNode):
     def __init__(self, string_like: str):
         super().__init__(string_like)
+
+    def print(self, printer: Printer, diff: Optional[Diff] = None):
+        if diff is None or self not in diff:
+            if printer.context().fore is None:
+                context = printer.color(Fore.GREEN)
+                null_context = False
+            else:
+                context = NullANSIContext()
+                null_context = True
+            with context:
+                printer.write('"')
+                for c in self.object:
+                    if c == '"':
+                        if not null_context:
+                            with printer.color(Fore.YELLOW):
+                                printer.write('\\"')
+                        else:
+                            printer.write('\\"')
+                    else:
+                        printer.write(c)
+                printer.write('"')
+        else:
+            for edit in diff[self]:
+                if isinstance(edit, Match) and isinstance(edit.to_node, StringNode):
+                    printer.write('"')
+                    sub_edits = string_edit_distance(self.object, edit.to_node.object).edits().sub_edits
+                    for sub_edit in sub_edits:
+                        to_remove = None
+                        to_add = None
+                        if isinstance(sub_edit, Match):
+                            if sub_edit.from_node.object == sub_edit.to_node.object:
+                                printer.write(sub_edit.from_node.object)
+                            else:
+                                to_remove = sub_edit.from_node.object
+                                to_add = sub_edit.to_node.object
+                        elif isinstance(sub_edit, Remove):
+                            to_remove = sub_edit.from_node.object
+                        else:
+                            assert isinstance(sub_edit, Insert)
+                            to_add = sub_edit.to_node.object
+                        if to_remove is not None:
+                            with printer.color(Fore.WHITE).background(Back.RED).bright():
+                                with printer.strike():
+                                    printer.write(to_remove)
+                        if to_add is not None:
+                            with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                                with printer.under_plus():
+                                    printer.write(to_add)
+                    printer.write('"')
+                else:
+                    edit.print(printer)
 
 
 class IntegerNode(LeafNode):
