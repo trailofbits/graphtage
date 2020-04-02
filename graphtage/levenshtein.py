@@ -5,6 +5,7 @@ from itertools import combinations
 from .graphtage import CompoundEdit, Edit, Insert, ListNode, Remove, StringNode, TreeNode
 from .search import Bounded, POSITIVE_INFINITY, Range
 
+
 def levenshtein_distance(s: str, t: str) -> int:
     """Canonical implementation of the Levenshtein distance metric"""
     rows = len(s) + 1
@@ -70,7 +71,7 @@ class SearchNode(AbstractNode):
         for node in to_remove:
             self._fringe.remove(node)
         self._match: Optional[Edit] = None
-        self._bounds: Range = None
+        self._bounds: Optional[Range] = None
 
     @property
     def match(self) -> Edit:
@@ -121,9 +122,9 @@ class SearchNode(AbstractNode):
             lb, ub = bounds.lower_bound, bounds.upper_bound
             bounds = sorted(f.bounds() for f in self._fringe)
             assert bounds
-            if len(bounds) == 1 or \
-                    (bounds[0].dominates(bounds[1]) and \
-                    (len(bounds) < 3 or bounds[0].dominates(bounds[2]))):
+            if len(bounds) == 1 or (
+                bounds[0].dominates(bounds[1]) and (len(bounds) < 3 or bounds[0].dominates(bounds[2]))
+            ):
                 self._bounds = Range(lb + bounds[0].lower_bound, ub + bounds[0].upper_bound)
             else:
                 lb += min(b.lower_bound for b in bounds)
