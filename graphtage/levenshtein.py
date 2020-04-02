@@ -2,8 +2,9 @@ from typing import List, Optional, Sequence, Union
 
 from itertools import combinations
 
-from .graphtage import CompoundEdit, Edit, Insert, ListNode, Remove, StringNode, TreeNode
+from .edits import Edit, CompoundEdit, Insert, Remove
 from .search import Bounded, POSITIVE_INFINITY, Range
+from .tree import TreeNode
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -161,11 +162,17 @@ class ConstantNode(AbstractNode):
 
 
 class EditDistance(Bounded):
-    def __init__(self, from_node: ListNode, to_node: ListNode):
-        self.from_node: ListNode = from_node
-        self.to_node: ListNode = to_node
-        from_seq: Sequence[TreeNode] = from_node.children
-        to_seq: Sequence[TreeNode] = to_node.children
+    def __init__(
+            self,
+            from_node: TreeNode,
+            to_node: TreeNode,
+            from_seq: Sequence[TreeNode],
+            to_seq: Sequence[TreeNode]
+    ):
+        self.from_node: TreeNode = from_node
+        self.to_node: TreeNode = to_node
+        from_seq: Sequence[TreeNode] = from_seq
+        to_seq: Sequence[TreeNode] = to_seq
         self._bounds = Range(0, POSITIVE_INFINITY)
         matrix: List[List[Union[ConstantNode, SearchNode]]] = []
         for i in range(len(to_seq) + 1):
@@ -226,8 +233,3 @@ class EditDistance(Bounded):
 
         return CompoundEdit(self.from_node, self.to_node, reversed(edits))
 
-
-def string_edit_distance(s1: str, s2: str) -> EditDistance:
-    list1 = ListNode([StringNode(c) for c in s1])
-    list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2)

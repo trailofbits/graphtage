@@ -4,8 +4,8 @@ from unittest import TestCase
 
 from tqdm import trange
 
-from graphtage import Edit, Insert, Match, Remove
-from graphtage.levenshtein import EditDistance, string_edit_distance
+from graphtage.edits import Edit, Insert, Match, Remove
+from graphtage import EditDistance, string_edit_distance
 
 
 LETTERS: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'

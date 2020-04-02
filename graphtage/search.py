@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Generic, Iterator, Optional, TypeVar, Union
+from typing import Callable, Generic, Iterator, Optional, TypeVar, Union
 from typing_extensions import Protocol
 
 from .fibonacci import FibonacciHeap, HeapNode

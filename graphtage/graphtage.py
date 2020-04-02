@@ -1,58 +1,12 @@
 import itertools
-
-from abc import abstractmethod, ABCMeta
 from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
-from .levenshtein import levenshtein_distance
-from .printer import Back, Fore, DEFAULT_PRINTER, Printer
-from .search import Bounded, IterativeTighteningSearch, Range
-
-
-class Edit(Bounded):
-    def __init__(self,
-                 from_node,
-                 to_node=None,
-                 constant_cost: Optional[int] = 0,
-                 cost_upper_bound: Optional[int] = None):
-        self.from_node: TreeNode = from_node
-        self.to_node: TreeNode = to_node
-        self._constant_cost = constant_cost
-        self._cost_upper_bound = cost_upper_bound
-        self._valid: bool = True
-        self.initial_cost = self.cost()
-
-    @property
-    def valid(self) -> bool:
-        return self._valid
-
-    @valid.setter
-    def valid(self, is_valid: bool):
-        self._valid = is_valid
-
-    def tighten_bounds(self) -> bool:
-        return False
-
-    @abstractmethod
-    def print(self, printer: Printer):
-        pass
-
-    def __lt__(self, other):
-        return self.cost() < other.cost()
-
-    def cost(self) -> Range:
-        lb = self._constant_cost
-        if self._cost_upper_bound is None:
-            if self.to_node is None:
-                ub = self.initial_cost.upper_bound
-            else:
-                ub = self.from_node.total_size + self.to_node.total_size + 1
-        else:
-            ub = self._cost_upper_bound
-        return Range(lb, ub)
-
-    def bounds(self):
-        return self.cost()
+from .edits import CompoundEdit, Edit, Insert, Match, PossibleEdits, Remove, Replace
+from .levenshtein import EditDistance
+from .printer import DEFAULT_PRINTER, Fore, Printer
+from .search import Range
+from .tree import ContainerNode, TreeNode
 
 
 class Diff:
@@ -84,82 +38,6 @@ class Diff:
         return f"{self.__class__.__name__}(from_root={self.from_root!r}, to_root={self.to_root!r}, edits={self.edits!r})"
 
 
-class TreeNode(metaclass=ABCMeta):
-    _total_size = None
-
-    @abstractmethod
-    def edits(self, node) -> Edit:
-        return None
-
-    @property
-    def total_size(self) -> int:
-        if self._total_size is None:
-            self._total_size = self.calculate_total_size()
-        return self._total_size
-
-    @abstractmethod
-    def calculate_total_size(self) -> int:
-        return 0
-
-    @abstractmethod
-    def print(self, printer: Printer, diff: Optional[Diff] = None):
-        pass
-
-
-class PossibleEdits(Edit):
-    def __init__(
-            self,
-            from_node: TreeNode,
-            to_node: TreeNode,
-            edits: Iterator[Edit] = (),
-            initial_cost: Optional[Range] = None
-    ):
-        if initial_cost is not None:
-            self.initial_cost = initial_cost
-        self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
-            possibilities=edits,
-            initial_bounds=initial_cost
-        )
-        while not self._search.bounds().finite:
-            self._search.tighten_bounds()
-        super().__init__(from_node=from_node, to_node=to_node)
-
-    @property
-    def valid(self) -> bool:
-        if not super().valid:
-            return False
-        while self._search.best_match is not None and not self._search.best_match.valid:
-            self._search.remove_best()
-        is_valid = self._search.best_match is not None
-        if not is_valid:
-            self.valid = False
-        return is_valid
-
-    @valid.setter
-    def valid(self, is_valid: bool):
-        self._valid = is_valid
-
-    @property
-    def best_possibility(self) -> Edit:
-        return self._search.best_match
-
-    def print(self, printer: Printer):
-        self.best_possibility.print(printer)
-
-    def tighten_bounds(self) -> bool:
-        tightened = self._search.tighten_bounds()
-        # Calling self.valid checks whether our best match is invalid
-        self.valid
-        return tightened
-
-    def cost(self) -> Range:
-        return self._search.bounds()
-
-
-class ContainerNode(TreeNode, metaclass=ABCMeta):
-    pass
-
-
 class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
@@ -169,7 +47,13 @@ class LeafNode(TreeNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, LeafNode):
-            return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
+            if self.object == node.object:
+                return Match(self, node, 0)
+            elif len(str(self.object)) == len(str(node.object)) == 1:
+                return Match(self, node, 1)
+            else:
+                # return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
+                return EditedMatch(self, node)
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
 
@@ -254,106 +138,6 @@ class KeyValuePairNode(ContainerNode):
 
     def __str__(self):
         return f"{self.key!s}: {self.value!s}"
-
-
-class CompoundEdit(Edit):
-    def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
-        self._edit_iter: Iterator[Edit] = edits
-        self._sub_edits: List[Edit] = []
-        cost_upper_bound = from_node.total_size + 1
-        if to_node is not None:
-            cost_upper_bound += to_node.total_size
-        self._cost = None
-        super().__init__(from_node=from_node,
-                         to_node=to_node,
-                         cost_upper_bound=cost_upper_bound)
-
-    @property
-    def valid(self) -> bool:
-        if not super().valid:
-            return False
-        is_valid = True
-        if self._edit_iter is None:
-            for e in self._sub_edits:
-                if not e.valid:
-                    is_valid = False
-                    break
-        if not is_valid:
-            self.valid = False
-        return is_valid
-
-    @valid.setter
-    def valid(self, is_valid: bool):
-        self._valid = is_valid
-
-    def print(self, printer: Printer):
-        for sub_edit in self.sub_edits:
-            sub_edit.print(printer)
-
-    @property
-    def sub_edits(self) -> List[Edit]:
-        while self._edit_iter is not None and self.tighten_bounds():
-            pass
-        return self._sub_edits
-
-    def tighten_bounds(self) -> bool:
-        if not self.valid:
-            return False
-        starting_bounds: Range = self.cost()
-        while True:
-            if self._edit_iter is not None:
-                try:
-                    next_edit: Edit = next(self._edit_iter)
-                    if isinstance(next_edit, CompoundEdit):
-                        self._sub_edits.extend(next_edit.sub_edits)
-                    else:
-                        self._sub_edits.append(next_edit)
-                except StopIteration:
-                    self._edit_iter = None
-            tightened = False
-            for child in self._sub_edits:
-                if child.tighten_bounds():
-                    self._cost = None
-                    if not child.valid:
-                        self.valid = False
-                        return True
-                    tightened = True
-                    new_cost = self.cost()
-                    #assert new_cost.lower_bound >= starting_bounds.lower_bound
-                    #assert new_cost.upper_bound <= starting_bounds.upper_bound
-                    if new_cost.lower_bound > starting_bounds.lower_bound or \
-                            new_cost.upper_bound < starting_bounds.upper_bound:
-                        return True
-            if not tightened and self._edit_iter is None:
-                return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
-                    self.cost().upper_bound < starting_bounds.upper_bound
-
-    def cost(self) -> Range:
-        if not self.valid:
-            self._cost = Range()
-        if self._cost is not None:
-            return self._cost
-        elif self._edit_iter is None:
-            # We've expanded all of the sub-edits, so calculate the bounds explicitly:
-            total_cost = sum(e.cost() for e in self._sub_edits)
-            if total_cost.definitive():
-                self._cost = total_cost
-        else:
-            # We have not yet expanded all of the sub-edits
-            total_cost = Range(0, self._cost_upper_bound)
-            for e in self._sub_edits:
-                total_cost.lower_bound += e.cost().lower_bound
-                total_cost.upper_bound -= e.initial_cost.upper_bound - e.cost().upper_bound
-        return total_cost
-
-    def __len__(self):
-        return len(self.sub_edits)
-
-    def __iter__(self) -> Iterator[Edit]:
-        return iter(self.sub_edits)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(*{self.sub_edits!r})"
 
 
 class ListNode(ContainerNode):
@@ -521,111 +305,72 @@ class IntegerNode(LeafNode):
         super().__init__(int_like)
 
 
-class InitialState(Edit):
-    def __init__(self, tree1_root: TreeNode, tree2_root: TreeNode):
-        super(tree1_root, tree2_root)
+def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable[[Range], Any]] = None) -> Diff:
+    root_edit = tree1_root.edits(tree2_root)
+    if callback is not None:
+        prev_bounds = root_edit.bounds()
+        callback(prev_bounds)
+    while root_edit.valid and not root_edit.bounds().definitive():
+        if not root_edit.tighten_bounds():
+            break
+        if callback is not None:
+            if root_edit.bounds().lower_bound != prev_bounds.lower_bound \
+                    or root_edit.bounds().upper_bound != prev_bounds.upper_bound:
+                prev_bounds = root_edit.bounds()
+                callback(prev_bounds)
+    if callback is not None:
+        callback(root_edit.bounds())
+    return Diff(tree1_root, tree2_root, (root_edit,))
 
-    def print(self, printer: Printer):
-        pass
 
-    def cost(self):
-        return Range(0, 0)
+def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
+    if isinstance(python_obj, int):
+        return IntegerNode(python_obj)
+    elif isinstance(python_obj, str):
+        return StringNode(python_obj)
+    elif isinstance(python_obj, bytes):
+        return StringNode(python_obj.decode('utf-8'))
+    elif force_leaf_node:
+        raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
+    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
+        return ListNode([build_tree(n) for n in python_obj])
+    elif isinstance(python_obj, dict):
+        return DictNode({
+            build_tree(k, force_leaf_node=True): build_tree(v) for k, v in python_obj.items()
+        })
+    else:
+        raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 
 
-class Match(Edit):
-    def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
+class EditedMatch(Edit):
+    def __init__(self, match_from: LeafNode, match_to: LeafNode):
+        self.edit_distance: EditDistance = string_edit_distance(str(match_from.object), str(match_to.object))
         super().__init__(
             from_node=match_from,
-            to_node=match_to,
-            constant_cost=cost,
-            cost_upper_bound=cost
+            to_node=match_to
         )
 
     def print(self, printer: Printer):
-        if self.cost() > Range(0, 0):
-            with printer.bright().background(Back.RED).color(Fore.WHITE):
-                with printer.strike():
-                    self.from_node.print(printer)
-            with printer.color(Fore.CYAN):
-                printer.write(' -> ')
-            with printer.bright().background(Back.GREEN).color(Fore.WHITE):
-                with printer.under_plus():
-                    self.to_node.print(printer)
-        else:
-            self.from_node.print(printer)
+        for edit in self.edit_distance.edits():
+            edit.print(printer)
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"
+    def cost(self) -> Range:
+        return self.edit_distance.bounds()
 
-
-class Replace(Edit):
-    def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
-        cost = max(to_replace.total_size, replace_with.total_size) + 1
-        super().__init__(
-            from_node=to_replace,
-            to_node=replace_with,
-            constant_cost=cost,
-            cost_upper_bound=cost
-        )
-
-    def print(self, printer: Printer):
-        self.from_node.print(printer)
-        if self.cost().upper_bound > 0:
-            with printer.bright().color(Fore.WHITE).background(Back.RED):
-                self.from_node.print(printer)
-            with printer.color(Fore.CYAN):
-                printer.write(' -> ')
-            with printer.bright().color(Fore.WHITE).background(Back.GREEN):
-                self.to_node.print(printer)
-        else:
-            self.from_node.print(printer)
+    def tighten_bounds(self) -> bool:
+        return self.edit_distance.tighten_bounds()
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
 
 
-class Remove(Edit):
-    def __init__(self, to_remove: TreeNode, remove_from: TreeNode):
-        super().__init__(
-            from_node=to_remove,
-            to_node=remove_from,
-            constant_cost=to_remove.total_size + 1,
-            cost_upper_bound=to_remove.total_size + 1
-        )
-
-    def print(self, printer: Printer):
-        with printer.bright():
-            with printer.background(Back.RED):
-                with printer.color(Fore.WHITE):
-                    if not printer.ansi_color:
-                        printer.write('~~~~')
-                    self.from_node.print(printer)
-                    if not printer.ansi_color:
-                        printer.write('~~~~')
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
+def string_edit_distance(s1: str, s2: str) -> EditDistance:
+    list1 = ListNode([StringNode(c) for c in s1])
+    list2 = ListNode([StringNode(c) for c in s2])
+    return EditDistance(list1, list2, list1.children, list2.children)
 
 
-class Insert(Edit):
-    def __init__(self, to_insert: TreeNode, insert_into: TreeNode):
-        super().__init__(
-            from_node=to_insert,
-            to_node=insert_into,
-            constant_cost=to_insert.total_size + 1,
-            cost_upper_bound=to_insert.total_size + 1
-        )
-
-    def print(self, printer: Printer):
-        printer.write('++++')
-        self.from_node.print(printer)
-        printer.write('++++')
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(to_insert={self.from_node!r}, insert_into={self.to_node!r})"
-
-
-AtomicEdit = Union[Insert, Remove, Replace, Match]
+AtomicEdit = Union[Insert, Remove, Replace, Match, EditedMatch]
 
 
 def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
@@ -644,41 +389,6 @@ def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
         yield edit
 
 
-def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable[[Range], Any]] = None) -> Diff:
-    root_edit = tree1_root.edits(tree2_root)
-    if callback is not None:
-        prev_bounds = root_edit.bounds()
-        callback(prev_bounds)
-    while root_edit.valid and not root_edit.bounds().definitive():
-        if not root_edit.tighten_bounds():
-            break
-        if root_edit.bounds().lower_bound != prev_bounds.lower_bound \
-                or root_edit.bounds().upper_bound != prev_bounds.upper_bound:
-            if callback is not None:
-                prev_bounds = root_edit.bounds()
-                callback(prev_bounds)
-    if callback is not None:
-        callback(root_edit.bounds())
-    return Diff(tree1_root, tree2_root, (root_edit,))
-
-
-def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
-    if isinstance(python_obj, int):
-        return IntegerNode(python_obj)
-    elif isinstance(python_obj, str) or isinstance(python_obj, bytes):
-        return StringNode(python_obj)
-    elif force_leaf_node:
-        raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
-    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n) for n in python_obj])
-    elif isinstance(python_obj, dict):
-        return DictNode({
-            build_tree(k, force_leaf_node=True): build_tree(v) for k, v in python_obj.items()
-        })
-    else:
-        raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
-
-
 if __name__ == '__main__':
     obj1 = build_tree({
         "test": "foo",
@@ -688,9 +398,6 @@ if __name__ == '__main__':
         "test": "bar",
         "baz": 2
     })
-
-    obj1 = build_tree(list(range(5)))
-    obj2 = build_tree(list(range(1, 5)))
 
     obj_diff = diff(obj1, obj2)
     print(obj_diff.cost())
