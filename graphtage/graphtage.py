@@ -176,7 +176,15 @@ class ListNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            return EditDistance(self, node, self.children, node.children).edits()
+            if len(self.children) == len(node.children) == 0:
+                return Match(self, node, 0)
+            elif len(self.children) == len(node.children) == 1:
+                return CompoundEdit(from_node=self, to_node=node, edits=iter((
+                    Match(self, node, 0),
+                    self.children[0].edits(node.children[0])
+                )))
+            else:
+                return EditDistance(self, node, self.children, node.children).edits()
         else:
             return Replace(self, node)
 
@@ -301,6 +309,12 @@ class ListNode(ContainerNode):
 class DictNode(ListNode):
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
         super().__init__(sorted(KeyValuePairNode(key, value) for key, value in dict_like.items()))
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, DictNode):
+            return super().edits(node)
+        else:
+            return Replace(self, node)
 
 
 class StringNode(LeafNode):

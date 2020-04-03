@@ -1,7 +1,8 @@
 from enum import Enum
+from itertools import combinations
 from typing import List, Optional, Sequence, Union
 
-from itertools import combinations
+from tqdm import tqdm
 
 from .edits import Edit, CompoundEdit, Insert, Remove
 from .search import Bounded, POSITIVE_INFINITY, Range
@@ -85,26 +86,26 @@ class SearchNode(AbstractNode):
                 edit_type=EditType.__members__.get(edit_type.upper())
             )
             self._fringe.append(edit)
-        changed = True
-        while changed:
-            to_remove = set()
-            changed = False
-            for n1, n2 in combinations(self._fringe, 2):
-                if n1.to_node.bounds().dominates(n2.to_node.bounds()):
-                    if n1.to_node.bounds().lower_bound == n2.to_node.bounds().upper_bound:
-                        # there is a tie; try and save a direct match
-                        if n2.edit_type == EditType.MATCH:
-                            to_remove.add(n1)
-                        else:
-                            to_remove.add(n2)
-                    else:
-                        to_remove.add(n2)
-                    changed = True
-                    break
-            for node in to_remove:
-                self._fringe.remove(node)
-                assert self in node.to_node.neighbors
-                node.to_node.neighbors.remove(self)
+        # changed = True
+        # while changed:
+        #     to_remove = set()
+        #     changed = False
+        #     for n1, n2 in combinations(self._fringe, 2):
+        #         if n1.to_node.bounds().dominates(n2.to_node.bounds()):
+        #             if n1.to_node.bounds().lower_bound == n2.to_node.bounds().upper_bound:
+        #                 # there is a tie; try and save a direct match
+        #                 if n2.edit_type == EditType.MATCH:
+        #                     to_remove.add(n1)
+        #                 else:
+        #                     to_remove.add(n2)
+        #             else:
+        #                 to_remove.add(n2)
+        #             changed = True
+        #             break
+        #     for node in to_remove:
+        #         self._fringe.remove(node)
+        #         assert self in node.to_node.neighbors
+        #         node.to_node.neighbors.remove(self)
         self._match: Optional[Edit] = None
         self._bounds: Optional[Range] = None
 
@@ -133,6 +134,8 @@ class SearchNode(AbstractNode):
                             continue
                         if node.to_node.bounds().dominates(other_node.to_node.bounds()):
                             self._fringe.remove(other_node)
+                            assert self in other_node.to_node.neighbors
+                            other_node.to_node.neighbors.remove(self)
                     self._bounds = None
                     if self.bounds().lower_bound > initial_bounds.lower_bound \
                             or self.bounds().upper_bound < initial_bounds.upper_bound:
@@ -148,6 +151,7 @@ class SearchNode(AbstractNode):
         return min(self._fringe)
 
     def bounds(self) -> Range:
+        # TODO: This fold can exceed the recursion depth of Python; rewrite it to be iterative!
         if self._bounds is None:
             bounds = self.match.bounds()
             lb, ub = bounds.lower_bound, bounds.upper_bound
@@ -248,8 +252,11 @@ class EditDistance(Bounded):
         return self._goal.bounds()
 
     def edits(self) -> CompoundEdit:
-        while not self.bounds().definitive() and self.tighten_bounds():
-            pass
+        if not self.bounds().definitive():
+            with tqdm(leave=False) as t:
+                t.total = self.bounds().upper_bound - self.bounds().lower_bound
+                while not self.bounds().definitive() and self.tighten_bounds():
+                    t.update(t.total - (self.bounds().upper_bound - self.bounds().lower_bound))
         edits: List[Edit] = []
         node = self._goal
         while not isinstance(node, ConstantNode):
