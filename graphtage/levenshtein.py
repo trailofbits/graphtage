@@ -167,6 +167,7 @@ class SearchNode(AbstractNode):
         ret = f"{self.__class__.__name__}(node_from={self.node_from!r}, node_to={self.node_to!r}"
         for node in self._fringe:
             ret += f", {node.edit_type.name.lower()}={node.to_node!r}"
+        return ret
 
 
 class ConstantNode(AbstractNode):
@@ -179,8 +180,10 @@ class ConstantNode(AbstractNode):
         super().__init__()
         if node is None:
             cost = 0
+            assert predecessor is None
         else:
-            cost = node.total_size + 1
+            assert predecessor is not None
+            cost = node.total_size + predecessor._cost.upper_bound
         self._cost: Range = Range(cost, cost)
         self.node = node
         self.predecessor: Optional[ConstantNode] = predecessor

@@ -154,7 +154,7 @@ class ListNode(ContainerNode):
                     if i > 0:
                         with printer.bright():
                             removed = False
-                            if self.children[i-1] in diff:
+                            if diff is not None and self.children[i-1] in diff:
                                 for edit in diff[self.children[i-1]]:
                                     if isinstance(edit, Remove) and edit.from_node is self.children[i-1]:
                                         removed = True
