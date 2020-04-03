@@ -126,12 +126,12 @@ class SearchNode(AbstractNode):
         while True:
             tightened = False
             for node in self._fringe:
-                if node.tighten_bounds():
+                if node.to_node.tighten_bounds():
                     # see if this node dominates any of the others
                     for other_node in self._fringe:
                         if other_node is node:
                             continue
-                        if node.bounds().dominates(other_node.bounds()):
+                        if node.to_node.bounds().dominates(other_node.to_node.bounds()):
                             self._fringe.remove(other_node)
                     self._bounds = None
                     if self.bounds().lower_bound > initial_bounds.lower_bound \
