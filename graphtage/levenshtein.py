@@ -1,10 +1,10 @@
 from enum import Enum
 from itertools import combinations
-from typing import List, Optional, Sequence, Union
+from typing import Iterator, List, Optional, Sequence, Union
 
 from tqdm import tqdm
 
-from .edits import Edit, CompoundEdit, Insert, Remove
+from .edits import CompoundEdit, Edit, EditSequence, Insert, Remove
 from .search import Bounded, POSITIVE_INFINITY, Range
 from .tree import TreeNode
 
@@ -150,11 +150,41 @@ class SearchNode(AbstractNode):
     def best_predecessor(self) -> FringeEdit:
         return min(self._fringe)
 
+    def ancestors(self) -> Iterator['SearchNode']:
+        stack: List[SearchNode] = [f.to_node for f in self._fringe]
+        result: List[SearchNode] = list(stack)
+        history = set(stack)
+        while stack:
+            node = stack.pop()
+            if isinstance(node, ConstantNode):
+                continue
+            fringe = (
+                a for a in node._fringe if a.to_node not in history
+            )
+            match: Optional[SearchNode] = None
+            for a in fringe:
+                if a.edit_type == EditType.MATCH:
+                    match = a.to_node
+                else:
+                    result.append(a.to_node)
+                    history.add(a.to_node)
+                    stack.append(a.to_node)
+            if match is not None:
+                result.append(match)
+                history.add(match)
+                stack.append(match)
+        return reversed(result)
+
+    def _bounds_fold_iterative(self):
+        for node in self.ancestors():
+            node.bounds()
+
     def bounds(self) -> Range:
         # TODO: This fold can exceed the recursion depth of Python; rewrite it to be iterative!
         if self._bounds is None:
             bounds = self.match.bounds()
             lb, ub = bounds.lower_bound, bounds.upper_bound
+            self._bounds_fold_iterative()
             bounds = sorted(f.to_node.bounds() for f in self._fringe)
             assert bounds
             if len(bounds) == 1 or (
@@ -203,7 +233,7 @@ class ConstantNode(AbstractNode):
         return f"{self.__class__.__name__}(node={self.node!r}, is_from={self.is_from!r})"
 
 
-class EditDistance(Bounded):
+class EditDistance(CompoundEdit):
     def __init__(
             self,
             from_node: TreeNode,
@@ -211,11 +241,9 @@ class EditDistance(Bounded):
             from_seq: Sequence[TreeNode],
             to_seq: Sequence[TreeNode]
     ):
-        self.from_node: TreeNode = from_node
-        self.to_node: TreeNode = to_node
+        self._bounds = Range(0, POSITIVE_INFINITY)
         from_seq: Sequence[TreeNode] = from_seq
         to_seq: Sequence[TreeNode] = to_seq
-        self._bounds = Range(0, POSITIVE_INFINITY)
         matrix: List[List[Union[ConstantNode, SearchNode]]] = []
         for i in range(len(to_seq) + 1):
             matrix.append([])
@@ -244,6 +272,10 @@ class EditDistance(Bounded):
                         match=matrix[i-1][j-1]
                     ))
         self._goal = matrix[len(to_seq)][len(from_seq)]
+        super().__init__(
+            from_node=from_node,
+            to_node=to_node
+        )
 
     def tighten_bounds(self) -> bool:
         return self._goal.tighten_bounds()
@@ -251,7 +283,7 @@ class EditDistance(Bounded):
     def bounds(self) -> Range:
         return self._goal.bounds()
 
-    def edits(self) -> CompoundEdit:
+    def edits(self) -> Iterator[Edit]:
         if not self.bounds().definitive():
             with tqdm(leave=False) as t:
                 t.total = self.bounds().upper_bound - self.bounds().lower_bound
@@ -276,4 +308,4 @@ class EditDistance(Bounded):
                 edits.append(Insert(to_insert=node.node, insert_into=self.from_node))
             node = node.predecessor
 
-        return CompoundEdit(self.from_node, self.to_node, reversed(edits))
+        return reversed(edits)

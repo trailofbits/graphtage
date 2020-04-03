@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import Iterator, List, Optional
 
 from .printer import Back, Fore, Printer
@@ -52,7 +52,17 @@ class Edit(Bounded):
         return self.cost()
 
 
-class PossibleEdits(Edit):
+class CompoundEdit(Edit, ABC):
+    @abstractmethod
+    def edits(self) -> Iterator[Edit]:
+        pass
+
+    def print(self, printer: Printer):
+        for edit in self.edits:
+            edit.print(printer)
+
+
+class PossibleEdits(CompoundEdit):
     def __init__(
             self,
             from_node: TreeNode,
@@ -85,12 +95,13 @@ class PossibleEdits(Edit):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    @property
     def best_possibility(self) -> Edit:
         return self._search.best_match
 
-    def print(self, printer: Printer):
-        self.best_possibility.print(printer)
+    def edits(self) -> Iterator[Edit]:
+        best = self.best_possibility()
+        if best is not None:
+            yield best
 
     def tighten_bounds(self) -> bool:
         tightened = self._search.tighten_bounds()
@@ -202,7 +213,7 @@ class Insert(Edit):
         return f"{self.__class__.__name__}(to_insert={self.from_node!r}, insert_into={self.to_node!r})"
 
 
-class CompoundEdit(Edit):
+class EditSequence(CompoundEdit):
     def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
         self._edit_iter: Iterator[Edit] = edits
         self._sub_edits: List[Edit] = []
@@ -242,6 +253,9 @@ class CompoundEdit(Edit):
             pass
         return self._sub_edits
 
+    def edits(self) -> Iterator[Edit]:
+        yield from iter(self.sub_edits)
+
     def tighten_bounds(self) -> bool:
         if not self.valid:
             return False
@@ -250,7 +264,7 @@ class CompoundEdit(Edit):
             if self._edit_iter is not None:
                 try:
                     next_edit: Edit = next(self._edit_iter)
-                    if isinstance(next_edit, CompoundEdit):
+                    if isinstance(next_edit, EditSequence):
                         self._sub_edits.extend(next_edit.sub_edits)
                     else:
                         self._sub_edits.append(next_edit)

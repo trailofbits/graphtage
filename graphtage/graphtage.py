@@ -2,7 +2,7 @@ import itertools
 from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
-from .edits import CompoundEdit, Edit, Insert, Match, PossibleEdits, Remove, Replace
+from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, PossibleEdits, Remove, Replace
 from .levenshtein import EditDistance, levenshtein_distance
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
 from .search import Range
@@ -13,7 +13,10 @@ class Diff:
     def __init__(self, from_root, to_root, edits: Iterable[Edit]):
         self.from_root: TreeNode = from_root
         self.to_root: TreeNode = to_root
-        self.edits: Tuple[AtomicEdit] = tuple(itertools.chain(*(explode_edits(edit) for edit in edits)))
+        edit_list = []
+        for edit in edits:
+            edit_list.extend(explode_edits(edit))   # type: ignore
+        self.edits: Tuple[AtomicEdit] = tuple(edit_list)
         self.edits_by_node: Dict[TreeNode, List[Edit]] = defaultdict(list)
         for e in self.edits:
             self.edits_by_node[e.from_node].append(e)
@@ -95,7 +98,7 @@ class KeyValuePairNode(ContainerNode):
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
             raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
-        return CompoundEdit(
+        return EditSequence(
             from_node=self,
             to_node=node,
             edits=iter((self.key.edits(node.key), self.value.edits(node.value)))
@@ -179,12 +182,12 @@ class ListNode(ContainerNode):
             if len(self.children) == len(node.children) == 0:
                 return Match(self, node, 0)
             elif len(self.children) == len(node.children) == 1:
-                return CompoundEdit(from_node=self, to_node=node, edits=iter((
+                return EditSequence(from_node=self, to_node=node, edits=iter((
                     Match(self, node, 0),
                     self.children[0].edits(node.children[0])
                 )))
             else:
-                return EditDistance(self, node, self.children, node.children).edits()
+                return EditDistance(self, node, self.children, node.children)
         else:
             return Replace(self, node)
 
@@ -192,9 +195,9 @@ class ListNode(ContainerNode):
         if not l1 and not l2:
             return
         elif l1 and not l2:
-            yield CompoundEdit(from_node=self, to_node=None, edits=(Remove(n, remove_from=self) for n in l1))
+            yield EditSequence(from_node=self, to_node=None, edits=(Remove(n, remove_from=self) for n in l1))
         elif l2 and not l1:
-            yield CompoundEdit(from_node=self, to_node=node, edits=(Insert(n, insert_into=self) for n in l2))
+            yield EditSequence(from_node=self, to_node=node, edits=(Insert(n, insert_into=self) for n in l2))
         else:
             leading_matches: List[Edit] = []
             match: Optional[Edit] = None
@@ -224,7 +227,7 @@ class ListNode(ContainerNode):
                 leading_matches.append(match)
 
             if not l1 or not l2:
-                yield CompoundEdit(
+                yield EditSequence(
                     from_node=self,
                     to_node=node,
                     edits=itertools.chain(
@@ -239,7 +242,7 @@ class ListNode(ContainerNode):
                 elif len(leading_matches) == 1:
                     yield leading_matches[0]
                 else:
-                    yield CompoundEdit(
+                    yield EditSequence(
                         from_node=self,
                         to_node=node,
                         edits=iter(leading_matches)
@@ -247,7 +250,7 @@ class ListNode(ContainerNode):
             else:
                 assert matched_node_from is not None
                 possibilities = [
-                    CompoundEdit(
+                    EditSequence(
                         from_node=self,
                         to_node=node,
                         edits=itertools.chain(
@@ -255,7 +258,7 @@ class ListNode(ContainerNode):
                             self._match(node, l1, l2)
                         )
                     ),
-                    CompoundEdit(
+                    EditSequence(
                         from_node=self,
                         to_node=node,
                         edits=itertools.chain(
@@ -264,7 +267,7 @@ class ListNode(ContainerNode):
                             self._match(node, l1, (matched_node_to,) + l2)
                         )
                     ),
-                    CompoundEdit(
+                    EditSequence(
                         from_node=self,
                         to_node=node,
                         edits=itertools.chain(
@@ -345,7 +348,7 @@ class StringNode(LeafNode):
             for edit in diff[self]:
                 if isinstance(edit, Match) and isinstance(edit.to_node, StringNode):
                     printer.write('"')
-                    sub_edits = string_edit_distance(self.object, edit.to_node.object).edits().sub_edits
+                    sub_edits = string_edit_distance(self.object, edit.to_node.object).edits()
                     for sub_edit in sub_edits:
                         to_remove = None
                         to_add = None
@@ -446,20 +449,13 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
 AtomicEdit = Union[Insert, Remove, Replace, Match, EditedMatch]
 
 
-def explode_edits(edit: Edit) -> Iterator[AtomicEdit]:
+def explode_edits(edit: Union[AtomicEdit, CompoundEdit]) -> Iterator[AtomicEdit]:
     if isinstance(edit, CompoundEdit):
-        for sub_edit in edit.sub_edits:
-            yield from explode_edits(sub_edit)
-    elif isinstance(edit, PossibleEdits):
-        while not edit.cost().definitive():
-            if not edit.tighten_bounds():
-                break
-        if edit.best_possibility is None:
-            yield edit
-        else:
-            yield from explode_edits(edit.best_possibility)
+        while not edit.cost().definitive() and edit.tighten_bounds():
+            pass
+        return itertools.chain(*map(explode_edits, edit.edits()))
     else:
-        yield edit
+        return iter((edit,))
 
 
 if __name__ == '__main__':
