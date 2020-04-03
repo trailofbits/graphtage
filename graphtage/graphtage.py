@@ -30,6 +30,7 @@ class Diff:
         elif isinstance(out_stream, TextIO):
             out_stream = Printer(out_stream)
         self.from_root.print(out_stream, self)
+        out_stream.newline()
 
     def cost(self) -> int:
         return sum(e.cost().upper_bound for e in self.edits)
