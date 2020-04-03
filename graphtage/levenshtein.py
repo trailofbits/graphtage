@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List, Optional, Sequence, Union
 
 from itertools import combinations
@@ -35,12 +36,33 @@ def levenshtein_distance(s: str, t: str) -> int:
 
 class AbstractNode(Bounded):
     def __init__(self):
-        self.down: Optional[SearchNode] = None
-        self.right: Optional[SearchNode] = None
-        self.lower_right: Optional[SearchNode] = None
+        self.neighbors: List[SearchNode] = []
 
     def __lt__(self, other):
         return self.bounds() < other.bounds()
+
+
+class EditType(Enum):
+    MATCH = 0
+    REMOVE = 1
+    INSERT = 2
+
+
+class FringeEdit:
+    def __init__(self, from_node: 'SearchNode', to_node: 'SearchNode', edit_type: EditType):
+        self.from_node: SearchNode = from_node
+        self.to_node: SearchNode = to_node
+        assert from_node not in to_node.neighbors
+        to_node.neighbors.append(from_node)
+        self.edit_type: EditType = edit_type
+
+    def __hash__(self):
+        return id(self)
+
+    def __lt__(self, other):
+        return (self.to_node.bounds() < other.to_node.bounds()) or (
+                self.to_node.bounds() == other.to_node.bounds() and self.edit_type.value < other.edit_type.value
+        )
 
 
 class SearchNode(AbstractNode):
@@ -48,32 +70,30 @@ class SearchNode(AbstractNode):
             self,
             node_from: TreeNode,
             node_to: TreeNode,
-            up: 'SearchNode',
-            left: 'SearchNode',
-            diag: 'SearchNode'
+            **kwargs
     ):
         super().__init__()
         self.node_from: TreeNode = node_from
         self.node_to: TreeNode = node_to
-        self.up: SearchNode = up
-        self.left: SearchNode = left
-        self.diag: SearchNode = diag
-        assert up.down is None
-        up.down = self
-        assert left.right is None
-        left.right = self
-        assert diag.lower_right is None
-        diag.lower_right = self
-        self._fringe: List[SearchNode] = [up, left, diag]
+        self._fringe: List[FringeEdit] = []
+        for edit_type, fringe_node in kwargs.items():
+            if edit_type.upper() not in EditType.__members__.keys():
+                raise ValueError(f"edit type must be one of {EditType.__members__.keys()}, not {edit_type}")
+            edit = FringeEdit(
+                from_node=self,
+                to_node=fringe_node,
+                edit_type=EditType.__members__.get(edit_type.upper())
+            )
+            self._fringe.append(edit)
         changed = True
         while changed:
             to_remove = set()
             changed = False
             for n1, n2 in combinations(self._fringe, 2):
-                if n1.bounds().dominates(n2.bounds()):
-                    if n1.bounds().lower_bound == n2.bounds().upper_bound:
+                if n1.to_node.bounds().dominates(n2.to_node.bounds()):
+                    if n1.to_node.bounds().lower_bound == n2.to_node.bounds().upper_bound:
                         # there is a tie; try and save a direct match
-                        if n2 is self.diag:
+                        if n2.edit_type == EditType.MATCH:
                             to_remove.add(n1)
                         else:
                             to_remove.add(n2)
@@ -83,6 +103,8 @@ class SearchNode(AbstractNode):
                     break
             for node in to_remove:
                 self._fringe.remove(node)
+                assert self in node.to_node.neighbors
+                node.to_node.neighbors.remove(self)
         self._match: Optional[Edit] = None
         self._bounds: Optional[Range] = None
 
@@ -93,12 +115,8 @@ class SearchNode(AbstractNode):
         return self._match
 
     def _invalidate_neighbors(self):
-        if self.down is not None:
-            self.down._bounds = None
-        if self.right is not None:
-            self.right._bounds = None
-        if self.lower_right is not None:
-            self.lower_right._bounds = None
+        for node in self.neighbors:
+            node._bounds = None
 
     def tighten_bounds(self) -> bool:
         initial_bounds = self.bounds()
@@ -126,20 +144,14 @@ class SearchNode(AbstractNode):
             if not tightened:
                 return False
 
-    def best_predecessor(self) -> 'SearchNode':
-        best = min(self._fringe)
-        if best is self.diag and best.bounds().lower_bound > 0:
-            # is there a tie? if so, give preference to either a remove or an insert:
-            for other in self._fringe:
-                if other is not best and other < best:
-                    return other
-        return best
+    def best_predecessor(self) -> FringeEdit:
+        return min(self._fringe)
 
     def bounds(self) -> Range:
         if self._bounds is None:
             bounds = self.match.bounds()
             lb, ub = bounds.lower_bound, bounds.upper_bound
-            bounds = sorted(f.bounds() for f in self._fringe)
+            bounds = sorted(f.to_node.bounds() for f in self._fringe)
             assert bounds
             if len(bounds) == 1 or (
                 bounds[0].dominates(bounds[1]) and (len(bounds) < 3 or bounds[0].dominates(bounds[2]))
@@ -152,7 +164,9 @@ class SearchNode(AbstractNode):
         return self._bounds
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(node_from={self.node_from!r}, node_to={self.node_to!r}, up={self.up!r}, left={self.left!r}, diag={self.diag!r})"
+        ret = f"{self.__class__.__name__}(node_from={self.node_from!r}, node_to={self.node_to!r}"
+        for node in self._fringe:
+            ret += f", {node.edit_type.name.lower()}={node.to_node!r}"
 
 
 class ConstantNode(AbstractNode):
@@ -218,9 +232,9 @@ class EditDistance(Bounded):
                     matrix[i].append(SearchNode(
                         node_from=from_seq[j-1],
                         node_to=to_seq[i-1],
-                        up=matrix[i-1][j],
-                        left=matrix[i][j-1],
-                        diag=matrix[i-1][j-1]
+                        insert=matrix[i-1][j],
+                        remove=matrix[i][j-1],
+                        match=matrix[i-1][j-1]
                     ))
         self._goal = matrix[len(to_seq)][len(from_seq)]
 
@@ -237,14 +251,14 @@ class EditDistance(Bounded):
         node = self._goal
         while not isinstance(node, ConstantNode):
             best = node.best_predecessor()
-            if best is node.left:
+            if best.edit_type == EditType.REMOVE:
                 edits.append(Remove(to_remove=node.node_from, remove_from=self.from_node))
-            elif best is node.up:
+            elif best.edit_type == EditType.INSERT:
                 edits.append(Insert(to_insert=node.node_to, insert_into=self.from_node))
             else:
-                assert best is node.diag
+                assert best.edit_type == EditType.MATCH
                 edits.append(node.match)
-            node = best
+            node = best.to_node
         while node.predecessor is not None:
             if node.is_from:
                 edits.append(Remove(to_remove=node.node, remove_from=self.from_node))
@@ -253,4 +267,3 @@ class EditDistance(Bounded):
             node = node.predecessor
 
         return CompoundEdit(self.from_node, self.to_node, reversed(edits))
-
