@@ -107,7 +107,7 @@ class SearchNode(AbstractNode):
         #         assert self in node.to_node.neighbors
         #         node.to_node.neighbors.remove(self)
         self._match: Optional[Edit] = None
-        self._bounds: Optional[Range] = None
+        self._bounds: Optional[Range] = Range(0, POSITIVE_INFINITY)
 
     @property
     def match(self) -> Edit:
@@ -180,11 +180,14 @@ class SearchNode(AbstractNode):
             node.bounds()
 
     def bounds(self) -> Range:
-        # TODO: This fold can exceed the recursion depth of Python; rewrite it to be iterative!
         if self._bounds is None:
             bounds = self.match.bounds()
             lb, ub = bounds.lower_bound, bounds.upper_bound
-            self._bounds_fold_iterative()
+            if sum(f.to_node._bounds is not None for f in self._fringe) < len(self._fringe):
+                # This means at least one of our fringe nodes hasn't been bounded yet.
+                # self.bounds() is potentially recursive if our ancestors haven't been bounded yet,
+                # which can sometimes exhaust Python's stack, so do this iteratively.
+                self._bounds_fold_iterative()
             bounds = sorted(f.to_node.bounds() for f in self._fringe)
             assert bounds
             if len(bounds) == 1 or (
@@ -241,7 +244,6 @@ class EditDistance(CompoundEdit):
             from_seq: Sequence[TreeNode],
             to_seq: Sequence[TreeNode]
     ):
-        self._bounds = Range(0, POSITIVE_INFINITY)
         from_seq: Sequence[TreeNode] = from_seq
         to_seq: Sequence[TreeNode] = to_seq
         matrix: List[List[Union[ConstantNode, SearchNode]]] = []
