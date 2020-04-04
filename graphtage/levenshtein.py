@@ -1,10 +1,10 @@
 from enum import Enum
-from itertools import combinations
 from typing import Iterator, List, Optional, Sequence, Union
 
 from tqdm import tqdm
 
-from .edits import CompoundEdit, Edit, EditSequence, Insert, Remove
+from .edits import CompoundEdit, Edit, Insert, Remove
+from .fibonacci import FibonacciHeap
 from .search import Bounded, POSITIVE_INFINITY, Range
 from .tree import TreeNode
 
@@ -71,6 +71,7 @@ class SearchNode(AbstractNode):
             self,
             node_from: TreeNode,
             node_to: TreeNode,
+            initial_bounds: Optional[Range] = None,
             **kwargs
     ):
         super().__init__()
@@ -107,7 +108,10 @@ class SearchNode(AbstractNode):
         #         assert self in node.to_node.neighbors
         #         node.to_node.neighbors.remove(self)
         self._match: Optional[Edit] = None
-        self._bounds: Optional[Range] = Range(0, POSITIVE_INFINITY)
+        if initial_bounds is None:
+            self._bounds: Optional[Range] = Range(0, POSITIVE_INFINITY)
+        else:
+            self._bounds: Optional[Range] = initial_bounds
 
     @property
     def match(self) -> Edit:
@@ -246,6 +250,19 @@ class EditDistance(CompoundEdit):
     ):
         from_seq: Sequence[TreeNode] = from_seq
         to_seq: Sequence[TreeNode] = to_seq
+        constant_cost = 0
+        if len(from_seq) != len(to_seq):
+            sizes: FibonacciHeap[TreeNode, int] = FibonacciHeap(key=lambda node: node.total_size)
+            if len(from_seq) < len(to_seq):
+                smaller, larger = from_seq, to_seq
+            else:
+                larger, smaller = from_seq, to_seq
+            for node in larger:
+                sizes.push(node)
+            for _ in range(len(larger) - len(smaller)):
+                constant_cost += sizes.pop().total_size
+        cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
+        initial_bounds = Range(constant_cost, cost_upper_bound)
         matrix: List[List[Union[ConstantNode, SearchNode]]] = []
         for i in range(len(to_seq) + 1):
             matrix.append([])
@@ -269,6 +286,7 @@ class EditDistance(CompoundEdit):
                     matrix[i].append(SearchNode(
                         node_from=from_seq[j-1],
                         node_to=to_seq[i-1],
+                        initial_bounds=initial_bounds,
                         insert=matrix[i-1][j],
                         remove=matrix[i][j-1],
                         match=matrix[i-1][j-1]
@@ -276,7 +294,9 @@ class EditDistance(CompoundEdit):
         self._goal = matrix[len(to_seq)][len(from_seq)]
         super().__init__(
             from_node=from_node,
-            to_node=to_node
+            to_node=to_node,
+            constant_cost=constant_cost,
+            cost_upper_bound=cost_upper_bound
         )
 
     def tighten_bounds(self) -> bool:
