@@ -186,6 +186,8 @@ class ListNode(ContainerNode):
                     Match(self, node, 0),
                     self.children[0].edits(node.children[0])
                 )))
+            elif self.children == node.children:
+                return Match(self, node, 0)
             else:
                 return EditDistance(self, node, self.children, node.children)
         else:
@@ -295,6 +297,12 @@ class ListNode(ContainerNode):
 
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
+
+    def __eq__(self, other):
+        return self.children == other.children
+
+    def __hash__(self):
+        return hash(self.children)
 
     def __len__(self):
         return len(self.children)
