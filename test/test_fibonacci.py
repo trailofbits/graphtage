@@ -1,11 +1,11 @@
 import random
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Set
 from unittest import TestCase
 
 from tqdm import tqdm, trange
 
-from graphtage.fibonacci import FibonacciHeap, HeapNode
+from graphtage.fibonacci import FibonacciHeap, HeapNode, MaxFibonacciHeap
 
 
 class TestFibonacciHeap(TestCase):
@@ -28,10 +28,21 @@ class TestFibonacciHeap(TestCase):
             heap.push(rand_int)
         return heap
 
+    def random_max_heap(self) -> MaxFibonacciHeap[int, int]:
+        heap: FibonacciHeap[int, int] = MaxFibonacciHeap()
+        for rand_int in self.random_list:
+            heap.push(rand_int)
+        return heap
+
     def test_fibonacci_heap(self):
         heap = self.random_heap()
         heap_sorted = [heap.pop() for _ in range(len(self.random_list))]
         self.assertEqual(self.sorted_list, heap_sorted)
+
+    def test_max_fibonacci_heap(self):
+        heap = self.random_max_heap()
+        heap_sorted = [heap.pop() for _ in range(len(self.random_list))]
+        self.assertEqual(list(reversed(self.sorted_list)), heap_sorted)
 
     def test_node_traversal(self):
         heap = self.random_heap()
@@ -48,7 +59,7 @@ class TestFibonacciHeap(TestCase):
 
     def test_decrease_key(self):
         heap = self.random_heap()
-        nodes_by_value: Dict[int, set(HeapNode[int, int])] = defaultdict(set)
+        nodes_by_value: Dict[int, Set[HeapNode[int, int]]] = defaultdict(set)
         for node in heap.nodes():
             nodes_by_value[node.key].add(node)
         changes: Dict[int, int] = {}

@@ -242,6 +242,28 @@ class FibonacciHeap(Generic[T, Key]):
         return self._extract_min().item
 
 
+class ReversedComparator(Generic[Key]):
+    def __init__(self, key: Key):
+        self.key = key
+
+    def __lt__(self, other):
+        return self.key > other.key
+
+    def __le__(self, other):
+        return self.key >= other.key
+
+    def __eq__(self, other):
+        return self.key == other.key
+
+    def __hash__(self):
+        return hash(self.key)
+
+
+class MaxFibonacciHeap(Generic[T, Key], FibonacciHeap[T, ReversedComparator[Key]]):
+    def __init__(self):
+        super().__init__(key=ReversedComparator)
+
+
 if __name__ == '__main__':
     import random
 
