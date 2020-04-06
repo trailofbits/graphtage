@@ -260,8 +260,11 @@ class ReversedComparator(Generic[Key]):
 
 
 class MaxFibonacciHeap(Generic[T, Key], FibonacciHeap[T, ReversedComparator[Key]]):
-    def __init__(self):
-        super().__init__(key=ReversedComparator)
+    def __init__(self, key: Optional[Callable[[T], Key]] = None):
+        if key is None:
+            def key(n: T):
+                return n
+        super().__init__(key=lambda n: ReversedComparator(key(n)))
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Dict, List, Set
+from typing import Callable, Dict, List, Optional, Set
 from unittest import TestCase
 
 from tqdm import tqdm, trange
@@ -28,8 +28,8 @@ class TestFibonacciHeap(TestCase):
             heap.push(rand_int)
         return heap
 
-    def random_max_heap(self) -> MaxFibonacciHeap[int, int]:
-        heap: FibonacciHeap[int, int] = MaxFibonacciHeap()
+    def random_max_heap(self, key: Optional[Callable[[int], int]] = None) -> MaxFibonacciHeap[int, int]:
+        heap: FibonacciHeap[int, int] = MaxFibonacciHeap(key=key)
         for rand_int in self.random_list:
             heap.push(rand_int)
         return heap
@@ -43,6 +43,11 @@ class TestFibonacciHeap(TestCase):
         heap = self.random_max_heap()
         heap_sorted = [heap.pop() for _ in range(len(self.random_list))]
         self.assertEqual(list(reversed(self.sorted_list)), heap_sorted)
+
+    def test_max_fibonacci_heap_with_key(self):
+        heap = self.random_max_heap(key=lambda i: -i)
+        heap_sorted = [heap.pop() for _ in range(len(self.random_list))]
+        self.assertEqual(self.sorted_list, heap_sorted)
 
     def test_node_traversal(self):
         heap = self.random_heap()
