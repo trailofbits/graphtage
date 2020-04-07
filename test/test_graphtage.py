@@ -38,7 +38,7 @@ class TestGraphtage(TestCase):
         diff = graphtage.diff(self.small_from, self.small_to)
         has_test_match = False
         has_baz_match = False
-        for edit in diff.edits:
+        for edit in diff:
             if edit.cost().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Match)
                 if isinstance(edit.from_node, graphtage.StringNode):
@@ -62,8 +62,7 @@ class TestGraphtage(TestCase):
 
     def test_list_diff(self):
         diff = graphtage.diff(self.list_from, self.list_to)
-        print(diff.edits)
-        for edit in diff.edits:
+        for edit in diff:
             if edit.cost().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Remove)
                 self.assertIsInstance(edit.from_node, graphtage.IntegerNode)

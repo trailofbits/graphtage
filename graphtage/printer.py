@@ -62,7 +62,7 @@ class CombiningMarkContext:
     def __init__(self, writer: CombiningMarkWriter, *combining_marks: str):
         self.writer: CombiningMarkWriter = writer
         self.marks: Set[str] = set(combining_marks)
-        self._state_before: Set[str] = None
+        self._state_before: Optional[Set[str]] = None
 
     def __enter__(self) -> CombiningMarkWriter:
         self._state_before = set(self.writer.marks)
@@ -313,7 +313,7 @@ class Printer(RawWriter):
         else:
             return NullANSIContext()    # type: ignore
 
-    def indent(self):
+    def indent(self) -> 'Printer':
         class Indent:
             def __init__(self, printer):
                 self.printer = printer

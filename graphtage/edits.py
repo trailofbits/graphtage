@@ -58,7 +58,7 @@ class CompoundEdit(Edit, ABC):
         pass
 
     def print(self, printer: Printer):
-        for edit in self.edits:
+        for edit in self.edits():
             edit.print(printer)
 
 
@@ -199,18 +199,26 @@ class Insert(Edit):
             cost_upper_bound=to_insert.total_size + 1
         )
 
+    @property
+    def insert_into(self) -> TreeNode:
+        return self.to_node
+
+    @property
+    def to_insert(self) -> TreeNode:
+        return self.from_node
+
     def print(self, printer: Printer):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
                 printer.write('++++')
-                self.from_node.print(printer)
+                self.to_insert.print(printer)
                 printer.write('++++')
             else:
                 with printer.under_plus():
-                    self.from_node.print(printer)
+                    self.to_insert.print(printer)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(to_insert={self.from_node!r}, insert_into={self.to_node!r})"
+        return f"{self.__class__.__name__}(to_insert={self.to_insert!r}, insert_into={self.insert_into!r})"
 
 
 class EditSequence(CompoundEdit):
