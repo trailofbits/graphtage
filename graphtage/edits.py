@@ -256,6 +256,10 @@ class EditSequence(CompoundEdit):
     def edits(self) -> Iterator[Edit]:
         yield from iter(self.sub_edits)
 
+    def _is_tightened(self, starting_bounds: Range) -> bool:
+        return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
+            self.cost().upper_bound < starting_bounds.upper_bound
+
     def tighten_bounds(self) -> bool:
         if not self.valid:
             return False
@@ -270,6 +274,8 @@ class EditSequence(CompoundEdit):
                         self._sub_edits.append(next_edit)
                 except StopIteration:
                     self._edit_iter = None
+                if self._is_tightened(starting_bounds):
+                    return True
             tightened = False
             for child in self._sub_edits:
                 if child.tighten_bounds():
@@ -284,9 +290,10 @@ class EditSequence(CompoundEdit):
                     if new_cost.lower_bound > starting_bounds.lower_bound or \
                             new_cost.upper_bound < starting_bounds.upper_bound:
                         return True
+                else:
+                    assert not child.valid or child.cost().definitive()
             if not tightened and self._edit_iter is None:
-                return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
-                    self.cost().upper_bound < starting_bounds.upper_bound
+                return self._is_tightened(starting_bounds)
 
     def cost(self) -> Range:
         if not self.valid:

@@ -32,7 +32,7 @@ class TestGraphtage(TestCase):
         p = Printer(ansi_color=True, out_stream=out_stream)
         diff.print(p)
         self.assertEqual(diff.cost(), 3)
-        self.assertEqual('"a[37m[41m[1mb̶[0m[49m[39m[37m[42m[1mz̟[0m[49m[39mc[37m[41m[1md̶[0m[49m[39me[37m[41m[1mf̶[0m[49m[39m[37m[42m[1md̟[0m[49m[39m"', out_stream.getvalue())
+        self.assertEqual('"a[37m[41m[1mb̶[0m[49m[39m[37m[42m[1mz̟[0m[49m[39mc[37m[41m[1md̶[0m[49m[39me[37m[41m[1mf̶[0m[49m[39m[37m[42m[1md̟[0m[49m[39m"\n', out_stream.getvalue())
 
     def test_small_diff(self):
         diff = graphtage.diff(self.small_from, self.small_to)

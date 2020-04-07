@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, Iterator, List, MutableMapping, Optional, Sequence, Set, Tuple, Union
+from typing import Dict, Iterator, List, Mapping, MutableMapping, Optional, Sequence, Set, Tuple, Union
 
 from tqdm import tqdm
 
@@ -7,6 +7,7 @@ from .edits import CompoundEdit, Edit, Insert, Remove
 from .fibonacci import FibonacciHeap, MaxFibonacciHeap
 from .search import Bounded, POSITIVE_INFINITY, Range
 from .tree import TreeNode
+from .utils import SparseMatrix
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -140,14 +141,14 @@ class SearchNode(AbstractNode):
             tightened = False
             for node in self._fringe:
                 if node.to_node.tighten_bounds():
-                    # see if this node dominates any of the others
-                    for other_node in self._fringe:
-                        if other_node is node:
-                            continue
-                        if node.to_node.bounds().dominates(other_node.to_node.bounds()):
-                            self._fringe.remove(other_node)
-                            assert self in other_node.to_node.neighbors
-                            other_node.to_node.neighbors.remove(self)
+                    # # see if this node dominates any of the others
+                    # for other_node in self._fringe:
+                    #     if other_node is node:
+                    #         continue
+                    #     if node.to_node.bounds().dominates(other_node.to_node.bounds()):
+                    #         self._fringe.remove(other_node)
+                    #         assert self in other_node.to_node.neighbors
+                    #         other_node.to_node.neighbors.remove(self)
                     self._bounds = None
                     if self.bounds().lower_bound > initial_bounds.lower_bound \
                             or self.bounds().upper_bound < initial_bounds.upper_bound:
@@ -158,6 +159,18 @@ class SearchNode(AbstractNode):
                         break
             if not tightened:
                 return False
+
+    def tighten_bounds(self) -> bool:
+        initial_bounds = self.bounds()
+        if initial_bounds.definitive():
+            return False
+        while self.match.tighten_bounds():
+            self._bounds = None
+            if self.bounds().lower_bound > initial_bounds.lower_bound \
+                    or self.bounds().upper_bound < initial_bounds.upper_bound:
+                return True
+        assert not self.match.valid or self.bounds().definitive()
+        return False
 
     def best_predecessor(self) -> FringeEdit:
         return min(self._fringe)
@@ -238,7 +251,7 @@ class ConstantNode(AbstractNode):
             if row == 0:
                 self.node = self.edit_distance.from_seq[col-1]
             elif col == 0:
-                self.node = self.edit_distance.to_seq[col-1]
+                self.node = self.edit_distance.to_seq[row-1]
             else:
                 raise ValueError()
             cost = self.node.total_size + self.predecessor._cost.upper_bound
@@ -249,9 +262,9 @@ class ConstantNode(AbstractNode):
         if self.row == 0 and self.col == 0:
             return None
         elif self.row == 0:
-            return self.edit_distance[self.row][self.col - 1]
+            return self.edit_distance.matrix[self.row][self.col - 1]
         elif self.col == 0:
-            return self.edit_distance[self.row - 1][self.col]
+            return self.edit_distance.matrix[self.row - 1][self.col]
         else:
             return None
 
@@ -277,44 +290,6 @@ class ConstantNode(AbstractNode):
 # Once the matrix is full, perform the backward traversal from the goal and prune along the way.
 
 class EditDistance(CompoundEdit):
-    class ColAccessor(MutableMapping[int, Optional[Union[ConstantNode, SearchNode]]]):
-        def __init__(
-                self,
-                row_num: int,
-                fringe: MaxFibonacciHeap[Union[ConstantNode, SearchNode], Tuple[int, int]],
-                fringe_boundary: Set[Union[ConstantNode, SearchNode]]
-        ):
-            self.row_num: int = row_num
-            self.row: Dict[int, Optional[Union[ConstantNode, SearchNode]]] = {}
-            self.fringe: MaxFibonacciHeap[Union[ConstantNode, SearchNode], Tuple[int, int]] = fringe
-            self.fringe_boundary: Set[Union[ConstantNode, SearchNode]] = fringe_boundary
-
-        def __len__(self) -> int:
-            return len(self.row)
-
-        def __iter__(self) -> Iterator[int]:
-            return iter(self.row)
-
-        def __getitem__(self, col: int) -> Optional[Union[ConstantNode, SearchNode]]:
-            if col not in self.row:
-                return None
-            return self.row[col]
-
-        def __setitem__(self, col: int, value: Union[ConstantNode, SearchNode]):
-            if col not in self.row:
-                self.row[col] = value
-                self.fringe.push(value)
-                self.fringe_boundary.add(value)
-
-        def __delitem__(self, col: int):
-            if col in self.row:
-                del self.row[col]
-                for node in self.fringe.nodes():
-                    if node.item.col == col and node.item.row == self.row_num:
-                        self.fringe.decrease_key(node, POSITIVE_INFINITY)
-                        self.fringe.pop()
-                        break
-
     def __init__(
             self,
             from_node: TreeNode,
@@ -337,16 +312,14 @@ class EditDistance(CompoundEdit):
                 constant_cost += sizes.pop().total_size
         cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
         #initial_bounds = Range(constant_cost, cost_upper_bound)
-        self._fringe: MaxFibonacciHeap[Union[ConstantNode, SearchNode], Tuple[int, int]] = MaxFibonacciHeap(
-            key=lambda n: (n.bounds().lower_bound, n.bounds().upper_bound)
+        self.matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
+            num_rows=len(self.to_seq) + 1,
+            num_cols=len(self.from_seq) + 1,
+            default_value=None
         )
-        self._fringe_boundary: Set[Union[ConstantNode, SearchNode]] = set()
-        self._nodes: List[EditDistance.ColAccessor] = [
-            EditDistance.ColAccessor(i, self._fringe, self._fringe_boundary) for i in range(len(self.to_seq) + 1)
-        ]
-        initial_node = ConstantNode(self)
-        self[0][0] = initial_node
-        self._fringe_boundary.add(initial_node)
+        self._fringe_row: int = -1
+        self._fringe_col: int = 0
+        self.__goal: Optional[SearchNode] = None
         # matrix: List[List[Union[ConstantNode, SearchNode]]] = []
         # for i in range(len(to_seq) + 1):
         #     matrix.append([])
@@ -384,37 +357,49 @@ class EditDistance(CompoundEdit):
         )
 
     def _add_node(self, row: int, col: int) -> bool:
-        if self[row][col] is not None or col > len(self.from_seq) or row > len(self.to_seq):
+        if self.matrix[row][col] is not None or col > len(self.from_seq) or row > len(self.to_seq):
             return False
         if row == 0 or col == 0:
-            self[row][col] = ConstantNode(
+            self.matrix[row][col] = ConstantNode(
                 edit_distance=self,
                 row=row,
                 col=col
             )
             return True
         else:
-            self[row][col] = SearchNode(
+            self.matrix[row][col] = SearchNode(
                 edit_distance=self,
                 row=row,
                 col=col,
-                insert=self[row - 1][col],
-                remove=self[row][col - 1],
-                match=self[row - 1][col - 1]
+                insert=self.matrix[row - 1][col],
+                remove=self.matrix[row][col - 1],
+                match=self.matrix[row - 1][col - 1]
             )
             return True
 
     @property
     def _goal(self) -> Optional[SearchNode]:
-        return self[len(self.to_seq)][len(self.from_seq)]
+        if self.__goal is None:
+            self.__goal = self.matrix[len(self.to_seq)][len(self.from_seq)]
+        return self.__goal
 
-    def __getitem__(self, row: int) -> MutableMapping[int, Optional[Union[ConstantNode, SearchNode]]]:
-        if row > len(self.to_seq):
-            class EmptyRow:
-                def __getitem__(self, item):
-                    return None
-            return EmptyRow()
-        return self._nodes[row]
+    def _fringe_diagonal(self) -> Iterator[Tuple[int, int]]:
+        row, col = self._fringe_row, self._fringe_col
+        while row >= 0 and col < self.matrix.num_cols:
+            yield row, col
+            row -= 1
+            col += 1
+
+    def _next_fringe(self) -> bool:
+        if self._goal is not None:
+            return False
+        self._fringe_row += 1
+        if self._fringe_row >= self.matrix.num_rows:
+            self._fringe_row = self.matrix.num_rows - 1
+            self._fringe_col += 1
+        for row, col in self._fringe_diagonal():
+            self._add_node(row, col)
+        return self._fringe_col < self.matrix.num_cols - 1
 
     def tighten_bounds(self) -> bool:
         if self._goal is not None:
@@ -422,51 +407,29 @@ class EditDistance(CompoundEdit):
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
-            worst_fringe_node: Union[SearchNode, ConstantNode] = self._fringe.peek()
-            prev_bounds = worst_fringe_node.bounds()
-            if worst_fringe_node.tighten_bounds():
-                if not worst_fringe_node.bounds().definitive():
-                    new_bounds = worst_fringe_node.bounds()
-                    assert new_bounds.lower_bound >= prev_bounds.lower_bound
-                    if prev_bounds.upper_bound > new_bounds.upper_bound:
-                        self._fringe.pop()
-                        self._fringe.push(worst_fringe_node)
-                    else:
-                        self._fringe.decrease_key(self._fringe.min_node, worst_fringe_node.bounds())
-            if worst_fringe_node.bounds().definitive():
-                # Add its successors
-                self._fringe.pop()
-                right_exists = (
-                        worst_fringe_node.row == 0 or
-                        self[worst_fringe_node.row - 1][worst_fringe_node.col + 1] is not None
-                ) and (
-                    self[worst_fringe_node.row][worst_fringe_node.col + 1] is not None or
-                    self._add_node(worst_fringe_node.row, worst_fringe_node.col + 1)
-                )
-                down_exists = (
-                        worst_fringe_node.col == 0 or
-                        self[worst_fringe_node.row + 1][worst_fringe_node.col - 1] is not None
-                ) and (
-                    self[worst_fringe_node.row + 1][worst_fringe_node.col] is not None or
-                    self._add_node(worst_fringe_node.row + 1, worst_fringe_node.col)
-                )
-                if right_exists and down_exists:
-                    self._add_node(worst_fringe_node.row + 1, worst_fringe_node.col + 1)
-                    self._fringe_boundary.remove(worst_fringe_node)
+            # Tighten the entire fringe diagonal until every node in it is definitive
+            if not self._next_fringe():
+                assert self._goal is not None
+                return self.tighten_bounds()
+            for row, col in self._fringe_diagonal():
+                while self.matrix[row][col].tighten_bounds():
+                    pass
+                assert self.matrix[row][col].bounds().definitive()
             if self.bounds().upper_bound < initial_bounds.upper_bound or \
                     self.bounds().lower_bound > initial_bounds.lower_bound:
                 return True
-            elif not self._fringe:
-                assert self._goal is not None
-                return self.tighten_bounds()
 
-    def bounds(self) -> Range:
+    def cost(self) -> Range:
         if self._goal is not None:
             return self._goal.bounds()
         else:
-            base_bounds: Range = super().bounds()
+            base_bounds: Range = super().cost()
+            if self._fringe_row < 0:
+                return base_bounds
             return Range(
-                max(base_bounds.lower_bound, min(node.bounds().lower_bound for node in self._fringe_boundary)),
+                max(base_bounds.lower_bound, min(
+                    self.matrix[row][col].bounds().lower_bound for row, col in self._fringe_diagonal()
+                )),
                 base_bounds.upper_bound
             )
 
