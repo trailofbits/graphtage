@@ -130,9 +130,13 @@ class KeyValuePairNode(ContainerNode):
         return self.key.total_size + self.value.total_size
 
     def __lt__(self, other):
+        if not isinstance(other, KeyValuePairNode):
+            return self.key < other
         return (self.key < other.key) or (self.key == other.key and self.value < other.value)
 
     def __eq__(self, other):
+        if not isinstance(other, KeyValuePairNode):
+            return False
         return self.key == other.key and self.value == other.value
 
     def __hash__(self):
@@ -277,12 +281,15 @@ class StringNode(LeafNode):
                 if isinstance(edit, Match) and isinstance(edit.to_node, StringNode):
                     printer.write('"')
                     sub_edits = string_edit_distance(self.object, edit.to_node.object).edits()
+                    remove_seq = []
+                    add_seq = []
                     for sub_edit in sub_edits:
                         to_remove = None
                         to_add = None
+                        matched = None
                         if isinstance(sub_edit, Match):
                             if sub_edit.from_node.object == sub_edit.to_node.object:
-                                printer.write(sub_edit.from_node.object)
+                                matched = sub_edit.from_node.object
                             else:
                                 to_remove = sub_edit.from_node.object
                                 to_add = sub_edit.to_node.object
@@ -291,14 +298,35 @@ class StringNode(LeafNode):
                         else:
                             assert isinstance(sub_edit, Insert)
                             to_add = sub_edit.to_insert.object
-                        if to_remove is not None:
+                        if to_remove is not None and to_add is not None:
+                            assert matched is None
+                            remove_seq.append(to_remove)
+                            add_seq.append(to_add)
+                        else:
                             with printer.color(Fore.WHITE).background(Back.RED).bright():
                                 with printer.strike():
-                                    printer.write(to_remove)
-                        if to_add is not None:
+                                    for rm in remove_seq:
+                                        printer.write(rm)
+                            remove_seq = []
                             with printer.color(Fore.WHITE).background(Back.GREEN).bright():
                                 with printer.under_plus():
-                                    printer.write(to_add)
+                                    for add in add_seq:
+                                        printer.write(add)
+                            add_seq = []
+                            if to_remove is not None:
+                                remove_seq.append(to_remove)
+                            if to_add is not None:
+                                add_seq.append(to_add)
+                            if matched is not None:
+                                printer.write(matched)
+                    with printer.color(Fore.WHITE).background(Back.RED).bright():
+                        with printer.strike():
+                            for rm in remove_seq:
+                                printer.write(rm)
+                    with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                        with printer.under_plus():
+                            for add in add_seq:
+                                printer.write(add)
                     printer.write('"')
                 else:
                     edit.print(printer)

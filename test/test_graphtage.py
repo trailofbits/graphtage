@@ -34,6 +34,19 @@ class TestGraphtage(TestCase):
         self.assertEqual(diff.cost(), 3)
         self.assertEqual('"a[37m[41m[1mb̶[0m[49m[39m[37m[42m[1mz̟[0m[49m[39mc[37m[41m[1md̶[0m[49m[39me[37m[41m[1mf̶[0m[49m[39m[37m[42m[1md̟[0m[49m[39m"\n', out_stream.getvalue())
 
+    def test_string_diff_remove_insert_reordering(self):
+        s1 = graphtage.StringNode('abcdefg')
+        s2 = graphtage.StringNode('abhijfg')
+        diff = graphtage.Diff(
+            s1,
+            s2,
+            (graphtage.Match(s1, s2, graphtage.levenshtein_distance(s1.object, s2.object)),)
+        )
+        out_stream = StringIO()
+        p = Printer(ansi_color=True, out_stream=out_stream)
+        diff.print(p)
+        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mb\x1b[37m\x1b[41m\x1b[1mc̶d̶e̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mh̟i̟j̟\x1b[0m\x1b[49m\x1b[39mf\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mg\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
+
     def test_small_diff(self):
         diff = graphtage.diff(self.small_from, self.small_to)
         has_test_match = False
