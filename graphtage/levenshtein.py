@@ -1,11 +1,11 @@
 from enum import Enum
-from typing import Dict, Iterator, List, Mapping, MutableMapping, Optional, Sequence, Set, Tuple, Union
+from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 from tqdm import tqdm
 
 from .edits import CompoundEdit, Edit, Insert, Remove
-from .fibonacci import FibonacciHeap, MaxFibonacciHeap
-from .search import Bounded, POSITIVE_INFINITY, Range
+from .fibonacci import FibonacciHeap
+from .search import Bounded, Range
 from .tree import TreeNode
 from .utils import SparseMatrix
 
@@ -134,34 +134,6 @@ class SearchNode(AbstractNode):
 
     def tighten_bounds(self) -> bool:
         initial_bounds = self.bounds()
-        if initial_bounds.definitive() or not self._fringe:
-            return False
-        self._fringe = sorted(self._fringe)
-        while True:
-            tightened = False
-            for node in self._fringe:
-                if node.to_node.tighten_bounds():
-                    # # see if this node dominates any of the others
-                    # for other_node in self._fringe:
-                    #     if other_node is node:
-                    #         continue
-                    #     if node.to_node.bounds().dominates(other_node.to_node.bounds()):
-                    #         self._fringe.remove(other_node)
-                    #         assert self in other_node.to_node.neighbors
-                    #         other_node.to_node.neighbors.remove(self)
-                    self._bounds = None
-                    if self.bounds().lower_bound > initial_bounds.lower_bound \
-                            or self.bounds().upper_bound < initial_bounds.upper_bound:
-                        self._invalidate_neighbors()
-                        return True
-                    else:
-                        tightened = True
-                        break
-            if not tightened:
-                return False
-
-    def tighten_bounds(self) -> bool:
-        initial_bounds = self.bounds()
         if initial_bounds.definitive():
             return False
         while self.match.tighten_bounds():
@@ -278,17 +250,6 @@ class ConstantNode(AbstractNode):
         return f"{self.__class__.__name__}(node={self.node!r}, row={self.row!r}, col={self.col!r})"
 
 
-# What I think we actually need to do:
-# Instead of building the whole matrix at once, do two phases.
-# Phase 1:
-# Start from the upper left corner. Tighten that node until it is tight.
-# Have a separate "fringe" for the EditDistance class, keeping track of all of the nodes in the matrix
-# we've added that are not yet tightened.
-# Once the entire fringe is tightened, add the next "diagonal" and tighten again.
-# Theorem: The bounds of EditDistance will be bounded below by the smallest lower bound in the fringe
-# Remember to now use the `initial_bounds` argument when creating new nodes in the matrix!
-# Once the matrix is full, perform the backward traversal from the goal and prune along the way.
-
 class EditDistance(CompoundEdit):
     def __init__(
             self,
@@ -311,7 +272,6 @@ class EditDistance(CompoundEdit):
             for _ in range(len(larger) - len(smaller)):
                 constant_cost += sizes.pop().total_size
         cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
-        #initial_bounds = Range(constant_cost, cost_upper_bound)
         self.matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
             num_rows=len(self.to_seq) + 1,
             num_cols=len(self.from_seq) + 1,
@@ -320,35 +280,6 @@ class EditDistance(CompoundEdit):
         self._fringe_row: int = -1
         self._fringe_col: int = 0
         self.__goal: Optional[SearchNode] = None
-        # matrix: List[List[Union[ConstantNode, SearchNode]]] = []
-        # for i in range(len(to_seq) + 1):
-        #     matrix.append([])
-        #     for j in range(len(from_seq) + 1):
-        #         if i == 0:
-        #             if j == 0:
-        #                 matrix[i].append(ConstantNode())
-        #             else:
-        #                 matrix[i].append(ConstantNode(
-        #                     node=from_seq[j-1],
-        #                     is_from=True,
-        #                     predecessor=matrix[i][j-1]
-        #                 ))
-        #         elif j == 0:
-        #             matrix[i].append(ConstantNode(
-        #                 node=to_seq[i-1],
-        #                 is_from=False,
-        #                 predecessor=matrix[i-1][0]
-        #             ))
-        #         else:
-        #             matrix[i].append(SearchNode(
-        #                 node_from=from_seq[j-1],
-        #                 node_to=to_seq[i-1],
-        #                 initial_bounds=initial_bounds,
-        #                 insert=matrix[i-1][j],
-        #                 remove=matrix[i][j-1],
-        #                 match=matrix[i-1][j-1]
-        #             ))
-        # self._goal = matrix[len(to_seq)][len(from_seq)]
         super().__init__(
             from_node=from_node,
             to_node=to_node,
