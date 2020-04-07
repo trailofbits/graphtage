@@ -19,7 +19,7 @@ class TestEditDistance(TestCase):
             str_from = ''.join(random.choices(LETTERS, k=str1_len))
             str_to = ''.join(random.choices(LETTERS, k=str2_len))
             distance: EditDistance = string_edit_distance(str_from, str_to)
-            edits: List[Edit] = distance.edits().sub_edits
+            edits: List[Edit] = list(distance.edits())
             reconstructed_from = ''
             reconstructed_to = ''
             for edit in edits:
