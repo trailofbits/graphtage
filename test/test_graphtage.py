@@ -32,7 +32,7 @@ class TestGraphtage(TestCase):
         p = Printer(ansi_color=True, out_stream=out_stream)
         diff.print(p)
         self.assertEqual(diff.cost(), 3)
-        self.assertEqual('"a[37m[41m[1mb̶[0m[49m[39m[37m[42m[1mz̟[0m[49m[39mc[37m[41m[1md̶[0m[49m[39me[37m[41m[1mf̶[0m[49m[39m[37m[42m[1md̟[0m[49m[39m"\n', out_stream.getvalue())
+        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1mb̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mz̟\x1b[0m\x1b[49m\x1b[39mc\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39me\x1b[37m\x1b[41m\x1b[1mf̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1md̟\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
 
     def test_string_diff_remove_insert_reordering(self):
         s1 = graphtage.StringNode('abcdefg')
