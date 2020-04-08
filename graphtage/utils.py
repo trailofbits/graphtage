@@ -1,4 +1,5 @@
 import sys
+from collections import Counter, OrderedDict
 from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
 from typing_extensions import Protocol
 
@@ -18,6 +19,33 @@ def getsizeof(obj) -> int:
         return sys.getsizeof(obj) + sum(getsizeof(key) + getsizeof(value) for key, value in obj.items())
     else:
         return sys.getsizeof(obj)
+
+
+class HashableCounter(Counter):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __hash__(self):
+        h = 0
+        for key, value in self.items():
+            h ^= hash((key, value))
+        return h
+
+
+class OrderedCounter(Counter, OrderedDict):
+    """A counter that remembers the order elements are first encountered"""
+
+    def __hash__(self):
+        h = 0
+        for key, value in self.items():
+            h ^= hash((key, value))
+        return h
+
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__.__name__, OrderedDict(self))
+
+    def __reduce__(self):
+        return self.__class__, (OrderedDict(self),)
 
 
 class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], Sized):

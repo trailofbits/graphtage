@@ -1,12 +1,14 @@
 import itertools
+from abc import ABC
 from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, Remove, Replace
 from .levenshtein import EditDistance, levenshtein_distance
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
-from .search import Range
+from .search import IterativeTighteningSearch, Range
 from .tree import ContainerNode, TreeNode
+from .utils import HashableCounter
 
 
 class Diff:
@@ -156,18 +158,19 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class ListNode(ContainerNode):
-    def __init__(self, list_like: Sequence[TreeNode]):
-        self.children: Tuple[TreeNode] = tuple(list_like)
+class SequenceNode(ContainerNode, ABC):
+    def __init__(self):
+        self.start_symbol: str = '['
+        self.end_symbol: str = ']'
 
     def print(self, printer: Printer, diff: Optional[Diff] = None):
         if diff is not None and diff[self] and isinstance(diff[self][0], CompoundEdit):
             assert len(diff[self]) == 1
             edits: List[Edit] = list(diff[self][0].edits())
         else:
-            edits: List[Edit] = [Match(child, child, 0) for child in self.children]
+            edits: List[Edit] = [Match(child, child, 0) for child in self]
         with printer.bright():
-            printer.write("[")
+            printer.write(self.start_symbol)
         with printer.indent() as p:
             to_remove: int = 0
             to_insert: int = 0
@@ -198,10 +201,16 @@ class ListNode(ContainerNode):
                     edit.from_node.print(p, diff)
                 else:
                     edit.print(p)
-        if self.children:
+        if len(self) > 0:
             printer.newline()
         with printer.bright():
-            printer.write("]")
+            printer.write(self.end_symbol)
+
+
+class ListNode(SequenceNode):
+    def __init__(self, list_like: Sequence[TreeNode]):
+        super().__init__()
+        self.children: Tuple[TreeNode] = tuple(list_like)
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
@@ -241,9 +250,89 @@ class ListNode(ContainerNode):
         return str(self.children)
 
 
+class MultiSetNode(SequenceNode):
+    def __init__(self, items: Iterable[TreeNode]):
+        super().__init__()
+        self.children: HashableCounter[TreeNode] = HashableCounter(items)
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, MultiSetNode):
+            if len(self.children) == len(node.children) == 0:
+                return Match(self, node, 0)
+            elif self.children == node.children:
+                return Match(self, node, 0)
+            else:
+                to_insert = node.children - self.children
+                to_remove = self.children - node.children
+                to_match = self.children & node.children
+                edits: List[Edit] = [Match(n, n, 0) for n in to_match.elements()]
+                best_matches: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
+                    node_from.edits(node_to) for node_from, node_to in itertools.product(
+                        to_remove.keys(), to_insert.keys()
+                    )
+                )
+                removed = set()
+                # TODO: Instead of using the `remove` set, implement node removal in the Search module
+                while best_matches:
+                    best_edit: Edit = best_matches.search()
+                    best_matches.remove_best()
+                    assert best_edit.from_node in to_remove
+                    assert best_edit.to_node in to_insert
+                    if best_edit.to_node in removed or best_edit.from_node in removed:
+                        continue
+                    while best_edit.cost().upper_bound > best_edit.from_node.total_size + best_edit.to_node.total_size \
+                            and best_edit.tighten_bounds():
+                        pass
+                    if best_edit.cost().upper_bound <= best_edit.from_node.total_size + best_edit.to_node.total_size:
+                        # it is better to match these nodes than to replace/insert them
+                        removed.add(best_edit.from_node)
+                        removed.add(best_edit.to_node)
+                        num_to_match = min(to_remove[best_edit.from_node], to_insert[best_edit.to_node])
+                        assert num_to_match > 0
+                        for _ in range(num_to_match):
+                            edits.append(best_edit)
+                        to_insert[best_edit.to_node] -= num_to_match
+                        to_remove[best_edit.from_node] -= num_to_match
+                edits.extend(Remove(remove_from=self, to_remove=n) for n in to_remove)
+                edits.extend(Insert(insert_into=self, to_insert=n) for n in to_insert)
+                return EditSequence(
+                    from_node=self,
+                    to_node=node,
+                    edits=iter(
+                        #[Match(self, node, 0)] +
+                        edits
+                    )
+                )
+        else:
+            return Replace(self, node)
+
+    def calculate_total_size(self):
+        return sum(c.total_size * count for c, count in self.children.items())
+
+    def __eq__(self, other):
+        return isinstance(other, MultiSetNode) and other.children == self.children
+
+    def __hash__(self):
+        return hash(self.children)
+
+    def __len__(self):
+        return sum(self.children.values())
+
+    def __iter__(self) -> Iterator[TreeNode]:
+        return self.children.elements()
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({list(self)!r})"
+
+    def __str__(self):
+        return str(self.children)
+
+
 class DictNode(ListNode):
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
         super().__init__(sorted(KeyValuePairNode(key, value) for key, value in dict_like.items()))
+        self.start_symbol = '{'
+        self.end_symbol = '}'
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, DictNode):
