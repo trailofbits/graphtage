@@ -68,7 +68,7 @@ class HeapNode(Generic[T, Key]):
             node = node.right
 
     def __lt__(self, other):
-        return self.deleted or self.key < other.key
+        return (self.deleted and not other.deleted) or self.key < other.key
 
     def __le__(self, other):
         return self < other or self.key == other.key
@@ -102,6 +102,15 @@ class FibonacciHeap(Generic[T, Key]):
         while self._min is not None and self._min.deleted:
             self._extract_min()
         return self._min.item
+
+    def remove(self, node: HeapNode[T, Key]):
+        node.deleted = True
+        y = node.parent
+        if y is not None and node < y:
+            self._cut(node, y)
+            self._cascading_cut(y)
+        self._min = node
+        self._extract_min()
 
     @property
     def min_node(self) -> HeapNode[T, Key]:

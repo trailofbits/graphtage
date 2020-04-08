@@ -53,13 +53,20 @@ class TestFibonacciHeap(TestCase):
         heap = self.random_heap()
         self.assertEqual(sum(1 for _ in heap.nodes()), len(heap))
 
-    def test_node_deletion(self):
+    def test_manual_node_deletion(self):
         heap = self.random_heap()
         for i in trange(len(self.random_list)//4):
             random_node: HeapNode[int, int] = random.choice(list(heap.nodes()))
             heap.decrease_key(random_node, -1)
             heap.pop()
             random_node.deleted = True
+            self.assertEqual(len(heap), len(self.random_list) - i - 1)
+
+    def test_node_deletion(self):
+        heap = self.random_heap()
+        for i in trange(len(self.random_list)//4):
+            random_node: HeapNode[int, int] = random.choice(list(heap.nodes()))
+            heap.remove(random_node)
             self.assertEqual(len(heap), len(self.random_list) - i - 1)
 
     def test_decrease_key(self):
