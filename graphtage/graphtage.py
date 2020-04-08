@@ -56,7 +56,7 @@ class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
 
-    def calculate_total_size(self):
+    def calculate_total_size(self) -> int:
         return len(str(self.object))
 
     def edits(self, node: TreeNode) -> Edit:
