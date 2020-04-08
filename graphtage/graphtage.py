@@ -4,9 +4,10 @@ from collections import defaultdict
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, Remove, Replace
+from .fibonacci import FibonacciHeap, HeapNode
 from .levenshtein import EditDistance, levenshtein_distance
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
-from .search import IterativeTighteningSearch, Range
+from .search import NEGATIVE_INFINITY, Range
 from .tree import ContainerNode, TreeNode
 from .utils import HashableCounter
 
@@ -250,6 +251,31 @@ class ListNode(SequenceNode):
         return str(self.children)
 
 
+class EditComparator:
+    def __init__(self, edit: Edit):
+        self.edit = edit
+
+    def __lt__(self, other):
+        while not (
+                self.edit.bounds().dominates(other.edit.bounds())
+                or
+                other.edit.bounds().dominates(self.edit.bounds())
+        ) and (
+                self.edit.tighten_bounds() or other.edit.tighten_bounds()
+        ):
+            pass
+        return self.edit.bounds().dominates(other.edit.bounds()) or (
+                self.edit.bounds() == other.edit.bounds() and id(self) < id(other)
+        )
+
+    def __le__(self, other):
+        if self < other:
+            return True
+        while self.edit.tighten_bounds() or other.edit.tighten_bounds():
+            pass
+        return self.edit.bounds() == other.edit.bounds()
+
+
 class MultiSetNode(SequenceNode):
     def __init__(self, items: Iterable[TreeNode]):
         super().__init__()
@@ -266,20 +292,19 @@ class MultiSetNode(SequenceNode):
                 to_remove = self.children - node.children
                 to_match = self.children & node.children
                 edits: List[Edit] = [Match(n, n, 0) for n in to_match.elements()]
-                best_matches: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
-                    node_from.edits(node_to) for node_from, node_to in itertools.product(
-                        to_remove.keys(), to_insert.keys()
-                    )
-                )
+                best_matches: FibonacciHeap[Edit, EditComparator] = FibonacciHeap(key=EditComparator)
+                heap_nodes: Dict[TreeNode, List[HeapNode[Edit, EditComparator]]] = defaultdict(list)
+                for node_from, node_to in itertools.product(to_remove.keys(), to_insert.keys()):
+                    heap_node = best_matches.push(node_from.edits(node_to))
+                    heap_nodes[node_from].append(heap_node)
+                    heap_nodes[node_to].append(heap_node)
                 removed = set()
-                # TODO: Instead of using the `remove` set, implement node removal in the Search module
                 while best_matches:
-                    best_edit: Edit = best_matches.search()
-                    best_matches.remove_best()
+                    best_edit: Edit = best_matches.pop()
+                    if best_edit.from_node in removed or best_edit.to_node in removed:
+                        continue
                     assert best_edit.from_node in to_remove
                     assert best_edit.to_node in to_insert
-                    if best_edit.to_node in removed or best_edit.from_node in removed:
-                        continue
                     while best_edit.cost().upper_bound > best_edit.from_node.total_size + best_edit.to_node.total_size \
                             and best_edit.tighten_bounds():
                         pass
@@ -287,14 +312,20 @@ class MultiSetNode(SequenceNode):
                         # it is better to match these nodes than to replace/insert them
                         removed.add(best_edit.from_node)
                         removed.add(best_edit.to_node)
+                        for heap_node in itertools.chain(
+                                heap_nodes[best_edit.from_node], heap_nodes[best_edit.to_node]
+                        ):
+                            if not heap_node.deleted:
+                                pass
+                                #best_matches.remove(heap_node)
                         num_to_match = min(to_remove[best_edit.from_node], to_insert[best_edit.to_node])
                         assert num_to_match > 0
                         for _ in range(num_to_match):
                             edits.append(best_edit)
                         to_insert[best_edit.to_node] -= num_to_match
                         to_remove[best_edit.from_node] -= num_to_match
-                edits.extend(Remove(remove_from=self, to_remove=n) for n in to_remove)
-                edits.extend(Insert(insert_into=self, to_insert=n) for n in to_insert)
+                edits.extend(Remove(remove_from=self, to_remove=n) for n in to_remove.elements())
+                edits.extend(Insert(insert_into=self, to_insert=n) for n in to_insert.elements())
                 return EditSequence(
                     from_node=self,
                     to_node=node,
@@ -328,7 +359,7 @@ class MultiSetNode(SequenceNode):
         return str(self.children)
 
 
-class DictNode(ListNode):
+class DictNode(MultiSetNode):
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
         super().__init__(sorted(KeyValuePairNode(key, value) for key, value in dict_like.items()))
         self.start_symbol = '{'
