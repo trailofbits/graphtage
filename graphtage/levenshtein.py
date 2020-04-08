@@ -172,19 +172,10 @@ class SearchNode(AbstractNode):
                 stack.append(match)
         return reversed(result)
 
-    def _bounds_fold_iterative(self):
-        for node in self.ancestors():
-            node.bounds()
-
     def bounds(self) -> Range:
         if self._bounds is None:
             bounds = self.match.bounds()
             lb, ub = bounds.lower_bound, bounds.upper_bound
-            # if sum(f.to_node._bounds is not None for f in self._fringe) < len(self._fringe):
-            #     # This means at least one of our fringe nodes hasn't been bounded yet.
-            #     # self.bounds() is potentially recursive if our ancestors haven't been bounded yet,
-            #     # which can sometimes exhaust Python's stack, so do this iteratively.
-            #     self._bounds_fold_iterative()
             bounds = sorted(f.to_node.bounds() for f in self._fringe)
             assert bounds
             if len(bounds) == 1 or (
@@ -195,6 +186,24 @@ class SearchNode(AbstractNode):
                 lb += min(b.lower_bound for b in bounds)
                 ub += max(b.upper_bound for b in bounds)
                 self._bounds = Range(lb, ub)
+            if self._bounds.definitive() and \
+                    self is self.edit_distance.matrix[len(self.edit_distance.to_seq)][len(self.edit_distance.from_seq)]:
+                # We are the goal, so we are done! Do some memory cleanup
+                node: Union[SearchNode, Optional[ConstantNode]] = self
+                new_matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
+                    num_rows=len(self.edit_distance.to_seq) + 1,
+                    num_cols=len(self.edit_distance.from_seq) + 1,
+                    default_value=None
+                )
+                while isinstance(node, SearchNode):
+                    new_matrix[node.row][node.col] = node
+                    next_node = node.best_predecessor()
+                    node._fringe = [next_node]
+                    node = next_node.to_node
+                while isinstance(node, ConstantNode):
+                    new_matrix[node.row][node.col] = node
+                    node = node.predecessor
+                self.edit_distance.matrix = new_matrix
         return self._bounds
 
     def __repr__(self):

@@ -16,6 +16,9 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
             self.num_cols: Optional[int] = num_cols
             self.default_value: Optional[T] = default_value
 
+        def clear(self):
+            self.row = {}
+
         def __len__(self) -> int:
             return len(self.row)
 
@@ -48,6 +51,9 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
         self.num_cols = num_cols
         self.default_value = default_value
         self._max_row: Optional[int] = None
+
+    def clear(self):
+        self.rows = {}
 
     def __getitem__(self, row: int) -> MutableMapping[int, Optional[T]]:
         if row in self.rows:
