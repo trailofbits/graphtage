@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
@@ -8,6 +9,9 @@ from .fibonacci import FibonacciHeap
 from .search import Bounded, Range
 from .tree import TreeNode
 from .utils import SparseMatrix
+
+
+log = logging.getLogger(__name__)
 
 
 def levenshtein_distance(s: str, t: str) -> int:
@@ -189,6 +193,8 @@ class SearchNode(AbstractNode):
             if self._bounds.definitive() and \
                     self is self.edit_distance.matrix[len(self.edit_distance.to_seq)][len(self.edit_distance.from_seq)]:
                 # We are the goal, so we are done! Do some memory cleanup
+                if log.isEnabledFor(logging.DEBUG):
+                    size_before = self.edit_distance.matrix.getsizeof()
                 node: Union[SearchNode, Optional[ConstantNode]] = self
                 new_matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
                     num_rows=len(self.edit_distance.to_seq) + 1,
@@ -203,6 +209,9 @@ class SearchNode(AbstractNode):
                 while isinstance(node, ConstantNode):
                     new_matrix[node.row][node.col] = node
                     node = node.predecessor
+                if log.isEnabledFor(logging.DEBUG):
+                    size_after = new_matrix.getsizeof()
+                    log.debug(f"Cleaned up {size_before - size_after} bytes")
                 self.edit_distance.matrix = new_matrix
         return self._bounds
 

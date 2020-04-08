@@ -1,10 +1,26 @@
 import sys
-from typing import Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
+from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
+from typing_extensions import Protocol
 
 T = TypeVar('T')
 
 
-class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
+class Sized(Protocol):
+    getsizeof: Callable[[], int]
+
+
+def getsizeof(obj) -> int:
+    if hasattr(obj, 'getsizeof'):
+        return obj.getsizeof()
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        return sys.getsizeof(obj) + sum(getsizeof(i) for i in obj)
+    elif isinstance(obj, dict):
+        return sys.getsizeof(obj) + sum(getsizeof(key) + getsizeof(value) for key, value in obj.items())
+    else:
+        return sys.getsizeof(obj)
+
+
+class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], Sized):
     class SparseMatrixRow(MutableMapping[int, Optional[T]]):
         def __init__(
                 self,
@@ -21,9 +37,7 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
             self.row = {}
 
         def getsizeof(self) -> int:
-            return sys.getsizeof(self) + sum(
-                sys.getsizeof(key) + sys.getsizeof(value) for key, value in self.row.items()
-            )
+            return sys.getsizeof(self) + getsizeof(self.row)
 
         def __len__(self) -> int:
             return len(self.row)
@@ -62,7 +76,7 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
         self.rows = {}
 
     def getsizeof(self) -> int:
-        return sys.getsizeof(self) + sum(sys.getsizeof(rownum) + row.getsizeof() for rownum, row in self.rows.items())
+        return sys.getsizeof(self) + getsizeof(self.rows)
 
     def __getitem__(self, row: int) -> MutableMapping[int, Optional[T]]:
         if row in self.rows:

@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import sys
 import tempfile as tf
@@ -89,6 +90,13 @@ def main(argv=None):
     color_group = parser.add_mutually_exclusive_group()
     color_group.add_argument('--color', '-c', action='store_true', default=None, help='Force the ANSI color output; this is turned on by default only if run from a TTY')
     color_group.add_argument('--no-color', action='store_true', default=None, help='Do not use ANSI color in the output')
+    log_group = parser.add_mutually_exclusive_group()
+    log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
+        logging.getLevelName(x)
+        for x in range(1, 101)
+        if not logging.getLevelName(x).startswith('Level')
+    ), help='Sets the log level for Graphtage (default=INFO)')
+    log_group.add_argument('--debug', action='store_true', help='Equivalent to `--log-level=DEBUG`')
     parser.add_argument('--version', '-v', action='store_true', help='Print Graphtage\'s version information to STDERR')
     parser.add_argument('-dumpversion', action='store_true',
                         help='Print Graphtage\'s raw version information to STDOUT and exit')
@@ -97,6 +105,15 @@ def main(argv=None):
         argv = sys.argv
 
     args = parser.parse_args(argv[1:])
+
+    if args.debug:
+        numeric_log_level = logging.DEBUG
+    else:
+        numeric_log_level = getattr(logging, args.log_level.upper(), None)
+        if not isinstance(numeric_log_level, int):
+            sys.stderr.write(f'Invalid log level: {args.log_level}')
+            exit(1)
+    logging.basicConfig(level=numeric_log_level)
 
     if args.dumpversion:
         print(' '.join(map(str, version.__version__)))
