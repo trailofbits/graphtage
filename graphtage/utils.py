@@ -1,3 +1,4 @@
+import sys
 from typing import Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
 
 T = TypeVar('T')
@@ -18,6 +19,11 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
 
         def clear(self):
             self.row = {}
+
+        def getsizeof(self) -> int:
+            return sys.getsizeof(self) + sum(
+                sys.getsizeof(key) + sys.getsizeof(value) for key, value in self.row.items()
+            )
 
         def __len__(self) -> int:
             return len(self.row)
@@ -54,6 +60,9 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
 
     def clear(self):
         self.rows = {}
+
+    def getsizeof(self) -> int:
+        return sys.getsizeof(self) + sum(sys.getsizeof(rownum) + row.getsizeof() for rownum, row in self.rows.items())
 
     def __getitem__(self, row: int) -> MutableMapping[int, Optional[T]]:
         if row in self.rows:
