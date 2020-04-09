@@ -7,7 +7,7 @@ from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, Remove, Repl
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
-from .search import Range
+from graphtage.bounds import Range
 from .tree import ContainerNode, TreeNode
 from .utils import HashableCounter
 

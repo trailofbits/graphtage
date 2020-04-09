@@ -2,7 +2,8 @@ from abc import abstractmethod, ABC
 from typing import Iterator, List, Optional
 
 from .printer import Back, Fore, Printer
-from .search import Bounded, IterativeTighteningSearch, Range
+from .search import IterativeTighteningSearch
+from .bounds import Range, Bounded
 from .tree import TreeNode
 
 

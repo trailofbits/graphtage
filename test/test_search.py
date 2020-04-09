@@ -1,9 +1,10 @@
 import random
 from unittest import TestCase
 
-from tqdm import tqdm, trange
+from tqdm import trange
 
-from graphtage.search import Bounded, Range, IterativeTighteningSearch
+from graphtage.bounds import Bounded, Range
+from graphtage.search import IterativeTighteningSearch
 
 
 class RandomDecreasingRange(Bounded):

@@ -9,8 +9,8 @@ from tqdm import tqdm
 
 from . import graphtage
 from . import printer
-from .search import Range
 from . import version
+from .bounds import Range
 
 
 class Tempfile:

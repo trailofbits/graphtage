@@ -4,9 +4,9 @@ from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 from tqdm import tqdm
 
+from .bounds import Bounded, Range
 from .edits import CompoundEdit, Edit, Insert, Remove
 from .fibonacci import FibonacciHeap
-from .search import Bounded, Range
 from .tree import TreeNode
 from .utils import SparseMatrix
 

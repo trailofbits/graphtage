@@ -1,36 +1,11 @@
 import itertools
 from typing import Iterator, List, Tuple
 
+from .bounds import BoundedComparator, Range
 from .edits import CompoundEdit, Edit, Insert, Match, Remove
 from .fibonacci import FibonacciHeap
-from .search import Range
 from .tree import TreeNode
 from .utils import HashableCounter
-
-
-class EditComparator:
-    def __init__(self, edit: Edit):
-        self.edit = edit
-
-    def __lt__(self, other):
-        while not (
-                self.edit.bounds().dominates(other.edit.bounds())
-                or
-                other.edit.bounds().dominates(self.edit.bounds())
-        ) and (
-                self.edit.tighten_bounds() or other.edit.tighten_bounds()
-        ):
-            pass
-        return self.edit.bounds().dominates(other.edit.bounds()) or (
-                self.edit.bounds() == other.edit.bounds() and id(self) < id(other)
-        )
-
-    def __le__(self, other):
-        if self < other:
-            return True
-        while self.edit.tighten_bounds() or other.edit.tighten_bounds():
-            pass
-        return self.edit.bounds() == other.edit.bounds()
 
 
 class MultiSetEdit(CompoundEdit):
@@ -47,7 +22,7 @@ class MultiSetEdit(CompoundEdit):
         self.to_remove = from_set - to_set
         self.to_match = from_set & to_set
         self._edits: List[Edit] = [Match(n, n, 0) for n in self.to_match.elements()]
-        self.best_matches: FibonacciHeap[Edit, EditComparator] = FibonacciHeap(key=EditComparator)
+        self.best_matches: FibonacciHeap[Edit, BoundedComparator] = FibonacciHeap(key=BoundedComparator)
         self._node_combos: Iterator[Tuple[TreeNode, TreeNode]] = \
             itertools.product(self.to_remove.keys(), self.to_insert.keys())
         self.removed = set()
