@@ -1,5 +1,5 @@
 import itertools
-from typing import Iterator, List
+from typing import Iterator, List, Tuple
 
 from .edits import CompoundEdit, Edit, Insert, Match, Remove
 from .fibonacci import FibonacciHeap
@@ -48,8 +48,8 @@ class MultiSetEdit(CompoundEdit):
         self.to_match = from_set & to_set
         self._edits: List[Edit] = [Match(n, n, 0) for n in self.to_match.elements()]
         self.best_matches: FibonacciHeap[Edit, EditComparator] = FibonacciHeap(key=EditComparator)
-        for node_from, node_to in itertools.product(self.to_remove.keys(), self.to_insert.keys()):
-            self.best_matches.push(node_from.edits(node_to))
+        self._node_combos: Iterator[Tuple[TreeNode, TreeNode]] = \
+            itertools.product(self.to_remove.keys(), self.to_insert.keys())
         self.removed = set()
         super().__init__(
             from_node=from_node,
@@ -63,6 +63,17 @@ class MultiSetEdit(CompoundEdit):
 
     def tighten_bounds(self) -> bool:
         starting_bounds: Range = self.cost()
+        while self._node_combos is not None:
+            try:
+                node_from, node_to = next(self._node_combos)
+                edit = node_from.edits(node_to)
+                if edit.bounds().lower_bound >= node_from.total_size + node_to.total_size + 2:
+                    # This edit is no better than replacing/inserting the nodes
+                    pass
+                else:
+                    self.best_matches.push(edit)
+            except StopIteration:
+                self._node_combos = None
         while self.best_matches:
             best_edit: Edit = self.best_matches.pop()
             if best_edit.from_node in self.removed or best_edit.to_node in self.removed:
