@@ -61,6 +61,9 @@ class CompoundEdit(Edit, ABC):
         for edit in self.edits():
             edit.print(printer)
 
+    def __iter__(self) -> Iterator[Edit]:
+        return self.edits()
+
 
 class PossibleEdits(CompoundEdit):
     def __init__(
@@ -323,9 +326,6 @@ class EditSequence(CompoundEdit):
 
     def __len__(self):
         return len(self.sub_edits)
-
-    def __iter__(self) -> Iterator[Edit]:
-        return iter(self.sub_edits)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(*{self.sub_edits!r})"

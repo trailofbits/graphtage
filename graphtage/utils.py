@@ -2,6 +2,7 @@ import sys
 from collections import Counter, OrderedDict
 from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
 from typing_extensions import Protocol
+import typing
 
 T = TypeVar('T')
 
@@ -21,7 +22,7 @@ def getsizeof(obj) -> int:
         return sys.getsizeof(obj)
 
 
-class HashableCounter(Counter):
+class HashableCounter(Generic[T], Counter, typing.Counter[T]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
