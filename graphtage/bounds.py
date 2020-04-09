@@ -1,6 +1,7 @@
-from typing import Union, Callable
-
+from typing import Callable, Generic, Iterable, Iterator, TypeVar, Union
 from typing_extensions import Protocol
+
+from .fibonacci import FibonacciHeap
 
 
 class Infinity:
@@ -150,20 +151,31 @@ class BoundedComparator:
 
     def __lt__(self, other):
         while not (
-                self.bounded.bounds().dominates(other.edit.bounds())
+                self.bounded.bounds().dominates(other.bounded.bounds())
                 or
-                other.edit.bounds().dominates(self.bounded.bounds())
+                other.bounded.bounds().dominates(self.bounded.bounds())
         ) and (
-                self.bounded.tighten_bounds() or other.edit.tighten_bounds()
+                self.bounded.tighten_bounds() or other.bounded.tighten_bounds()
         ):
             pass
-        return self.bounded.bounds().dominates(other.edit.bounds()) or (
-                self.bounded.bounds() == other.edit.bounds() and id(self) < id(other)
+        return self.bounded.bounds().dominates(other.bounded.bounds()) or (
+                self.bounded.bounds() == other.bounded.bounds() and id(self) < id(other)
         )
 
     def __le__(self, other):
         if self < other:
             return True
-        while self.bounded.tighten_bounds() or other.edit.tighten_bounds():
+        while self.bounded.tighten_bounds() or other.bounded.tighten_bounds():
             pass
-        return self.bounded.bounds() == other.edit.bounds()
+        return self.bounded.bounds() == other.bounded.bounds()
+
+
+B = TypeVar('B', bound=Bounded)
+
+
+def sort(items: Iterable[B]) -> Iterator[B]:
+    heap: FibonacciHeap[B, BoundedComparator] = FibonacciHeap(key=BoundedComparator)
+    for item in items:
+        heap.push(item)
+    while heap:
+        yield heap.pop()
