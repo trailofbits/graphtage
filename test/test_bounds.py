@@ -7,10 +7,10 @@ from graphtage.bounds import Bounded, Range, sort
 
 
 class RandomDecreasingRange(Bounded):
-    def __init__(self):
-        self.final_value = random.randint(0, 1000000)
-        self._lb = random.randint(0, self.final_value)
-        self._ub = random.randint(self.final_value, 2000000)
+    def __init__(self, fixed_lb: int = 0, fixed_ub: int = 2000000):
+        self.final_value = random.randint(fixed_lb, fixed_lb + (fixed_ub - fixed_lb) // 2)
+        self._lb = random.randint(fixed_lb, self.final_value)
+        self._ub = random.randint(self.final_value, fixed_ub)
         self.tightenings: int = 0
 
     def bounds(self) -> Range:
