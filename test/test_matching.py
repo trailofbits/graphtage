@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from graphtage.matching import WeightedBipartiteMatcher
+from graphtage.matching import HungarianMethod, WeightedBipartiteMatcher
 
-from .test_bounds import RandomDecreasingRange, Range
+from .test_bounds import RandomDecreasingRange
 
 
 class TestWeightedBipartiteMatcher(TestCase):

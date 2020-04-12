@@ -2,9 +2,10 @@ from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
 from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, Set, TypeVar, Union
 
-from .bounds import Bounded, Range
+from .bounds import Bounded, BoundedComparator, ConstantBound, min_bounded, POSITIVE_INFINITY, Range
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
+from .utils import SparseMatrix
 
 
 T = TypeVar('T')
@@ -210,34 +211,48 @@ class PathSet(Generic[T], Matching[T]):
     """A version of a Matching with edge directions overridden, used for Karp's weighted bipartite matching algorithm"""
     def __init__(self):
         super().__init__()
-        self._flipped: Dict[Edge[T], bool] = {}
+        self._flipped: Dict[MatchingToNode[T], Edge[T]] = {}
 
     def add(self, edge: Edge[T], flip_direction: bool):
-        super().add(edge)
-        self._flipped[edge] = flip_direction
+        if flip_direction:
+            self._flipped[edge.to_node] = edge
+        else:
+            super().add(edge)
 
-    def is_flipped(self, edge: Edge[T]) -> bool:
-        return self._flipped[edge]
+    def _path_to(
+            self,
+            from_any_of: Set[MatchingFromNode[T]],
+            node: MatchingNode[T],
+            history: Optional[Set[Edge[T]]] = None
+    ) -> Optional[Set[Edge[T]]]:
+        if node in from_any_of:
+            return set()
+        if history is None:
+            history = set()
+        for source in (self._flipped, self):
+            if node in source:
+                edge = source[node]
+                if edge not in history:
+                    history.add(edge)
+                    if edge.to_node is node:
+                        other_node = edge.from_node
+                    else:
+                        other_node = edge.to_node
+                    ret = self._path_to(from_any_of, other_node, history)
+                    if ret is not None:
+                        return {edge} | ret
+        return None
 
-    def path_to(self, from_any_of: Set[MatchingFromNode[T]], to_node: MatchingToNode[T]) -> Set[Edge[T]]:
-        path: List[Edge[T]] = []
-        node = to_node
-        edge = None
-        while node not in from_any_of:
-            edge = self[node]
-            assert edge is not None
-            path.append(edge)
-            if edge.from_node is node:
-                assert self._flipped[edge]
-                node = edge.to_node
-            else:
-                assert edge.to_node is node
-                node = edge.from_node
-        if edge is None:
-            edge = self[node]
-            assert edge is not None
-            path.append(edge)
-        return set(path)
+    def path_to(
+        self,
+        from_any_of: Set[MatchingFromNode[T]],
+        node: MatchingToNode[T]
+    ) -> Set[Edge[T]]:
+        ret = self._path_to(from_any_of, node)
+        if ret is None:
+            return set()
+        else:
+            return ret
 
 
 class QueueElement:
@@ -367,17 +382,3 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
 
     def bounds(self) -> Range:
         pass
-
-
-class HungarianMethod(Generic[T], Bounded):
-    def __init__(
-            self,
-            from_nodes: Iterable[T],
-            to_nodes: Iterable[T],
-            get_edge: Callable[[T, T], Optional[Bounded]]
-    ):
-        self.from_nodes: List[MatchingFromNode[T]] = [MatchingFromNode(self, node) for node in from_nodes]
-        self.to_nodes: List[MatchingToNode[T]] = [MatchingToNode(self, node) for node in to_nodes]
-        if len(self.from_nodes) > len(self.to_nodes):
-            raise ValueError()
-        self.get_edge = get_edge

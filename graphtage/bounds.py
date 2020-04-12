@@ -1,4 +1,4 @@
-from typing import Callable, Generic, Iterable, Iterator, TypeVar, Union
+from typing import Callable, Iterable, Iterator, Optional, TypeVar, Union
 from typing_extensions import Protocol
 
 from .fibonacci import FibonacciHeap
@@ -145,6 +145,17 @@ class Bounded(Protocol):
     bounds: Callable[[], Range]
 
 
+class ConstantBound(Bounded):
+    def __init__(self, value: RangeValue):
+        self._range = Range(value, value)
+
+    def bounds(self) -> Range:
+        return self._range
+
+    def tighten_bounds(self) -> bool:
+        return False
+
+
 class BoundedComparator:
     def __init__(self, bounded: Bounded):
         self.bounded = bounded
@@ -179,3 +190,13 @@ def sort(items: Iterable[B]) -> Iterator[B]:
         heap.push(item)
     while heap:
         yield heap.pop()
+
+
+def min_bounded(bounds: Iterator[B]) -> B:
+    best_item: Optional[B] = None
+    best: Optional[BoundedComparator] = None
+    for b in map(BoundedComparator, bounds):
+        if best_item is None or b < best:
+            best_item = b.bounded
+            best = b
+    return best_item
