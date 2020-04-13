@@ -21,6 +21,8 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         'colorama',
+        'intervaltree',
+        'scipy>=1.4.0',
         'tqdm'
     ],
     entry_points={

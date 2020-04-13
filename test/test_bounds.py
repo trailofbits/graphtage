@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from tqdm import trange
 
-from graphtage.bounds import Bounded, Range, sort
+from graphtage.bounds import Bounded, make_distinct, Range, sort
 
 
 class RandomDecreasingRange(Bounded):
@@ -57,3 +57,15 @@ class TestBounds(TestCase):
             sorted_ranges = sorted(ranges, key=lambda r: r.final_value)
             for expected, actual in zip(sorted_ranges, sort(ranges)):
                 self.assertEqual(expected.final_value, actual.final_value)
+
+    def test_make_distinct(self):
+        for i in trange(128):
+            ranges = [RandomDecreasingRange() for _ in range(i)]
+            make_distinct(*ranges)
+            last_range = None
+            for r in sort(ranges):
+                rbounds = r.bounds()
+                if last_range is not None:
+                    self.assertTrue((last_range.definitive() and rbounds.definitive() and last_range == rbounds) or
+                                    last_range.upper_bound < rbounds.lower_bound)
+                last_range = rbounds

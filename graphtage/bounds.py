@@ -1,6 +1,8 @@
 from typing import Callable, Iterable, Iterator, Optional, TypeVar, Union
 from typing_extensions import Protocol
 
+from intervaltree import Interval, IntervalTree
+
 from .fibonacci import FibonacciHeap
 
 
@@ -91,6 +93,9 @@ class Range:
 
     def __le__(self, other):
         return self < other or self == other
+
+    def to_inverval(self) -> Interval:
+        return Interval(self.lower_bound, self.upper_bound + 1, self)
 
     def dominates(self, other) -> bool:
         return self.upper_bound <= other.lower_bound
@@ -200,3 +205,31 @@ def min_bounded(bounds: Iterator[B]) -> B:
             best_item = b.bounded
             best = b
     return best_item
+
+
+def make_distinct(*bounded: Bounded):
+    """Ensures that all of the provided bounded arguments are tightened until they finite and
+    either definitive or non-overlapping with any of the other arguments"""
+    tree: IntervalTree = IntervalTree()
+    for b in bounded:
+        if not b.bounds().finite:
+            b.tighten_bounds()
+            if not b.bounds().finite:
+                raise ValueError(f"Could not tighten {b!r} to a finite bound")
+        tree.add(Interval(b.bounds().lower_bound, b.bounds().upper_bound + 1, b))
+    while tree:
+        interval = next(iter(tree))
+        matching = tree[interval.begin:interval.end]
+        if len(matching) > 1:
+            for i in matching:
+                if i.data.tighten_bounds():
+                    tree.remove(i)
+                    tree.add(Interval(i.data.bounds().lower_bound, i.data.bounds().upper_bound + 1, i.data))
+                    break
+            else:
+                # There is nothing more we can do to shrink this interval
+                for i in matching:
+                    tree.remove(i)
+        else:
+            # There is not any overlap on this interval, so we are done with it
+            tree.remove(interval)
