@@ -12,9 +12,9 @@ from .test_bounds import RandomDecreasingRange
 
 class TestWeightedBipartiteMatcher(TestCase):
     def test_weighted_bipartite_matching(self):
-        for _ in trange(1000):
-            from_nodes = list(range(10))
-            to_nodes = list(range(10))
+        for n in trange(1, 25):
+            from_nodes = list(range(n))
+            to_nodes = list(range(n))
             edges = [
                 [RandomDecreasingRange() for _ in range(len(to_nodes))] for _ in range(len(from_nodes))
             ]

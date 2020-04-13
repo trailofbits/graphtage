@@ -38,7 +38,7 @@ class RandomDecreasingRange(Bounded):
             self._ub = self.final_value
         else:
             self._ub -= random.randint(max(int(0.5 * ub_diff), 1), ub_diff)
-        if bounds_before.lower_bound < self._lb or bounds_before.upper_bound < self._ub:
+        if bounds_before.lower_bound < self._lb or bounds_before.upper_bound > self._ub:
             self.tightenings += 1
             return True
         else:
@@ -74,28 +74,28 @@ class TestBounds(TestCase):
         speedups = 0
         tests = 0
         try:
-            t = trange(0, 128)
-            for i in t:
-                ranges = [RandomDecreasingRange() for _ in range(i)]
-                make_distinct(*ranges)
-                last_range = None
-                for r in sort(ranges):
-                    rbounds = r.bounds()
-                    if last_range is not None:
-                        self.assertTrue((last_range.definitive() and rbounds.definitive() and last_range == rbounds) or
-                                        last_range.upper_bound < rbounds.lower_bound,
-                                        f"{last_range!r} was followed by {rbounds!r}")
-                    last_range = rbounds
-                tightenings = sum(r.tightenings for r in ranges)
-                if tightenings > 0:
-                    untightened = 0
-                    for r in ranges:
-                        t_before = r.tightenings
-                        while r.tighten_bounds():
-                            pass
-                        untightened += r.tightenings - t_before
-                    t.desc = f"{(untightened + tightenings) / tightenings:.01f}x Speedup"
-                    speedups += (untightened + tightenings) / tightenings
-                    tests += 1
+            with trange(0, 128) as t:
+                for i in t:
+                    ranges = [RandomDecreasingRange() for _ in range(i)]
+                    make_distinct(*ranges)
+                    last_range = None
+                    for r in sort(ranges):
+                        rbounds = r.bounds()
+                        if last_range is not None:
+                            self.assertTrue((last_range.definitive() and rbounds.definitive() and last_range == rbounds) or
+                                            last_range.upper_bound < rbounds.lower_bound,
+                                            f"{last_range!r} was followed by {rbounds!r}")
+                        last_range = rbounds
+                    tightenings = sum(r.tightenings for r in ranges)
+                    if tightenings > 0:
+                        untightened = 0
+                        for r in ranges:
+                            t_before = r.tightenings
+                            while r.tighten_bounds():
+                                pass
+                            untightened += r.tightenings - t_before
+                        t.desc = f"{(untightened + tightenings) / tightenings:.01f}x Speedup"
+                        speedups += (untightened + tightenings) / tightenings
+                        tests += 1
         finally:
             print(f"Average speedup: {speedups / tests:.01f}x")
