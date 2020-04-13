@@ -5,6 +5,7 @@ from typing import Callable, Dict, Generic, Iterable, Iterator, List
 from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 
 import numpy as np
+from scipy.optimize import linear_sum_assignment
 
 from .bounds import Bounded, Range
 from .bounds import sort as bounds_sort
@@ -426,6 +427,8 @@ def min_weight_bipartite_matching(
     max_edge: Optional[EdgeType] = None
     min_edge: Optional[EdgeType] = None
 
+    has_null_edges = False
+
     for (from_index, from_node), (to_index, to_node) in itertools.product(enumerate(from_nodes), enumerate(to_nodes)):
         edge = get_edges(from_node, to_node)
         if edge is not None:
@@ -438,19 +441,45 @@ def min_weight_bipartite_matching(
             if min_edge is None or min_edge > edge:
                 min_edge = edge
             weights[from_index][to_index] = edge
+        else:
+            has_null_edges = True
+
+    if has_null_edges:
+        if isinstance(edge_type, bool):
+            raise ValueError("Null edges are only supported with `int` or `float` edge types, not `bool`. Bipartite graphs with `bool` edge weights must be complete.")
+        null_edge_value: Optional[EdgeType] = max(
+            sum(weights[row][col] for row in range(len(from_nodes)) if weights[row][col] is not None)
+            for col in range(len(to_nodes))
+        ) + 1
+        assert null_edge_value > max_edge
+        max_edge = null_edge_value
+    else:
+        null_edge_value = None
 
     if edge_type is None:
         # There are no edges in the graph
         return {}
-    elif isinstance(edge_type, bool):
+    elif edge_type is bool:
         dtype = bool
-    elif isinstance(edge_type, float):
+    elif edge_type is float:
         dtype = float
-    elif not isinstance(edge_type, int):
+    elif not edge_type is int:
         raise ValueError(f"Unexpected edge type: {edge_type}")
-    elif min_edge < 0:
-        if max_edge < 255:
-            pass
+    else:
+        dtype = get_dtype(min_edge, max_edge)
+
+    if has_null_edges:
+        for row in range(len(from_nodes)):
+            for col in range(len(to_nodes)):
+                if weights[row][col] is None:
+                    weights[row][col] = null_edge_value
+
+    left_matches = linear_sum_assignment(np.array(weights, dtype=dtype), maximize=False)
+    return {
+        from_index: (to_index, weights[from_index][to_index])
+        for from_index, to_index in zip(*left_matches)
+        if not has_null_edges or weights[from_index][to_index] < null_edge_value
+    }
 
 
 class WeightedBipartiteMatcher(Generic[T], Bounded):
