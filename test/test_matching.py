@@ -3,7 +3,7 @@ import random
 from unittest import TestCase
 
 import numpy as np
-from tqdm import trange
+from tqdm import tqdm, trange
 
 from graphtage.matching import get_dtype, min_weight_bipartite_matching, WeightedBipartiteMatcher
 
@@ -12,23 +12,27 @@ from .test_bounds import RandomDecreasingRange
 
 class TestWeightedBipartiteMatcher(TestCase):
     def test_weighted_bipartite_matching(self):
-        from_nodes = list(range(3))
-        to_nodes = list(range(3))
-        edges = [
-            [RandomDecreasingRange() for _ in range(len(to_nodes))] for _ in range(len(from_nodes))
-        ]
-        edges = [
-            [RandomDecreasingRange(n, n) for n in [810177, 20679, 612881]],
-            [RandomDecreasingRange(n, n) for n in [679754, 810042, 809299]],
-            [RandomDecreasingRange(n, n) for n in [429760, 385568, 982600]]]
-        for i in range(len(edges)):
-           print([r.final_value for r in edges[i]])
-        matcher = WeightedBipartiteMatcher(
-            from_nodes=from_nodes,
-            to_nodes=to_nodes,
-            get_edge=lambda n1, n2: edges[n1][n2]
-        )
-        matcher.tighten_bounds()
+        for _ in trange(1000):
+            from_nodes = list(range(10))
+            to_nodes = list(range(10))
+            edges = [
+                [RandomDecreasingRange() for _ in range(len(to_nodes))] for _ in range(len(from_nodes))
+            ]
+            for i in range(min(len(from_nodes), len(to_nodes))):
+                edges[i][i] = RandomDecreasingRange(fixed_lb=0, fixed_ub=2000000, final_value=0)
+            matcher = WeightedBipartiteMatcher(
+                from_nodes=from_nodes,
+                to_nodes=to_nodes,
+                get_edge=lambda n1, n2: edges[n1][n2]
+            )
+            initial_bounds = matcher.bounds()
+            with tqdm(leave=False) as t:
+                t.total = initial_bounds.upper_bound - initial_bounds.lower_bound
+                while matcher.tighten_bounds():
+                    new_bounds = matcher.bounds()
+                    t.update(new_bounds.upper_bound - new_bounds.lower_bound)
+            self.assertTrue(matcher.bounds().definitive())
+            self.assertEqual(0, matcher.bounds().upper_bound)
 
     def test_min_weight_bipartite_matching(self):
         for _ in trange(100):

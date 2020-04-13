@@ -7,7 +7,7 @@ from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, Range
+from .bounds import Bounded, make_distinct, Range
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
 
@@ -419,7 +419,7 @@ def min_weight_bipartite_matching(
         from_nodes: Sequence[T],
         to_nodes: Sequence[T],
         get_edges: Callable[[T, T], Optional[W]]
-) -> Mapping[int, Tuple[int, Optional[EdgeType]]]:
+) -> Mapping[int, Tuple[int, EdgeType]]:
     # Assume that the bipartite graph is dense. If the edges are sparse, consider switching to `scipy.sparse.coo_matrix`
     weights: List[List[Optional[EdgeType]]] = [[None] * len(to_nodes) for _ in range(len(from_nodes))]
 
@@ -489,4 +489,66 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
             to_nodes: Iterable[T],
             get_edge: Callable[[T, T], Optional[Bounded]]
     ):
-        pass
+        if not isinstance(from_nodes, list) and not isinstance(from_nodes, tuple):
+            from_nodes = tuple(from_nodes)
+        if not isinstance(to_nodes, list) and not isinstance(to_nodes, tuple):
+            to_nodes = tuple(to_nodes)
+        self.from_nodes: Sequence[T] = from_nodes
+        self.to_nodes: Sequence[T] = to_nodes
+        self.from_node_indexes: Dict[T, int] = {
+            from_node: i for i, from_node in enumerate(from_nodes)
+        }
+        self.to_node_indexes: Dict[T, int] = {
+            to_node: i for i, to_node in enumerate(to_nodes)
+        }
+        self._edges: Optional[List[List[Optional[Bounded]]]] = None
+        self._match: Optional[Mapping[T, Tuple[T, Bounded]]] = None
+        self.get_edge = get_edge
+
+    @property
+    def edges(self) -> List[List[Optional[Bounded]]]:
+        if self._edges is None:
+            self._edges = [[self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes]
+            make_distinct(*itertools.chain(*self._edges))
+        return self._edges
+
+    def bounds(self) -> Range:
+        if self._match is None:
+            lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
+            ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
+        else:
+            lb = 0
+            ub = 0
+            for _, (_, edge) in self._match.items():
+                lb += edge.bounds().lower_bound
+                ub += edge.bounds().upper_bound
+        return Range(lb, ub)
+
+    @property
+    def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
+        if self._match is None:
+            def get_edges(from_node, to_node):
+                edge = self.edges[self.from_node_indexes[from_node]][self.to_node_indexes[to_node]]
+                if edge is None:
+                    return None
+                else:
+                    return edge.bounds().upper_bound
+            mwbp = min_weight_bipartite_matching(self.from_nodes, self.to_nodes, get_edges)
+            self._match = {
+                from_node: (to_node, self.edges[self.from_node_indexes[from_node]][self.to_node_indexes[to_node]])
+                for from_node, (to_node, _) in mwbp.items()
+            }
+        return self._match
+
+    def tighten_bounds(self) -> bool:
+        if self._match is None:
+            initial_bounds = self.bounds()
+            _ = self.matching     # This computes the minimum weight matching
+            new_bounds = self.bounds()
+            if new_bounds.lower_bound > initial_bounds.lower_bound or \
+                    new_bounds.upper_bound < initial_bounds.upper_bound:
+                return True
+        for (_, (_, edge)) in self.matching.items():
+            if edge.tighten_bounds():
+                return True
+        return False

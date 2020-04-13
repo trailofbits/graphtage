@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 from unittest import TestCase
 
 from tqdm import trange
@@ -7,8 +8,15 @@ from graphtage.bounds import Bounded, make_distinct, Range, sort
 
 
 class RandomDecreasingRange(Bounded):
-    def __init__(self, fixed_lb: int = 0, fixed_ub: int = 2000000):
-        self.final_value = random.randint(fixed_lb, fixed_lb + (fixed_ub - fixed_lb) // 2)
+    def __init__(self, fixed_lb: int = 0, fixed_ub: int = 2000000, final_value: Optional[int] = None):
+        if final_value is None:
+            self.final_value = random.randint(fixed_lb, fixed_lb + (fixed_ub - fixed_lb) // 2)
+        elif final_value < fixed_lb:
+            raise ValueError(f"final_value of {final_value} < fixed lower bound of {fixed_lb}")
+        elif final_value > fixed_ub:
+            raise ValueError(f"final_value of {final_value} > fixed upper bound of {fixed_ub}")
+        else:
+            self.final_value = final_value
         self._lb = random.randint(fixed_lb, self.final_value)
         self._ub = random.randint(self.final_value, fixed_ub)
         self.tightenings: int = 0
