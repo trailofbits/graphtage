@@ -3,7 +3,7 @@ from typing_extensions import Protocol
 
 from intervaltree import Interval, IntervalTree
 
-from .fibonacci import FibonacciHeap
+from .fibonacci import FibonacciHeap, MaxFibonacciHeap
 
 
 class Infinity:
@@ -208,7 +208,7 @@ def min_bounded(bounds: Iterator[B]) -> B:
 
 
 def make_distinct(*bounded: Bounded):
-    """Ensures that all of the provided bounded arguments are tightened until they finite and
+    """Ensures that all of the provided bounded arguments are tightened until they are finite and
     either definitive or non-overlapping with any of the other arguments"""
     tree: IntervalTree = IntervalTree()
     for b in bounded:
@@ -217,19 +217,51 @@ def make_distinct(*bounded: Bounded):
             if not b.bounds().finite:
                 raise ValueError(f"Could not tighten {b!r} to a finite bound")
         tree.add(Interval(b.bounds().lower_bound, b.bounds().upper_bound + 1, b))
-    while tree:
-        interval = next(iter(tree))
-        matching = tree[interval.begin:interval.end]
-        if len(matching) > 1:
-            for i in matching:
-                if i.data.tighten_bounds():
-                    tree.remove(i)
-                    tree.add(Interval(i.data.bounds().lower_bound, i.data.bounds().upper_bound + 1, i.data))
-                    break
-            else:
-                # There is nothing more we can do to shrink this interval
-                for i in matching:
-                    tree.remove(i)
-        else:
-            # There is not any overlap on this interval, so we are done with it
-            tree.remove(interval)
+    while len(tree) > 1:
+        # find the biggest interval in the tree
+        biggest: Optional[Interval] = None
+        for m in tree:
+            m_size = m.end - m.begin
+            if biggest is None or m_size > biggest.end - biggest.begin:
+                biggest = m
+        assert biggest is not None
+        if biggest.data.bounds().definitive():
+            # This means that all intervals are points, so we are done!
+            break
+        tree.remove(biggest)
+        matching = tree[biggest.begin:biggest.end]
+        if len(matching) < 1:
+            # This interval does not intersect any others, so it is distinct
+            continue
+        # now find the biggest other interval that intersects with biggest:
+        second_biggest: Optional[Interval] = None
+        for m in matching:
+            m_size = m.end - m.begin
+            if second_biggest is None or m_size > second_biggest.end - second_biggest.begin:
+                second_biggest = m
+        assert second_biggest is not None
+        tree.remove(second_biggest)
+        # Shrink the two biggest intervals until they are distinct
+        while True:
+            biggest_bound: Range = biggest.data.bounds()
+            second_biggest_bound: Range = second_biggest.data.bounds()
+            if (biggest_bound.definitive() and second_biggest_bound.definitive()) or \
+                    biggest_bound.upper_bound < second_biggest_bound.lower_bound or \
+                    second_biggest_bound.upper_bound < biggest_bound.lower_bound:
+                break
+            biggest.data.tighten_bounds()
+            second_biggest.data.tighten_bounds()
+        new_interval = Interval(
+            begin=biggest.data.bounds().lower_bound,
+            end=biggest.data.bounds().upper_bound + 1,
+            data=biggest.data
+        )
+        if tree.overlaps(new_interval.begin, new_interval.end):
+            tree.add(new_interval)
+        new_interval = Interval(
+            begin=second_biggest.data.bounds().lower_bound,
+            end=second_biggest.data.bounds().upper_bound + 1,
+            data=second_biggest.data
+        )
+        if tree.overlaps(new_interval.begin, new_interval.end):
+            tree.add(new_interval)
