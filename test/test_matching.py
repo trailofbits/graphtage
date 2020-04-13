@@ -1,6 +1,8 @@
 from unittest import TestCase
 
-from graphtage.matching import HungarianMethod, WeightedBipartiteMatcher
+import numpy as np
+
+from graphtage.matching import get_dtype, WeightedBipartiteMatcher
 
 from .test_bounds import RandomDecreasingRange
 
@@ -24,3 +26,14 @@ class TestWeightedBipartiteMatcher(TestCase):
             get_edge=lambda n1, n2: edges[n1][n2]
         )
         matcher.tighten_bounds()
+
+    def test_get_dtype(self):
+        for min_range, max_range, expected in (
+            (0, 255, np.uint8),
+            (-1, 127, np.int8),
+            (-128, 255, np.int16),
+            (0, 2**64 - 1, np.uint64),
+            (0, 2**64, int)
+        ):
+            actual = get_dtype(min_range, max_range)
+            self.assertEqual(np.dtype(expected), actual)

@@ -1,11 +1,14 @@
+import itertools
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
-from typing import Callable, Dict, Generic, Iterable, Iterator, List, Optional, Set, TypeVar, Union
+from typing import Callable, Dict, Generic, Iterable, Iterator, List
+from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 
-from .bounds import Bounded, BoundedComparator, ConstantBound, min_bounded, POSITIVE_INFINITY, Range
+import numpy as np
+
+from .bounds import Bounded, Range
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
-from .utils import SparseMatrix
 
 
 T = TypeVar('T')
@@ -268,10 +271,14 @@ class QueueElement:
 QueueType = FibonacciHeap[QueueElement, int]
 
 
-class WeightedBipartiteMatcher(Generic[T], Bounded):
-    """Partial implementation of AN ALGORITHM TO SOLVE THE mxn ASSIGNMENT PROBLEM IN EXPECTED TIME 0(mn log 0)
+class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Generic[T], Bounded):
+    """Partial implementation of AN ALGORITHM TO SOLVE THE mxn ASSIGNMENT PROBLEM IN EXPECTED TIME 0(mn log n)
     by R. M. Karp, 1978
     https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
+
+    The implementation is partial because I realized partway through that, even though this implementation has better
+    asymptotic bounds, `scipy.optimize.linear_sum_assignment(...)` will likely be much faster since it is implemented
+    in C++ and not pure Python.
     """
     def __init__(
             self,
@@ -381,4 +388,76 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
             print(self.matching)
 
     def bounds(self) -> Range:
+        pass
+
+
+W = TypeVar('W', bound=Union[bool, int, float])
+EdgeType = Union[bool, int, float]
+
+INTEGER_DTYPE_INTERVALS: Tuple[Tuple[int, int, np.dtype], ...] = (
+    (0, 2**8, np.dtype(np.uint8)),
+    (0, 2**16, np.dtype(np.uint16)),
+    (0, 2**32, np.dtype(np.uint32)),
+    (0, 2**64, np.dtype(np.uint64)),
+    (-2**7, 2**7, np.dtype(np.int8)),
+    (-2**15, 2**15, np.dtype(np.int16)),
+    (-2**31, 2**31, np.dtype(np.int32)),
+    (-2**63, 2**63, np.dtype(np.int64))
+)
+
+
+def get_dtype(min_value: int, max_value: int) -> np.dtype:
+    """Returns the smallest numpy dtype capable of storing integers in the range [min_value, max_value]"""
+    for min_range, max_range, dtype in INTEGER_DTYPE_INTERVALS:
+        if min_range <= min_value and max_range > max_value:
+            return dtype
+    return np.dtype(int)
+
+
+def min_weight_bipartite_matching(
+        from_nodes: Sequence[T],
+        to_nodes: Sequence[T],
+        get_edges: Callable[[T, T], Optional[W]]
+) -> Mapping[int, Tuple[int, Optional[EdgeType]]]:
+    # Assume that the bipartite graph is dense. If the edges are sparse, consider switching to `scipy.sparse.coo_matrix`
+    weights: List[List[Optional[EdgeType]]] = [[None] * len(to_nodes) for _ in range(len(from_nodes))]
+
+    edge_type: Optional[type] = None
+    max_edge: Optional[EdgeType] = None
+    min_edge: Optional[EdgeType] = None
+
+    for (from_index, from_node), (to_index, to_node) in itertools.product(enumerate(from_nodes), enumerate(to_nodes)):
+        edge = get_edges(from_node, to_node)
+        if edge is not None:
+            if edge_type is None:
+                edge_type = type(edge)
+            elif edge_type is not type(edge):
+                raise ValueError(f"The edge between {from_node!r} and {to_node!r} was expected to be of type {edge_type} but instead receieved {type(edge)}")
+            if max_edge is None or max_edge < edge:
+                max_edge = edge
+            if min_edge is None or min_edge > edge:
+                min_edge = edge
+            weights[from_index][to_index] = edge
+
+    if edge_type is None:
+        # There are no edges in the graph
+        return {}
+    elif isinstance(edge_type, bool):
+        dtype = bool
+    elif isinstance(edge_type, float):
+        dtype = float
+    elif not isinstance(edge_type, int):
+        raise ValueError(f"Unexpected edge type: {edge_type}")
+    elif min_edge < 0:
+        if max_edge < 255:
+            pass
+
+
+class WeightedBipartiteMatcher(Generic[T], Bounded):
+    def __init__(
+            self,
+            from_nodes: Iterable[T],
+            to_nodes: Iterable[T],
+            get_edge: Callable[[T, T], Optional[Bounded]]
+    ):
         pass
