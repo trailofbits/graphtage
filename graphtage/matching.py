@@ -504,25 +504,29 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
         self._edges: Optional[List[List[Optional[Bounded]]]] = None
         self._match: Optional[Mapping[T, Tuple[T, Bounded]]] = None
         self.get_edge = get_edge
+        self._bounds: Optional[Range] = None
 
     @property
     def edges(self) -> List[List[Optional[Bounded]]]:
         if self._edges is None:
             self._edges = [[self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes]
             make_distinct(*itertools.chain(*self._edges))
+            self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
-        if self._match is None:
-            lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
-            ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
-        else:
-            lb = 0
-            ub = 0
-            for _, (_, edge) in self._match.items():
-                lb += edge.bounds().lower_bound
-                ub += edge.bounds().upper_bound
-        return Range(lb, ub)
+        if self._bounds is None:
+            if self._match is None:
+                lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
+                ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
+            else:
+                lb = 0
+                ub = 0
+                for _, (_, edge) in self._match.items():
+                    lb += edge.bounds().lower_bound
+                    ub += edge.bounds().upper_bound
+            self._bounds = Range(lb, ub)
+        return self._bounds
 
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
@@ -538,6 +542,7 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 self.from_nodes[from_node]: (self.to_nodes[to_node], self.edges[from_node][to_node])
                 for from_node, (to_node, _) in mwbp.items()
             }
+            self._bounds = None
         return self._match
 
     def tighten_bounds(self) -> bool:
@@ -550,5 +555,6 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 return True
         for (_, (_, edge)) in self.matching.items():
             if edge.tighten_bounds():
+                self._bounds = None
                 return True
         return False
