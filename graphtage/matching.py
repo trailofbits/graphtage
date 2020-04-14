@@ -535,7 +535,7 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                     return edge.bounds().upper_bound
             mwbp = min_weight_bipartite_matching(self.from_nodes, self.to_nodes, get_edges)
             self._match = {
-                from_node: (to_node, self.edges[from_node][to_node])
+                self.from_nodes[from_node]: (self.to_nodes[to_node], self.edges[from_node][to_node])
                 for from_node, (to_node, _) in mwbp.items()
             }
         return self._match
