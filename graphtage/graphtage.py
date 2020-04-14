@@ -1,6 +1,6 @@
 import itertools
 from abc import ABC
-from collections import defaultdict
+from collections import defaultdict, Sized
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, Remove, Replace
@@ -102,18 +102,28 @@ class LeafNode(TreeNode):
 
 
 class KeyValuePairNode(ContainerNode):
-    def __init__(self, key: LeafNode, value: TreeNode):
+    def __init__(self, key: LeafNode, value: TreeNode, allow_key_edits: bool = True):
         self.key: LeafNode = key
         self.value: TreeNode = value
+        self.allow_key_edits: bool = allow_key_edits
 
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
             raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
-        return EditSequence(
-            from_node=self,
-            to_node=node,
-            edits=iter((self.key.edits(node.key), self.value.edits(node.value)))
-        )
+        if self.allow_key_edits:
+            return EditSequence(
+                from_node=self,
+                to_node=node,
+                edits=iter((self.key.edits(node.key), self.value.edits(node.value)))
+            )
+        elif self.key == node.key:
+            return EditSequence(
+                from_node=self,
+                to_node=node,
+                edits=iter((Match(self.key, node.key, 0), self.value.edits(node.value)))
+            )
+        else:
+            return Replace(self, node)
 
     def print(self, printer: Printer, diff: Optional[Diff] = None):
         if diff is None or self not in diff or (len(diff[self]) == 1 and isinstance(diff[self][0], CompoundEdit)):
@@ -159,7 +169,7 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class SequenceNode(ContainerNode, ABC):
+class SequenceNode(ContainerNode, Sized, ABC):
     def __init__(self):
         self.start_symbol: str = '['
         self.end_symbol: str = ']'
@@ -291,15 +301,73 @@ class MultiSetNode(SequenceNode):
 
 class DictNode(MultiSetNode):
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
-        super().__init__(sorted(KeyValuePairNode(key, value) for key, value in dict_like.items()))
+        super().__init__(sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in dict_like.items()))
         self.start_symbol = '{'
         self.end_symbol = '}'
 
     def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, DictNode):
+        if isinstance(node, MultiSetNode):
             return super().edits(node)
         else:
             return Replace(self, node)
+
+
+class FixedKeyDictNode(SequenceNode):
+    """A dictionary that only matches KeyValuePairs if they share the same key
+    NOTE: This implementation does not currently support duplicate keys!
+    """
+    def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
+        super().__init__()
+        self.start_symbol = '{'
+        self.end_symbol = '}'
+        self.children: Dict[LeafNode, KeyValuePairNode] = {
+            key: KeyValuePairNode(key, value, allow_key_edits=False) for key, value in dict_like.items()
+        }
+
+    def _child_edits(self, node: 'FixedKeyDictNode') -> Iterator[Edit]:
+        unshared_kvps = set()
+        for key, kvp in self.children.items():
+            if key in node.children:
+                yield kvp.edits(node.children[key])
+            else:
+                unshared_kvps.add(kvp)
+        for kvp in unshared_kvps:
+            yield Remove(to_remove=kvp, remove_from=self)
+        for kvp in node.children.values():
+            if kvp.key not in self.children:
+                yield Insert(to_insert=kvp, insert_into=self)
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, FixedKeyDictNode):
+            if len(self.children) == len(node.children) == 0:
+                return Match(self, node, 0)
+            elif self.children == node.children:
+                return Match(self, node, 0)
+            else:
+                return EditSequence(from_node=self, to_node=node, edits=self._child_edits(node))
+        else:
+            return Replace(self, node)
+
+    def calculate_total_size(self):
+        return sum(c.total_size for c in self.children)
+
+    def __eq__(self, other):
+        return isinstance(other, FixedKeyDictNode) and other.children == self.children
+
+    def __hash__(self):
+        return hash(frozenset(self.children.values()))
+
+    def __len__(self):
+        return len(self.children)
+
+    def __iter__(self) -> Iterator[TreeNode]:
+        return iter(self.children.values())
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({list(self)!r})"
+
+    def __str__(self):
+        return str(self.children)
 
 
 class StringNode(LeafNode):
@@ -405,7 +473,7 @@ def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable
     return Diff(tree1_root, tree2_root, (root_edit,))
 
 
-def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
+def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeNode:
     if isinstance(python_obj, int):
         return IntegerNode(python_obj)
     elif isinstance(python_obj, str):
@@ -415,11 +483,16 @@ def build_tree(python_obj, force_leaf_node=False) -> TreeNode:
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n) for n in python_obj])
+        return ListNode([build_tree(n, allow_key_edits=allow_key_edits) for n in python_obj])
     elif isinstance(python_obj, dict):
-        return DictNode({
-            build_tree(k, force_leaf_node=True): build_tree(v) for k, v in python_obj.items()
-        })
+        dict_items = {
+            build_tree(k, force_leaf_node=True, allow_key_edits=allow_key_edits):
+                build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
+        }
+        if allow_key_edits:
+            return DictNode(dict_items)
+        else:
+            return FixedKeyDictNode(dict_items)
     else:
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 

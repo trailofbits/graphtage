@@ -88,8 +88,24 @@ def main(argv=None):
     parser.add_argument('TO_PATH', type=str, nargs='?', default='-',
                         help='The file to diff against; pass \'-\' to read from STDIN')
     color_group = parser.add_mutually_exclusive_group()
-    color_group.add_argument('--color', '-c', action='store_true', default=None, help='Force the ANSI color output; this is turned on by default only if run from a TTY')
-    color_group.add_argument('--no-color', action='store_true', default=None, help='Do not use ANSI color in the output')
+    color_group.add_argument(
+        '--color', '-c',
+        action='store_true',
+        default=None,
+        help='Force the ANSI color output; this is turned on by default only if run from a TTY'
+    )
+    color_group.add_argument(
+        '--no-color',
+        action='store_true',
+        default=None,
+        help='Do not use ANSI color in the output'
+    )
+    parser.add_argument(
+        '--no-key-edits',
+        '-k',
+        action='store_true',
+        help='Only match dictionary entries if they share the same key. This drastically reduces computation.'
+    )
     log_group = parser.add_mutually_exclusive_group()
     log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
         logging.getLevelName(x)
@@ -139,8 +155,8 @@ def main(argv=None):
                     to_json = json.load(to_file)
                     with make_status_callback() as callback:
                         diff = graphtage.diff(
-                            graphtage.build_tree(from_json),
-                            graphtage.build_tree(to_json),
+                            graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits),
+                            graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits),
                             callback=callback
                         )
 
