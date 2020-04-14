@@ -1,6 +1,7 @@
 import sys
+from abc import abstractmethod
 from collections import defaultdict
-from typing import Callable, Dict, List, Optional, Set, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -9,12 +10,23 @@ from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
 
 
 class Writer(Protocol):
-    write: Callable[[str], int]
-    isatty: Callable[[], bool]
+    @abstractmethod
+    def write(self, s: str) -> int:
+        pass
+
+    @abstractmethod
+    def isatty(self) -> bool:
+        pass
+
+    @abstractmethod
+    def flush(self) -> Any:
+        pass
 
 
 class RawWriter(Writer, Protocol):
-    raw_write: Callable[[str], int]
+    @abstractmethod
+    def raw_write(self, s: str) -> int:
+        pass
 
 
 STRIKETHROUGH = '\u0336'
@@ -56,6 +68,9 @@ class CombiningMarkWriter(RawWriter):
 
     def isatty(self) -> bool:
         return self.parent.isatty()
+
+    def flush(self):
+        return self.parent.flush()
 
 
 class CombiningMarkContext:
@@ -273,9 +288,13 @@ class Printer(RawWriter):
     def isatty(self) -> bool:
         return self.out_stream.isatty()
 
+    def flush(self):
+        return self.out_stream.flush()
+
     def newline(self):
         self.write('\n')
         self.write(' ' * (4 * self.indents))
+        self.out_stream.flush()
 
     def color(self, foreground_color: AnsiFore) -> ANSIContext:
         if self.ansi_color:
