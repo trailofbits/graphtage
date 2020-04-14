@@ -357,16 +357,20 @@ class EditDistance(CompoundEdit):
         else:
             return True
 
-    def tighten_bounds(self) -> bool:
+    def tighten_bounds(self, _tqdm: Optional[tqdm] = None) -> bool:
         if self._goal is not None:
             return self._goal.tighten_bounds()
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
             # Tighten the entire fringe diagonal until every node in it is definitive
+            if _tqdm is not None:
+                nodes_before = self.matrix.num_filled_elements()
             if not self._next_fringe():
                 assert self._goal is not None
                 return self.tighten_bounds()
+            if _tqdm is not None:
+                _tqdm.update(self.matrix.num_filled_elements() - nodes_before)
             for row, col in self._fringe_diagonal():
                 while self.matrix[row][col].tighten_bounds():
                     pass
@@ -392,16 +396,27 @@ class EditDistance(CompoundEdit):
     def edits(self) -> Iterator[Edit]:
         if not self.bounds().definitive():
             starting_diff = self.bounds().upper_bound - self.bounds().lower_bound
+            starting_matrix_nodes = self.matrix.num_filled_elements()
+            rows, cols = self.matrix.shape()
+            total_matrix_nodes = rows * cols
             with tqdm(
                     leave=False,
                     initial=0,
                     total=starting_diff,
                     desc='Edit Distance'
             ) as t:
-                while not self.bounds().definitive() and self.tighten_bounds():
-                    new_diff = self.bounds().upper_bound - self.bounds().lower_bound
-                    t.update(starting_diff - new_diff)
-                    starting_diff = new_diff
+                with tqdm(
+                        leave=False,
+                        initial=starting_matrix_nodes,
+                        total=total_matrix_nodes,
+                        desc='Levenshtein Matrix'
+                ) as tb:
+                    while not self.bounds().definitive() and self.tighten_bounds(_tqdm=tb):
+                        new_diff = self.bounds().upper_bound - self.bounds().lower_bound
+                        t.update(starting_diff - new_diff)
+                        t.refresh()
+                        starting_diff = new_diff
+                t.update(t.total - t.pos)
         while self._goal is None and self.tighten_bounds():
             pass
         assert self._goal is not None
