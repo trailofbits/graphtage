@@ -29,3 +29,11 @@ class TestSparseMatrix(TestCase):
                 int_sizes += sys.getsizeof(matrix[i][j])
         size_after = matrix.getsizeof()
         self.assertGreaterEqual(size_after - size_before, int_sizes)
+
+    def test_matrix_shape(self):
+        matrix: SparseMatrix[int] = SparseMatrix()
+        self.assertEqual((0, 0), matrix.shape())
+        matrix[10][20] = 1
+        self.assertEqual((11, 21), matrix.shape())
+        matrix = SparseMatrix(num_rows=10, num_cols=10)
+        self.assertEqual((10, 10), matrix.shape())

@@ -1,6 +1,6 @@
 import sys
 from collections import Counter, OrderedDict
-from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, TypeVar
+from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, Tuple, TypeVar
 from typing_extensions import Protocol
 import typing
 
@@ -61,6 +61,15 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], S
             self.row: Dict[int, Optional[T]] = {}
             self.num_cols: Optional[int] = num_cols
             self.default_value: Optional[T] = default_value
+
+        def shape(self) -> int:
+            if self.num_cols is None:
+                if self.row:
+                    return max(self.row.keys()) + 1
+                else:
+                    return 0
+            else:
+                return self.num_cols
 
         def clear(self):
             self.row = {}
@@ -127,3 +136,23 @@ class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], S
     def __iter__(self) -> Iterator[MutableMapping[int, Optional[T]]]:
         for i in range(len(self)):
             yield self[i]
+
+    def num_filled_elements(self) -> int:
+        return sum(len(row.row) for row in self.rows.values())
+
+    def shape(self) -> Tuple[int, int]:
+        if self.num_rows is None:
+            if self.rows:
+                rows = max(self.rows.keys()) + 1
+            else:
+                rows = 0
+        else:
+            rows = self.num_rows
+        if self.num_cols is None:
+            if self.rows:
+                cols = max(row.shape() for row in self.rows.values())
+            else:
+                cols = 0
+        else:
+            cols = self.num_cols
+        return rows, cols
