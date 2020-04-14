@@ -348,7 +348,14 @@ class EditDistance(CompoundEdit):
             self._fringe_col += 1
         for row, col in self._fringe_diagonal():
             self._add_node(row, col)
-        return self._fringe_col < self.matrix.num_cols - 1
+        if self._fringe_col >= self.matrix.num_cols - 1:
+            if self._fringe_row < self.matrix.num_rows - 1:
+                # This is an edge case when the string we are matching from is shorter than the one we are matching to
+                assert self._goal is None
+                return True
+            return False
+        else:
+            return True
 
     def tighten_bounds(self) -> bool:
         if self._goal is not None:
@@ -388,6 +395,9 @@ class EditDistance(CompoundEdit):
                 t.total = self.bounds().upper_bound - self.bounds().lower_bound
                 while not self.bounds().definitive() and self.tighten_bounds():
                     t.update(t.total - (self.bounds().upper_bound - self.bounds().lower_bound))
+        while self._goal is None and self.tighten_bounds():
+            pass
+        assert self._goal is not None
         edits: List[Edit] = []
         node = self._goal
         while not isinstance(node, ConstantNode):

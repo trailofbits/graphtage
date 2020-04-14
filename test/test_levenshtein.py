@@ -34,3 +34,15 @@ class TestEditDistance(TestCase):
                     self.fail()
             self.assertEqual(str_from, reconstructed_from)
             self.assertEqual(str_to, reconstructed_to)
+
+    def test_empty_string_edit_distance(self):
+        with self.assertRaises(StopIteration):
+            next(string_edit_distance('', '').edits())
+        self.assertEqual(
+            3,
+            sum(1 for _ in string_edit_distance('foo', '').edits())
+        )
+        self.assertEqual(
+            3,
+            sum(1 for _ in string_edit_distance('', 'foo').edits())
+        )
