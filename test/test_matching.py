@@ -26,11 +26,15 @@ class TestWeightedBipartiteMatcher(TestCase):
                 get_edge=lambda n1, n2: edges[n1][n2]
             )
             initial_bounds = matcher.bounds()
-            with tqdm(leave=False) as t:
-                t.total = initial_bounds.upper_bound - initial_bounds.lower_bound
+            prev_diff = initial_bounds.upper_bound - initial_bounds.lower_bound
+            with tqdm(leave=False, total=prev_diff) as t:
+                t.update(0)
                 while matcher.tighten_bounds():
                     new_bounds = matcher.bounds()
-                    t.update(new_bounds.upper_bound - new_bounds.lower_bound)
+                    new_diff = new_bounds.upper_bound - new_bounds.lower_bound
+                    self.assertLess(new_diff, prev_diff)
+                    t.update(prev_diff - new_diff)
+                    prev_diff = new_diff
             self.assertTrue(matcher.bounds().definitive())
             self.assertEqual(0, matcher.bounds().upper_bound)
 

@@ -54,16 +54,18 @@ class PathOrStdin:
 
 class Callback:
     def __init__(self, status: tqdm):
-        self.total_set = False
         self.status: tqdm = status
+        self.last_diff = None
 
     def __call__(self, range: Range):
         if not range.finite:
             return
-        if not self.total_set:
-            self.status.total = range.upper_bound - range.lower_bound
-            self.total_set = True
-        self.status.update(self.status.total - (range.upper_bound - range.lower_bound))
+        next_diff = range.upper_bound - range.lower_bound
+        if self.last_diff is None:
+            self.status.total = next_diff
+        else:
+            self.status.update(self.last_diff - next_diff)
+        self.last_diff = next_diff
 
 
 class make_status_callback:

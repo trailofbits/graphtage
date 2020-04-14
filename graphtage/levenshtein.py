@@ -391,10 +391,17 @@ class EditDistance(CompoundEdit):
 
     def edits(self) -> Iterator[Edit]:
         if not self.bounds().definitive():
-            with tqdm(leave=False) as t:
-                t.total = self.bounds().upper_bound - self.bounds().lower_bound
+            starting_diff = self.bounds().upper_bound - self.bounds().lower_bound
+            with tqdm(
+                    leave=False,
+                    initial=0,
+                    total=starting_diff,
+                    desc='Edit Distance'
+            ) as t:
                 while not self.bounds().definitive() and self.tighten_bounds():
-                    t.update(t.total - (self.bounds().upper_bound - self.bounds().lower_bound))
+                    new_diff = self.bounds().upper_bound - self.bounds().lower_bound
+                    t.update(starting_diff - new_diff)
+                    starting_diff = new_diff
         while self._goal is None and self.tighten_bounds():
             pass
         assert self._goal is not None
