@@ -1,3 +1,4 @@
+import itertools
 from abc import abstractmethod, ABC
 from typing import Iterator, List, Optional
 
@@ -256,17 +257,28 @@ class EditSequence(CompoundEdit):
         self._valid = is_valid
 
     def print(self, printer: Printer):
-        for sub_edit in self.sub_edits:
+        for sub_edit in self.edits():
             sub_edit.print(printer)
 
-    @property
-    def sub_edits(self) -> List[Edit]:
-        while self._edit_iter is not None and self.tighten_bounds():
-            pass
-        return self._sub_edits
+    def _expand_edits(self) -> bool:
+        if self._edit_iter is not None:
+            try:
+                next_edit = next(self._edit_iter)
+                self._cost = None
+                if isinstance(next_edit, CompoundEdit):
+                    self._edit_iter = itertools.chain(self._edit_iter, next_edit.edits())
+                    return self._expand_edits()
+                else:
+                    self._sub_edits.append(next_edit)
+                    return True
+            except StopIteration:
+                self._edit_iter = None
+        return False
 
     def edits(self) -> Iterator[Edit]:
-        yield from iter(self.sub_edits)
+        yield from iter(self._sub_edits)
+        while self._expand_edits():
+            yield self._sub_edits[-1]
 
     def _is_tightened(self, starting_bounds: Range) -> bool:
         return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
@@ -277,17 +289,8 @@ class EditSequence(CompoundEdit):
             return False
         starting_bounds: Range = self.cost()
         while True:
-            if self._edit_iter is not None:
-                try:
-                    next_edit: Edit = next(self._edit_iter)
-                    if isinstance(next_edit, EditSequence):
-                        self._sub_edits.extend(next_edit.sub_edits)
-                    else:
-                        self._sub_edits.append(next_edit)
-                except StopIteration:
-                    self._edit_iter = None
-                if self._is_tightened(starting_bounds):
-                    return True
+            if self._expand_edits() and self._is_tightened(starting_bounds):
+                return True
             tightened = False
             for child in self._sub_edits:
                 if child.tighten_bounds():
@@ -315,18 +318,23 @@ class EditSequence(CompoundEdit):
         elif self._edit_iter is None:
             # We've expanded all of the sub-edits, so calculate the bounds explicitly:
             total_cost = sum(e.cost() for e in self._sub_edits)
-            if total_cost.definitive():
-                self._cost = total_cost
+
         else:
             # We have not yet expanded all of the sub-edits
             total_cost = Range(0, self._cost_upper_bound)
             for e in self._sub_edits:
                 total_cost.lower_bound += e.cost().lower_bound
                 total_cost.upper_bound -= e.initial_cost.upper_bound - e.cost().upper_bound
+        if total_cost.lower_bound > super().cost().upper_bound:
+            self.valid = False
+            return Range()
+        total_cost.upper_bound = min(super().cost().upper_bound, total_cost.upper_bound)
+        if self._edit_iter is None and total_cost.definitive():
+            self._cost = total_cost
         return total_cost
 
     def __len__(self):
-        return len(self.sub_edits)
+        return sum(1 for _ in self.edits())
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(*{self.sub_edits!r})"
+        return f"{self.__class__.__name__}(*{self._sub_edits!r})"
