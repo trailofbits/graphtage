@@ -1,3 +1,4 @@
+import itertools
 import logging
 from enum import Enum
 from typing import Iterator, List, Optional, Sequence, Tuple, Union
@@ -5,7 +6,7 @@ from typing import Iterator, List, Optional, Sequence, Tuple, Union
 from tqdm import tqdm
 
 from .bounds import Bounded, Range
-from .edits import CompoundEdit, Edit, Insert, Remove
+from .edits import CompoundEdit, Edit, Insert, Match, Remove
 from .fibonacci import FibonacciHeap
 from .tree import TreeNode
 from .utils import SparseMatrix
@@ -276,8 +277,27 @@ class EditDistance(CompoundEdit):
             from_seq: Sequence[TreeNode],
             to_seq: Sequence[TreeNode]
     ):
-        self.from_seq: Sequence[TreeNode] = from_seq
-        self.to_seq: Sequence[TreeNode] = to_seq
+        # Optimization: See if the sequences trivially share a common prefix or suffix.
+        # If so, this will quadratically reduce the size of the Levenshtein matrix
+        self.shared_prefix: List[Tuple[TreeNode, TreeNode]] = []
+        for from_node, to_node in zip(from_seq, to_seq):
+            if from_node == to_node:
+                self.shared_prefix.append((from_node, to_node))
+            else:
+                break
+        self.reversed_shared_suffix: List[Tuple[TreeNode, TreeNode]] = []
+        for from_node, to_node in zip(
+                reversed(from_seq[len(self.shared_prefix):]),
+                reversed(to_seq[len(self.shared_prefix):])
+        ):
+            if from_node == to_node:
+                self.reversed_shared_suffix.append((from_node, to_node))
+            else:
+                break
+        self.reversed_shared_suffix = self.reversed_shared_suffix
+        self.from_seq: Sequence[TreeNode] = from_seq[len(self.shared_prefix):len(from_seq)-len(self.reversed_shared_suffix)]
+        self.to_seq: Sequence[TreeNode] = to_seq[len(self.shared_prefix):len(to_seq)-len(self.reversed_shared_suffix)]
+        log.debug(f"Levenshtein len(shared prefix)={len(self.shared_prefix)}, len(shared suffix)={len(self.reversed_shared_suffix)}, len(from_seq)={len(self.from_seq)}, len(to_seq)={len(self.to_seq)}")
         constant_cost = 0
         if len(from_seq) != len(to_seq):
             sizes: FibonacciHeap[TreeNode, int] = FibonacciHeap(key=lambda node: node.total_size)
@@ -420,7 +440,7 @@ class EditDistance(CompoundEdit):
         while self._goal is None and self.tighten_bounds():
             pass
         assert self._goal is not None
-        edits: List[Edit] = []
+        edits: List[Edit] = [Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix]
         node = self._goal
         while not isinstance(node, ConstantNode):
             best = node.best_predecessor()
@@ -438,5 +458,7 @@ class EditDistance(CompoundEdit):
             else:
                 edits.append(Insert(to_insert=node.node, insert_into=self.from_node))
             node = node.predecessor
-
-        return reversed(edits)
+        return itertools.chain(
+            (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
+            reversed(edits)
+        )
