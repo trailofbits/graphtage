@@ -328,7 +328,11 @@ class FixedKeyDictNode(SequenceNode):
         unshared_kvps = set()
         for key, kvp in self.children.items():
             if key in node.children:
-                yield kvp.edits(node.children[key])
+                other_kvp = node.children[key]
+                if kvp == other_kvp:
+                    yield Match(kvp, other_kvp, 0)
+                else:
+                    yield kvp.edits(node.children[key])
             else:
                 unshared_kvps.add(kvp)
         for kvp in unshared_kvps:
