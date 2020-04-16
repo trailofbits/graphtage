@@ -52,20 +52,20 @@ class TestGraphtage(TestCase):
         has_test_match = False
         has_baz_match = False
         for edit in diff:
-            if edit.cost().upper_bound > 0:
+            if edit.bounds().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Match)
                 if isinstance(edit.from_node, graphtage.StringNode):
                     self.assertIsInstance(edit.to_node, graphtage.StringNode)
                     self.assertEqual(edit.from_node.object, 'foo')
                     self.assertEqual(edit.to_node.object, 'bar')
-                    self.assertEqual(edit.cost().upper_bound, 3)
+                    self.assertEqual(edit.bounds().upper_bound, 3)
                     self.assertFalse(has_test_match)
                     has_test_match = True
                 elif isinstance(edit.from_node, graphtage.IntegerNode):
                     self.assertIsInstance(edit.to_node, graphtage.IntegerNode)
                     self.assertEqual(edit.from_node.object, 1)
                     self.assertEqual(edit.to_node.object, 2)
-                    self.assertEqual(edit.cost().upper_bound, 1)
+                    self.assertEqual(edit.bounds().upper_bound, 1)
                     self.assertFalse(has_baz_match)
                     has_baz_match = True
                 else:
@@ -76,7 +76,7 @@ class TestGraphtage(TestCase):
     def test_list_diff(self):
         diff = graphtage.diff(self.list_from, self.list_to)
         for edit in diff:
-            if edit.cost().upper_bound > 0:
+            if edit.bounds().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Remove)
                 self.assertIsInstance(edit.from_node, graphtage.IntegerNode)
                 self.assertEqual(edit.from_node.object, 0)

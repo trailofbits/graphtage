@@ -1,25 +1,39 @@
 import itertools
 from abc import abstractmethod, ABC
-from typing import Iterator, List, Optional
+from typing import cast, Iterator, List, Optional
 
 from .printer import Back, Fore, Printer
 from .search import IterativeTighteningSearch
-from .bounds import Range, Bounded
-from .tree import TreeNode
+from .bounds import Range
+from .tree import CompoundEdit, Edit, EditedTreeNode, TreeNode
 
 
-class Edit(Bounded):
+class AbstractEdit(Edit, ABC):
     def __init__(self,
-                 from_node,
-                 to_node=None,
+                 from_node: TreeNode,
+                 to_node: TreeNode = None,
                  constant_cost: Optional[int] = 0,
-                 cost_upper_bound: Optional[int] = None):
+                 cost_upper_bound: Optional[int] = None
+    ):
         self.from_node: TreeNode = from_node
         self.to_node: TreeNode = to_node
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
-        self.initial_cost = self.cost()
+        self.initial_bounds = self.bounds()
+        if isinstance(from_node, EditedTreeNode):
+            from_node.edit_list.append(self)
+            self._on_diff(from_node)
+
+    def _on_diff(self, from_node: EditedTreeNode):
+        pass
+
+    @staticmethod
+    def print_without_edits(node: TreeNode, printer: Printer):
+        if isinstance(node, EditedTreeNode):
+            node.print_without_edits(printer)
+        else:
+            node.print(printer)
 
     @property
     def valid(self) -> bool:
@@ -29,35 +43,42 @@ class Edit(Bounded):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def tighten_bounds(self) -> bool:
-        return False
-
-    @abstractmethod
-    def print(self, printer: Printer):
-        pass
-
     def __lt__(self, other):
-        return self.cost() < other.cost()
+        return self.bounds() < other.bounds()
 
-    def cost(self) -> Range:
+    def bounds(self) -> Range:
         lb = self._constant_cost
         if self._cost_upper_bound is None:
             if self.to_node is None:
-                ub = self.initial_cost.upper_bound
+                ub = self.initial_bounds.upper_bound
             else:
                 ub = self.from_node.total_size + self.to_node.total_size + 1
         else:
             ub = self._cost_upper_bound
         return Range(lb, ub)
 
-    def bounds(self):
-        return self.cost()
 
+class ConstantCostEdit(AbstractEdit, ABC):
+    def __init__(
+            self,
+            from_node: TreeNode,
+            to_node: TreeNode = None,
+            cost: int = 0
+    ):
+        super().__init__(
+            from_node=from_node,
+            to_node=to_node,
+            constant_cost=cost,
+            cost_upper_bound=cost
+        )
 
-class CompoundEdit(Edit, ABC):
+    def tighten_bounds(self) -> bool:
+        return False
+
+class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
-        pass
+        raise NotImplementedError()
 
     def print(self, printer: Printer):
         for edit in self.edits():
@@ -67,7 +88,7 @@ class CompoundEdit(Edit, ABC):
         return self.edits()
 
 
-class PossibleEdits(CompoundEdit):
+class PossibleEdits(AbstractCompoundEdit):
     def __init__(
             self,
             from_node: TreeNode,
@@ -76,7 +97,7 @@ class PossibleEdits(CompoundEdit):
             initial_cost: Optional[Range] = None
     ):
         if initial_cost is not None:
-            self.initial_cost = initial_cost
+            self.initial_bounds = initial_cost
         self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
             possibilities=edits,
             initial_bounds=initial_cost
@@ -114,70 +135,73 @@ class PossibleEdits(CompoundEdit):
         self.valid
         return tightened
 
-    def cost(self) -> Range:
+    def bounds(self) -> Range:
         return self._search.bounds()
 
 
-class Match(Edit):
+class Match(ConstantCostEdit):
     def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
         super().__init__(
             from_node=match_from,
             to_node=match_to,
-            constant_cost=cost,
-            cost_upper_bound=cost
+            cost=cost
         )
 
+    def _on_diff(self, from_node: EditedTreeNode):
+        from_node.matched_to = self.to_node
+
     def print(self, printer: Printer):
-        if self.cost() > Range(0, 0):
+        if self.bounds() > Range(0, 0):
             with printer.bright().background(Back.RED).color(Fore.WHITE):
                 with printer.strike():
-                    self.from_node.print(printer)
+                    self.print_without_edits(self.from_node, printer)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().background(Back.GREEN).color(Fore.WHITE):
                 with printer.under_plus():
-                    self.to_node.print(printer)
+                    self.print_without_edits(self.to_node, printer)
         else:
-            self.from_node.print(printer)
+            self.print_without_edits(self.from_node, printer)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.cost().lower_bound!r})"
+        return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.bounds().lower_bound!r})"
 
 
-class Replace(Edit):
+class Replace(ConstantCostEdit):
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
         cost = max(to_replace.total_size, replace_with.total_size) + 1
         super().__init__(
             from_node=to_replace,
             to_node=replace_with,
-            constant_cost=cost,
-            cost_upper_bound=cost
+            cost=cost
         )
 
     def print(self, printer: Printer):
         self.from_node.print(printer)
-        if self.cost().upper_bound > 0:
+        if self.bounds().upper_bound > 0:
             with printer.bright().color(Fore.WHITE).background(Back.RED):
-                self.from_node.print(printer)
+                self.print_without_edits(self.from_node, printer)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().color(Fore.WHITE).background(Back.GREEN):
-                self.to_node.print(printer)
+                self.print_without_edits(self.to_node, printer)
         else:
-            self.from_node.print(printer)
+            self.print_without_edits(self.to_node, printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
 
 
-class Remove(Edit):
+class Remove(ConstantCostEdit):
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode):
         super().__init__(
             from_node=to_remove,
             to_node=remove_from,
-            constant_cost=to_remove.total_size + 1,
-            cost_upper_bound=to_remove.total_size + 1
+            cost=to_remove.total_size + 1,
         )
+
+    def _on_diff(self, from_node: EditedTreeNode):
+        from_node.removed = True
 
     def print(self, printer: Printer):
         with printer.bright():
@@ -185,24 +209,26 @@ class Remove(Edit):
                 with printer.color(Fore.WHITE):
                     if not printer.ansi_color:
                         printer.write('~~~~')
-                        self.from_node.print(printer)
+                        self.print_without_edits(self.from_node, printer)
                         printer.write('~~~~')
                     else:
                         with printer.strike():
-                            self.from_node.print(printer)
+                            self.print_without_edits(self.from_node, printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
 
 
-class Insert(Edit):
+class Insert(ConstantCostEdit):
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode):
         super().__init__(
             from_node=to_insert,
             to_node=insert_into,
-            constant_cost=to_insert.total_size + 1,
-            cost_upper_bound=to_insert.total_size + 1
+            cost=to_insert.total_size + 1
         )
+
+    def _on_diff(self, from_node: EditedTreeNode):
+        cast(EditedTreeNode, self.insert_into).inserted.append(cast(TreeNode, from_node))
 
     @property
     def insert_into(self) -> TreeNode:
@@ -216,17 +242,17 @@ class Insert(Edit):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
                 printer.write('++++')
-                self.to_insert.print(printer)
+                self.print_without_edits(self.to_insert, printer)
                 printer.write('++++')
             else:
                 with printer.under_plus():
-                    self.to_insert.print(printer)
+                    self.print_without_edits(self.to_insert, printer)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_insert={self.to_insert!r}, insert_into={self.insert_into!r})"
 
 
-class EditSequence(CompoundEdit):
+class EditSequence(AbstractCompoundEdit):
     def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
         self._edit_iter: Iterator[Edit] = edits
         self._sub_edits: List[Edit] = []
@@ -281,13 +307,13 @@ class EditSequence(CompoundEdit):
             yield self._sub_edits[-1]
 
     def _is_tightened(self, starting_bounds: Range) -> bool:
-        return not self.valid or self.cost().lower_bound > starting_bounds.lower_bound or \
-            self.cost().upper_bound < starting_bounds.upper_bound
+        return not self.valid or self.bounds().lower_bound > starting_bounds.lower_bound or \
+            self.bounds().upper_bound < starting_bounds.upper_bound
 
     def tighten_bounds(self) -> bool:
         if not self.valid:
             return False
-        starting_bounds: Range = self.cost()
+        starting_bounds: Range = self.bounds()
         while True:
             if self._expand_edits() and self._is_tightened(starting_bounds):
                 return True
@@ -299,36 +325,36 @@ class EditSequence(CompoundEdit):
                         self.valid = False
                         return True
                     tightened = True
-                    new_cost = self.cost()
+                    new_cost = self.bounds()
                     # assert new_cost.lower_bound >= starting_bounds.lower_bound
                     # assert new_cost.upper_bound <= starting_bounds.upper_bound
                     if new_cost.lower_bound > starting_bounds.lower_bound or \
                             new_cost.upper_bound < starting_bounds.upper_bound:
                         return True
                 else:
-                    assert not child.valid or child.cost().definitive()
+                    assert not child.valid or child.bounds().definitive()
             if not tightened and self._edit_iter is None:
                 return self._is_tightened(starting_bounds)
 
-    def cost(self) -> Range:
+    def bounds(self) -> Range:
         if not self.valid:
             self._cost = Range()
         if self._cost is not None:
             return self._cost
         elif self._edit_iter is None:
             # We've expanded all of the sub-edits, so calculate the bounds explicitly:
-            total_cost = sum(e.cost() for e in self._sub_edits)
+            total_cost = sum(e.bounds() for e in self._sub_edits)
 
         else:
             # We have not yet expanded all of the sub-edits
             total_cost = Range(0, self._cost_upper_bound)
             for e in self._sub_edits:
-                total_cost.lower_bound += e.cost().lower_bound
-                total_cost.upper_bound -= e.initial_cost.upper_bound - e.cost().upper_bound
-        if total_cost.lower_bound > super().cost().upper_bound:
+                total_cost.lower_bound += e.bounds().lower_bound
+                total_cost.upper_bound -= e.initial_bounds.upper_bound - e.bounds().upper_bound
+        if total_cost.lower_bound > super().bounds().upper_bound:
             self.valid = False
             return Range()
-        total_cost.upper_bound = min(super().cost().upper_bound, total_cost.upper_bound)
+        total_cost.upper_bound = min(super().bounds().upper_bound, total_cost.upper_bound)
         if self._edit_iter is None and total_cost.definitive():
             self._cost = total_cost
         return total_cost

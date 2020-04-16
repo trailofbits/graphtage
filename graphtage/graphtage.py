@@ -1,14 +1,14 @@
 import itertools
-from abc import ABC
-from collections import defaultdict, Sized
-from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
+from collections import defaultdict
+from typing import Any, Callable, cast, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
-from .edits import EditSequence, CompoundEdit, Edit, Insert, Match, Remove, Replace
+from .bounds import Range
+from .edits import AbstractEdit, EditSequence, CompoundEdit, Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
-from graphtage.bounds import Range
-from .tree import ContainerNode, TreeNode
+from .sequences import SequenceNode
+from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits, TreeNode
 from .utils import HashableCounter
 
 
@@ -46,8 +46,8 @@ class Diff:
         self.from_root.print(out_stream, self)
         out_stream.newline()
 
-    def cost(self) -> int:
-        return sum(e.cost().upper_bound for e in self.edits)
+    def bounds(self) -> int:
+        return sum(e.bounds().upper_bound for e in self.edits)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(from_root={self.from_root!r}, to_root={self.to_root!r}, edits={self.edits!r})"
@@ -62,22 +62,17 @@ class LeafNode(TreeNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, LeafNode):
-            # if self.object == node.object:
-            #     return Match(self, node, 0)
-            # elif len(str(self.object)) == len(str(node.object)) == 1:
-            #     return Match(self, node, 1)
-            # else:
-            #     return EditedMatch(self, node)
             return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
 
-    def print(self, printer: Printer, diff: Optional[Diff] = None):
-        if diff is None or self not in diff:
-            printer.write(repr(self.object))
-        else:
-            for edit in diff[self]:
-                edit.print(printer)
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'obj': self.object
+        }
+
+    def print(self, printer: Printer):
+        printer.write(repr(self.object))
 
     def __lt__(self, other):
         if isinstance(other, LeafNode):
@@ -101,6 +96,45 @@ class LeafNode(TreeNode):
         return str(self.object)
 
 
+class KeyValuePairEdit(AbstractCompoundEdit):
+    def __init__(
+            self,
+            from_kvp: 'KeyValuePairNode',
+            to_kvp: 'KeyValuePairNode'
+    ):
+        if from_kvp.key == to_kvp.key:
+            self.key_edit: Edit = Match(from_kvp.key, to_kvp.key, 0)
+        elif from_kvp.allow_key_edits:
+            self.key_edit: Edit = from_kvp.key.edits(to_kvp.key)
+        else:
+            raise ValueError("Keys must match!")
+        if from_kvp.value == to_kvp.value:
+            self.value_edit: Edit = Match(from_kvp.value, to_kvp.value, 0)
+        else:
+            self.value_edit: Edit = from_kvp.value.edits(to_kvp.value)
+        super().__init__(
+            from_node=from_kvp,
+            to_node=to_kvp
+        )
+
+    def bounds(self) -> Range:
+        return self.key_edit.bounds() + self.value_edit.bounds()
+
+    def tighten_bounds(self) -> bool:
+        return self.key_edit.tighten_bounds() or self.value_edit.tighten_bounds()
+
+    def edits(self) -> Iterator[Edit]:
+        yield self.key_edit
+        yield self.value_edit
+
+    def print(self, printer: Printer):
+        with printer.color(Fore.BLUE):
+            self.key_edit.print(printer)
+        with printer.bright():
+            printer.write(": ")
+        self.value_edit.print(printer)
+
+
 class KeyValuePairNode(ContainerNode):
     def __init__(self, key: LeafNode, value: TreeNode, allow_key_edits: bool = True):
         self.key: LeafNode = key
@@ -110,34 +144,34 @@ class KeyValuePairNode(ContainerNode):
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
             raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
-        if self.allow_key_edits:
-            return EditSequence(
-                from_node=self,
-                to_node=node,
-                edits=iter((self.key.edits(node.key), self.value.edits(node.value)))
-            )
-        elif self.key == node.key:
-            return EditSequence(
-                from_node=self,
-                to_node=node,
-                edits=iter((Match(self.key, node.key, 0), self.value.edits(node.value)))
-            )
+        if self.allow_key_edits or self.key == node.key:
+            return KeyValuePairEdit(self, node)
         else:
             return Replace(self, node)
 
-    def print(self, printer: Printer, diff: Optional[Diff] = None):
-        if diff is None or self not in diff or (len(diff[self]) == 1 and isinstance(diff[self][0], CompoundEdit)):
-            if isinstance(self.key, LeafNode):
-                with printer.color(Fore.BLUE):
-                    self.key.print(printer, diff)
-            else:
-                self.key.print(printer, diff)
-            with printer.bright():
-                printer.write(": ")
-            self.value.print(printer, diff)
+    def make_edited(self) -> Union[EditedTreeNode, 'KeyValuePairNode']:
+        return self.edited_type()(
+            key=self.key.make_edited(),
+            value=self.value.make_edited(),
+            allow_key_edits=self.allow_key_edits
+        )
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'key': self.key,
+            'value': self.value,
+            'allow_key_edits': self.allow_key_edits
+        }
+
+    def print(self, printer: Printer):
+        if isinstance(self.key, LeafNode):
+            with printer.color(Fore.BLUE):
+                self.key.print(printer)
         else:
-            for edit in diff[self]:
-                edit.print(printer)
+            self.key.print(printer)
+        with printer.bright():
+            printer.write(": ")
+        self.value.print(printer)
 
     def calculate_total_size(self):
         return self.key.total_size + self.value.total_size
@@ -169,55 +203,6 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class SequenceNode(ContainerNode, Sized, ABC):
-    def __init__(self):
-        self.start_symbol: str = '['
-        self.end_symbol: str = ']'
-
-    def print(self, printer: Printer, diff: Optional[Diff] = None):
-        if diff is not None and diff[self] and isinstance(diff[self][0], CompoundEdit):
-            assert len(diff[self]) == 1
-            edits: List[Edit] = list(diff[self][0].edits())
-        else:
-            edits: List[Edit] = [Match(child, child, 0) for child in self]
-        with printer.bright():
-            printer.write(self.start_symbol)
-        with printer.indent() as p:
-            to_remove: int = 0
-            to_insert: int = 0
-            for i, edit in enumerate(edits):
-                if isinstance(edit, Remove):
-                    to_remove += 1
-                elif isinstance(edit, Insert):
-                    to_insert += 1
-                while to_remove > 0 and to_insert > 0:
-                    to_remove -= 1
-                    to_insert -= 1
-                if i > 0:
-                    with printer.bright():
-                        if to_remove:
-                            to_remove -= 1
-                            with p.strike():
-                                p.write(',')
-                        elif to_insert:
-                            to_insert -= 1
-                            with p.under_plus():
-                                p.write(',')
-                        else:
-                            p.write(',')
-                p.newline()
-                if isinstance(edit, Match):
-                    edit.from_node.print(p, diff)
-                elif isinstance(edit, CompoundEdit):
-                    edit.from_node.print(p, diff)
-                else:
-                    edit.print(p)
-        if len(self) > 0:
-            printer.newline()
-        with printer.bright():
-            printer.write(self.end_symbol)
-
-
 class ListNode(SequenceNode):
     def __init__(self, list_like: Sequence[TreeNode]):
         super().__init__()
@@ -239,11 +224,16 @@ class ListNode(SequenceNode):
         else:
             return Replace(self, node)
 
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'list_like': self.children
+        }
+
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
 
     def __eq__(self, other):
-        return self.children == other.children
+        return isinstance(other, ListNode) and self.children == other.children
 
     def __hash__(self):
         return hash(self.children)
@@ -277,6 +267,11 @@ class MultiSetNode(SequenceNode):
         else:
             return Replace(self, node)
 
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'items': self.children.elements()
+        }
+
     def calculate_total_size(self):
         return sum(c.total_size * count for c, count in self.children.items())
 
@@ -304,6 +299,18 @@ class DictNode(MultiSetNode):
         super().__init__(sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in dict_like.items()))
         self.start_symbol = '{'
         self.end_symbol = '}'
+
+    def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
+        return self.edited_type()({
+            kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
+        })
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'dict_like': {
+                kvp.key: kvp.value for kvp in self
+            }
+        }
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
@@ -356,6 +363,18 @@ class FixedKeyDictNode(SequenceNode):
         else:
             return Replace(self, node)
 
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'dict_like': {
+                kvp.key: kvp.value for kvp in self.children.values()
+            }
+        }
+
+    def make_edited(self) -> Union[EditedTreeNode, 'FixedKeyDictNode']:
+        return self.edited_type()({
+            kvp.key.make_edited(): kvp.value.make_edited() for kvp in self.children.values()
+        })
+
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
 
@@ -378,89 +397,123 @@ class FixedKeyDictNode(SequenceNode):
         return str(self.children)
 
 
+class StringEdit(AbstractEdit):
+    def __init__(
+            self,
+            from_node: 'StringNode',
+            to_node: 'StringNode'
+    ):
+        self.edit_distance = string_edit_distance(from_node.object, to_node.object)
+        super().__init__(
+            from_node=from_node,
+            to_node=to_node
+        )
+
+    def bounds(self) -> Range:
+        return self.edit_distance.bounds()
+
+    def tighten_bounds(self) -> bool:
+        return self.edit_distance.tighten_bounds()
+
+    def print(self, printer: Printer):
+        printer.write('"')
+        remove_seq = []
+        add_seq = []
+        for sub_edit in self.edit_distance.edits():
+            to_remove = None
+            to_add = None
+            matched = None
+            if isinstance(sub_edit, Match):
+                if sub_edit.from_node.object == sub_edit.to_node.object:
+                    matched = sub_edit.from_node.object
+                else:
+                    to_remove = sub_edit.from_node.object
+                    to_add = sub_edit.to_node.object
+            elif isinstance(sub_edit, Remove):
+                to_remove = sub_edit.from_node.object
+            else:
+                assert isinstance(sub_edit, Insert)
+                to_add = sub_edit.to_insert.object
+            if to_remove is not None and to_add is not None:
+                assert matched is None
+                remove_seq.append(to_remove)
+                add_seq.append(to_add)
+            else:
+                with printer.color(Fore.WHITE).background(Back.RED).bright():
+                    with printer.strike():
+                        for rm in remove_seq:
+                            printer.write(rm)
+                remove_seq = []
+                with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                    with printer.under_plus():
+                        for add in add_seq:
+                            printer.write(add)
+                add_seq = []
+                if to_remove is not None:
+                    remove_seq.append(to_remove)
+                if to_add is not None:
+                    add_seq.append(to_add)
+                if matched is not None:
+                    printer.write(matched)
+        with printer.color(Fore.WHITE).background(Back.RED).bright():
+            with printer.strike():
+                for rm in remove_seq:
+                    printer.write(rm)
+        with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+            with printer.under_plus():
+                for add in add_seq:
+                    printer.write(add)
+        printer.write('"')
+
+
 class StringNode(LeafNode):
     def __init__(self, string_like: str):
         super().__init__(string_like)
 
-    def print(self, printer: Printer, diff: Optional[Diff] = None):
-        if diff is None or self not in diff:
-            if printer.context().fore is None:
-                context = printer.color(Fore.GREEN)
-                null_context = False
-            else:
-                context = NullANSIContext()
-                null_context = True
-            with context:
-                printer.write('"')
-                for c in self.object:
-                    if c == '"':
-                        if not null_context:
-                            with printer.color(Fore.YELLOW):
-                                printer.write('\\"')
-                        else:
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, StringNode):
+            if self.object == node.object:
+                return Match(self, node, 0)
+            elif len(self.object) == 1 and len(node.object) == 1:
+                return Match(self, node, 1)
+            return StringEdit(self, node)
+        else:
+            return super().edits(node)
+
+    def print(self, printer: Printer):
+        if printer.context().fore is None:
+            context = printer.color(Fore.GREEN)
+            null_context = False
+        else:
+            context = NullANSIContext()
+            null_context = True
+        with context:
+            printer.write('"')
+            for c in self.object:
+                if c == '"':
+                    if not null_context:
+                        with printer.color(Fore.YELLOW):
                             printer.write('\\"')
                     else:
-                        printer.write(c)
-                printer.write('"')
-        else:
-            for edit in diff[self]:
-                if isinstance(edit, Match) and isinstance(edit.to_node, StringNode):
-                    printer.write('"')
-                    sub_edits = string_edit_distance(self.object, edit.to_node.object).edits()
-                    remove_seq = []
-                    add_seq = []
-                    for sub_edit in sub_edits:
-                        to_remove = None
-                        to_add = None
-                        matched = None
-                        if isinstance(sub_edit, Match):
-                            if sub_edit.from_node.object == sub_edit.to_node.object:
-                                matched = sub_edit.from_node.object
-                            else:
-                                to_remove = sub_edit.from_node.object
-                                to_add = sub_edit.to_node.object
-                        elif isinstance(sub_edit, Remove):
-                            to_remove = sub_edit.from_node.object
-                        else:
-                            assert isinstance(sub_edit, Insert)
-                            to_add = sub_edit.to_insert.object
-                        if to_remove is not None and to_add is not None:
-                            assert matched is None
-                            remove_seq.append(to_remove)
-                            add_seq.append(to_add)
-                        else:
-                            with printer.color(Fore.WHITE).background(Back.RED).bright():
-                                with printer.strike():
-                                    for rm in remove_seq:
-                                        printer.write(rm)
-                            remove_seq = []
-                            with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                                with printer.under_plus():
-                                    for add in add_seq:
-                                        printer.write(add)
-                            add_seq = []
-                            if to_remove is not None:
-                                remove_seq.append(to_remove)
-                            if to_add is not None:
-                                add_seq.append(to_add)
-                            if matched is not None:
-                                printer.write(matched)
-                    with printer.color(Fore.WHITE).background(Back.RED).bright():
-                        with printer.strike():
-                            for rm in remove_seq:
-                                printer.write(rm)
-                    with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                        with printer.under_plus():
-                            for add in add_seq:
-                                printer.write(add)
-                    printer.write('"')
+                        printer.write('\\"')
                 else:
-                    edit.print(printer)
+                    printer.write(c)
+            printer.write('"')
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'string_like': self.object
+        }
 
 
 class IntegerNode(LeafNode):
     def __init__(self, int_like: int):
         super().__init__(int_like)
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'int_like': self.object
+        }
 
 
 def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable[[Range], Any]] = None) -> Diff:
@@ -505,7 +558,7 @@ def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeN
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 
 
-class EditedMatch(Edit):
+class EditedMatch(AbstractEdit):
     def __init__(self, match_from: LeafNode, match_to: LeafNode):
         self.edit_distance: EditDistance = string_edit_distance(str(match_from.object), str(match_to.object))
         super().__init__(
@@ -517,7 +570,7 @@ class EditedMatch(Edit):
         for edit in self.edit_distance.edits():
             edit.print(printer)
 
-    def cost(self) -> Range:
+    def bounds(self) -> Range:
         return self.edit_distance.bounds()
 
     def tighten_bounds(self) -> bool:
@@ -531,31 +584,3 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
     return EditDistance(list1, list2, list1.children, list2.children)
-
-
-AtomicEdit = Union[Insert, Remove, Replace, Match, EditedMatch]
-
-
-def explode_edits(edit: Union[AtomicEdit, CompoundEdit]) -> Iterator[AtomicEdit]:
-    if isinstance(edit, CompoundEdit):
-        while not edit.cost().definitive() and edit.tighten_bounds():
-            pass
-        return itertools.chain(*map(explode_edits, edit.edits()))
-    else:
-        return iter((edit,))
-
-
-if __name__ == '__main__':
-    obj1 = build_tree({
-        "test": "foo",
-        "baz": 1
-    })
-    obj2 = build_tree({
-        "test": "bar",
-        "baz": 2
-    })
-
-    obj_diff = diff(obj1, obj2)
-    print(obj_diff.cost())
-    print(obj_diff)
-    obj_diff.print()

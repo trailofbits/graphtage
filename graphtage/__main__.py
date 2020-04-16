@@ -156,13 +156,10 @@ def main(argv=None):
                 with open(to_path, 'rb') as to_file:
                     to_json = json.load(to_file)
                     with make_status_callback() as callback:
-                        diff = graphtage.diff(
-                            graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits),
-                            graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits),
-                            callback=callback
-                        )
-
-                    diff.print(printer.Printer(sys.stdout, ansi_color=ansi_color))
+                        graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
+                            graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
+                        ).print(printer.Printer(sys.stdout, ansi_color=ansi_color))
+#                            callback=callback
 
 
 if __name__ == '__main__':

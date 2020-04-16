@@ -146,8 +146,11 @@ class Range:
 
 
 class Bounded(Protocol):
-    tighten_bounds: Callable[[], bool]
-    bounds: Callable[[], Range]
+    def tighten_bounds(self) -> bool:
+        raise NotImplementedError(f"Class {self.__class__.__name__} must implement tighten_bounds")
+
+    def bounds(self) -> Range:
+        raise NotImplementedError(f"Class {self.__class__.__name__} must implement bounds")
 
 
 class ConstantBound(Bounded):

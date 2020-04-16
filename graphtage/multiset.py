@@ -1,17 +1,18 @@
 from typing import Iterator, List
 
 from .bounds import Range
-from .edits import CompoundEdit, Edit, Insert, Match, Remove
+from .edits import Insert, Match, Remove
 from .matching import WeightedBipartiteMatcher
-from .tree import TreeNode
+from .sequences import SequenceEdit, SequenceNode
+from .tree import Edit, TreeNode
 from .utils import HashableCounter
 
 
-class MultiSetEdit(CompoundEdit):
+class MultiSetEdit(SequenceEdit):
     def __init__(
             self,
-            from_node: TreeNode,
-            to_node: TreeNode,
+            from_node: SequenceNode,
+            to_node: SequenceNode,
             from_set: HashableCounter[TreeNode],
             to_set: HashableCounter[TreeNode]
     ):
@@ -45,5 +46,5 @@ class MultiSetEdit(CompoundEdit):
     def tighten_bounds(self) -> bool:
         return self._matcher.tighten_bounds()
 
-    def cost(self) -> Range:
+    def bounds(self) -> Range:
         return self._matcher.bounds()
