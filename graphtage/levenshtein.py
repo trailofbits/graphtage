@@ -1,7 +1,6 @@
 import itertools
 import logging
-from enum import Enum
-from typing import Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Iterator, List, Optional, Sequence, Tuple
 
 from tqdm import tqdm
 
@@ -42,238 +41,28 @@ def levenshtein_distance(s: str, t: str) -> int:
     return dist[row][col]
 
 
-class AbstractNode(Bounded):
-    def __init__(
-            self,
-            edit_distance: 'EditDistance',
-            row: int,
-            col: int,
-    ):
-        self.neighbors: List[SearchNode] = []
-        self.edit_distance: EditDistance = edit_distance
-        self.row: int = row
-        self.col: int = col
+class SearchNode(Bounded):
+    def __init__(self, cost: int, edit: Optional[Edit] = None):
+        self.cost = cost
+        self.edit: Optional[Edit] = edit
+
+    def bounds(self) -> Range:
+        if self.edit is not None:
+            return self.edit.bounds() + Range(self.cost, self.cost)
+        else:
+            return Range(self.cost, self.cost)
+
+    def tighten_bounds(self) -> bool:
+        if self.edit is not None:
+            return self.edit.tighten_bounds()
+        else:
+            return False
 
     def __lt__(self, other):
         return self.bounds() < other.bounds()
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}(row={self.row!r}, col={self.col!r})"
-
-
-class EditType(Enum):
-    MATCH = 0
-    REMOVE = 1
-    INSERT = 2
-
-
-class FringeEdit:
-    def __init__(self, from_node: 'SearchNode', to_node: 'SearchNode', edit_type: EditType):
-        self.from_node: SearchNode = from_node
-        self.to_node: SearchNode = to_node
-        assert from_node not in to_node.neighbors
-        to_node.neighbors.append(from_node)
-        self.edit_type: EditType = edit_type
-
-    def __hash__(self):
-        return id(self)
-
-    def __lt__(self, other):
-        return (self.to_node.bounds() < other.to_node.bounds()) or (
-                self.to_node.bounds() == other.to_node.bounds() and self.edit_type.value < other.edit_type.value
-        )
-
-
-class SearchNode(AbstractNode):
-    def __init__(
-            self,
-            edit_distance: 'EditDistance',
-            row: int,
-            col: int,
-            **kwargs
-    ):
-        super().__init__(edit_distance=edit_distance, row=row, col=col)
-        self.node_from: TreeNode = self.edit_distance.from_seq[self.col - 1]
-        self.node_to: TreeNode = self.edit_distance.to_seq[self.row - 1]
-        self._fringe: List[FringeEdit] = []
-        for edit_type, fringe_node in kwargs.items():
-            if edit_type.upper() not in EditType.__members__.keys():
-                raise ValueError(f"edit type must be one of {EditType.__members__.keys()}, not {edit_type}")
-            edit = FringeEdit(
-                from_node=self,
-                to_node=fringe_node,
-                edit_type=EditType.__members__.get(edit_type.upper())
-            )
-            self._fringe.append(edit)
-        # changed = True
-        # while changed:
-        #     to_remove = set()
-        #     changed = False
-        #     for n1, n2 in combinations(self._fringe, 2):
-        #         if n1.to_node.bounds().dominates(n2.to_node.bounds()):
-        #             if n1.to_node.bounds().lower_bound == n2.to_node.bounds().upper_bound:
-        #                 # there is a tie; try and save a direct match
-        #                 if n2.edit_type == EditType.MATCH:
-        #                     to_remove.add(n1)
-        #                 else:
-        #                     to_remove.add(n2)
-        #             else:
-        #                 to_remove.add(n2)
-        #             changed = True
-        #             break
-        #     for node in to_remove:
-        #         self._fringe.remove(node)
-        #         assert self in node.to_node.neighbors
-        #         node.to_node.neighbors.remove(self)
-        self._match: Optional[Edit] = None
-        self._bounds: Optional[Range] = None
-
-    @property
-    def match(self) -> Edit:
-        if self._match is None:
-            self._match = self.node_from.edits(self.node_to)
-        return self._match
-
-    def _invalidate_neighbors(self):
-        for node in self.neighbors:
-            node._bounds = None
-            node._invalidate_neighbors()
-
-    def tighten_bounds(self) -> bool:
-        initial_bounds = self.bounds()
-        if initial_bounds.definitive():
-            return False
-        self._bounds = None
-        while self.match.tighten_bounds():
-            self._bounds = None
-            self._invalidate_neighbors()
-            if self.bounds().lower_bound > initial_bounds.lower_bound \
-                    or self.bounds().upper_bound < initial_bounds.upper_bound:
-                return True
-        if not self.bounds().definitive():
-            breakpoint()
-            self._bounds = None
-        assert not self.match.valid or self.bounds().definitive()
-        return False
-
-    def best_predecessor(self) -> FringeEdit:
-        return min(self._fringe)
-
-    def ancestors(self) -> Iterator['SearchNode']:
-        stack: List[SearchNode] = [f.to_node for f in self._fringe]
-        result: List[SearchNode] = list(stack)
-        history = set(stack)
-        while stack:
-            node = stack.pop()
-            if isinstance(node, ConstantNode):
-                continue
-            fringe = (
-                a for a in node._fringe if a.to_node not in history
-            )
-            match: Optional[SearchNode] = None
-            for a in fringe:
-                if a.edit_type == EditType.MATCH:
-                    match = a.to_node
-                else:
-                    result.append(a.to_node)
-                    history.add(a.to_node)
-                    stack.append(a.to_node)
-            if match is not None:
-                result.append(match)
-                history.add(match)
-                stack.append(match)
-        return reversed(result)
-
-    def bounds(self) -> Range:
-        if self._bounds is None:
-            bounds = self.match.bounds()
-            lb, ub = bounds.lower_bound, bounds.upper_bound
-            bounds = sorted(f.to_node.bounds() for f in self._fringe)
-            assert bounds
-            if len(bounds) == 1 or (
-                bounds[0].dominates(bounds[1]) and (len(bounds) < 3 or bounds[0].dominates(bounds[2]))
-            ):
-                self._bounds = Range(lb + bounds[0].lower_bound, ub + bounds[0].upper_bound)
-            else:
-                lb += min(b.lower_bound for b in bounds)
-                ub += max(b.upper_bound for b in bounds)
-                self._bounds = Range(lb, ub)
-            if self._bounds.definitive() and \
-                    self is self.edit_distance.matrix[len(self.edit_distance.to_seq)][len(self.edit_distance.from_seq)]:
-                # We are the goal, so we are done! Do some memory cleanup
-                if log.isEnabledFor(logging.DEBUG):
-                    size_before = self.edit_distance.matrix.getsizeof()
-                node: Union[SearchNode, Optional[ConstantNode]] = self
-                new_matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
-                    num_rows=len(self.edit_distance.to_seq) + 1,
-                    num_cols=len(self.edit_distance.from_seq) + 1,
-                    default_value=None
-                )
-                while isinstance(node, SearchNode):
-                    new_matrix[node.row][node.col] = node
-                    next_node = node.best_predecessor()
-                    node._fringe = [next_node]
-                    node = next_node.to_node
-                while isinstance(node, ConstantNode):
-                    new_matrix[node.row][node.col] = node
-                    node = node.predecessor
-                if log.isEnabledFor(logging.DEBUG):
-                    size_after = new_matrix.getsizeof()
-                    log.debug(f"Cleaned up {size_before - size_after} bytes")
-                self.edit_distance.matrix = new_matrix
-        return self._bounds
-
-    def __repr__(self):
-        ret = f"{self.__class__.__name__}(node_from={self.node_from!r}, node_to={self.node_to!r}"
-        for node in self._fringe:
-            ret += f", {node.edit_type.name.lower()}={node.to_node!r}"
-        return ret
-
-
-class ConstantNode(AbstractNode):
-    def __init__(
-        self,
-        edit_distance: 'EditDistance',
-        row: int = 0,
-        col: int = 0,
-    ):
-        super().__init__(
-            edit_distance=edit_distance,
-            row=row,
-            col=col
-        )
-        if row == 0 and col == 0:
-            cost = 0
-            self.node = None
-        else:
-            if row == 0:
-                self.node = self.edit_distance.from_seq[col-1]
-            elif col == 0:
-                self.node = self.edit_distance.to_seq[row-1]
-            else:
-                raise ValueError()
-            cost = self.node.total_size + self.predecessor._cost.upper_bound
-        self._cost: Range = Range(cost, cost)
-
-    @property
-    def predecessor(self) -> Optional['ConstantNode']:
-        if self.row == 0 and self.col == 0:
-            return None
-        elif self.row == 0:
-            return self.edit_distance.matrix[self.row][self.col - 1]
-        elif self.col == 0:
-            return self.edit_distance.matrix[self.row - 1][self.col]
-        else:
-            return None
-
-    def tighten_bounds(self) -> bool:
-        return False
-
-    def bounds(self) -> Range:
-        return self._cost
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(node={self.node!r}, row={self.row!r}, col={self.col!r})"
+    def __le__(self, other):
+        return self.bounds() <= other.bounds()
 
 
 class EditDistance(SequenceEdit):
@@ -302,8 +91,12 @@ class EditDistance(SequenceEdit):
             else:
                 break
         self.reversed_shared_suffix = self.reversed_shared_suffix
-        self.from_seq: Sequence[TreeNode] = from_seq[len(self.shared_prefix):len(from_seq)-len(self.reversed_shared_suffix)]
-        self.to_seq: Sequence[TreeNode] = to_seq[len(self.shared_prefix):len(to_seq)-len(self.reversed_shared_suffix)]
+        self.from_seq: Sequence[TreeNode] = from_seq[
+                                                len(self.shared_prefix):len(from_seq)-len(self.reversed_shared_suffix)
+                                            ]
+        self.to_seq: Sequence[TreeNode] = to_seq[
+                                            len(self.shared_prefix):len(to_seq)-len(self.reversed_shared_suffix)
+                                          ]
         log.debug(f"Levenshtein len(shared prefix)={len(self.shared_prefix)}, len(shared suffix)={len(self.reversed_shared_suffix)}, len(from_seq)={len(self.from_seq)}, len(to_seq)={len(self.to_seq)}")
         constant_cost = 0
         if len(from_seq) != len(to_seq):
@@ -317,7 +110,7 @@ class EditDistance(SequenceEdit):
             for _ in range(len(larger) - len(smaller)):
                 constant_cost += sizes.pop().total_size
         cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
-        self.matrix: SparseMatrix[Union[ConstantNode, SearchNode]] = SparseMatrix(
+        self.matrix: SparseMatrix[SearchNode] = SparseMatrix(
             num_rows=len(self.to_seq) + 1,
             num_cols=len(self.from_seq) + 1,
             default_value=None
@@ -331,27 +124,29 @@ class EditDistance(SequenceEdit):
             constant_cost=constant_cost,
             cost_upper_bound=cost_upper_bound
         )
+        self.__edits: Optional[List[Edit]] = None
 
     def _add_node(self, row: int, col: int) -> bool:
         if self.matrix[row][col] is not None or col > len(self.from_seq) or row > len(self.to_seq):
             return False
-        if row == 0 or col == 0:
-            self.matrix[row][col] = ConstantNode(
-                edit_distance=self,
-                row=row,
-                col=col
-            )
+        if row == 0 and col == 0:
+            self.matrix[row][col] = SearchNode(cost=row + col)
             return True
+        elif row == 0:
+            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node)
+            fringe_cost = self.matrix[0][col - 1].cost
+        elif col == 0:
+            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node)
+            fringe_cost = self.matrix[row - 1][0].cost
         else:
-            self.matrix[row][col] = SearchNode(
-                edit_distance=self,
-                row=row,
-                col=col,
-                insert=self.matrix[row - 1][col],
-                remove=self.matrix[row][col - 1],
-                match=self.matrix[row - 1][col - 1]
+            edit = self.from_seq[col-1].edits(self.to_seq[row-1])
+            fringe_cost = min(
+                self.matrix[row - 1][col - 1].cost,
+                self.matrix[row - 1][col].cost,
+                self.matrix[row][col - 1].cost
             )
-            return True
+        self.matrix[row][col] = SearchNode(cost=fringe_cost, edit=edit)
+        return True
 
     @property
     def _goal(self) -> Optional[SearchNode]:
@@ -444,28 +239,50 @@ class EditDistance(SequenceEdit):
                         t.refresh()
                         starting_diff = new_diff
                 t.update(t.total - t.pos)
-        while self._goal is None and self.tighten_bounds():
-            pass
-        assert self._goal is not None
-        edits: List[Edit] = [Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix]
-        node = self._goal
-        while not isinstance(node, ConstantNode):
-            best = node.best_predecessor()
-            if best.edit_type == EditType.REMOVE:
-                edits.append(Remove(to_remove=node.node_from, remove_from=self.from_node))
-            elif best.edit_type == EditType.INSERT:
-                edits.append(Insert(to_insert=node.node_to, insert_into=self.from_node))
-            else:
-                assert best.edit_type == EditType.MATCH
-                edits.append(node.match)
-            node = best.to_node
-        while node.predecessor is not None:
-            if node.row == 0:
-                edits.append(Remove(to_remove=node.node, remove_from=self.from_node))
-            else:
-                edits.append(Insert(to_insert=node.node, insert_into=self.from_node))
-            node = node.predecessor
+        if self.__edits is None:
+            while self._goal is None and self.tighten_bounds():
+                pass
+            assert self._goal is not None
+            self.__edits = [Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix]
+            row = len(self.to_seq)
+            col = len(self.from_seq)
+            while row > 0 or col > 0:
+                if col == 0:
+                    left_cell = None
+                else:
+                    left_cell = self.matrix[row][col - 1]
+                if row == 0:
+                    up_cell = None
+                else:
+                    up_cell = self.matrix[row - 1][col]
+                if col == 0 and row == 0:
+                    diag_cell = None
+                else:
+                    diag_cell = self.matrix[row - 1][col - 1]
+                if left_cell is None or (up_cell is not None and up_cell <= left_cell and up_cell <= diag_cell):
+                    self.__edits.append(self.matrix[row][0].edit)
+                    row -= 1
+                elif diag_cell is None or (left_cell is not None and left_cell <= up_cell and left_cell <= diag_cell):
+                    self.__edits.append(self.matrix[0][col].edit)
+                    col -= 1
+                else:
+                    self.__edits.append(self.matrix[row][col].edit)
+                    row -= 1
+                    col -= 1
+            # we only need the goal cell in the matrix, so save memory by wiping out the rest:
+            if log.isEnabledFor(logging.DEBUG):
+                size_before = self.matrix.getsizeof()
+            new_matrix: SparseMatrix[SearchNode] = SparseMatrix(
+                num_rows=len(self.to_seq) + 1,
+                num_cols=len(self.from_seq) + 1,
+                default_value=None
+            )
+            new_matrix[len(self.to_seq)][len(self.from_seq)] = self._goal
+            if log.isEnabledFor(logging.DEBUG):
+                size_after = new_matrix.getsizeof()
+                log.debug(f"Cleaned up {size_before - size_after} bytes")
+            self.matrix = new_matrix
         return itertools.chain(
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
-            reversed(edits)
+            reversed(self.__edits)
         )
