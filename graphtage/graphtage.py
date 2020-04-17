@@ -3,11 +3,12 @@ from collections import defaultdict
 from typing import Any, Callable, cast, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
 
 from .bounds import Range
-from .edits import AbstractEdit, EditSequence, CompoundEdit, Insert, Match, Remove, Replace, AbstractCompoundEdit
+from .edits import AbstractEdit, EditCollection, EditSequence, CompoundEdit
+from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
-from .sequences import SequenceNode
+from .sequences import SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits, TreeNode
 from .utils import HashableCounter
 
@@ -333,6 +334,23 @@ class DictNode(MultiSetNode):
             return Replace(self, node)
 
 
+class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
+    def __init__(
+            self,
+            from_node: 'FixedKeyDictNode',
+            to_node: TreeNode,
+            edits: Iterator[Edit]
+    ):
+        super().__init__(
+            from_node=from_node,
+            to_node=to_node,
+            edits=edits,
+            collection=list,
+            add_to_collection=list.append,
+            explode_edits=False
+        )
+
+
 class FixedKeyDictNode(SequenceNode):
     """A dictionary that only matches KeyValuePairs if they share the same key
     NOTE: This implementation does not currently support duplicate keys!
@@ -360,11 +378,7 @@ class FixedKeyDictNode(SequenceNode):
                 if kvp == other_kvp:
                     yield Match(kvp, other_kvp, 0)
                 else:
-                    yield EditSequence(
-                        from_node=kvp,
-                        to_node=other_kvp,
-                        edits=iter((Match(kvp.key, other_kvp.key, 0), kvp.edits(node.children[key]),))
-                    )
+                    yield KeyValuePairEdit(kvp, other_kvp)
             else:
                 unshared_kvps.add(kvp)
         for kvp in unshared_kvps:
@@ -380,7 +394,7 @@ class FixedKeyDictNode(SequenceNode):
             elif self.children == node.children:
                 return Match(self, node, 0)
             else:
-                return EditSequence(from_node=self, to_node=node, edits=self._child_edits(node))
+                return FixedKeyDictNodeEdit(from_node=self, to_node=node, edits=self._child_edits(node))
         else:
             return Replace(self, node)
 

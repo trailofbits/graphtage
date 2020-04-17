@@ -1,6 +1,6 @@
 import itertools
 from abc import abstractmethod, ABC
-from typing import cast, Iterator, List, Optional
+from typing import Any, Callable, cast, Collection, Generic, Iterator, List, Optional, Type, TypeVar
 
 from .printer import Back, Fore, Printer
 from .search import IterativeTighteningSearch
@@ -74,6 +74,7 @@ class ConstantCostEdit(AbstractEdit, ABC):
 
     def tighten_bounds(self) -> bool:
         return False
+
 
 class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     @abstractmethod
@@ -251,14 +252,27 @@ class Insert(ConstantCostEdit):
         return f"{self.__class__.__name__}(to_insert={self.to_insert!r}, insert_into={self.insert_into!r})"
 
 
-class EditSequence(AbstractCompoundEdit):
-    def __init__(self, from_node: TreeNode, to_node: Optional[TreeNode], edits: Iterator[Edit]):
+C = TypeVar('C', bound=Collection)
+
+
+class EditCollection(AbstractCompoundEdit, Generic[C]):
+    def __init__(
+            self,
+            from_node: TreeNode,
+            to_node: Optional[TreeNode],
+            collection: Type[C],
+            add_to_collection: Callable[[C, Edit], Any],
+            edits: Iterator[Edit],
+            explode_edits: bool = True
+    ):
         self._edit_iter: Iterator[Edit] = edits
-        self._sub_edits: List[Edit] = []
+        self._sub_edits: C[Edit] = collection()
         cost_upper_bound = from_node.total_size + 1
         if to_node is not None:
             cost_upper_bound += to_node.total_size
         self._cost = None
+        self.explode_edits = explode_edits
+        self._add: Callable[[Edit], Any] = lambda e: add_to_collection(self._sub_edits, e)
         super().__init__(from_node=from_node,
                          to_node=to_node,
                          cost_upper_bound=cost_upper_bound)
@@ -285,25 +299,28 @@ class EditSequence(AbstractCompoundEdit):
         for sub_edit in self.edits():
             sub_edit.print(printer)
 
-    def _expand_edits(self) -> bool:
+    def _expand_edits(self) -> Optional[Edit]:
         if self._edit_iter is not None:
             try:
                 next_edit = next(self._edit_iter)
                 self._cost = None
-                if isinstance(next_edit, CompoundEdit):
+                if self.explode_edits and isinstance(next_edit, CompoundEdit):
                     self._edit_iter = itertools.chain(self._edit_iter, next_edit.edits())
                     return self._expand_edits()
                 else:
-                    self._sub_edits.append(next_edit)
-                    return True
+                    self._add(next_edit)
+                    return next_edit
             except StopIteration:
                 self._edit_iter = None
-        return False
+        return None
 
     def edits(self) -> Iterator[Edit]:
         yield from iter(self._sub_edits)
-        while self._expand_edits():
-            yield self._sub_edits[-1]
+        while True:
+            next_edit = self._expand_edits()
+            if next_edit is None:
+                break
+            yield next_edit
 
     def _is_tightened(self, starting_bounds: Range) -> bool:
         return not self.valid or self.bounds().lower_bound > starting_bounds.lower_bound or \
@@ -343,7 +360,6 @@ class EditSequence(AbstractCompoundEdit):
         elif self._edit_iter is None:
             # We've expanded all of the sub-edits, so calculate the bounds explicitly:
             total_cost = sum(e.bounds() for e in self._sub_edits)
-
         else:
             # We have not yet expanded all of the sub-edits
             total_cost = Range(0, self._cost_upper_bound)
@@ -363,3 +379,20 @@ class EditSequence(AbstractCompoundEdit):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(*{self._sub_edits!r})"
+
+
+class EditSequence(EditCollection[List]):
+    def __init__(
+            self,
+            from_node: TreeNode,
+            to_node: Optional[TreeNode],
+            edits: Iterator[Edit],
+            explode_edits: bool = True
+    ):
+        super().__init__(
+            from_node=from_node,
+            to_node=to_node,
+            collection=list,
+            add_to_collection=list.append,
+            edits=edits
+        )
