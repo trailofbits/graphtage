@@ -56,6 +56,9 @@ class Infinity:
         else:
             return self
 
+    def __radd__(self, _):
+        return self
+
     def __rsub__(self, _):
         return -self
 
