@@ -26,9 +26,10 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
 
 
 class SequenceNode(ContainerNode, Iterable, Sized, ABC):
-    def __init__(self):
-        self.start_symbol: str = '['
-        self.end_symbol: str = ']'
+    def __init__(self, start_symbol: str = '[', end_symbol: str = ']'):
+        super().__init__()
+        self.start_symbol: str = start_symbol
+        self.end_symbol: str = end_symbol
 
     def make_edited(self) -> Union[EditedTreeNode, 'SequenceNode']:
         return self.edited_type()([n.make_edited() for n in self])

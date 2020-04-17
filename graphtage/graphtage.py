@@ -356,12 +356,10 @@ class FixedKeyDictNode(SequenceNode):
     NOTE: This implementation does not currently support duplicate keys!
     """
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
-        super().__init__()
-        self.start_symbol = '{'
-        self.end_symbol = '}'
         self.children: Dict[LeafNode, KeyValuePairNode] = {
             key: KeyValuePairNode(key, value, allow_key_edits=False) for key, value in dict_like.items()
         }
+        super().__init__(start_symbol='{', end_symbol='}')
 
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
@@ -411,7 +409,7 @@ class FixedKeyDictNode(SequenceNode):
         })
 
     def calculate_total_size(self):
-        return sum(c.total_size for c in self.children)
+        return sum(c.total_size for c in self.children.values())
 
     def __eq__(self, other):
         return isinstance(other, FixedKeyDictNode) and other.children == self.children
