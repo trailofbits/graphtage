@@ -177,7 +177,6 @@ class Replace(ConstantCostEdit):
         )
 
     def print(self, printer: Printer):
-        self.from_node.print(printer)
         if self.bounds().upper_bound > 0:
             with printer.bright().color(Fore.WHITE).background(Back.RED):
                 self.print_without_edits(self.from_node, printer)
