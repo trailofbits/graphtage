@@ -137,16 +137,22 @@ class SearchNode(AbstractNode):
     def _invalidate_neighbors(self):
         for node in self.neighbors:
             node._bounds = None
+            node._invalidate_neighbors()
 
     def tighten_bounds(self) -> bool:
         initial_bounds = self.bounds()
         if initial_bounds.definitive():
             return False
+        self._bounds = None
         while self.match.tighten_bounds():
             self._bounds = None
+            self._invalidate_neighbors()
             if self.bounds().lower_bound > initial_bounds.lower_bound \
                     or self.bounds().upper_bound < initial_bounds.upper_bound:
                 return True
+        if not self.bounds().definitive():
+            breakpoint()
+            self._bounds = None
         assert not self.match.valid or self.bounds().definitive()
         return False
 
