@@ -102,6 +102,11 @@ def main(argv=None):
         default=None,
         help='Do not use ANSI color in the output'
     )
+    parser.add_argument('--join-lists', '-jl', action='store_true',
+                            help='Do not print a newline after each list entry')
+    parser.add_argument('--join-dict-items', '-jd', action='store_true',
+                        help='Do not print a newline after each key/value pair in a dictionary')
+    parser.add_argument('--condensed', '-j', action='store_true', help='Equivalent to `-jl -jd`')
     parser.add_argument(
         '--no-key-edits',
         '-k',
@@ -158,7 +163,14 @@ def main(argv=None):
                     with make_status_callback() as callback:
                         graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
                             graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
-                        ).print(printer.Printer(sys.stdout, ansi_color=ansi_color))
+                        ).print(printer.Printer(
+                            sys.stdout,
+                            ansi_color=ansi_color,
+                            options={
+                                'join_lists': args.condensed or args.join_lists,
+                                'join_dict_items': args.condensed or args.join_dict_items
+                            }
+                        ))
 #                            callback=callback
 
 

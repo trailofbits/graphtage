@@ -63,9 +63,12 @@ class SequenceNode(ContainerNode, Iterable, Sized, ABC):
                                 p.write(',')
                         else:
                             p.write(',')
-                p.newline()
+                self.print_item_newline(printer, is_first=i == 0)
                 edit.print(p)
         if len(self) > 0:
-            printer.newline()
+            self.print_item_newline(printer, is_last=True)
         with printer.bright():
             printer.write(self.end_symbol)
+
+    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        printer.newline()

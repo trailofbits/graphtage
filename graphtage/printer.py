@@ -1,7 +1,7 @@
 import sys
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, Callable, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -259,7 +259,12 @@ ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
 class Printer(RawWriter):
-    def __init__(self, out_stream: Optional[Writer] = None, ansi_color: Optional[bool] = None):
+    def __init__(
+            self,
+            out_stream: Optional[Writer] = None,
+            ansi_color: Optional[bool] = None,
+            options: Optional[Dict[str, Any]] = None
+    ):
         if out_stream is None:
             out_stream = sys.stdout
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(out_stream)
@@ -272,6 +277,11 @@ class Printer(RawWriter):
             colorama.init()
         self._strikethrough = False
         self._plusthrough = False
+        if options is not None:
+            for option, value in options.items():
+                if hasattr(self, option):
+                    raise ValueError(f"Illegal option name: {option}")
+                setattr(self, option, value)
 
     def context(self) -> ANSIContext:
         if ANSI_CONTEXT_STACK[self]:

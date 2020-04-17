@@ -229,6 +229,13 @@ class ListNode(SequenceNode):
             'list_like': self.children
         }
 
+    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if hasattr(printer, 'join_lists') and printer.join_lists:
+            if not is_first and not is_last:
+                printer.write(' ')
+        else:
+            printer.newline()
+
     def calculate_total_size(self):
         return sum(c.total_size for c in self.children)
 
@@ -300,6 +307,13 @@ class DictNode(MultiSetNode):
         self.start_symbol = '{'
         self.end_symbol = '}'
 
+    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
+            if not is_first and not is_last:
+                printer.write(' ')
+        else:
+            printer.newline()
+
     def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
         return self.edited_type()({
             kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
@@ -330,6 +344,13 @@ class FixedKeyDictNode(SequenceNode):
         self.children: Dict[LeafNode, KeyValuePairNode] = {
             key: KeyValuePairNode(key, value, allow_key_edits=False) for key, value in dict_like.items()
         }
+
+    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
+            if not is_first and not is_last:
+                printer.write(' ')
+        else:
+            printer.newline()
 
     def _child_edits(self, node: 'FixedKeyDictNode') -> Iterator[Edit]:
         unshared_kvps = set()
