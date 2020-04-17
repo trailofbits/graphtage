@@ -503,6 +503,7 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
         }
         self._edges: Optional[List[List[Optional[Bounded]]]] = None
         self._match: Optional[Mapping[T, Tuple[T, Bounded]]] = None
+        self._edges_are_distinct: bool = False
         self.get_edge = get_edge
         self._bounds: Optional[Range] = None
 
@@ -510,15 +511,19 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     def edges(self) -> List[List[Optional[Bounded]]]:
         if self._edges is None:
             self._edges = [[self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes]
-            make_distinct(*itertools.chain(*self._edges))
             self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
         if self._bounds is None:
             if self._match is None:
-                lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
-                ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
+                if self._edges is None:
+                    lb = 0
+                    ub = sum(n.total_size + 1 for n in self.from_nodes) + \
+                        sum(n.total_size + 1 for n in self.to_nodes)
+                else:
+                    lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
+                    ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
             else:
                 lb = 0
                 ub = 0
@@ -528,15 +533,25 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
             self._bounds = Range(lb, ub)
         return self._bounds
 
+    def _make_edges_distinct(self):
+        if self._edges_are_distinct:
+            return False
+        else:
+            make_distinct(*itertools.chain(*self.edges))
+            return True
+
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
         if self._match is None:
+            self._make_edges_distinct()
+
             def get_edges(from_node, to_node):
                 edge = self.edges[self.from_node_indexes[from_node]][self.to_node_indexes[to_node]]
                 if edge is None:
                     return None
                 else:
                     return edge.bounds().upper_bound
+
             mwbp = min_weight_bipartite_matching(self.from_nodes, self.to_nodes, get_edges)
             self._match = {
                 self.from_nodes[from_node]: (self.to_nodes[to_node], self.edges[from_node][to_node])
@@ -548,6 +563,11 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     def tighten_bounds(self) -> bool:
         if self._match is None:
             initial_bounds = self.bounds()
+            if self._make_edges_distinct():
+                new_bounds = self.bounds()
+                if new_bounds.lower_bound > initial_bounds.lower_bound or \
+                        new_bounds.upper_bound < initial_bounds.upper_bound:
+                    return True
             _ = self.matching     # This computes the minimum weight matching
             new_bounds = self.bounds()
             if new_bounds.lower_bound > initial_bounds.lower_bound or \
