@@ -8,6 +8,8 @@ import colorama
 from colorama import Back, Fore, Style
 from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
 
+from .progress import StatusWriter
+
 
 class Writer(Protocol):
     @abstractmethod
@@ -258,21 +260,24 @@ class NullANSIContext:
 ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
-class Printer(RawWriter):
+class Printer(StatusWriter, RawWriter):
     def __init__(
             self,
             out_stream: Optional[Writer] = None,
             ansi_color: Optional[bool] = None,
+            quiet: bool = False,
             options: Optional[Dict[str, Any]] = None
     ):
         if out_stream is None:
             out_stream = sys.stdout
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(out_stream)
+        super().__init__(
+            out_stream=self.out_stream,
+            quiet=quiet
+        )
         self.indents = 0
-        if ansi_color is None:
-            self.ansi_color = out_stream.isatty()
-        else:
-            self.ansi_color = ansi_color
+        self._ansi_color = None
+        self.ansi_color = ansi_color
         if self.ansi_color:
             colorama.init()
         self._strikethrough = False
@@ -283,23 +288,31 @@ class Printer(RawWriter):
                     raise ValueError(f"Illegal option name: {option}")
                 setattr(self, option, value)
 
+    @property
+    def ansi_color(self) -> bool:
+        return self._ansi_color
+
+    @ansi_color.setter
+    def ansi_color(self, is_color: Optional[bool]):
+        if is_color is None:
+            self._ansi_color = self.out_stream.isatty()
+        else:
+            self._ansi_color = is_color
+
     def context(self) -> ANSIContext:
         if ANSI_CONTEXT_STACK[self]:
             return ANSI_CONTEXT_STACK[self][-1]
         else:
             return ANSIContext(self)
 
-    def write(self, s: str) -> int:
-        return self.out_stream.write(s)
-
     def raw_write(self, s: str) -> int:
-        return self.out_stream.raw_write(s)
+        return super().write(s)
 
     def isatty(self) -> bool:
         return self.out_stream.isatty()
 
     def flush(self):
-        return self.out_stream.flush()
+        return super().flush()
 
     def newline(self):
         self.write('\n')

@@ -5,12 +5,9 @@ import os
 import sys
 import tempfile as tf
 
-from tqdm import tqdm
-
 from . import graphtage
-from . import printer
 from . import version
-from .bounds import Range
+from .printer import DEFAULT_PRINTER, Printer
 
 
 class Tempfile:
@@ -52,37 +49,6 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-class Callback:
-    def __init__(self, status: tqdm):
-        self.status: tqdm = status
-        self.last_diff = None
-
-    def __call__(self, range: Range):
-        if not range.finite:
-            return
-        next_diff = range.upper_bound - range.lower_bound
-        if self.last_diff is None:
-            self.status.total = next_diff
-        else:
-            self.status.update(self.last_diff - next_diff)
-        self.last_diff = next_diff
-
-
-class make_status_callback:
-    def __init__(self):
-        self.status = None
-
-    def __enter__(self):
-        if not sys.stdout.isatty():
-            return None
-        self.status = tqdm(desc="Diffing", leave=False)
-        return Callback(self.status.__enter__())
-
-    def __exit__(self, *args, **kwargs):
-        if self.status is not None:
-            self.status.__exit__(*args, **kwargs)
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser(description='A diff utility for tree-like files such as JSON and XML.')
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
@@ -113,6 +79,11 @@ def main(argv=None):
         action='store_true',
         help='Only match dictionary entries if they share the same key. This drastically reduces computation.'
     )
+    parser.add_argument(
+        '--no-status',
+        action='store_true',
+        help='Do not display progress bars and status messages'
+    )
     log_group = parser.add_mutually_exclusive_group()
     log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
         logging.getLevelName(x)
@@ -120,6 +91,7 @@ def main(argv=None):
         if not logging.getLevelName(x).startswith('Level')
     ), help='Sets the log level for Graphtage (default=INFO)')
     log_group.add_argument('--debug', action='store_true', help='Equivalent to `--log-level=DEBUG`')
+    log_group.add_argument('--quiet', action='store_true', help='Equivalent to `--log-level=CRITICAL --no-status`')
     parser.add_argument('--version', '-v', action='store_true', help='Print Graphtage\'s version information to STDERR')
     parser.add_argument('-dumpversion', action='store_true',
                         help='Print Graphtage\'s raw version information to STDOUT and exit')
@@ -131,6 +103,8 @@ def main(argv=None):
 
     if args.debug:
         numeric_log_level = logging.DEBUG
+    elif args.quiet:
+        numeric_log_level = logging.CRITICAL
     else:
         numeric_log_level = getattr(logging, args.log_level.upper(), None)
         if not isinstance(numeric_log_level, int):
@@ -154,24 +128,29 @@ def main(argv=None):
     else:
         ansi_color = None
 
+    DEFAULT_PRINTER.out_stream = sys.stdout
+    DEFAULT_PRINTER.ansi_color = ansi_color
+    DEFAULT_PRINTER.quiet = args.no_status or args.quiet
+    printer = Printer(
+        sys.stdout,
+        ansi_color=ansi_color,
+        quiet=args.no_status or args.quiet,
+        options={
+            'join_lists': args.condensed or args.join_lists,
+            'join_dict_items': args.condensed or args.join_dict_items
+        }
+    )
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with open(from_path, 'rb') as from_file:
             from_json = json.load(from_file)
             with PathOrStdin(args.TO_PATH) as to_path:
                 with open(to_path, 'rb') as to_file:
                     to_json = json.load(to_file)
-                    with make_status_callback() as callback:
-                        graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
-                            graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
-                        ).print(printer.Printer(
-                            sys.stdout,
-                            ansi_color=ansi_color,
-                            options={
-                                'join_lists': args.condensed or args.join_lists,
-                                'join_dict_items': args.condensed or args.join_dict_items
-                            }
-                        ))
-#                            callback=callback
+                    graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
+                        graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
+                    ).print(printer)
+    printer.flush()
 
 
 if __name__ == '__main__':

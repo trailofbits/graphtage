@@ -4,7 +4,7 @@ from typing import Any, cast, Dict, Iterable, Iterator, List, Optional, Type, Ty
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
-from .printer import Printer
+from .printer import DEFAULT_PRINTER, Printer
 
 
 class Edit(Bounded, Protocol):
@@ -94,8 +94,15 @@ class TreeNode(metaclass=ABCMeta):
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         edit = ret.edits(node)
-        while edit.valid and not edit.is_complete() and edit.tighten_bounds():
-            pass
+        prev_bounds = edit.bounds()
+        total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
+        prev_range = total_range
+        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
+                new_bounds = edit.bounds()
+                new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                t.update(prev_range - new_range)
+                prev_range = new_range
         return ret
 
     @property

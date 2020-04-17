@@ -7,6 +7,7 @@ from tqdm import tqdm
 from .bounds import Bounded, Range
 from .edits import Insert, Match, Remove
 from .fibonacci import FibonacciHeap
+from .printer import DEFAULT_PRINTER
 from .sequences import SequenceEdit
 from .tree import Edit, TreeNode
 from .utils import SparseMatrix
@@ -179,24 +180,44 @@ class EditDistance(SequenceEdit):
         else:
             return True
 
-    def tighten_bounds(self, _tqdm: Optional[tqdm] = None) -> bool:
+    def is_complete(self) -> bool:
+        return self._goal is not None
+
+    def tighten_bounds(self) -> bool:
         if self._goal is not None:
             return self._goal.tighten_bounds()
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
             # Tighten the entire fringe diagonal until every node in it is definitive
-            if _tqdm is not None:
-                nodes_before = self.matrix.num_filled_elements()
             if not self._next_fringe():
                 assert self._goal is not None
                 return self.tighten_bounds()
-            if _tqdm is not None:
-                _tqdm.update(self.matrix.num_filled_elements() - nodes_before)
-            for row, col in self._fringe_diagonal():
-                while self.matrix[row][col].tighten_bounds():
-                    pass
-                assert self.matrix[row][col].bounds().definitive()
+            if DEFAULT_PRINTER.quiet:
+                fringe_ranges = {}
+                fringe_total = 0
+            else:
+                fringe_ranges = {
+                    (row, col): self.matrix[row][col].bounds().upper_bound - self.matrix[row][col].bounds().lower_bound
+                    for row, col in self._fringe_diagonal()
+                }
+                fringe_total = sum(fringe_ranges.values())
+
+            with DEFAULT_PRINTER.tqdm(
+                    total=fringe_total,
+                    initial=fringe_total,
+                    desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col}",
+                    disable=fringe_total <= 0,
+                    leave=False
+            ) as t:
+                for row, col in self._fringe_diagonal():
+                    while self.matrix[row][col].tighten_bounds():
+                        if fringe_total:
+                            new_bounds = self.matrix[row][col].bounds()
+                            new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                            t.update(fringe_ranges[(row, col)] - new_range)
+                            fringe_ranges[(row, col)] = new_range
+                    assert self.matrix[row][col].bounds().definitive()
             if self.bounds().upper_bound < initial_bounds.upper_bound or \
                     self.bounds().lower_bound > initial_bounds.lower_bound:
                 return True
@@ -216,29 +237,6 @@ class EditDistance(SequenceEdit):
             )
 
     def edits(self) -> Iterator[Edit]:
-        if not self.bounds().definitive():
-            starting_diff = self.bounds().upper_bound - self.bounds().lower_bound
-            starting_matrix_nodes = self.matrix.num_filled_elements()
-            rows, cols = self.matrix.shape()
-            total_matrix_nodes = rows * cols
-            with tqdm(
-                    leave=False,
-                    initial=0,
-                    total=starting_diff,
-                    desc='Edit Distance'
-            ) as t:
-                with tqdm(
-                        leave=False,
-                        initial=starting_matrix_nodes,
-                        total=total_matrix_nodes,
-                        desc='Levenshtein Matrix'
-                ) as tb:
-                    while not self.bounds().definitive() and self.tighten_bounds(_tqdm=tb):
-                        new_diff = self.bounds().upper_bound - self.bounds().lower_bound
-                        t.update(starting_diff - new_diff)
-                        t.refresh()
-                        starting_diff = new_diff
-                t.update(t.total - t.pos)
         if self.__edits is None:
             while self._goal is None and self.tighten_bounds():
                 pass
