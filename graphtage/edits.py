@@ -28,6 +28,9 @@ class AbstractEdit(Edit, ABC):
     def _on_diff(self, from_node: EditedTreeNode):
         pass
 
+    def is_complete(self) -> bool:
+        return not self.valid or self.bounds().definitive()
+
     @staticmethod
     def print_without_edits(node: TreeNode, printer: Printer):
         if isinstance(node, EditedTreeNode):

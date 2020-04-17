@@ -25,10 +25,15 @@ class MultiSetEdit(SequenceEdit):
             to_nodes=self.to_insert.elements(),
             get_edge=lambda f, t: f.edits(t)
         )
+        self._is_tightened = False
         super().__init__(
             from_node=from_node,
             to_node=to_node
         )
+
+    def is_complete(self) -> bool:
+        # The edits are ready after the first call to self.tighten_bounds()
+        return self._is_tightened
 
     def edits(self) -> Iterator[Edit]:
         yield from self._edits
@@ -44,6 +49,7 @@ class MultiSetEdit(SequenceEdit):
             yield Insert(to_insert=ins, insert_into=self.from_node)
 
     def tighten_bounds(self) -> bool:
+        self._is_tightened = True
         return self._matcher.tighten_bounds()
 
     def bounds(self) -> Range:

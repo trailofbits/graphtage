@@ -10,6 +10,12 @@ from .printer import Printer
 class Edit(Bounded, Protocol):
     initial_bounds: Range
 
+    @abstractmethod
+    def is_complete(self) -> bool:
+        """Returns True if all of the final edits() are available,
+        regardless of whether our bounds have been fully tightened"""
+        raise NotImplementedError()
+
     @property
     @abstractmethod
     def valid(self) -> bool:
@@ -88,7 +94,7 @@ class TreeNode(metaclass=ABCMeta):
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         edit = ret.edits(node)
-        while edit.valid and not edit.bounds().definitive() and edit.tighten_bounds():
+        while edit.valid and not edit.is_complete() and edit.tighten_bounds():
             pass
         return ret
 
