@@ -142,8 +142,6 @@ def main(argv=None):
 
     logging.basicConfig(level=numeric_log_level, stream=printer)
 
-    logging.getLogger(__name__).info("foo")
-
     with PathOrStdin(args.FROM_PATH) as from_path:
         with open(from_path, 'rb') as from_file:
             from_json = json.load(from_file)
