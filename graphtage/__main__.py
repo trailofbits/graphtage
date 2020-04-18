@@ -110,7 +110,6 @@ def main(argv=None):
         if not isinstance(numeric_log_level, int):
             sys.stderr.write(f'Invalid log level: {args.log_level}')
             exit(1)
-    logging.basicConfig(level=numeric_log_level)
 
     if args.dumpversion:
         print(' '.join(map(str, version.__version__)))
@@ -140,6 +139,10 @@ def main(argv=None):
             'join_dict_items': args.condensed or args.join_dict_items
         }
     )
+
+    logging.basicConfig(level=numeric_log_level, stream=printer)
+
+    logging.getLogger(__name__).info("foo")
 
     with PathOrStdin(args.FROM_PATH) as from_path:
         with open(from_path, 'rb') as from_file:
