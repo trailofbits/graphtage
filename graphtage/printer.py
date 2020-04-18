@@ -1,3 +1,4 @@
+import logging
 import sys
 from abc import abstractmethod
 from collections import defaultdict
@@ -9,6 +10,9 @@ from colorama import Back, Fore, Style
 from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
 
 from .progress import StatusWriter
+
+
+log = logging.getLogger(__name__)
 
 
 class Writer(Protocol):
@@ -364,6 +368,60 @@ class Printer(StatusWriter, RawWriter):
                 self.printer.indents -= 1
 
         return Indent(self)
+
+
+class HTMLPrinter(Printer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.write("<html>")
+        self.indents += 1
+        super().newline()
+        with self.html_element('head'):
+            with self.html_element('meta', charset='UTF-8'):
+                pass
+            with self.html_element('meta', name='application-name', content='graphtage'):
+                pass
+        self.write("<body>")
+        super().newline()
+        self.indents += 1
+
+    def close(self):
+        if self.indents != 2:
+            log.warning(f"Mismatched indent; expected 2 but got {self.indents}")
+        self.indents -= 1
+        super().newline()
+        self.write("</body>")
+        self.indents -= 1
+        super().newline()
+        self.write("</html>")
+        super().newline()
+
+    def html_element(self, element_name, **kwargs) -> 'HTMLPrinter':
+        class Element:
+            def __init__(self, printer):
+                self.printer = printer
+
+            def __enter__(self):
+                tags = ''.join(f" {k}=\"{v}\"" for k, v in kwargs.items())
+                self.printer.write(f"<{element_name}{tags}>")
+                self.printer.indents += 1
+                Printer.newline(self.printer)
+                return self.printer
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                self.printer.indents -= 1
+                Printer.newline(self.printer)
+                self.printer.write(f"</{element_name}>")
+                Printer.newline(self.printer)
+
+        return Element(self)
+
+    def newline(self):
+        super().write('<br />')
+        super().newline()
+
+    def indent(self) -> 'Printer':
+        return self.html_element('div', style='margin-left: 48pt; font-family: monospace;')
 
 
 DEFAULT_PRINTER: Printer = Printer()
