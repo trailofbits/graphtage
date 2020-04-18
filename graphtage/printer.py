@@ -36,10 +36,10 @@ UNDER_PLUS = '\u031F'
 
 
 class CombiningMarkWriter(RawWriter):
-    def __init__(self, parent: Writer):
-        self.parent = parent
+    def __init__(self, parent: RawWriter):
+        self.parent: RawWriter = parent
         self._marks: Set[str] = set()
-        self.enabled = True
+        self.enabled: bool = True
 
     def add(self, combining_mark: str):
         self._marks.add(combining_mark)
@@ -61,12 +61,12 @@ class CombiningMarkWriter(RawWriter):
     def write(self, s: str) -> int:
         if self.enabled:
             marks = self.marks_str
-            return self.parent.write("".join(f"{c}{marks}" for c in s))
+            return self.parent.raw_write("".join(f"{c}{marks}" for c in s))
         else:
             return self.raw_write(s)
 
     def raw_write(self, s: str) -> int:
-        return self.parent.write(s)
+        return self.parent.raw_write(s)
 
     def isatty(self) -> bool:
         return self.parent.isatty()
@@ -307,6 +307,9 @@ class Printer(StatusWriter, RawWriter):
 
     def raw_write(self, s: str) -> int:
         return super().write(s)
+
+    def write(self, s: str) -> int:
+        return self.out_stream.write(s)
 
     def newline(self):
         self.write('\n')
