@@ -153,7 +153,7 @@ def main(argv=None):
                     graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
                         graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
                     ).print(printer)
-    printer.flush()
+    printer.close()
 
 
 if __name__ == '__main__':

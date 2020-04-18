@@ -270,11 +270,11 @@ class Printer(StatusWriter, RawWriter):
     ):
         if out_stream is None:
             out_stream = sys.stdout
-        self.out_stream: CombiningMarkWriter = CombiningMarkWriter(out_stream)
         super().__init__(
-            out_stream=self.out_stream,
+            out_stream=out_stream,
             quiet=quiet
         )
+        self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
         self.indents = 0
         self._ansi_color = None
         self.ansi_color = ansi_color
@@ -308,16 +308,9 @@ class Printer(StatusWriter, RawWriter):
     def raw_write(self, s: str) -> int:
         return super().write(s)
 
-    def isatty(self) -> bool:
-        return self.out_stream.isatty()
-
-    def flush(self):
-        return super().flush()
-
     def newline(self):
         self.write('\n')
         self.write(' ' * (4 * self.indents))
-        self.out_stream.flush()
 
     def color(self, foreground_color: AnsiFore) -> ANSIContext:
         if self.ansi_color:
