@@ -1,3 +1,4 @@
+import io
 import sys
 from types import TracebackType
 from typing import AnyStr, Iterable, Iterator, IO, List, Optional, TextIO, Type
@@ -12,9 +13,12 @@ class StatusWriter(IO[str]):
             out_stream = sys.stdout
         self.status_stream: TextIO = out_stream
         self._buffer: List[str] = []
-        self.write_raw = self.quiet or (
-                out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
-        )
+        try:
+            self.write_raw = self.quiet or (
+                    out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
+            )
+        except io.UnsupportedOperation:
+            self.write_raw = False
 
     def tqdm(self, *args, **kwargs) -> tqdm:
         if self.quiet:
