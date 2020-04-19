@@ -1,8 +1,9 @@
+import html
 import logging
 import sys
 from abc import abstractmethod
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Type, Union
 from typing_extensions import Protocol
 
 import colorama
@@ -197,25 +198,25 @@ class ANSIContext:
         return self._parent
 
     def color(self, foreground_color: AnsiFore) -> 'ANSIContext':
-        return ANSIContext(
+        return self.__class__(
             stream=self,
             fore=foreground_color
         )
 
     def background(self, bg_color: AnsiBack) -> 'ANSIContext':
-        return ANSIContext(
+        return self.__class__(
             stream=self,
             back=bg_color
         )
 
     def bright(self) -> 'ANSIContext':
-        return ANSIContext(
+        return self.__class__(
             stream=self,
             style=Style.BRIGHT
         )
 
     def dim(self) -> 'ANSIContext':
-        return ANSIContext(
+        return self.__class__(
             stream=self,
             style=Style.DIM
         )
@@ -242,6 +243,64 @@ class ANSIContext:
         self._end_code = None
         assert ANSI_CONTEXT_STACK[self.stream] and ANSI_CONTEXT_STACK[self.stream][-1] == self
         ANSI_CONTEXT_STACK[self.stream].pop()
+
+
+class HTMLANSIContext(ANSIContext):
+    @staticmethod
+    def get_fore(color: AnsiFore) -> str:
+        for name in ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'):
+            if color == getattr(Fore, name.upper()):
+                return name
+        raise ValueError(f"Unknown ANSI color: \"{color}\"")
+
+    @staticmethod
+    def get_back(color: AnsiBack) -> str:
+        for name in ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'):
+            if color == getattr(Back, name.upper()):
+                return name
+        raise ValueError(f"Unknown ANSI color: \"{color}\"")
+
+    def _set_codes(self):
+        if not self.is_applied:
+            raise ValueError("start_code and end_code should only be called after an ANSIContext has been __enter__'d")
+
+        self._start_code: str = ''
+        self._end_code: str = ''
+        style = ''
+
+        contexts = ANSI_CONTEXT_STACK[self.stream]
+        if contexts:
+            if self._parent is None:
+                self._parent: Optional['ANSIContext'] = contexts[-1]
+            else:
+                if not self.root.is_applied:
+                    self.root._parent = contexts[-1]
+
+        parent_end_code: str = ''
+        if self.parent is not None and not self.parent.is_applied:
+            self.parent.is_applied = True
+            self._start_code += self.parent.start_code
+            parent_end_code = self.parent.end_code
+
+        if self._fore is not None and self._fore and (self._parent is None or self._fore != self.parent.fore):
+            style += f"color: {self.get_fore(self._fore)};"
+        if self._back is not None and (self._parent is None or self._back != self.parent.back):
+            style += f"background-color: {self.get_back(self._back)};"
+        if self._style is not None and (self._parent is None or self._style != self.parent.style):
+            if self._style == Style.BRIGHT:
+                style += f"font-weight: bold; opacity: 1.0;"
+            elif self._style == Style.DIM:
+                style += f"opacity: 0.6; font-weight: normal;"
+            else:
+                style += f"font-weight: normal; opacity: 1.0;"
+
+        if style:
+            self._start_code = f'{self._start_code}<span style="{style}">'
+            self._end_code = '</span>'
+        else:
+            self._start_code = ''
+            self._end_code = ''
+        self._end_code = f"{self._end_code}{parent_end_code}"
 
 
 class NullANSIContext:
@@ -278,6 +337,7 @@ class Printer(StatusWriter, RawWriter):
             out_stream=out_stream,
             quiet=quiet
         )
+        self._context_type: Type[ANSIContext] = ANSIContext
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
         self.indents = 0
         self._ansi_color = None
@@ -316,30 +376,30 @@ class Printer(StatusWriter, RawWriter):
         return self.out_stream.write(s)
 
     def newline(self):
-        self.write('\n')
-        self.write(' ' * (4 * self.indents))
+        self.raw_write('\n')
+        self.raw_write(' ' * (4 * self.indents))
 
     def color(self, foreground_color: AnsiFore) -> ANSIContext:
         if self.ansi_color:
-            return ANSIContext(self, fore=foreground_color)
+            return self._context_type(self, fore=foreground_color)
         else:
             return NullANSIContext()    # type: ignore
 
     def background(self, bg_color: AnsiBack) -> ANSIContext:
         if self.ansi_color:
-            return ANSIContext(self, back=bg_color)
+            return self._context_type(self, back=bg_color)
         else:
             return NullANSIContext()    # type: ignore
 
     def bright(self) -> ANSIContext:
         if self.ansi_color:
-            return ANSIContext(self, style=Style.BRIGHT)
+            return self._context_type(self, style=Style.BRIGHT)
         else:
             return NullANSIContext()    # type: ignore
 
     def dim(self) -> ANSIContext:
         if self.ansi_color:
-            return ANSIContext(self, style=Style.DIM)
+            return self._context_type(self, style=Style.DIM)
         else:
             return NullANSIContext()    # type: ignore
 
@@ -373,7 +433,8 @@ class Printer(StatusWriter, RawWriter):
 class HTMLPrinter(Printer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.write("<html>")
+        self._context_type = HTMLANSIContext
+        self.raw_write("<html>")
         self.indents += 1
         super().newline()
         with self.html_element('head'):
@@ -381,7 +442,7 @@ class HTMLPrinter(Printer):
                 pass
             with self.html_element('meta', name='application-name', content='graphtage'):
                 pass
-        self.write("<body>")
+        self.raw_write("<body>")
         super().newline()
         self.indents += 1
 
@@ -390,38 +451,47 @@ class HTMLPrinter(Printer):
             log.warning(f"Mismatched indent; expected 2 but got {self.indents}")
         self.indents -= 1
         super().newline()
-        self.write("</body>")
+        self.raw_write("</body>")
         self.indents -= 1
         super().newline()
-        self.write("</html>")
+        self.raw_write("</html>")
         super().newline()
 
-    def html_element(self, element_name, **kwargs) -> 'HTMLPrinter':
+    def html_element(self, element_name, inline=False, **kwargs) -> 'HTMLPrinter':
         class Element:
             def __init__(self, printer):
                 self.printer = printer
 
             def __enter__(self):
                 tags = ''.join(f" {k}=\"{v}\"" for k, v in kwargs.items())
-                self.printer.write(f"<{element_name}{tags}>")
-                self.printer.indents += 1
-                Printer.newline(self.printer)
+                self.printer.raw_write(f"<{element_name}{tags}>")
+                if not inline:
+                    self.printer.indents += 1
+                    Printer.newline(self.printer)
                 return self.printer
 
             def __exit__(self, exc_type, exc_val, exc_tb):
-                self.printer.indents -= 1
-                Printer.newline(self.printer)
-                self.printer.write(f"</{element_name}>")
-                Printer.newline(self.printer)
+                if not inline:
+                    self.printer.indents -= 1
+                    Printer.newline(self.printer)
+                self.printer.raw_write(f"</{element_name}>")
+                if not inline:
+                    Printer.newline(self.printer)
 
         return Element(self)
 
+    def strike(self):
+        return self.html_element('span', inline=True, style='text-decoration: line-through;')
+
     def newline(self):
-        super().write('<br />')
+        super().raw_write('<br />')
         super().newline()
 
     def indent(self) -> 'Printer':
         return self.html_element('div', style='margin-left: 48pt; font-family: monospace;')
+
+    def write(self, s: str) -> int:
+        super().write(html.escape(s))
 
 
 DEFAULT_PRINTER: Printer = Printer()
