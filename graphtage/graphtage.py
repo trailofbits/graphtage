@@ -13,47 +13,6 @@ from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits, TreeNode
 from .utils import HashableCounter
 
 
-class Diff:
-    def __init__(self, from_root, to_root, edits: Iterable[Edit]):
-        self.from_root: TreeNode = from_root
-        self.to_root: TreeNode = to_root
-        edit_list: List[Edit] = []
-        self.edits_by_node: Dict[TreeNode, List[Edit]] = defaultdict(list)
-        edit_stack = []
-        for edit in edits:
-            edit_list.append(edit)
-            edit_stack.append(edit)
-            while edit_stack:
-                e = edit_stack.pop()
-                self.edits_by_node[e.from_node].append(e)
-                if isinstance(e, CompoundEdit):
-                    edit_stack.extend(e.edits())
-        self.edits: Tuple[Edit, ...] = tuple(edit_list)
-
-    def __iter__(self) -> Iterator['AtomicEdit']:
-        return itertools.chain(*[explode_edits(edit) for edit in self.edits])
-
-    def __contains__(self, node):
-        return node in self.edits_by_node
-
-    def __getitem__(self, node) -> Sequence[Edit]:
-        return self.edits_by_node[node]
-
-    def print(self, out_stream: Optional[Union[TextIO, Printer]] = None):
-        if out_stream is None:
-            out_stream = DEFAULT_PRINTER
-        elif isinstance(out_stream, TextIO):
-            out_stream = Printer(out_stream)
-        self.from_root.print(out_stream, self)
-        out_stream.newline()
-
-    def bounds(self) -> int:
-        return sum(e.bounds().upper_bound for e in self.edits)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(from_root={self.from_root!r}, to_root={self.to_root!r}, edits={self.edits!r})"
-
-
 class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
@@ -547,24 +506,6 @@ class IntegerNode(LeafNode):
         return {
             'int_like': self.object
         }
-
-
-def diff(tree1_root: TreeNode, tree2_root: TreeNode, callback: Optional[Callable[[Range], Any]] = None) -> Diff:
-    root_edit = tree1_root.edits(tree2_root)
-    if callback is not None:
-        prev_bounds = root_edit.bounds()
-        callback(prev_bounds)
-    while root_edit.valid and not root_edit.bounds().definitive():
-        if not root_edit.tighten_bounds():
-            break
-        if callback is not None:
-            if root_edit.bounds().lower_bound != prev_bounds.lower_bound \
-                    or root_edit.bounds().upper_bound != prev_bounds.upper_bound:
-                prev_bounds = root_edit.bounds()
-                callback(prev_bounds)
-    if callback is not None:
-        callback(root_edit.bounds())
-    return Diff(tree1_root, tree2_root, (root_edit,))
 
 
 def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeNode:
