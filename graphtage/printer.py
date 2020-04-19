@@ -249,7 +249,9 @@ class HTMLANSIContext(ANSIContext):
     @staticmethod
     def get_fore(color: AnsiFore) -> str:
         for name in ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'):
-            if color == getattr(Fore, name.upper()):
+            if color == Fore.BLACK:
+                return "gray"
+            elif color == getattr(Fore, name.upper()):
                 return name
         raise ValueError(f"Unknown ANSI color: \"{color}\"")
 
@@ -445,10 +447,13 @@ class HTMLPrinter(Printer):
         self.raw_write("<body>")
         super().newline()
         self.indents += 1
+        self.raw_write("<div style=\"margin: auto; background-color: black; color: gray;\">")
+        super().newline()
+        self.indents += 1
 
     def close(self):
-        if self.indents != 2:
-            log.warning(f"Mismatched indent; expected 2 but got {self.indents}")
+        if self.indents != 3:
+            log.warning(f"Mismatched indent; expected 3 but got {self.indents}")
         self.indents -= 1
         super().newline()
         self.raw_write("</body>")
@@ -488,10 +493,11 @@ class HTMLPrinter(Printer):
         super().newline()
 
     def indent(self) -> 'Printer':
-        return self.html_element('div', style='margin-left: 48pt; font-family: monospace;')
+        return self.html_element('div', style='margin-left: 24pt; font-family: monospace; padding: 0;')
 
     def write(self, s: str) -> int:
-        super().write(html.escape(s))
+        # super().write(html.escape(s))
+        super().write(s)
 
 
 DEFAULT_PRINTER: Printer = Printer()
