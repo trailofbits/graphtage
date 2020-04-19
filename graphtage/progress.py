@@ -30,8 +30,8 @@ class StatusWriter(IO[str]):
             kwargs['disable'] = True
         return trange(*args, **kwargs)
 
-    def flush(self, _final=False):
-        if _final and self._buffer and not self._buffer[-1].endswith('\n'):
+    def flush(self, final=False):
+        if final and self._buffer and not self._buffer[-1].endswith('\n'):
             self._buffer.append('\n')
         while self._buffer:
             if '\n' in self._buffer[0]:
@@ -60,7 +60,7 @@ class StatusWriter(IO[str]):
         return len(text)
 
     def close(self) -> None:
-        self.flush(_final=True)
+        self.flush(final=True)
         return self.status_stream.close()
 
     def fileno(self) -> int:
@@ -113,4 +113,4 @@ class StatusWriter(IO[str]):
         return self.status_stream.__exit__(t, value, traceback)
 
     def __delete__(self, instance):
-        self.flush(_final=True)
+        self.flush(final=True)
