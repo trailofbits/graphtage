@@ -1,12 +1,14 @@
 import argparse
 import json
 import logging
+import mimetypes
 import os
 import sys
 import tempfile as tf
 
 from . import graphtage
 from . import version
+from . import xml
 from .printer import DEFAULT_PRINTER, Printer
 
 
@@ -47,6 +49,19 @@ class PathOrStdin:
     def __exit__(self, *args, **kwargs):
         if self._tempfile is not None:
             return self._tempfile.__exit__(*args, **kwargs)
+
+
+def build_tree(path: str, allow_key_edits=True):
+    filetype = mimetypes.guess_type(path)[0]
+    if filetype is None:
+        raise ValueError(f"Could not determine the filetype for {path}")
+    elif filetype == 'application/json':
+        with open(path, 'rb') as f:
+            return graphtage.build_tree(json.load(f), allow_key_edits=allow_key_edits)
+    elif filetype == 'application/xml' or filetype == 'text/html':
+        return xml.build_tree(path)
+    else:
+        raise ValueError(f"Unsupported MIME type {filetype} for {path}")
 
 
 def main(argv=None):
@@ -143,14 +158,10 @@ def main(argv=None):
     logging.basicConfig(level=numeric_log_level, stream=printer)
 
     with PathOrStdin(args.FROM_PATH) as from_path:
-        with open(from_path, 'rb') as from_file:
-            from_json = json.load(from_file)
-            with PathOrStdin(args.TO_PATH) as to_path:
-                with open(to_path, 'rb') as to_file:
-                    to_json = json.load(to_file)
-                    graphtage.build_tree(from_json, allow_key_edits=not args.no_key_edits).diff(
-                        graphtage.build_tree(to_json, allow_key_edits=not args.no_key_edits)
-                    ).print(printer)
+        with PathOrStdin(args.TO_PATH) as to_path:
+            build_tree(from_path, allow_key_edits=not args.no_key_edits).diff(
+                build_tree(to_path, allow_key_edits=not args.no_key_edits)
+            ).print(printer)
     printer.write('\n')
     printer.close()
 
