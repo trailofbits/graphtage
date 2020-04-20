@@ -2,6 +2,7 @@ from io import StringIO
 from unittest import TestCase
 
 import graphtage
+import graphtage.multiset
 
 from graphtage.printer import Printer
 
@@ -43,23 +44,30 @@ class TestGraphtage(TestCase):
 
     def test_small_diff(self):
         diff = self.small_from.diff(self.small_to)
+        self.assertIsInstance(diff, graphtage.DictNode)
+        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertEqual(1, len(diff.edit_list))
+        self.assertIsInstance(diff.edit_list[0], graphtage.multiset.MultiSetEdit)
         has_test_match = False
         has_baz_match = False
-        for edit in diff.edits():
+        for edit in diff.edit_list[0].edits():
             if edit.bounds().upper_bound > 0:
-                self.assertIsInstance(edit, graphtage.Match)
-                if isinstance(edit.from_node, graphtage.StringNode):
-                    self.assertIsInstance(edit.to_node, graphtage.StringNode)
-                    self.assertEqual(edit.from_node.object, 'foo')
-                    self.assertEqual(edit.to_node.object, 'bar')
-                    self.assertEqual(edit.bounds().upper_bound, 3)
+                self.assertIsInstance(edit, graphtage.KeyValuePairEdit)
+                key_edit = edit.key_edit
+                value_edit = edit.value_edit
+                if isinstance(value_edit.from_node, graphtage.StringNode):
+                    self.assertIsInstance(key_edit.to_node, graphtage.StringNode)
+                    self.assertEqual(key_edit.from_node.object, 'test')
+                    self.assertEqual(value_edit.from_node.object, 'foo')
+                    self.assertEqual(value_edit.to_node.object, 'bar')
+                    self.assertEqual(edit.bounds().upper_bound, 6)
                     self.assertFalse(has_test_match)
                     has_test_match = True
-                elif isinstance(edit.from_node, graphtage.IntegerNode):
-                    self.assertIsInstance(edit.to_node, graphtage.IntegerNode)
-                    self.assertEqual(edit.from_node.object, 1)
-                    self.assertEqual(edit.to_node.object, 2)
-                    self.assertEqual(edit.bounds().upper_bound, 1)
+                elif isinstance(value_edit.from_node, graphtage.IntegerNode):
+                    self.assertIsInstance(value_edit.to_node, graphtage.IntegerNode)
+                    self.assertEqual(value_edit.from_node.object, 1)
+                    self.assertEqual(value_edit.to_node.object, 2)
+                    self.assertEqual(value_edit.bounds().upper_bound, 1)
                     self.assertFalse(has_baz_match)
                     has_baz_match = True
                 else:
