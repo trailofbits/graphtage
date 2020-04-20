@@ -1,6 +1,8 @@
 import itertools
 import logging
-from typing import Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Iterator, List, Optional, Sequence, Tuple
+
+import numpy as np
 
 from .bounds import Bounded, Range
 from .edits import Insert, Match, Remove
@@ -37,120 +39,6 @@ def levenshtein_distance(s: str, t: str) -> int:
                                  dist[row - 1][col - 1] + cost)
 
     return dist[row][col]
-
-
-class SearchNode(Bounded):
-    def __init__(
-            self,
-            up: Optional['SearchEdge'] = None,
-            left: Optional['SearchEdge'] = None,
-            diag: Optional['SearchEdge'] = None
-    ):
-        self._path_cost: Optional[int] = None
-        self.up: Optional[SearchEdge] = up
-        self.left: Optional[SearchEdge] = left
-        self.diag: Optional[SearchEdge] = diag
-        self._best_predecessor: Optional[SearchEdge] = None
-
-    @property
-    def path_cost(self) -> int:
-        if self._path_cost is None:
-            bp = self.best_predecessor
-            if bp is None:
-                self._path_cost = 0
-            else:
-                self._path_cost = bp.to_node.path_cost + 1
-        return self._path_cost
-
-    @property
-    def best_predecessor(self) -> Optional['SearchEdge']:
-        if self.diag is None:
-            if self.left is not None:
-                return self.left
-            elif self.up is not None:
-                return self.up
-            else:
-                return None
-        elif self._best_predecessor is None:
-            if not self.diag.edit.bounds().definitive():
-                raise RuntimeError("best_predecessor can only be called once a SearchNode has been fully tightened!")
-            if (self.diag <= self.up and self.diag <= self.left) \
-                    and self.diag.edit.bounds() < self.up.edit.bounds() \
-                    and self.diag.edit.bounds() < self.left.edit.bounds():
-                self._best_predecessor = self.diag
-            elif self.left < self.up:
-                self._best_predecessor = self.left
-            else:
-                self._best_predecessor = self.up
-        return self._best_predecessor
-
-    def bounds(self) -> Range:
-        if self.diag is None and self.left is None and self.up is None:
-            return Range(0, 0)
-        elif self.diag is None or self.diag.edit.bounds().definitive():
-            return self.best_predecessor.bounds()
-        else:
-            return Range(
-                min(
-                    self.left.bounds().lower_bound,
-                    self.up.bounds().lower_bound,
-                    self.diag.bounds().lower_bound
-                ),
-                max(
-                    self.left.bounds().upper_bound,
-                    self.up.bounds().upper_bound,
-                    self.diag.bounds().upper_bound
-                )
-            )
-
-    def tighten_bounds(self) -> bool:
-        if self.diag is not None:
-            return self.diag.edit.tighten_bounds()
-        else:
-            return False
-
-    def __lt__(self, other):
-        our_bounds = self.bounds()
-        other_bounds = other.bounds()
-        return our_bounds < other_bounds or (
-            (our_bounds == other_bounds and self.path_cost < other.path_cost) or (
-                (our_bounds == other_bounds and self.path_cost == other.path_cost
-                    and self.bounds() < other.bounds())))
-
-    def __le__(self, other):
-        return self < other or self == other
-
-    def __eq__(self, other):
-        return self.cost == other.cost and self.bounds() == other.bounds() and self.path_cost == other.path_cost
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(up={self.up!r}, left={self.left!r}, diag={self.diag!r})"
-
-    def __str__(self):
-        return str(self.bounds())
-
-
-class SearchEdge(Bounded):
-    def __init__(self, to_node: SearchNode, edit: Edit):
-        self.to_node: SearchNode = to_node
-        self.edit: Edit = edit
-
-    def tighten_bounds(self) -> bool:
-        return self.edit.tighten_bounds()
-
-    def bounds(self) -> Range:
-        return self.edit.bounds() + self.to_node.bounds()
-
-    def __lt__(self, other):
-        return self.bounds() < other.bounds() or (
-                self.bounds() == other.bounds() and self.to_node.path_cost < other.to_node.path_cost
-        )
-
-    def __le__(self, other):
-        return self < other or self == other
-
-    def __eq__(self, other):
-        return self.bounds() == other.bounds() and self.to_node.path_cost == other.to_node.path_cost
 
 
 class EditDistance(SequenceEdit):
@@ -198,12 +86,13 @@ class EditDistance(SequenceEdit):
             for _ in range(len(larger) - len(smaller)):
                 constant_cost += sizes.pop().total_size
         cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
-        self.matrix: List[List[Optional[SearchNode]]] = [
+        self.edit_matrix: List[List[Optional[Edit]]] = [
             [None] * (len(self.from_seq) + 1) for _ in range(len(self.to_seq) + 1)
         ]
+        self.path_costs = np.full((len(self.to_seq) + 1, len(self.from_seq) + 1), 0, dtype=np.uint16)
+        self.costs = np.full((len(self.to_seq) + 1, len(self.from_seq) + 1), 0, dtype=np.uint64)
         self._fringe_row: int = -1
         self._fringe_col: int = 0
-        self.__goal: Optional[SearchNode] = None
         super().__init__(
             from_node=from_node,
             to_node=to_node,
@@ -213,52 +102,22 @@ class EditDistance(SequenceEdit):
         self.__edits: Optional[List[Edit]] = None
 
     def _add_node(self, row: int, col: int) -> bool:
-        if self.matrix[row][col] is not None or col > len(self.from_seq) or row > len(self.to_seq):
+        if self.edit_matrix[row][col] is not None or col > len(self.from_seq) or row > len(self.to_seq):
             return False
         if row == 0 and col == 0:
-            self.matrix[row][col] = SearchNode()
-            return True
-        if col > 0:
-            if row == 0:
-                edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node, penalty=0)
-            else:
-                edit = self.matrix[0][col].left.edit
-            left = SearchEdge(
-                to_node=self.matrix[row][col - 1],
-                edit=edit
-            )
+            edit = None
+        elif row == 0:
+            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node, penalty=0)
+            self.costs[0][col] = self.costs[0][col-1] + edit.bounds().upper_bound
+            self.path_costs[0][col] = self.path_costs[0][col - 1] + 1
+        elif col == 0:
+            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node, penalty=0)
+            self.costs[row][0] = self.costs[row - 1][0] + edit.bounds().upper_bound
+            self.path_costs[row][0] = self.path_costs[row - 1][0] + 1
         else:
-            left = None
-        if row > 0:
-            if col == 0:
-                edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node, penalty=0)
-            else:
-                edit = self.matrix[row][0].up.edit
-            up = SearchEdge(
-                to_node=self.matrix[row - 1][col],
-                edit=edit
-            )
-        else:
-            up = None
-        if col > 0 and row > 0:
-            diag = SearchEdge(
-                to_node=self.matrix[row - 1][col - 1],
-                edit=self.from_seq[col-1].edits(self.to_seq[row-1])
-            )
-        else:
-            diag = None
-        self.matrix[row][col] = SearchNode(
-            up=up,
-            left=left,
-            diag=diag
-        )
+            edit = self.from_seq[col-1].edits(self.to_seq[row-1])
+        self.edit_matrix[row][col] = edit
         return True
-
-    @property
-    def _goal(self) -> Optional[SearchNode]:
-        if self.__goal is None:
-            self.__goal = self.matrix[len(self.to_seq)][len(self.from_seq)]
-        return self.__goal
 
     def _fringe_diagonal(self) -> Iterator[Tuple[int, int]]:
         row, col = self._fringe_row, self._fringe_col
@@ -268,7 +127,7 @@ class EditDistance(SequenceEdit):
             col += 1
 
     def _next_fringe(self) -> bool:
-        if self._goal is not None:
+        if self.is_complete():
             return False
         self._fringe_row += 1
         if self._fringe_row >= len(self.to_seq) + 1:
@@ -277,7 +136,7 @@ class EditDistance(SequenceEdit):
         for row, col in self._fringe_diagonal():
             self._add_node(row, col)
         if self._fringe_col >= len(self.from_seq):
-            if self._fringe_row < len(self.from_seq):
+            if self._fringe_row < len(self.to_seq):
                 # This is an edge case when the string we are matching from is shorter than the one we are matching to
                 return True
             return False
@@ -285,28 +144,57 @@ class EditDistance(SequenceEdit):
             return True
 
     def is_complete(self) -> bool:
-        return self._goal is not None
+        return self.edit_matrix[-1][-1] is not None
+
+    def _best_match(self, row: int, col: int) -> Tuple[int, int, Edit]:
+        if row == 0:
+            assert col > 0
+            return 0, col - 1, self.edit_matrix[0][col]
+        elif col == 0:
+            assert row > 0
+            return row - 1, col, self.edit_matrix[row][0]
+        else:
+            assert self.edit_matrix[row][col].bounds().definitive()
+            dcost = (self.costs[row - 1][col - 1], self.path_costs[row - 1][col - 1])
+            lcost = (self.costs[row][col - 1], self.path_costs[row][col - 1])
+            ucost = (self.costs[row - 1][col], self.path_costs[row - 1][col])
+            if dcost <= lcost and dcost <= ucost and \
+                    self.edit_matrix[row][col].bounds() < self.edit_matrix[row][col - 1].bounds():
+                brow, bcol, edit = row - 1, col - 1, self.edit_matrix[row][col]
+            elif ucost <= dcost:
+                brow, bcol, edit = row - 1, col, self.edit_matrix[row][0]
+            else:
+                brow, bcol, edit = row, col - 1, self.edit_matrix[0][col]
+            self.path_costs[row][col] = self.path_costs[brow][bcol] + 1
+            self.costs[row][col] = self.costs[brow][bcol] + edit.bounds().upper_bound
+            return brow, bcol, edit
 
     def tighten_bounds(self) -> bool:
-        if self._goal is not None:
-            return self._goal.tighten_bounds()
+        if not self.from_seq and not self.to_seq:
+            return False
+        elif self.edit_matrix[-1][-1] is not None:
+            return self.edit_matrix[-1][-1].tighten_bounds()
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
+            first_fringe = self.edit_matrix[0][0] is None
+
             # Tighten the entire fringe diagonal until every node in it is definitive
             if not self._next_fringe():
+                assert self.is_complete()
                 return self.tighten_bounds()
-            if DEFAULT_PRINTER.quiet:
-                fringe_ranges = {}
-                fringe_total = 0
-            else:
-                fringe_ranges = {
-                    (row, col): self.matrix[row][col].bounds().upper_bound - self.matrix[row][col].bounds().lower_bound
-                    for row, col in self._fringe_diagonal()
-                }
-                fringe_total = sum(fringe_ranges.values())
 
-            if len(fringe_ranges) == 0 or fringe_total > 0:
+            if not first_fringe:
+                if DEFAULT_PRINTER.quiet:
+                    fringe_ranges = {}
+                    fringe_total = 0
+                else:
+                    fringe_ranges = {
+                        (row, col): self.edit_matrix[row][col].bounds().upper_bound - self.edit_matrix[row][col].bounds().lower_bound
+                        for row, col in self._fringe_diagonal()
+                    }
+                    fringe_total = sum(fringe_ranges.values())
+
                 with DEFAULT_PRINTER.tqdm(
                         total=fringe_total,
                         initial=fringe_total,
@@ -315,47 +203,54 @@ class EditDistance(SequenceEdit):
                         leave=False
                 ) as t:
                     for row, col in self._fringe_diagonal():
-                        while self.matrix[row][col].tighten_bounds():
+                        while self.edit_matrix[row][col].tighten_bounds():
                             if fringe_total:
-                                new_bounds = self.matrix[row][col].bounds()
+                                new_bounds = self.edit_matrix[row][col].bounds()
                                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                                 t.update(fringe_ranges[(row, col)] - new_range)
                                 fringe_ranges[(row, col)] = new_range
-                        assert self.matrix[row][col].bounds().definitive()
+                        assert self.edit_matrix[row][col].bounds().definitive()
+                        # Call self._best_match because it sets self.path_costs and self.costs for this cell
+                        _, _, _ = self._best_match(row, col)
+
             if self.bounds().upper_bound < initial_bounds.upper_bound or \
                     self.bounds().lower_bound > initial_bounds.lower_bound:
                 return True
 
     def bounds(self) -> Range:
-        if self._goal is not None:
-            return self._goal.bounds()
+        if self.is_complete():
+            cost = self.costs[len(self.to_seq)][len(self.from_seq)]
+            return Range(cost, cost)
         else:
             base_bounds: Range = super().bounds()
-            if self._fringe_row < 0:
+            if self._fringe_row <= 0:
                 return base_bounds
             return Range(
                 max(base_bounds.lower_bound, min(
-                    self.matrix[row][col].bounds().lower_bound for row, col in self._fringe_diagonal()
+                    self.costs[row][col] for row, col in self._fringe_diagonal()
                 )),
                 base_bounds.upper_bound
             )
 
     def edits(self) -> Iterator[Edit]:
         if self.__edits is None:
-            while self._goal is None and self.tighten_bounds():
-                pass
-            assert self._goal is not None
-            assert len(self.matrix) == len(self.to_seq) + 1
-            assert len(self.matrix[0]) == len(self.from_seq) + 1
             self.__edits: List[Edit] = [
                 Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix
             ]
-            node = self._goal
-            while node.best_predecessor is not None:
-                self.__edits.append(node.best_predecessor.edit)
-                node = node.best_predecessor.to_node
+            if self.to_seq or self.from_seq:
+                while not self.is_complete() and self.tighten_bounds():
+                    pass
+                assert self.is_complete()
+                assert len(self.edit_matrix) == len(self.to_seq) + 1
+                assert len(self.edit_matrix[0]) == len(self.from_seq) + 1
+                row, col = len(self.to_seq), len(self.from_seq)
+                while row > 0 or col > 0:
+                    prev_row, prev_col, edit = self._best_match(row, col)
+                    self.__edits.append(edit)
+                    row, col = prev_row, prev_col
             # we don't need the matrix anymore, so save memory by wiping it out
-            self.matrix = None
+            self.edit_matrix = None
+            self.path_costs = None
         return itertools.chain(
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
             reversed(self.__edits)
