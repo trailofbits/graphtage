@@ -8,7 +8,6 @@ from .fibonacci import FibonacciHeap
 from .printer import DEFAULT_PRINTER
 from .sequences import SequenceEdit
 from .tree import Edit, TreeNode
-from .utils import SparseMatrix
 
 
 log = logging.getLogger(__name__)
@@ -199,11 +198,9 @@ class EditDistance(SequenceEdit):
             for _ in range(len(larger) - len(smaller)):
                 constant_cost += sizes.pop().total_size
         cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
-        self.matrix: SparseMatrix[SearchNode] = SparseMatrix(
-            num_rows=len(self.to_seq) + 1,
-            num_cols=len(self.from_seq) + 1,
-            default_value=None
-        )
+        self.matrix: List[List[Optional[SearchNode]]] = [
+            [None] * (len(self.from_seq) + 1) for _ in range(len(self.to_seq) + 1)
+        ]
         self._fringe_row: int = -1
         self._fringe_col: int = 0
         self.__goal: Optional[SearchNode] = None
@@ -265,7 +262,7 @@ class EditDistance(SequenceEdit):
 
     def _fringe_diagonal(self) -> Iterator[Tuple[int, int]]:
         row, col = self._fringe_row, self._fringe_col
-        while row >= 0 and col < self.matrix.num_cols:
+        while row >= 0 and col <= len(self.from_seq):
             yield row, col
             row -= 1
             col += 1
@@ -274,15 +271,14 @@ class EditDistance(SequenceEdit):
         if self._goal is not None:
             return False
         self._fringe_row += 1
-        if self._fringe_row >= self.matrix.num_rows:
-            self._fringe_row = self.matrix.num_rows - 1
+        if self._fringe_row >= len(self.to_seq) + 1:
+            self._fringe_row = len(self.to_seq)
             self._fringe_col += 1
         for row, col in self._fringe_diagonal():
             self._add_node(row, col)
-        if self._fringe_col >= self.matrix.num_cols - 1:
-            if self._fringe_row < self.matrix.num_rows - 1:
+        if self._fringe_col >= len(self.from_seq):
+            if self._fringe_row < len(self.from_seq):
                 # This is an edge case when the string we are matching from is shorter than the one we are matching to
-                assert self._goal is None
                 return True
             return False
         else:
@@ -299,7 +295,6 @@ class EditDistance(SequenceEdit):
         while True:
             # Tighten the entire fringe diagonal until every node in it is definitive
             if not self._next_fringe():
-                assert self._goal is not None
                 return self.tighten_bounds()
             if DEFAULT_PRINTER.quiet:
                 fringe_ranges = {}
@@ -350,8 +345,8 @@ class EditDistance(SequenceEdit):
             while self._goal is None and self.tighten_bounds():
                 pass
             assert self._goal is not None
-            assert self.matrix.num_rows == len(self.to_seq) + 1
-            assert self.matrix.num_cols == len(self.from_seq) + 1
+            assert len(self.matrix) == len(self.to_seq) + 1
+            assert len(self.matrix[0]) == len(self.from_seq) + 1
             self.__edits: List[Edit] = [
                 Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix
             ]
@@ -359,19 +354,8 @@ class EditDistance(SequenceEdit):
             while node.best_predecessor is not None:
                 self.__edits.append(node.best_predecessor.edit)
                 node = node.best_predecessor.to_node
-            # we only need the goal cell in the matrix, so save memory by wiping out the rest:
-            if log.isEnabledFor(logging.DEBUG):
-                size_before = self.matrix.getsizeof()
-            new_matrix: SparseMatrix[SearchNode] = SparseMatrix(
-                num_rows=len(self.to_seq) + 1,
-                num_cols=len(self.from_seq) + 1,
-                default_value=None
-            )
-            new_matrix[len(self.to_seq)][len(self.from_seq)] = self._goal
-            if log.isEnabledFor(logging.DEBUG):
-                size_after = new_matrix.getsizeof()
-                log.debug(f"Cleaned up {size_before - size_after} bytes")
-            self.matrix = new_matrix
+            # we don't need the matrix anymore, so save memory by wiping it out
+            self.matrix = None
         return itertools.chain(
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
             reversed(self.__edits)
