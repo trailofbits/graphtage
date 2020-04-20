@@ -156,7 +156,6 @@ class EditDistance(SequenceEdit):
             assert row > 0
             return row - 1, col, self.edit_matrix[row][0]
         else:
-            assert self.edit_matrix[row][col].bounds().definitive()
             dcost = (self.costs[row - 1][col - 1], self.path_costs[row - 1][col - 1])
             lcost = (self.costs[row][col - 1], self.path_costs[row][col - 1])
             ucost = (self.costs[row - 1][col], self.path_costs[row - 1][col])
@@ -176,9 +175,12 @@ class EditDistance(SequenceEdit):
         if not self.from_seq and not self.to_seq:
             return False
         elif self.edit_matrix[-1][-1] is not None:
-            # Call self._best_match because it sets self.path_costs and self.costs for this cell
-            _, _, _ = self._best_match(len(self.to_seq), len(self.from_seq))
-            return self.edit_matrix[-1][-1].tighten_bounds()
+            if self.edit_matrix[-1][-1].tighten_bounds():
+                # Call self._best_match because it sets self.path_costs and self.costs for this cell
+                _, _, _ = self._best_match(len(self.to_seq), len(self.from_seq))
+                return True
+            else:
+                return False
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
