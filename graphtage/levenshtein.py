@@ -1,8 +1,6 @@
 import itertools
 import logging
-from typing import Iterator, List, Optional, Sequence, Tuple
-
-from tqdm import tqdm
+from typing import Iterator, List, Optional, Sequence, Tuple, Union
 
 from .bounds import Bounded, Range
 from .edits import Insert, Match, Remove
@@ -60,10 +58,97 @@ class SearchNode(Bounded):
             return False
 
     def __lt__(self, other):
-        return self.bounds() < other.bounds()
+        return self.bounds() < other.bounds() or (
+                self.bounds() == other.bounds() and self.edit.bounds() < other.edit.bounds()
+        )
 
     def __le__(self, other):
         return self.bounds() <= other.bounds()
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(cost={self.cost}, edit={self.edit!r})"
+
+    def __str__(self):
+        return str(self.bounds())
+
+
+class AStarNode:
+    def __init__(self, row: int, col: int, parent: Union['EditDistance', 'AStarNode']):
+        if isinstance(parent, EditDistance):
+            self.parent: Optional[AStarNode] = None
+            self.matrix: SparseMatrix[SearchNode] = parent.matrix
+            self.path_cost = 0
+        else:
+            self.parent: Optional[AStarNode] = parent
+            self.path_cost: int = parent.path_cost + 1
+            self.matrix = self.parent.matrix
+        self.row = row
+        self.col = col
+
+    def successors(self) -> Iterator['AStarNode']:
+        if self.col == 0 and self.row == 0:
+            return
+        if self.col == 0:
+            left_cell = None
+        else:
+            left_cell = self.matrix[self.row][self.col - 1]
+        if self.row == 0:
+            up_cell = None
+        else:
+            up_cell = self.matrix[self.row - 1][self.col]
+        if self.col == 0 and self.row == 0:
+            diag_cell = None
+        else:
+            diag_cell = self.matrix[self.row - 1][self.col - 1]
+        if diag_cell is not None:
+            assert left_cell is not None
+            assert up_cell is not None
+            d_bound = diag_cell.bounds().upper_bound
+            l_bound = left_cell.bounds().upper_bound
+            u_bound = up_cell.bounds().upper_bound
+            min_cost = min(d_bound, l_bound, u_bound)
+            if d_bound == min_cost:
+                node = AStarNode(self.row - 1, self.col - 1, self)
+                if l_bound > min_cost and u_bound > min_cost:
+                    yield node
+                elif d_bound < self.matrix[self.row][self.col].edit.from_node.total_size:
+                    if l_bound == min_cost and u_bound == min_cost:
+                        assert min_cost > 0
+                        # This match is equivalent to removing and inserting, so increase the path cost to make it fair
+                        node.path_cost += 1
+                    yield node
+            if l_bound == min_cost:
+                yield AStarNode(self.row, self.col - 1, self)
+            if u_bound == min_cost:
+                yield AStarNode(self.row - 1, self.col, self)
+        elif left_cell is not None:
+            assert up_cell is None
+            yield AStarNode(self.row, self.col - 1, self)
+        else:
+            assert up_cell is not None
+            yield AStarNode(self.row - 1, self.col, self)
+
+    def heuristic(self) -> int:
+        return max(self.row, self.col)
+
+    def __lt__(self, other: 'AStarNode'):
+        my_f = self.path_cost + self.heuristic()
+        other_f = other.path_cost + other.heuristic()
+        return my_f < other_f
+
+    def is_goal(self) -> bool:
+        return self.row == 0 and self.col == 0
+
+    def edits(self) -> Iterator[Edit]:
+        node = self
+        while node.parent is not None:
+            if node.parent.row == node.row:
+                yield self.matrix[0][node.parent.col].edit
+            elif node.parent.col == node.col:
+                yield self.matrix[node.parent.row][0].edit
+            else:
+                yield self.matrix[node.parent.row][node.parent.col].edit
+            node = node.parent
 
 
 class EditDistance(SequenceEdit):
@@ -134,17 +219,17 @@ class EditDistance(SequenceEdit):
             self.matrix[row][col] = SearchNode(cost=row + col)
             return True
         elif row == 0:
-            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node)
-            fringe_cost = self.matrix[0][col - 1].cost
+            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node, penalty=0)
+            fringe_cost = self.matrix[0][col - 1].bounds().upper_bound
         elif col == 0:
-            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node)
-            fringe_cost = self.matrix[row - 1][0].cost
+            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node, penalty=0)
+            fringe_cost = self.matrix[row - 1][0].bounds().upper_bound
         else:
             edit = self.from_seq[col-1].edits(self.to_seq[row-1])
             fringe_cost = min(
-                self.matrix[row - 1][col - 1].cost,
-                self.matrix[row - 1][col].cost,
-                self.matrix[row][col - 1].cost
+                self.matrix[row - 1][col - 1].bounds().upper_bound,
+                self.matrix[row - 1][col].bounds().upper_bound,
+                self.matrix[row][col - 1].bounds().upper_bound
             )
         self.matrix[row][col] = SearchNode(cost=fringe_cost, edit=edit)
         return True
@@ -241,32 +326,20 @@ class EditDistance(SequenceEdit):
             while self._goal is None and self.tighten_bounds():
                 pass
             assert self._goal is not None
-            self.__edits = [Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix]
-            row = len(self.to_seq)
-            col = len(self.from_seq)
-            while row > 0 or col > 0:
-                if col == 0:
-                    left_cell = None
-                else:
-                    left_cell = self.matrix[row][col - 1]
-                if row == 0:
-                    up_cell = None
-                else:
-                    up_cell = self.matrix[row - 1][col]
-                if col == 0 and row == 0:
-                    diag_cell = None
-                else:
-                    diag_cell = self.matrix[row - 1][col - 1]
-                if left_cell is None or (up_cell is not None and up_cell <= left_cell and up_cell <= diag_cell):
-                    self.__edits.append(self.matrix[row][0].edit)
-                    row -= 1
-                elif diag_cell is None or (left_cell is not None and left_cell <= up_cell and left_cell <= diag_cell):
-                    self.__edits.append(self.matrix[0][col].edit)
-                    col -= 1
-                else:
-                    self.__edits.append(self.matrix[row][col].edit)
-                    row -= 1
-                    col -= 1
+            assert self.matrix.num_rows == len(self.to_seq) + 1
+            assert self.matrix.num_cols == len(self.from_seq) + 1
+            # Minimize the number of edits in the minimum-cost path by using A*
+            queue: FibonacciHeap[AStarNode, AStarNode] = FibonacciHeap()
+            queue.push(AStarNode(self.matrix.num_rows - 1, self.matrix.num_cols - 1, self))
+            while queue:
+                node = queue.pop()
+                if node.is_goal():
+                    self.__edits = list(node.edits())
+                    break
+                for successor in node.successors():
+                    queue.push(successor)
+            else:
+                raise RuntimeError("Could not find a path from the goal to the origin! This should never happen!")
             # we only need the goal cell in the matrix, so save memory by wiping out the rest:
             if log.isEnabledFor(logging.DEBUG):
                 size_before = self.matrix.getsizeof()
@@ -280,7 +353,10 @@ class EditDistance(SequenceEdit):
                 size_after = new_matrix.getsizeof()
                 log.debug(f"Cleaned up {size_before - size_after} bytes")
             self.matrix = new_matrix
+            self.__edits.extend(
+                [Match(from_node, to_node, 0) for from_node, to_node in reversed(self.reversed_shared_suffix)]
+            )
         return itertools.chain(
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
-            reversed(self.__edits)
+            self.__edits
         )
