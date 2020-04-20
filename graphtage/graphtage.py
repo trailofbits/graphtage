@@ -168,6 +168,9 @@ class ListNode(SequenceNode):
         super().__init__()
         self.children: Tuple[TreeNode] = tuple(list_like)
 
+    def all_children_are_leaves(self) -> bool:
+        return all(isinstance(c, LeafNode) for c in self.children)
+
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
             if len(self.children) == len(node.children) == 0:
@@ -180,7 +183,17 @@ class ListNode(SequenceNode):
             elif self.children == node.children:
                 return Match(self, node, 0)
             else:
-                return EditDistance(self, node, self.children, node.children)
+                if self.all_children_are_leaves() and node.all_children_are_leaves():
+                    insert_remove_penalty = 0
+                else:
+                    insert_remove_penalty = 1
+                return EditDistance(
+                    self,
+                    node,
+                    self.children,
+                    node.children,
+                    insert_remove_penalty=insert_remove_penalty
+                )
         else:
             return Replace(self, node)
 
@@ -557,4 +570,4 @@ class EditedMatch(AbstractEdit):
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2, list1.children, list2.children)
+    return EditDistance(list1, list2, list1.children, list2.children, insert_remove_penalty=0)
