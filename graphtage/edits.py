@@ -196,11 +196,11 @@ class Replace(ConstantCostEdit):
 
 
 class Remove(ConstantCostEdit):
-    def __init__(self, to_remove: TreeNode, remove_from: TreeNode):
+    def __init__(self, to_remove: TreeNode, remove_from: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_remove,
             to_node=remove_from,
-            cost=to_remove.total_size + 1,
+            cost=to_remove.total_size + penalty,
         )
 
     def _on_diff(self, from_node: EditedTreeNode):
@@ -223,11 +223,11 @@ class Remove(ConstantCostEdit):
 
 
 class Insert(ConstantCostEdit):
-    def __init__(self, to_insert: TreeNode, insert_into: TreeNode):
+    def __init__(self, to_insert: TreeNode, insert_into: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_insert,
             to_node=insert_into,
-            cost=to_insert.total_size + 1
+            cost=to_insert.total_size + penalty
         )
 
     def _on_diff(self, from_node: EditedTreeNode):
