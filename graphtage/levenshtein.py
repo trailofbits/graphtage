@@ -146,7 +146,7 @@ class EditDistance(SequenceEdit):
             return True
 
     def is_complete(self) -> bool:
-        return self.edit_matrix[-1][-1] is not None
+        return self.edit_matrix is None or self.edit_matrix[-1][-1] is not None
 
     def _best_match(self, row: int, col: int) -> Tuple[int, int, Edit]:
         if row == 0:
@@ -174,13 +174,11 @@ class EditDistance(SequenceEdit):
     def tighten_bounds(self) -> bool:
         if not self.from_seq and not self.to_seq:
             return False
-        elif self.edit_matrix[-1][-1] is not None:
-            if self.edit_matrix[-1][-1].tighten_bounds():
-                # Call self._best_match because it sets self.path_costs and self.costs for this cell
-                _, _, _ = self._best_match(len(self.to_seq), len(self.from_seq))
-                return True
-            else:
-                return False
+        elif self.edit_matrix is None:
+            # This means we are already fully tightened and deleted the interstitial datastructures to save memory
+            return False
+        elif self.is_complete() and not self.edit_matrix[-1][-1].bounds().definitive():
+            return self.edit_matrix[-1][-1].tighten_bounds()
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
@@ -189,7 +187,13 @@ class EditDistance(SequenceEdit):
             # Tighten the entire fringe diagonal until every node in it is definitive
             if not self._next_fringe():
                 assert self.is_complete()
-                return self.tighten_bounds()
+                if not self.edit_matrix[-1][-1].bounds().definitive():
+                    ret = self.tighten_bounds()
+                else:
+                    ret = False
+                if not ret:
+                    self._cleanup()
+                return ret
 
             if not first_fringe:
                 if DEFAULT_PRINTER.quiet:
@@ -239,25 +243,38 @@ class EditDistance(SequenceEdit):
                 base_bounds.upper_bound
             )
 
+    def _cleanup(self):
+        if self.bounds().definitive() and self.edit_matrix is not None:
+            if self.__edits is None:
+                self.edits()
+            assert self.__edits is not None
+            # we don't need the matrix anymore, so save memory by wiping it out
+            self.edit_matrix = None
+            self.path_costs = None
+            # We only need the last cell in the costs matrix, so switch to using a dict to clean up the others:
+            self.costs = {len(self.to_seq): {len(self.from_seq): self.costs[len(self.to_seq)][len(self.from_seq)]}}
+
     def edits(self) -> Iterator[Edit]:
         if self.__edits is None:
-            self.__edits: List[Edit] = [
+            reversed_suffix: List[Edit] = [
                 Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix
             ]
             if self.to_seq or self.from_seq:
                 while not self.is_complete() and self.tighten_bounds():
                     pass
                 assert self.is_complete()
-                assert len(self.edit_matrix) == len(self.to_seq) + 1
-                assert len(self.edit_matrix[0]) == len(self.from_seq) + 1
-                row, col = len(self.to_seq), len(self.from_seq)
-                while row > 0 or col > 0:
-                    prev_row, prev_col, edit = self._best_match(row, col)
-                    self.__edits.append(edit)
-                    row, col = prev_row, prev_col
-            # we don't need the matrix anymore, so save memory by wiping it out
-            self.edit_matrix = None
-            self.path_costs = None
+                if self.__edits is None:
+                    assert len(self.edit_matrix) == len(self.to_seq) + 1
+                    assert len(self.edit_matrix[0]) == len(self.from_seq) + 1
+                    row, col = len(self.to_seq), len(self.from_seq)
+                    while row > 0 or col > 0:
+                        prev_row, prev_col, edit = self._best_match(row, col)
+                        reversed_suffix.append(edit)
+                        row, col = prev_row, prev_col
+                    self.__edits = reversed_suffix
+            else:
+                self.__edits = reversed_suffix
+            self._cleanup()
         return itertools.chain(
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
             reversed(self.__edits)
