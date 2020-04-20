@@ -55,6 +55,10 @@ class TestEditDistance(TestCase):
             distance: EditDistance = string_edit_distance(str_from, str_to)
             edits: List[Edit] = list(distance.edits())
             num_edits = len(edits)
+            if num_ground_truth_edits < num_edits:
+                print()
+                print('\n'.join([e.__class__.__name__ for e in edits]))
+                print(str_from, str_to)
             self.assertGreaterEqual(num_ground_truth_edits, num_edits)
 
     def test_empty_string_edit_distance(self):

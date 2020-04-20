@@ -47,8 +47,10 @@ class EditDistance(SequenceEdit):
             from_node: TreeNode,
             to_node: TreeNode,
             from_seq: Sequence[TreeNode],
-            to_seq: Sequence[TreeNode]
+            to_seq: Sequence[TreeNode],
+            insert_remove_penalty: int = 1,
     ):
+        self.penalty: int = insert_remove_penalty
         # Optimization: See if the sequences trivially share a common prefix or suffix.
         # If so, this will quadratically reduce the size of the Levenshtein matrix
         self.shared_prefix: List[Tuple[TreeNode, TreeNode]] = []
@@ -107,11 +109,11 @@ class EditDistance(SequenceEdit):
         if row == 0 and col == 0:
             edit = None
         elif row == 0:
-            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node, penalty=0)
+            edit = Remove(to_remove=self.from_seq[col - 1], remove_from=self.from_node, penalty=self.penalty)
             self.costs[0][col] = self.costs[0][col-1] + edit.bounds().upper_bound
             self.path_costs[0][col] = self.path_costs[0][col - 1] + 1
         elif col == 0:
-            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node, penalty=0)
+            edit = Insert(to_insert=self.to_seq[row - 1], insert_into=self.from_node, penalty=self.penalty)
             self.costs[row][0] = self.costs[row - 1][0] + edit.bounds().upper_bound
             self.path_costs[row][0] = self.path_costs[row - 1][0] + 1
         else:
@@ -159,7 +161,8 @@ class EditDistance(SequenceEdit):
             lcost = (self.costs[row][col - 1], self.path_costs[row][col - 1])
             ucost = (self.costs[row - 1][col], self.path_costs[row - 1][col])
             if dcost <= lcost and dcost <= ucost and \
-                    self.edit_matrix[row][col].bounds() < self.edit_matrix[row][col - 1].bounds():
+                    self.edit_matrix[row][col].bounds() < self.edit_matrix[row][0].bounds() and \
+                    self.edit_matrix[row][col].bounds() < self.edit_matrix[0][col].bounds():
                 brow, bcol, edit = row - 1, col - 1, self.edit_matrix[row][col]
             elif ucost <= dcost:
                 brow, bcol, edit = row - 1, col, self.edit_matrix[row][0]
@@ -173,11 +176,13 @@ class EditDistance(SequenceEdit):
         if not self.from_seq and not self.to_seq:
             return False
         elif self.edit_matrix[-1][-1] is not None:
+            # Call self._best_match because it sets self.path_costs and self.costs for this cell
+            _, _, _ = self._best_match(len(self.to_seq), len(self.from_seq))
             return self.edit_matrix[-1][-1].tighten_bounds()
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:
-            first_fringe = self.edit_matrix[0][0] is None
+            first_fringe = self._fringe_row < 0
 
             # Tighten the entire fringe diagonal until every node in it is definitive
             if not self._next_fringe():
@@ -219,7 +224,7 @@ class EditDistance(SequenceEdit):
 
     def bounds(self) -> Range:
         if self.is_complete():
-            cost = self.costs[len(self.to_seq)][len(self.from_seq)]
+            cost = int(self.costs[len(self.to_seq)][len(self.from_seq)])
             return Range(cost, cost)
         else:
             base_bounds: Range = super().bounds()
@@ -227,7 +232,7 @@ class EditDistance(SequenceEdit):
                 return base_bounds
             return Range(
                 max(base_bounds.lower_bound, min(
-                    self.costs[row][col] for row, col in self._fringe_diagonal()
+                    int(self.costs[row][col]) for row, col in self._fringe_diagonal()
                 )),
                 base_bounds.upper_bound
             )
