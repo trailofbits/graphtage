@@ -28,27 +28,24 @@ class TestGraphtage(TestCase):
         p = Printer(ansi_color=True, out_stream=out_stream)
         diff.print(p)
         p.flush(final=True)
-        #self.assertEqual(diff.edited_cost(), 3)
-        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1mb̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mz̟\x1b[0m\x1b[49m\x1b[39mc\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39me\x1b[37m\x1b[41m\x1b[1mf̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1md̟\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
+        self.assertEqual(diff.edited_cost(), 5)
+        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mz̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mb̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mc\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39me\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1md̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mf̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
 
     def test_string_diff_remove_insert_reordering(self):
         s1 = graphtage.StringNode('abcdefg')
         s2 = graphtage.StringNode('abhijfg')
-        diff = graphtage.Diff(
-            s1,
-            s2,
-            (graphtage.Match(s1, s2, graphtage.levenshtein_distance(s1.object, s2.object)),)
-        )
+        diff = s1.diff(s2)
         out_stream = StringIO()
         p = Printer(ansi_color=True, out_stream=out_stream)
         diff.print(p)
-        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mb\x1b[37m\x1b[41m\x1b[1mc̶d̶e̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mh̟i̟j̟\x1b[0m\x1b[49m\x1b[39mf\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mg\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
+        p.flush(final=True)
+        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mb\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mh̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mi̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mj̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mc̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1me̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mf\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mg\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
 
     def test_small_diff(self):
-        diff = graphtage.diff(self.small_from, self.small_to)
+        diff = self.small_from.diff(self.small_to)
         has_test_match = False
         has_baz_match = False
-        for edit in diff:
+        for edit in diff.edits():
             if edit.bounds().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Match)
                 if isinstance(edit.from_node, graphtage.StringNode):
@@ -71,13 +68,17 @@ class TestGraphtage(TestCase):
         self.assertTrue(has_baz_match)
 
     def test_list_diff(self):
-        diff = graphtage.diff(self.list_from, self.list_to)
-        for edit in diff:
+        diff = self.list_from.diff(self.list_to)
+        self.assertIsInstance(diff, graphtage.ListNode)
+        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertEqual(1, len(diff.edit_list))
+        self.assertIsInstance(diff.edit_list[0], graphtage.EditDistance)
+        for edit in diff.edit_list[0].edits():
             if edit.bounds().upper_bound > 0:
                 self.assertIsInstance(edit, graphtage.Remove)
                 self.assertIsInstance(edit.from_node, graphtage.IntegerNode)
                 self.assertEqual(edit.from_node.object, 0)
                 self.assertIsInstance(edit.to_node, graphtage.ListNode)
-                self.assertIs(edit.to_node, self.list_from)
+                self.assertEqual(edit.to_node, self.list_from)
             else:
                 self.assertIsInstance(edit, graphtage.Match)
