@@ -63,11 +63,60 @@ Here, on the other hand, is what Graphtage will output:
   <img src="doc/example.png?raw=true" title="Graphtage Example">
 </p>
  
-## Quickstart
+## Installation
  
  ```console
 $ pip3 install graphtage
 ```
+
+## Usage
+
+### Output Formatting
+By default, Graphtage pretty-prints its output with as many line breaks and indents as possible.
+```json
+{
+    "foo": [
+        1,
+        2,
+        3
+    ],
+    "bar": "baz"
+}
+```
+Use the `--join-lists` or `-jl` option to suppress linebreaks after list items:
+```json
+{
+    "foo": [1, 2, 3],
+    "bar": "baz"
+}
+```
+Likewise, use the `--join-dict-items` or `-jd` option to suppress linebreaks after key/value pairs in a dict:
+```json
+{"foo": [
+    1,
+    2,
+    3
+], "bar":  "baz"}
+```
+Finally, use `--condensed` or `-j` to apply both of these options:
+```json
+{"foo": [1, 2, 3], "bar": "baz"}
+```
+
+### Matching Options
+By default, Graphtage tries to match all possible pairs of elements in a dictionary. While computationally tractable,
+this can sometimes be onerous for input files with huge dictionaries. The `--no-key-edits` or `-k` option will instead
+only attempt to match dictionary items that share the same key, drastically reducing computation.
+
+### ANSI Color
+By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for examople, you would like
+to have Graphtage emit colorized output from a script or pipe, use the `--color` or `-c` argument. To disable color even
+when running on a TTY, use `--no-color`.
+
+### Status and Logging
+By default, Graphtage prints status messages and a progress bar to STDERR. To suppress this, use the `--no-status`
+option. To additionally suppress all but critical log messages, use `--quiet`. Fine grained control of log messages is
+via the `--log-level` option.
 
 ## How does it work?
 
