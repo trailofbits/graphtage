@@ -35,21 +35,25 @@ A traditional diff would look like this:
 ```console
 $ cat original.json | jq -M --sort-keys > original.canonical.json
 $ cat modified.json | jq -M --sort-keys > modified.canonical.json
-$ diff -y original.canonical.json modified.canonical.json
-{						{
-  "bar": "testing",			      <
-  "foo": [					  "foo": [
-    1,					      <
-    2,						    2,
-    3,						    3,
-    4					      |	    4,
-  ]					      |	    5
-					      >	  ],
-					      >	  "woo": [
-					      >	    "foobar"
-					      >	  ],
-					      >	  "zab": "testing"
-}						}
+$ diff -u original.canonical.json modified.canonical.json
+```
+```diff
+ {
+-  "bar": "testing",
+   "foo": [
+-    1,
+     2,
+     3,
+-    4
+-  ]
++    4,
++    5
++  ],
++  "woo": [
++    "foobar"
++  ],
++  "zar": "testing"
+ }
 ```
 
 Here, on the other hand, is what Graphtage will output:
