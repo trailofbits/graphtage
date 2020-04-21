@@ -1,3 +1,4 @@
+import html
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, Optional, Iterator, Sequence, Union
 
@@ -14,9 +15,9 @@ class XMLElementEdit(AbstractCompoundEdit):
         self.attrib_edit: Edit = from_node.attrib.edits(to_node.attrib)
         if from_node.text is not None and to_node.text is not None:
             self.text_edit: Optional[Edit] = from_node.text.edits(to_node.text)
-        elif from_node.text is None:
+        elif from_node.text is None and to_node.text is not None:
             self.text_edit: Optional[Edit] = Insert(to_insert=to_node.text, insert_into=from_node)
-        elif to_node.text is None:
+        elif to_node.text is None and from_node.text is not None:
             self.text_edit: Optional[Edit] = Remove(to_remove=from_node.text, remove_from=from_node)
         else:
             self.text_edit: Optional[Edit] = None
@@ -26,6 +27,9 @@ class XMLElementEdit(AbstractCompoundEdit):
             to_node=to_node
         )
 
+    def print(self, printer: Printer):
+        XMLElement.print(self.from_node, printer, self)
+
     def bounds(self) -> Range:
         if self.text_edit is not None:
             text_bounds = self.text_edit.bounds()
@@ -34,7 +38,11 @@ class XMLElementEdit(AbstractCompoundEdit):
         return text_bounds + self.tag_edit.bounds() + self.attrib_edit.bounds() + self.child_edit.bounds()
 
     def edits(self) -> Iterator[Edit]:
-        pass
+        yield self.tag_edit
+        yield self.attrib_edit
+        if self.text_edit is not None:
+            yield self.text_edit
+        yield self.child_edit
 
     def is_complete(self) -> bool:
         return self.tag_edit.is_complete() and (self.text_edit is None or self.text_edit.is_complete()) \
@@ -49,8 +57,8 @@ class XMLElementEdit(AbstractCompoundEdit):
             return True
         elif self.child_edit.tighten_bounds():
             return True
-        return self.tag_edit.tighten_bounds() or (self.text_edit is not None and self.text_edit.tighten_bounds) or \
-            self.attrib_edit.tighten_bounds() or self.child_edit.tighten_bounds()
+        else:
+            return False
 
 
 class XMLElement(ContainerNode):
@@ -65,6 +73,8 @@ class XMLElement(ContainerNode):
         if attrib is None:
             attrib = {}
         self.attrib: DictNode = DictNode(attrib)
+        self.attrib.start_symbol = ''
+        self.attrib.end_symbol = ''
         self.text: Optional[StringNode] = text
         self.children: ListNode = ListNode(children)
 
@@ -81,8 +91,36 @@ class XMLElement(ContainerNode):
             t_size = self.text.total_size
         return t_size + self.tag.total_size + self.attrib.total_size + self.children.total_size
 
-    def print(self, printer: Printer):
-        pass
+    def _print_text(self, printer: Printer):
+        if self.text is None:
+            return
+        if '\n' not in self.text.object and not self.children.children:
+            printer.write(html.escape(self.text.object))
+            return
+        with printer.indent():
+            for section in self.text.object.split('\n'):
+                printer.newline()
+                printer.write(html.escape(section))
+
+    def print(self, printer: Printer, edit: Optional[XMLElementEdit] = None):
+        printer.write(f'<{self.tag}')
+        for key, value in self.attrib.items():
+            printer.write(f' {key.object}="{html.escape(value.object)}"')
+        if self.children.children or (self.text is not None and '\n' in self.text.object):
+            printer.write('>')
+            self._print_text(printer)
+            for child in self.children.children:
+                with printer.indent():
+                    printer.newline()
+                    child.print(printer)
+            printer.newline()
+            printer.write(f'</{self.tag}>')
+        elif self.text is not None:
+            printer.write('>')
+            self._print_text(printer)
+            printer.write(f'</{self.tag}>')
+        else:
+            printer.write(' />')
 
     def init_args(self) -> Dict[str, Any]:
         return {
@@ -92,7 +130,7 @@ class XMLElement(ContainerNode):
             'children': tuple(self.children.__iter__())
         }
 
-    def make_edited(self) -> Union[EditedTreeNode, 'KeyValuePairNode']:
+    def make_edited(self) -> Union[EditedTreeNode, 'XMLElement']:
         if self.text is None:
             et = None
         else:

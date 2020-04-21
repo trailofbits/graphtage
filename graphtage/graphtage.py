@@ -1,15 +1,13 @@
-import itertools
-from collections import defaultdict
-from typing import Any, Callable, cast, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
+from typing import Any, cast, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
 
 from .bounds import Range
-from .edits import AbstractEdit, EditCollection, EditSequence, CompoundEdit
+from .edits import AbstractEdit, EditCollection, EditSequence
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
+from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits, TreeNode
+from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
 from .utils import HashableCounter
 
 
@@ -279,6 +277,9 @@ class DictNode(MultiSetNode):
         super().__init__(sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in dict_like.items()))
         self.start_symbol = '{'
         self.end_symbol = '}'
+
+    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+        yield from self.children.elements()
 
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
