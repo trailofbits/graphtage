@@ -11,7 +11,7 @@ from colorama import Back, Fore, Style
 from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
 
 from .progress import StatusWriter
-
+from .version import VERSION_STRING
 
 log = logging.getLogger(__name__)
 
@@ -433,17 +433,27 @@ class Printer(StatusWriter, RawWriter):
 
 
 class HTMLPrinter(Printer):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, title: Optional[str] = None, **kwargs):
         super().__init__(*args, **kwargs)
         self._context_type = HTMLANSIContext
         self.raw_write("<html>")
         self.indents += 1
         super().newline()
         with self.html_element('head'):
-            with self.html_element('meta', charset='UTF-8'):
+            with self.html_element('meta', charset='UTF-8', inline=True):
                 pass
-            with self.html_element('meta', name='application-name', content='graphtage'):
+            super().newline()
+            with self.html_element('meta', name='application-name', content='graphtage', inline=True):
                 pass
+            super().newline()
+            with self.html_element('meta', name='application-version', content=VERSION_STRING, inline=True):
+                pass
+            super().newline()
+            with self.html_element('title', inline=True) as p:
+                if title is None:
+                    p.write("Graphtage Diff")
+                else:
+                    p.write(title)
         self.raw_write("<body>")
         super().newline()
         self.indents += 1

@@ -130,7 +130,11 @@ def main(argv=None):
         ansi_color = None
 
     if args.html:
-        printer_type = HTMLPrinter
+        from_file = os.path.basename(args.FROM_PATH)
+        to_file = os.path.basename(args.TO_PATH)
+
+        def printer_type(*pos_args, **kwargs):
+            return HTMLPrinter(title=f"Graphtage Diff of {from_file} and {to_file}", *pos_args, **kwargs)
     else:
         printer_type = Printer
 
