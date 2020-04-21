@@ -53,7 +53,7 @@ $ diff -u original.canonical.json modified.canonical.json
 +  "woo": [
 +    "foobar"
 +  ],
-+  "zar": "testing"
++  "zab": "testing"
  }
 ```
 Not entirely useful, particularly if the input files are large.
