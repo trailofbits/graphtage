@@ -55,6 +55,11 @@ class EditedTreeNode:
         self.matched_to: Optional[TreeNode] = None
         self.edit_list: List[Edit] = []
 
+    def edited_cost(self) -> int:
+        while any(e.tighten_bounds() for e in self.edit_list):
+            pass
+        return sum(e.bounds().upper_bound for e in self.edit_list)
+
     def print(self, *args, **kwargs):
         if self.edit_list:
             for edit in self.edit_list:
