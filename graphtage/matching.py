@@ -519,13 +519,12 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     def bounds(self) -> Range:
         if self._bounds is None:
             if not self.from_nodes or not self.to_nodes:
-                lb = 0
-                ub = 0
+                lb = ub = 0
             elif self._match is None:
                 if self._edges is None:
-                    lb = 0
                     if (self.from_nodes and hasattr(self.from_nodes[0], 'total_size')) or \
                             (self.to_nodes and hasattr(self.to_nodes[0], 'total_size')):
+                        lb = 0
                         ub = sum(n.total_size + 1 for n in self.from_nodes) + \
                             sum(n.total_size + 1 for n in self.to_nodes)
                     else:
@@ -540,7 +539,11 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 for _, (_, edge) in self._match.items():
                     lb += edge.bounds().lower_bound
                     ub += edge.bounds().upper_bound
-            self._bounds = Range(lb, ub)
+            ret = Range(lb, ub)
+            if ret.definitive():
+                self._bounds = ret
+            else:
+                return ret
         return self._bounds
 
     def _make_edges_distinct(self):
@@ -548,6 +551,7 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
             return False
         else:
             make_distinct(*itertools.chain(*self.edges))
+            self._bounds = None
             return True
 
     @property
@@ -581,11 +585,13 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 new_bounds = self.bounds()
                 if new_bounds.lower_bound > initial_bounds.lower_bound or \
                         new_bounds.upper_bound < initial_bounds.upper_bound:
+                    self._bounds = None
                     return True
             _ = self.matching     # This computes the minimum weight matching
             new_bounds = self.bounds()
             if new_bounds.lower_bound > initial_bounds.lower_bound or \
                     new_bounds.upper_bound < initial_bounds.upper_bound:
+                self._bounds = None
                 return True
         for (_, (_, edge)) in self.matching.items():
             if edge.tighten_bounds():
