@@ -82,8 +82,26 @@ $ graphtage original.json modified.json
             <span style="font-weight: bold; opacity: 1.0;">}</span>
  </div>
  
- ## Quickstart
+## Quickstart
  
  ```console
 $ pip3 install graphtage
 ```
+
+## How does it work?
+
+In general, optimally mapping one graph to another
+[cannot be executed in polynomial time](https://en.wikipedia.org/wiki/Graph_isomorphism_problem), and is therefore not 
+tractable for graphs of any useful size. However, trees and forests are a special case that _can_ be mapped in
+polynomial time. Graphtage exploits this.
+
+Ordered nodes in the tree (_e.g._, JSON lists) as well as mappings (_e.g._, JSON dicts) provide additional challenges.
+
+Lists are matched using an “[online](https://en.wikipedia.org/wiki/Online_algorithm)”,
+“[constructive](https://en.wikipedia.org/wiki/Constructive_proof)” implementation of the
+[Levenshtein distance metric](https://en.wikipedia.org/wiki/Levenshtein_distance). The algorithm starts with an
+unbounded mapping and iteratively improves it until the bounds converge, at which point the optimal edit sequence is
+discovered.
+
+Dicts are matched by solving the [minimum weight matching problem](https://en.wikipedia.org/wiki/Assignment_problem) on
+the complete bipartite graph from key/value pairs in the source dict to key/value pairs in the destination dict.
