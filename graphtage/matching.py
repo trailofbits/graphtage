@@ -510,17 +510,27 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     @property
     def edges(self) -> List[List[Optional[Bounded]]]:
         if self._edges is None:
-            self._edges = [[self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes]
+            self._edges = [
+                [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
+            ]
             self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
         if self._bounds is None:
-            if self._match is None:
+            if not self.from_nodes or not self.to_nodes:
+                lb = 0
+                ub = 0
+            elif self._match is None:
                 if self._edges is None:
                     lb = 0
-                    ub = sum(n.total_size + 1 for n in self.from_nodes) + \
-                        sum(n.total_size + 1 for n in self.to_nodes)
+                    if (self.from_nodes and hasattr(self.from_nodes[0], 'total_size')) or \
+                            (self.to_nodes and hasattr(self.to_nodes[0], 'total_size')):
+                        ub = sum(n.total_size + 1 for n in self.from_nodes) + \
+                            sum(n.total_size + 1 for n in self.to_nodes)
+                    else:
+                        _ = self.edges
+                        return self.bounds()
                 else:
                     lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
                     ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
@@ -543,6 +553,10 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
         if self._match is None:
+            if not self.from_nodes or not self.to_nodes:
+                self._match = {}
+                return self._match
+
             self._make_edges_distinct()
 
             def get_edges(from_node, to_node):
