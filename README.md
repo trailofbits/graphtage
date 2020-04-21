@@ -3,8 +3,9 @@
 [![PyPI version](https://badge.fury.io/py/graphtage.svg)](https://badge.fury.io/py/graphtage)
 [![Slack Status](https://empireslacking.herokuapp.com/badge.svg)](https://empireslacking.herokuapp.com)
 
-A commandline utility and underlying library for semantically comparing tree-like structures, such as JSON,
-XML, HTML, and YAML files.
+Graphtage is a commandline utility and underlying library for semantically comparing and merging tree-like structures,
+such as JSON, XML, HTML, and YAML files. Its name is a portmanteau of “graph” and “graftage”—the latter being the
+practice of joining two trees together such that they grow as one. 
 
 ## Why does Graphtage exist?
 
