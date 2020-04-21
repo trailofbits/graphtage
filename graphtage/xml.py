@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional, Iterator, Sequence, Union
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .graphtage import ContainerNode, DictNode, ListNode, StringNode
-from .printer import Printer
+from .printer import Back, Fore, Printer
 from .tree import Edit, EditedTreeNode
 
 
@@ -70,13 +70,29 @@ class XMLElement(ContainerNode):
             children: Sequence['XMLElement'] = ()
     ):
         self.tag: StringNode = tag
+        tag.quoted = False
         if attrib is None:
             attrib = {}
         self.attrib: DictNode = DictNode(attrib)
         self.attrib.start_symbol = ''
         self.attrib.end_symbol = ''
+        self.attrib.delimiter = ''
+        self.attrib.delimiter_callback = lambda p: p.newline()
+        for key, _ in self.attrib.items():
+            key.quoted = False
         self.text: Optional[StringNode] = text
+        if self.text is not None:
+            self.text.quoted = False
         self.children: ListNode = ListNode(children)
+        self.attrib.start_symbol = ''
+        self.attrib.end_symbol = ''
+        self.attrib.delimiter_callback = lambda p: p.newline()
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self.children!r})"
+
+    def __str__(self):
+        return f"<{self.tag.object}{''.join(' ' + key.object + '=' + value.object for key, value in self.attrib.items())} ... />"
 
     def edits(self, node) -> Edit:
         if self == node:
@@ -103,9 +119,13 @@ class XMLElement(ContainerNode):
                 printer.write(html.escape(section))
 
     def print(self, printer: Printer, edit: Optional[XMLElementEdit] = None):
-        printer.write(f'<{self.tag}')
+        printer.write('<')
+        self.tag.print(printer)
         for key, value in self.attrib.items():
-            printer.write(f' {key.object}="{html.escape(value.object)}"')
+            printer.write(' ')
+            key.print(printer)
+            printer.write('=')
+            value.print(printer)
         if self.children.children or (self.text is not None and '\n' in self.text.object):
             printer.write('>')
             self._print_text(printer)
@@ -114,11 +134,15 @@ class XMLElement(ContainerNode):
                     printer.newline()
                     child.print(printer)
             printer.newline()
-            printer.write(f'</{self.tag}>')
+            printer.write('</')
+            self.tag.print(printer)
+            printer.write('>')
         elif self.text is not None:
             printer.write('>')
             self._print_text(printer)
-            printer.write(f'</{self.tag}>')
+            printer.write('</')
+            self.tag.print(printer)
+            printer.write('>')
         else:
             printer.write(' />')
 
@@ -135,7 +159,7 @@ class XMLElement(ContainerNode):
             et = None
         else:
             et = self.text.make_edited()
-        return self.edited_type()(
+        return EditedXMLElement(
             tag=self.tag.make_edited(),
             attrib={
                 kvp.key.make_edited(): kvp.value.make_edited() for kvp in self.attrib
@@ -149,6 +173,24 @@ class XMLElement(ContainerNode):
             return False
         return other.tag == self.tag and other.attrib == self.attrib \
             and other.text == self.text and other.children == self.children
+
+
+class EditedXMLElement(EditedTreeNode, XMLElement):
+    def __init__(self, *args, **kwargs):
+        EditedTreeNode.__init__(self)
+        XMLElement.__init__(self, *args, **kwargs)
+
+    def print(self, printer: Printer):
+        xml_edit = None
+        for edit in self.edit_list:
+            if isinstance(edit, XMLElementEdit):
+                xml_edit = xml_edit
+        if self.removed:
+            with printer.strike():
+                with printer.color(Fore.WHITE).background(Back.RED).bright() as p:
+                    XMLElement.print(self, p, xml_edit)
+        else:
+            XMLElement.print(self, printer, xml_edit)
 
 
 def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree]) -> XMLElement:

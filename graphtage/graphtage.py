@@ -422,7 +422,8 @@ class StringEdit(AbstractEdit):
         return self.edit_distance.tighten_bounds()
 
     def print(self, printer: Printer):
-        printer.write('"')
+        if self.from_node.quoted:
+            printer.write('"')
         remove_seq = []
         add_seq = []
         for sub_edit in self.edit_distance.edits():
@@ -469,12 +470,14 @@ class StringEdit(AbstractEdit):
             with printer.under_plus():
                 for add in add_seq:
                     printer.write(add)
-        printer.write('"')
+        if self.from_node.quoted:
+            printer.write('"')
 
 
 class StringNode(LeafNode):
-    def __init__(self, string_like: str):
+    def __init__(self, string_like: str, quoted=True):
         super().__init__(string_like)
+        self.quoted = quoted
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, StringNode):
@@ -494,9 +497,10 @@ class StringNode(LeafNode):
             context = NullANSIContext()
             null_context = True
         with context:
-            printer.write('"')
+            if self.quoted:
+                printer.write('"')
             for c in self.object:
-                if c == '"':
+                if c == '"' and self.quoted:
                     if not null_context:
                         with printer.color(Fore.YELLOW):
                             printer.write('\\"')
@@ -504,7 +508,8 @@ class StringNode(LeafNode):
                         printer.write('\\"')
                 else:
                     printer.write(c)
-            printer.write('"')
+            if self.quoted:
+                printer.write('"')
 
     def init_args(self) -> Dict[str, Any]:
         return {
