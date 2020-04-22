@@ -10,6 +10,7 @@ from .printer import DEFAULT_PRINTER, Printer
 
 class Edit(Bounded, Protocol):
     initial_bounds: Range
+    from_node: 'TreeNode'
 
     @abstractmethod
     def is_complete(self) -> bool:
@@ -30,12 +31,21 @@ class Edit(Bounded, Protocol):
     def print(self, printer: Printer):
         raise NotImplementedError()
 
+    def on_diff(self, from_node: 'EditedTreeNode'):
+        from_node.edit_list.append(self)
+
 
 @runtime_checkable
 class CompoundEdit(Edit, Iterable, Protocol):
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
         raise NotImplementedError()
+
+    def on_diff(self, from_node: 'EditedTreeNode'):
+        if hasattr(from_node, 'edit_list'):
+            from_node.edit_list.append(self)
+        for edit in self.edits():
+            edit.on_diff(edit.from_node)
 
 
 def explode_edits(edit: Edit) -> Iterator[Edit]:
@@ -109,6 +119,7 @@ class TreeNode(metaclass=ABCMeta):
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 t.update(prev_range - new_range)
                 prev_range = new_range
+        edit.on_diff(ret)
         return ret
 
     @property

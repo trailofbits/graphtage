@@ -21,12 +21,6 @@ class AbstractEdit(Edit, ABC):
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
         self.initial_bounds = self.bounds()
-        if isinstance(from_node, EditedTreeNode):
-            from_node.edit_list.append(self)
-            self._on_diff(from_node)
-
-    def _on_diff(self, from_node: EditedTreeNode):
-        pass
 
     def is_complete(self) -> bool:
         return not self.valid or self.bounds().definitive()
@@ -151,7 +145,8 @@ class Match(ConstantCostEdit):
             cost=cost
         )
 
-    def _on_diff(self, from_node: EditedTreeNode):
+    def on_diff(self, from_node: EditedTreeNode):
+        super().on_diff(from_node)
         from_node.matched_to = self.to_node
 
     def print(self, printer: Printer):
@@ -203,7 +198,8 @@ class Remove(ConstantCostEdit):
             cost=to_remove.total_size + penalty,
         )
 
-    def _on_diff(self, from_node: EditedTreeNode):
+    def on_diff(self, from_node: EditedTreeNode):
+        super().on_diff(from_node)
         from_node.removed = True
 
     def print(self, printer: Printer):
@@ -230,8 +226,9 @@ class Insert(ConstantCostEdit):
             cost=to_insert.total_size + penalty
         )
 
-    def _on_diff(self, from_node: EditedTreeNode):
-        cast(EditedTreeNode, self.insert_into).inserted.append(cast(TreeNode, from_node))
+    def on_diff(self, from_node: EditedTreeNode):
+        dest = cast(EditedTreeNode, self.insert_into)
+        dest.inserted.append(cast(TreeNode, from_node))
 
     @property
     def insert_into(self) -> TreeNode:
