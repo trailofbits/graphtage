@@ -335,8 +335,17 @@ class FixedKeyDictNode(SequenceNode):
     NOTE: This implementation does not currently support duplicate keys!
     """
     def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
+        is_edited = isinstance(self, EditedTreeNode)
+
+        def kvp_type(key, value):
+            ret = KeyValuePairNode(key, value, allow_key_edits=False)
+            if is_edited:
+                return ret.make_edited()
+            else:
+                return ret
+
         self.children: Dict[LeafNode, KeyValuePairNode] = {
-            key: KeyValuePairNode(key, value, allow_key_edits=False) for key, value in dict_like.items()
+            kvp.key: kvp for kvp in (kvp_type(key, value) for key, value in dict_like.items())
         }
         super().__init__(start_symbol='{', end_symbol='}')
 
@@ -384,7 +393,7 @@ class FixedKeyDictNode(SequenceNode):
 
     def make_edited(self) -> Union[EditedTreeNode, 'FixedKeyDictNode']:
         return self.edited_type()({
-            kvp.key.make_edited(): kvp.value.make_edited() for kvp in self.children.values()
+            kvp.key: kvp.value for kvp in self.children.values()
         })
 
     def calculate_total_size(self):
