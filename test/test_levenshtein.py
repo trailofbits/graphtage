@@ -13,7 +13,7 @@ LETTERS: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 class TestEditDistance(TestCase):
     def test_string_edit_distance_reconstruction(self):
-        for _ in trange(1000):
+        for _ in trange(200):
             str1_len = random.randint(10, 30)
             str2_len = random.randint(10, 30)
             str_from = ''.join(random.choices(LETTERS, k=str1_len))
@@ -36,7 +36,7 @@ class TestEditDistance(TestCase):
             self.assertEqual(str_to, reconstructed_to)
 
     def test_string_edit_distance_optimality(self):
-        for _ in trange(1000):
+        for _ in trange(200):
             str_len = random.randint(10, 30)
             str_from = ''.join(random.choices(LETTERS, k=str_len))
             num_ground_truth_edits: int = 0

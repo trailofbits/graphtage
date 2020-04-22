@@ -55,7 +55,7 @@ class TestFibonacciHeap(TestCase):
 
     def test_manual_node_deletion(self):
         heap = self.random_heap()
-        for i in trange(len(self.random_list)//4):
+        for i in trange(len(self.random_list)//20):
             random_node: HeapNode[int, int] = random.choice(list(heap.nodes()))
             heap.decrease_key(random_node, -1)
             heap.pop()
@@ -64,7 +64,7 @@ class TestFibonacciHeap(TestCase):
 
     def test_node_deletion(self):
         heap = self.random_heap()
-        for i in trange(len(self.random_list)//4):
+        for i in trange(len(self.random_list)//20):
             random_node: HeapNode[int, int] = random.choice(list(heap.nodes()))
             heap.remove(random_node)
             self.assertEqual(len(heap), len(self.random_list) - i - 1)
@@ -75,7 +75,7 @@ class TestFibonacciHeap(TestCase):
         for node in heap.nodes():
             nodes_by_value[node.key].add(node)
         changes: Dict[int, int] = {}
-        for _ in trange(len(self.random_list)//4):
+        for _ in trange(len(self.random_list)//20):
             while True:
                 random_sorted_index = random.randint(0, len(self.random_list) - 1)
                 if random_sorted_index not in changes:

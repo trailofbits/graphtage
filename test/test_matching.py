@@ -12,14 +12,14 @@ from .test_bounds import RandomDecreasingRange
 
 class TestWeightedBipartiteMatcher(TestCase):
     def test_weighted_bipartite_matching(self):
-        for n in trange(1, 25):
+        for n in trange(1, 25, 3):
             from_nodes = list(range(n))
             to_nodes = list(range(n))
             edges = [
                 [RandomDecreasingRange() for _ in range(len(to_nodes))] for _ in range(len(from_nodes))
             ]
             for i in range(min(len(from_nodes), len(to_nodes))):
-                edges[i][i] = RandomDecreasingRange(fixed_lb=0, fixed_ub=2000000, final_value=0)
+                edges[i][i] = RandomDecreasingRange(fixed_lb=0, fixed_ub=100000, final_value=0)
             matcher = WeightedBipartiteMatcher(
                 from_nodes=from_nodes,
                 to_nodes=to_nodes,
@@ -39,7 +39,7 @@ class TestWeightedBipartiteMatcher(TestCase):
             self.assertEqual(0, matcher.bounds().upper_bound)
 
     def test_min_weight_bipartite_matching(self):
-        for _ in trange(100):
+        for _ in trange(50):
             num_from = random.randint(1, 500)
             num_to = random.randint(1, 500)
             from_nodes = [f'f{i}' for i in range(num_from)]

@@ -64,7 +64,7 @@ class TestBounds(TestCase):
                 last_range = next_range
 
     def test_sort(self):
-        for _ in trange(1000):
+        for _ in trange(100):
             ranges = [RandomDecreasingRange() for _ in range(100)]
             sorted_ranges = sorted(ranges, key=lambda r: r.final_value)
             for expected, actual in zip(sorted_ranges, sort(ranges)):
@@ -74,7 +74,7 @@ class TestBounds(TestCase):
         speedups = 0
         tests = 0
         try:
-            with trange(0, 128) as t:
+            with trange(0, 100) as t:
                 for i in t:
                     ranges = [RandomDecreasingRange() for _ in range(i)]
                     make_distinct(*ranges)
