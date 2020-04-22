@@ -49,7 +49,7 @@ class OrderedCounter(Counter, OrderedDict):
         return self.__class__, (OrderedDict(self),)
 
 
-class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], Sized):
+class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
     class SparseMatrixRow(MutableMapping[int, Optional[T]]):
         def __init__(
                 self,
