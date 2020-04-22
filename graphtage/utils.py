@@ -22,7 +22,7 @@ def getsizeof(obj) -> int:
         return sys.getsizeof(obj)
 
 
-class HashableCounter(Generic[T], Counter, typing.Counter[T]):
+class HashableCounter(Generic[T], typing.Counter[T], Counter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
