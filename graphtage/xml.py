@@ -74,6 +74,8 @@ class XMLElement(ContainerNode):
         if attrib is None:
             attrib = {}
         self.attrib: DictNode = DictNode(attrib)
+        if isinstance(self, EditedTreeNode):
+            self.attrib = self.attrib.make_edited()
         self.attrib.start_symbol = ''
         self.attrib.end_symbol = ''
         self.attrib.delimiter = ''
@@ -84,6 +86,8 @@ class XMLElement(ContainerNode):
         if self.text is not None:
             self.text.quoted = False
         self.children: ListNode = ListNode(children)
+        if isinstance(self, EditedTreeNode):
+            self.children = self.children.make_edited()
         self.attrib.start_symbol = ''
         self.attrib.end_symbol = ''
         self.attrib.delimiter_callback = lambda p: p.newline()
@@ -162,10 +166,10 @@ class XMLElement(ContainerNode):
         return EditedXMLElement(
             tag=self.tag.make_edited(),
             attrib={
-                kvp.key.make_edited(): kvp.value.make_edited() for kvp in self.attrib
+                kvp.key: kvp.value for kvp in self.attrib
             },
             text=et,
-            children=[c.make_edited() for c in self.children]
+            children=[c for c in self.children]
         )
 
     def __eq__(self, other):
