@@ -1,4 +1,5 @@
 import itertools
+import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
@@ -160,7 +161,14 @@ class MatchingToNode(Generic[T], MatchingNode[T]):
         return f"\u21A3{self.node!r}"
 
 
-class Matching(Generic[T], SetCollection, Set[Edge[T]], Bounded):
+if sys.version_info.major < 3 or sys.version_info.minor < 7:
+    # This is to satisfy Python 3.6's MRO
+    SetType = object
+else:
+    SetType = Set[Edge[T]]
+
+
+class Matching(Generic[T], SetCollection, Bounded, SetType):
     def __init__(self):
         super().__init__()
         self._edges: Set[Edge[T]] = set()
