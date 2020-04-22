@@ -1,4 +1,5 @@
 import itertools
+import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
@@ -15,7 +16,7 @@ from .fibonacci import FibonacciHeap
 T = TypeVar('T')
 
 
-class Edge(Generic[T], Bounded):
+class Edge(Bounded, Generic[T]):
     def __init__(self, from_node: 'MatchingFromNode[T]', to_node: 'MatchingToNode[T]', weight: Bounded):
         self.from_node: MatchingFromNode[T] = from_node
         self.to_node: MatchingToNode[T] = to_node
@@ -160,7 +161,14 @@ class MatchingToNode(Generic[T], MatchingNode[T]):
         return f"\u21A3{self.node!r}"
 
 
-class Matching(Generic[T], SetCollection, Set[Edge[T]], Bounded):
+if sys.version_info.major < 3 or sys.version_info.minor < 7:
+    # This is to satisfy Python 3.6's MRO
+    SetType = object
+else:
+    SetType = Set[Edge[T]]
+
+
+class Matching(Generic[T], SetCollection, Bounded, SetType):
     def __init__(self):
         super().__init__()
         self._edges: Set[Edge[T]] = set()
@@ -272,7 +280,7 @@ class QueueElement:
 QueueType = FibonacciHeap[QueueElement, int]
 
 
-class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Generic[T], Bounded):
+class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
     """Partial implementation of AN ALGORITHM TO SOLVE THE mxn ASSIGNMENT PROBLEM IN EXPECTED TIME 0(mn log n)
     by R. M. Karp, 1978
     https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
@@ -482,7 +490,7 @@ def min_weight_bipartite_matching(
     }
 
 
-class WeightedBipartiteMatcher(Generic[T], Bounded):
+class WeightedBipartiteMatcher(Bounded, Generic[T]):
     def __init__(
             self,
             from_nodes: Iterable[T],
@@ -510,17 +518,26 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
     @property
     def edges(self) -> List[List[Optional[Bounded]]]:
         if self._edges is None:
-            self._edges = [[self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes]
+            self._edges = [
+                [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
+            ]
             self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
         if self._bounds is None:
-            if self._match is None:
+            if not self.from_nodes or not self.to_nodes:
+                lb = ub = 0
+            elif self._match is None:
                 if self._edges is None:
-                    lb = 0
-                    ub = sum(n.total_size + 1 for n in self.from_nodes) + \
-                        sum(n.total_size + 1 for n in self.to_nodes)
+                    if (self.from_nodes and hasattr(self.from_nodes[0], 'total_size')) or \
+                            (self.to_nodes and hasattr(self.to_nodes[0], 'total_size')):
+                        lb = 0
+                        ub = sum(n.total_size + 1 for n in self.from_nodes) + \
+                            sum(n.total_size + 1 for n in self.to_nodes)
+                    else:
+                        _ = self.edges
+                        return self.bounds()
                 else:
                     lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
                     ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
@@ -530,7 +547,11 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 for _, (_, edge) in self._match.items():
                     lb += edge.bounds().lower_bound
                     ub += edge.bounds().upper_bound
-            self._bounds = Range(lb, ub)
+            ret = Range(lb, ub)
+            if ret.definitive():
+                self._bounds = ret
+            else:
+                return ret
         return self._bounds
 
     def _make_edges_distinct(self):
@@ -538,11 +559,16 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
             return False
         else:
             make_distinct(*itertools.chain(*self.edges))
+            self._bounds = None
             return True
 
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
         if self._match is None:
+            if not self.from_nodes or not self.to_nodes:
+                self._match = {}
+                return self._match
+
             self._make_edges_distinct()
 
             def get_edges(from_node, to_node):
@@ -567,11 +593,13 @@ class WeightedBipartiteMatcher(Generic[T], Bounded):
                 new_bounds = self.bounds()
                 if new_bounds.lower_bound > initial_bounds.lower_bound or \
                         new_bounds.upper_bound < initial_bounds.upper_bound:
+                    self._bounds = None
                     return True
             _ = self.matching     # This computes the minimum weight matching
             new_bounds = self.bounds()
             if new_bounds.lower_bound > initial_bounds.lower_bound or \
                     new_bounds.upper_bound < initial_bounds.upper_bound:
+                self._bounds = None
                 return True
         for (_, (_, edge)) in self.matching.items():
             if edge.tighten_bounds():

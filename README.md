@@ -113,6 +113,12 @@ By default, Graphtage will only use ANSI color in its output if it is run from a
 to have Graphtage emit colorized output from a script or pipe, use the `--color` or `-c` argument. To disable color even
 when running on a TTY, use `--no-color`.
 
+### HTML Output
+Graphtage can optionally emit the diff in HTML with the `--html` option.
+```console
+$ graphtage --html original.json modified.json > diff.html
+```
+
 ### Status and Logging
 By default, Graphtage prints status messages and a progress bar to STDERR. To suppress this, use the `--no-status`
 option. To additionally suppress all but critical log messages, use `--quiet`. Fine grained control of log messages is

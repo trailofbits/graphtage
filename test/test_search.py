@@ -11,20 +11,14 @@ class TestIterativeTighteningSearch(TestCase):
         speedups = 0
         tests = 0
         try:
-            t = trange(1000)
-            for test_num in t:
+            t = trange(100)
+            for _ in t:
                 ranges = [RandomDecreasingRange() for _ in range(100)]
                 best_range: RandomDecreasingRange = None
                 for r in ranges:
                     if best_range is None or r.final_value < best_range.final_value:
                         best_range = r
                 search = IterativeTighteningSearch(iter(ranges))
-                # with tqdm(desc=str(search.bounds()), leave=False) as substatus:
-                #     while search.tighten_bounds():
-                #         substatus.total = search.bounds().upper_bound - search.bounds().lower_bound
-                #         substatus.desc = f"Test {test_num}: {search.bounds()!s}"
-                #         substatus.update(substatus.total - (search.bounds().upper_bound - search.bounds().lower_bound))
-                #     substatus.clear()
                 while search.tighten_bounds():
                     pass
                 result = search.best_match
