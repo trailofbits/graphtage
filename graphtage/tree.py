@@ -1,6 +1,6 @@
 import itertools
 from abc import abstractmethod, ABCMeta
-from collections import Iterable
+from collections.abc import Iterable
 from typing import Any, cast, Dict, Iterator, List, Optional, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
