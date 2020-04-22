@@ -430,6 +430,9 @@ class StringEdit(AbstractEdit):
             to_node=to_node
         )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(from_node={self.from_node!r}, to_node={self.to_node!r})"
+
     def bounds(self) -> Range:
         return self.edit_distance.bounds()
 
