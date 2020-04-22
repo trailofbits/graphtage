@@ -1,10 +1,12 @@
-import html
 import logging
 import sys
 from abc import abstractmethod
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Set, Type, Union
-from typing_extensions import Protocol
+if sys.version_info[0] < 3 or sys.version_info[1] < 7:
+    Protocol = object
+else:
+    from typing_extensions import Protocol
 
 import colorama
 from colorama import Back, Fore, Style
