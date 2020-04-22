@@ -24,7 +24,7 @@ setup(
         'intervaltree',
         'scipy>=1.4.0',
         'tqdm',
-        'typing_extensions'
+        'typing_extensions>=3.6.5'
     ],
     entry_points={
         'console_scripts': [
