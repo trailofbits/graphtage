@@ -273,8 +273,14 @@ class MultiSetNode(SequenceNode):
 
 
 class DictNode(MultiSetNode):
-    def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
-        super().__init__(sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in dict_like.items()))
+    def __init__(self, dict_like_or_kvp_list: Union[Dict[LeafNode, TreeNode], Sequence[KeyValuePairNode]]):
+        if hasattr(dict_like_or_kvp_list, 'items'):
+            super().__init__(
+                sorted(KeyValuePairNode(key, value, allow_key_edits=True)
+                       for key, value in dict_like_or_kvp_list.items())
+            )
+        else:
+            super().__init__(dict_like_or_kvp_list)
         self.start_symbol = '{'
         self.end_symbol = '}'
 
@@ -288,10 +294,10 @@ class DictNode(MultiSetNode):
         else:
             printer.newline()
 
-    def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
-        return self.edited_type()({
-            kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
-        })
+    # def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
+    #     return self.edited_type()({
+    #         kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
+    #     })
 
     def init_args(self) -> Dict[str, Any]:
         return {

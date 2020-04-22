@@ -7,9 +7,10 @@ import sys
 import tempfile as tf
 
 from . import graphtage
+from . import printer as printermodule
 from . import version
 from . import xml
-from .printer import DEFAULT_PRINTER, Printer
+from .printer import HTMLPrinter, Printer
 
 
 class Tempfile:
@@ -75,7 +76,7 @@ def main(argv=None):
         '--color', '-c',
         action='store_true',
         default=None,
-        help='Force the ANSI color output; this is turned on by default only if run from a TTY'
+        help='Force ANSI color output; this is turned on by default only if run from a TTY'
     )
     color_group.add_argument(
         '--no-color',
@@ -99,6 +100,7 @@ def main(argv=None):
         action='store_true',
         help='Do not display progress bars and status messages'
     )
+    parser.add_argument('--html', action='store_true', help='Output the diff in HTML')
     log_group = parser.add_mutually_exclusive_group()
     log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
         logging.getLevelName(x)
@@ -142,10 +144,16 @@ def main(argv=None):
     else:
         ansi_color = None
 
-    DEFAULT_PRINTER.out_stream = sys.stdout
-    DEFAULT_PRINTER.ansi_color = ansi_color
-    DEFAULT_PRINTER.quiet = args.no_status or args.quiet
-    printer = Printer(
+    if args.html:
+        from_file = os.path.basename(args.FROM_PATH)
+        to_file = os.path.basename(args.TO_PATH)
+
+        def printer_type(*pos_args, **kwargs):
+            return HTMLPrinter(title=f"Graphtage Diff of {from_file} and {to_file}", *pos_args, **kwargs)
+    else:
+        printer_type = Printer
+
+    printer = printer_type(
         sys.stdout,
         ansi_color=ansi_color,
         quiet=args.no_status or args.quiet,
@@ -154,8 +162,12 @@ def main(argv=None):
             'join_dict_items': args.condensed or args.join_dict_items
         }
     )
+    printermodule.DEFAULT_PRINTER = printer
 
-    logging.basicConfig(level=numeric_log_level, stream=printer)
+    logging.basicConfig(level=numeric_log_level, stream=Printer(
+        sys.stderr,
+        quiet=args.no_status or args.quiet,
+    ))
 
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:

@@ -23,7 +23,8 @@ setup(
         'colorama',
         'intervaltree',
         'scipy>=1.4.0',
-        'tqdm'
+        'tqdm',
+        'typing_extensions>=3.6.5'
     ],
     entry_points={
         'console_scripts': [

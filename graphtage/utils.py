@@ -22,7 +22,7 @@ def getsizeof(obj) -> int:
         return sys.getsizeof(obj)
 
 
-class HashableCounter(Generic[T], Counter, typing.Counter[T]):
+class HashableCounter(Generic[T], typing.Counter[T], Counter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -49,7 +49,7 @@ class OrderedCounter(Counter, OrderedDict):
         return self.__class__, (OrderedDict(self),)
 
 
-class SparseMatrix(Generic[T], Mapping[int, MutableMapping[int, Optional[T]]], Sized):
+class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
     class SparseMatrixRow(MutableMapping[int, Optional[T]]):
         def __init__(
                 self,

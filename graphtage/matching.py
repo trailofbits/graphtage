@@ -1,4 +1,5 @@
 import itertools
+import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
@@ -15,7 +16,7 @@ from .fibonacci import FibonacciHeap
 T = TypeVar('T')
 
 
-class Edge(Generic[T], Bounded):
+class Edge(Bounded, Generic[T]):
     def __init__(self, from_node: 'MatchingFromNode[T]', to_node: 'MatchingToNode[T]', weight: Bounded):
         self.from_node: MatchingFromNode[T] = from_node
         self.to_node: MatchingToNode[T] = to_node
@@ -160,7 +161,14 @@ class MatchingToNode(Generic[T], MatchingNode[T]):
         return f"\u21A3{self.node!r}"
 
 
-class Matching(Generic[T], SetCollection, Set[Edge[T]], Bounded):
+if sys.version_info.major < 3 or sys.version_info.minor < 7:
+    # This is to satisfy Python 3.6's MRO
+    SetType = object
+else:
+    SetType = Set[Edge[T]]
+
+
+class Matching(Generic[T], SetCollection, Bounded, SetType):
     def __init__(self):
         super().__init__()
         self._edges: Set[Edge[T]] = set()
@@ -272,7 +280,7 @@ class QueueElement:
 QueueType = FibonacciHeap[QueueElement, int]
 
 
-class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Generic[T], Bounded):
+class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
     """Partial implementation of AN ALGORITHM TO SOLVE THE mxn ASSIGNMENT PROBLEM IN EXPECTED TIME 0(mn log n)
     by R. M. Karp, 1978
     https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
@@ -482,7 +490,7 @@ def min_weight_bipartite_matching(
     }
 
 
-class WeightedBipartiteMatcher(Generic[T], Bounded):
+class WeightedBipartiteMatcher(Bounded, Generic[T]):
     def __init__(
             self,
             from_nodes: Iterable[T],

@@ -99,6 +99,18 @@ class StatusWriter(IO[str]):
     def writelines(self, lines: Iterable[AnyStr]) -> None:
         return self.status_stream.writelines(lines)
 
+    @property
+    def closed(self) -> bool:
+        return self.status_stream.closed
+
+    @property
+    def mode(self) -> str:
+        return self.status_stream.mode
+
+    @property
+    def name(self) -> str:
+        return self.status_stream.name
+
     def __next__(self) -> AnyStr:
         return next(self.status_stream)
 
