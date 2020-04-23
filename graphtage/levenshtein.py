@@ -4,7 +4,7 @@ from typing import Iterator, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from .bounds import Bounded, Range
+from .bounds import make_distinct, Range
 from .edits import Insert, Match, Remove
 from .fibonacci import FibonacciHeap
 from .printer import DEFAULT_PRINTER
@@ -159,7 +159,10 @@ class EditDistance(SequenceEdit):
             dcost = (self.costs[row - 1][col - 1], self.path_costs[row - 1][col - 1])
             lcost = (self.costs[row][col - 1], self.path_costs[row][col - 1])
             ucost = (self.costs[row - 1][col], self.path_costs[row - 1][col])
-            if dcost <= lcost and dcost <= ucost and \
+            diag_is_best = dcost <= lcost and dcost <= ucost
+            if diag_is_best:
+                make_distinct(self.edit_matrix[row][col], self.edit_matrix[row][0], self.edit_matrix[0][col])
+            if diag_is_best and \
                     self.edit_matrix[row][col].bounds() < self.edit_matrix[row][0].bounds() and \
                     self.edit_matrix[row][col].bounds() < self.edit_matrix[0][col].bounds():
                 brow, bcol, edit = row - 1, col - 1, self.edit_matrix[row][col]
