@@ -1,10 +1,10 @@
 import argparse
-import json
 import logging
 import mimetypes
 import os
 import sys
 import tempfile as tf
+from typing import Callable, Dict, Optional
 
 from . import graphtage
 from . import printer as printermodule
@@ -53,19 +53,74 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-def build_tree(path: str, allow_key_edits=True):
-    filetype = mimetypes.guess_type(path)[0]
-    if filetype is None:
-        raise ValueError(f"Could not determine the filetype for {path}")
-    elif filetype == 'application/json':
-        with open(path, 'rb') as f:
-            return graphtage.build_tree(json.load(f), allow_key_edits=allow_key_edits)
-    elif filetype == 'application/xml' or filetype == 'text/html':
-        return xml.build_tree(path)
-    elif filetype in ('application/x-yaml', 'application/yaml', 'text/yaml', 'text/x-yaml', 'text/vnd.yaml'):
-        return yaml.build_tree(path)
+PARSERS_BY_MIME: Dict[str, Callable[[str, bool], graphtage.TreeNode]] = {}
+DEFAULT_MIME_BY_TYPENAME: Dict[str, str] = {}
+
+def set_mime_types(
+        parser: Callable[[str, bool], graphtage.TreeNode],
+        typename: str,
+        default_mime: str,
+        *mime_types: str
+):
+    if typename in DEFAULT_MIME_BY_TYPENAME:
+        if DEFAULT_MIME_BY_TYPENAME[typename] != default_mime:
+            raise ValueError(
+                f'Type {typename} is already associated with mime type {DEFAULT_MIME_BY_TYPENAME[typename]}')
     else:
-        raise ValueError(f"Unsupported MIME type {filetype} for {path}")
+        DEFAULT_MIME_BY_TYPENAME[typename] = default_mime
+    for mime_type in [default_mime] + list(mime_types):
+        if mime_type in PARSERS_BY_MIME:
+            if PARSERS_BY_MIME[mime_type] == parser:
+                continue
+            else:
+                raise ValueError(f"MIME type {mime_type} is already assigned to {PARSERS_BY_MIME[mime_type]}")
+        PARSERS_BY_MIME[mime_type] = parser
+
+
+set_mime_types(
+    graphtage.build_tree,
+    'json',
+    'application/json',
+    'application/x-javascript',
+    'text/javascript',
+    'text/x-javascript',
+    'text/x-json'
+)
+
+set_mime_types(
+    xml.build_tree,
+    'xml',
+    'application/xml',
+    'text/xml'
+)
+
+set_mime_types(
+    xml.build_tree,
+    'html',
+    'text/html',
+    'application/xhtml+xml'
+)
+
+set_mime_types(
+    yaml.build_tree,
+    'yaml',
+    'application/x-yaml',
+    'application/yaml',
+    'text/yaml',
+    'text/x-yaml',
+    'text/vnd.yaml'
+)
+
+
+def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
+    if mime_type is None:
+        mime_type = mimetypes.guess_type(path)[0]
+    if mime_type is None:
+        raise ValueError(f"Could not determine the filetype for {path}")
+    elif mime_type not in PARSERS_BY_MIME:
+        raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
+    else:
+        return PARSERS_BY_MIME[mime_type](path, allow_key_edits)
 
 
 def main(argv=None):
@@ -76,6 +131,38 @@ def main(argv=None):
                         help='the source file to diff; pass \'-\' to read from STDIN')
     parser.add_argument('TO_PATH', type=str, nargs='?', default='-',
                         help='the file to diff against; pass \'-\' to read from STDIN')
+    file_type_group = parser.add_argument_group(title='input file types')
+    file1_type_group = file_type_group.add_mutually_exclusive_group()
+    file1_type_group.add_argument(
+        '--from-mime',
+        type=str,
+        default=None,
+        help='explicitly specify the MIME type of the first file',
+        choices=PARSERS_BY_MIME.keys()
+    )
+    file2_type_group = file_type_group.add_mutually_exclusive_group()
+    file2_type_group.add_argument(
+        '--to-mime',
+        type=str,
+        default=None,
+        help='explicitly specify the MIME type of the second file',
+        choices=PARSERS_BY_MIME.keys()
+    )
+    for typename, mime in sorted(DEFAULT_MIME_BY_TYPENAME.items()):
+        file1_type_group.add_argument(
+            f'--from-{typename}',
+            action='store_const',
+            const=mime,
+            default=None,
+            help=f'equivalent to `--from-mime {mime}`'
+        )
+        file2_type_group.add_argument(
+            f'--to-{typename}',
+            action='store_const',
+            const=mime,
+            default=None,
+            help=f'equivalent to `--to-mime {mime}`'
+        )
     formatting = parser.add_argument_group(title='output formatting')
     color_group = formatting.add_mutually_exclusive_group()
     color_group.add_argument(
@@ -185,10 +272,30 @@ def main(argv=None):
     elif '.yaml' not in mimetypes.types_map:
         mimetypes.suffix_map['.yaml'] = '.yml'
 
+    if args.from_mime is not None:
+        from_mime = args.from_mime
+    else:
+        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+            from_mime = getattr(args, f'from_{typename}')
+            if from_mime is not None:
+                break
+        else:
+            from_mime = None
+
+    if args.from_mime is not None:
+        to_mime = args.from_mime
+    else:
+        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+            to_mime = getattr(args, f'to_{typename}')
+            if to_mime is not None:
+                break
+        else:
+            to_mime = None
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
-            build_tree(from_path, allow_key_edits=not args.no_key_edits).diff(
-                build_tree(to_path, allow_key_edits=not args.no_key_edits)
+            build_tree(from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime).diff(
+                build_tree(to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
             ).print(printer)
     printer.write('\n')
     printer.close()
