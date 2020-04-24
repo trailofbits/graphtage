@@ -69,52 +69,56 @@ def build_tree(path: str, allow_key_edits=True):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='A diff utility for tree-like files such as JSON and XML.')
+    parser = argparse.ArgumentParser(
+        description='A diff utility for tree-like files such as JSON, XML, HTML, and YAML.'
+    )
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
-                        help='The source file to diff; pass \'-\' to read from STDIN')
+                        help='the source file to diff; pass \'-\' to read from STDIN')
     parser.add_argument('TO_PATH', type=str, nargs='?', default='-',
-                        help='The file to diff against; pass \'-\' to read from STDIN')
-    color_group = parser.add_mutually_exclusive_group()
+                        help='the file to diff against; pass \'-\' to read from STDIN')
+    formatting = parser.add_argument_group(title='output formatting')
+    color_group = formatting.add_mutually_exclusive_group()
     color_group.add_argument(
         '--color', '-c',
         action='store_true',
         default=None,
-        help='Force ANSI color output; this is turned on by default only if run from a TTY'
+        help='force ANSI color output; this is turned on by default only if run from a TTY'
     )
     color_group.add_argument(
         '--no-color',
         action='store_true',
         default=None,
-        help='Do not use ANSI color in the output'
+        help='do not use ANSI color in the output'
     )
-    parser.add_argument('--join-lists', '-jl', action='store_true',
-                            help='Do not print a newline after each list entry')
-    parser.add_argument('--join-dict-items', '-jd', action='store_true',
-                        help='Do not print a newline after each key/value pair in a dictionary')
-    parser.add_argument('--condensed', '-j', action='store_true', help='Equivalent to `-jl -jd`')
+    formatting.add_argument('--join-lists', '-jl', action='store_true',
+                            help='do not print a newline after each list entry')
+    formatting.add_argument('--join-dict-items', '-jd', action='store_true',
+                        help='do not print a newline after each key/value pair in a dictionary')
+    formatting.add_argument('--condensed', '-j', action='store_true', help='equivalent to `-jl -jd`')
+    formatting.add_argument('--html', action='store_true', help='output the diff in HTML')
     parser.add_argument(
         '--no-key-edits',
         '-k',
         action='store_true',
-        help='Only match dictionary entries if they share the same key. This drastically reduces computation.'
+        help='only match dictionary entries if they share the same key. This drastically reduces computation.'
     )
     parser.add_argument(
         '--no-status',
         action='store_true',
-        help='Do not display progress bars and status messages'
+        help='do not display progress bars and status messages'
     )
-    parser.add_argument('--html', action='store_true', help='Output the diff in HTML')
-    log_group = parser.add_mutually_exclusive_group()
+    log_section = parser.add_argument_group(title='logging')
+    log_group = log_section.add_mutually_exclusive_group()
     log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
         logging.getLevelName(x)
         for x in range(1, 101)
         if not logging.getLevelName(x).startswith('Level')
-    ), help='Sets the log level for Graphtage (default=INFO)')
-    log_group.add_argument('--debug', action='store_true', help='Equivalent to `--log-level=DEBUG`')
-    log_group.add_argument('--quiet', action='store_true', help='Equivalent to `--log-level=CRITICAL --no-status`')
-    parser.add_argument('--version', '-v', action='store_true', help='Print Graphtage\'s version information to STDERR')
+    ), help='sets the log level for Graphtage (default=INFO)')
+    log_group.add_argument('--debug', action='store_true', help='equivalent to `--log-level=DEBUG`')
+    log_group.add_argument('--quiet', action='store_true', help='equivalent to `--log-level=CRITICAL --no-status`')
+    parser.add_argument('--version', '-v', action='store_true', help='print Graphtage\'s version information to STDERR')
     parser.add_argument('-dumpversion', action='store_true',
-                        help='Print Graphtage\'s raw version information to STDOUT and exit')
+                        help='print Graphtage\'s raw version information to STDOUT and exit')
 
     if argv is None:
         argv = sys.argv
