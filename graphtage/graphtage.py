@@ -34,9 +34,15 @@ class LeafNode(TreeNode):
 
     def __lt__(self, other):
         if isinstance(other, LeafNode):
-            return self.object < other.object
+            try:
+                return self.object < other.object
+            except TypeError:
+                return str(self.object) < str(other.object)
         else:
-            return self.object < other
+            try:
+                return self.object < other
+            except TypeError:
+                return str(self.object) < str(other)
 
     def __eq__(self, other):
         if isinstance(other, LeafNode):
@@ -545,9 +551,33 @@ class IntegerNode(LeafNode):
         }
 
 
+class FloatNode(LeafNode):
+    def __init__(self, float_like: float):
+        super().__init__(float_like)
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'float_like': self.object
+        }
+
+
+class BoolNode(LeafNode):
+    def __init__(self, bool_like: bool):
+        super().__init__(bool_like)
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'bool_like': self.object
+        }
+
+
 def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeNode:
     if isinstance(python_obj, int):
         return IntegerNode(python_obj)
+    elif isinstance(python_obj, float):
+        return FloatNode(python_obj)
+    elif isinstance(python_obj, bool):
+        return BoolNode(python_obj)
     elif isinstance(python_obj, str):
         return StringNode(python_obj)
     elif isinstance(python_obj, bytes):
