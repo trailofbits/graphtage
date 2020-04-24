@@ -10,6 +10,7 @@ from . import graphtage
 from . import printer as printermodule
 from . import version
 from . import xml
+from . import yaml
 from .printer import HTMLPrinter, Printer
 
 
@@ -61,6 +62,8 @@ def build_tree(path: str, allow_key_edits=True):
             return graphtage.build_tree(json.load(f), allow_key_edits=allow_key_edits)
     elif filetype == 'application/xml' or filetype == 'text/html':
         return xml.build_tree(path)
+    elif filetype in ('application/x-yaml', 'application/yaml', 'text/yaml', 'text/x-yaml', 'text/vnd.yaml'):
+        return yaml.build_tree(path)
     else:
         raise ValueError(f"Unsupported MIME type {filetype} for {path}")
 
@@ -168,6 +171,15 @@ def main(argv=None):
         sys.stderr,
         quiet=args.no_status or args.quiet,
     ))
+
+    mimetypes.init()
+    if '.yml' not in mimetypes.types_map and '.yaml' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-yaml', '.yml')
+        mimetypes.suffix_map['.yaml'] = '.yml'
+    elif '.yml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yml'] = '.yaml'
+    elif '.yaml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yaml'] = '.yml'
 
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
