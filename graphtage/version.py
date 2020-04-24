@@ -16,10 +16,10 @@ def git_branch():
 
 
 # Change DEV_BUILD to False when deploying to PyPI
-DEV_BUILD = False
+DEV_BUILD = True
 
 
-__version__ = (0, 0, 1, 'alpha1')
+__version__ = (0, 1, 0)
 
 if DEV_BUILD:
     branch_name = git_branch()
