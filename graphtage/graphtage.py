@@ -545,9 +545,21 @@ class IntegerNode(LeafNode):
         }
 
 
+class FloatNode(LeafNode):
+    def __init__(self, float_like: float):
+        super().__init__(float_like)
+
+    def init_args(self) -> Dict[str, Any]:
+        return {
+            'float_like': self.object
+        }
+
+
 def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeNode:
     if isinstance(python_obj, int):
         return IntegerNode(python_obj)
+    elif isinstance(python_obj, float):
+        return FloatNode(python_obj)
     elif isinstance(python_obj, str):
         return StringNode(python_obj)
     elif isinstance(python_obj, bytes):
