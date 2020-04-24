@@ -22,6 +22,7 @@ setup(
     install_requires=[
         'colorama',
         'intervaltree',
+        'PyYAML',
         'scipy>=1.4.0',
         'tqdm',
         'typing_extensions>=3.6.5'
