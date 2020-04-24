@@ -7,7 +7,7 @@ except ImportError:
 from . import graphtage
 
 
-def build_tree(path: str) -> graphtage.TreeNode:
+def build_tree(path: str, allow_key_edits=True) -> graphtage.TreeNode:
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
-        return graphtage.build_tree(data)
+        return graphtage.build_tree(data, allow_key_edits=allow_key_edits)

@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .graphtage import ContainerNode, DictNode, ListNode, StringNode
+from .graphtage import ContainerNode, DictNode, FixedKeyDictNode, ListNode, StringNode
 from .printer import Back, Fore, Printer
 from .tree import Edit, EditedTreeNode
 
@@ -67,13 +67,17 @@ class XMLElement(ContainerNode):
             tag: StringNode,
             attrib: Optional[Dict[StringNode, StringNode]] = None,
             text: Optional[StringNode] = None,
-            children: Sequence['XMLElement'] = ()
+            children: Sequence['XMLElement'] = (),
+            allow_key_edits: bool = True
     ):
         self.tag: StringNode = tag
         tag.quoted = False
         if attrib is None:
             attrib = {}
-        self.attrib: DictNode = DictNode(attrib)
+        if allow_key_edits:
+            self.attrib: DictNode = DictNode(attrib)
+        else:
+            self.attrib = FixedKeyDictNode(attrib)
         if isinstance(self, EditedTreeNode):
             self.attrib = self.attrib.make_edited()
         self.attrib.start_symbol = ''
@@ -197,7 +201,7 @@ class EditedXMLElement(EditedTreeNode, XMLElement):
             XMLElement.print(self, printer, xml_edit)
 
 
-def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree]) -> XMLElement:
+def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], allow_key_edits=True) -> XMLElement:
     if isinstance(path_or_element_tree, ET.Element):
         root: ET.Element = path_or_element_tree
     else:
@@ -216,5 +220,6 @@ def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree]) -> 
             StringNode(k): StringNode(v) for k, v in root.attrib.items()
         },
         text=text,
-        children=[build_tree(child) for child in root]
+        children=[build_tree(child, allow_key_edits=allow_key_edits) for child in root],
+        allow_key_edits=allow_key_edits
     )
