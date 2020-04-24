@@ -9,6 +9,7 @@ from typing import Callable, Dict, Optional
 import xml.etree.ElementTree as ET
 from yaml import YAMLError
 
+from . import csv
 from . import graphtage
 from . import printer as printermodule
 from . import version
@@ -120,6 +121,12 @@ set_mime_types(
     'text/vnd.yaml'
 )
 
+set_mime_types(
+    csv.build_tree,
+    'csv',
+    'text/csv'
+)
+
 
 def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
     if mime_type is None:
@@ -148,7 +155,7 @@ def build_tree_handling_errors(path: str, *args, **kwargs):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description='A diff utility for tree-like files such as JSON, XML, HTML, and YAML.'
+        description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
     )
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
                         help='the source file to diff; pass \'-\' to read from STDIN')
