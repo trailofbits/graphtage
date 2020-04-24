@@ -1,10 +1,13 @@
 import argparse
+import json
 import logging
 import mimetypes
 import os
 import sys
 import tempfile as tf
 from typing import Callable, Dict, Optional
+import xml.etree.ElementTree as ET
+from yaml import YAMLError
 
 from . import graphtage
 from . import printer as printermodule
@@ -56,6 +59,7 @@ class PathOrStdin:
 PARSERS_BY_MIME: Dict[str, Callable[[str, bool], graphtage.TreeNode]] = {}
 DEFAULT_MIME_BY_TYPENAME: Dict[str, str] = {}
 
+
 def set_mime_types(
         parser: Callable[[str, bool], graphtage.TreeNode],
         typename: str,
@@ -77,8 +81,13 @@ def set_mime_types(
         PARSERS_BY_MIME[mime_type] = parser
 
 
+def build_json_tree(path: str, *args, **kwargs):
+    with open(path) as f:
+        return graphtage.build_tree(json.load(f), *args, **kwargs)
+
+
 set_mime_types(
-    graphtage.build_tree,
+    build_json_tree,
     'json',
     'application/json',
     'application/x-javascript',
@@ -120,7 +129,21 @@ def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None)
     elif mime_type not in PARSERS_BY_MIME:
         raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
     else:
-        return PARSERS_BY_MIME[mime_type](path, allow_key_edits)
+        return PARSERS_BY_MIME[mime_type](path, allow_key_edits=allow_key_edits)
+
+
+def build_tree_handling_errors(path: str, *args, **kwargs):
+    try:
+        return build_tree(path, *args, **kwargs)
+    except ET.ParseError as pe:
+        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
+        sys.exit(1)
+    except json.decoder.JSONDecodeError as de:
+        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
+        sys.exit(1)
+    except YAMLError as ye:
+        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {ye})\n\n')
+        sys.exit(1)
 
 
 def main(argv=None):
@@ -294,9 +317,11 @@ def main(argv=None):
 
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
-            build_tree(from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime).diff(
-                build_tree(to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
-            ).print(printer)
+            from_tree = build_tree_handling_errors(
+                from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime)
+            to_tree = build_tree_handling_errors(
+                to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
+            from_tree.diff(to_tree).print(printer)
     printer.write('\n')
     printer.close()
 

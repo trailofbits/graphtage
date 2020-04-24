@@ -571,7 +571,7 @@ class BoolNode(LeafNode):
         }
 
 
-def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeNode:
+def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeNode:
     if isinstance(python_obj, int):
         return IntegerNode(python_obj)
     elif isinstance(python_obj, float):
@@ -588,7 +588,7 @@ def build_tree(python_obj, force_leaf_node=False, allow_key_edits=True) -> TreeN
         return ListNode([build_tree(n, allow_key_edits=allow_key_edits) for n in python_obj])
     elif isinstance(python_obj, dict):
         dict_items = {
-            build_tree(k, force_leaf_node=True, allow_key_edits=allow_key_edits):
+            build_tree(k, allow_key_edits=allow_key_edits, force_leaf_node=True):
                 build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
         }
         if allow_key_edits:
