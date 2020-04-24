@@ -34,9 +34,15 @@ class LeafNode(TreeNode):
 
     def __lt__(self, other):
         if isinstance(other, LeafNode):
-            return self.object < other.object
+            try:
+                return self.object < other.object
+            except TypeError:
+                return str(self.object) < str(other.object)
         else:
-            return self.object < other
+            try:
+                return self.object < other
+            except TypeError:
+                return str(self.object) < str(other)
 
     def __eq__(self, other):
         if isinstance(other, LeafNode):
