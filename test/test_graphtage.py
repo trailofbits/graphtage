@@ -90,3 +90,9 @@ class TestGraphtage(TestCase):
                 self.assertEqual(edit.to_node, self.list_from)
             else:
                 self.assertIsInstance(edit, graphtage.Match)
+
+    def test_empty_list(self):
+        diff = graphtage.ListNode(list_like=()).diff(graphtage.ListNode(list_like=()))
+        self.assertEqual(1, len(diff.edit_list))
+        self.assertIsInstance(diff.edit_list[0], graphtage.Match)
+        self.assertEqual(0, diff.edit_list[0].bounds().upper_bound)

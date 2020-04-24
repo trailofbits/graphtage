@@ -1,4 +1,5 @@
 import itertools
+import logging
 from abc import abstractmethod, ABCMeta
 from collections.abc import Iterable
 from typing import Any, cast, Dict, Iterator, List, Optional, Type, TypeVar, Union
@@ -6,6 +7,8 @@ from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
 from .printer import DEFAULT_PRINTER, Printer
+
+log = logging.getLogger(__name__)
 
 
 class Edit(Bounded, Protocol):
@@ -32,6 +35,7 @@ class Edit(Bounded, Protocol):
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):
+        log.debug(repr(self))
         from_node.edit_list.append(self)
 
 
@@ -42,6 +46,7 @@ class CompoundEdit(Edit, Iterable, Protocol):
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):
+        log.debug(repr(self))
         if hasattr(from_node, 'edit_list'):
             from_node.edit_list.append(self)
         for edit in self.edits():

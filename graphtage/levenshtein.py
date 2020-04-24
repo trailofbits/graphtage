@@ -282,3 +282,6 @@ class EditDistance(SequenceEdit):
             (Match(from_node, to_node, 0) for from_node, to_node in self.shared_prefix),
             reversed(self.__edits)
         )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}<from_seq={list(map(str, self.from_seq))!r}, to_seq={list(map(str, self.to_seq))!r}. insert_remove_penalty={self.penalty}>"

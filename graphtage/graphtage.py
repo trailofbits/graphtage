@@ -1,15 +1,13 @@
-import itertools
-from collections import defaultdict
-from typing import Any, Callable, cast, Dict, Iterable, Iterator, List, Optional, Sequence, TextIO, Tuple, Union
+from typing import Any, cast, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
 
 from .bounds import Range
-from .edits import AbstractEdit, EditCollection, EditSequence, CompoundEdit
+from .edits import AbstractEdit, EditCollection, EditSequence
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, DEFAULT_PRINTER, Fore, NullANSIContext, Printer
+from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits, TreeNode
+from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
 from .utils import HashableCounter
 
 
@@ -286,6 +284,9 @@ class DictNode(MultiSetNode):
         self.start_symbol = '{'
         self.end_symbol = '}'
 
+    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+        yield from self.children.elements()
+
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
             if not is_first and not is_last:
@@ -429,6 +430,9 @@ class StringEdit(AbstractEdit):
             to_node=to_node
         )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(from_node={self.from_node!r}, to_node={self.to_node!r})"
+
     def bounds(self) -> Range:
         return self.edit_distance.bounds()
 
@@ -436,7 +440,8 @@ class StringEdit(AbstractEdit):
         return self.edit_distance.tighten_bounds()
 
     def print(self, printer: Printer):
-        printer.write('"')
+        if self.from_node.quoted:
+            printer.write('"')
         remove_seq = []
         add_seq = []
         for sub_edit in self.edit_distance.edits():
@@ -483,12 +488,14 @@ class StringEdit(AbstractEdit):
             with printer.under_plus():
                 for add in add_seq:
                     printer.write(add)
-        printer.write('"')
+        if self.from_node.quoted:
+            printer.write('"')
 
 
 class StringNode(LeafNode):
-    def __init__(self, string_like: str):
+    def __init__(self, string_like: str, quoted=True):
         super().__init__(string_like)
+        self.quoted = quoted
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, StringNode):
@@ -508,9 +515,10 @@ class StringNode(LeafNode):
             context = NullANSIContext()
             null_context = True
         with context:
-            printer.write('"')
+            if self.quoted:
+                printer.write('"')
             for c in self.object:
-                if c == '"':
+                if c == '"' and self.quoted:
                     if not null_context:
                         with printer.color(Fore.YELLOW):
                             printer.write('\\"')
@@ -518,7 +526,8 @@ class StringNode(LeafNode):
                         printer.write('\\"')
                 else:
                     printer.write(c)
-            printer.write('"')
+            if self.quoted:
+                printer.write('"')
 
     def init_args(self) -> Dict[str, Any]:
         return {
