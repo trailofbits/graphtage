@@ -1,4 +1,6 @@
-from typing import Any, cast, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
+import mimetypes
+from abc import ABCMeta, abstractmethod
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -571,34 +573,6 @@ class BoolNode(LeafNode):
         }
 
 
-def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeNode:
-    if isinstance(python_obj, int):
-        return IntegerNode(python_obj)
-    elif isinstance(python_obj, float):
-        return FloatNode(python_obj)
-    elif isinstance(python_obj, bool):
-        return BoolNode(python_obj)
-    elif isinstance(python_obj, str):
-        return StringNode(python_obj)
-    elif isinstance(python_obj, bytes):
-        return StringNode(python_obj.decode('utf-8'))
-    elif force_leaf_node:
-        raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
-    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n, allow_key_edits=allow_key_edits) for n in python_obj])
-    elif isinstance(python_obj, dict):
-        dict_items = {
-            build_tree(k, allow_key_edits=allow_key_edits, force_leaf_node=True):
-                build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
-        }
-        if allow_key_edits:
-            return DictNode(dict_items)
-        else:
-            return FixedKeyDictNode(dict_items)
-    else:
-        raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
-
-
 class EditedMatch(AbstractEdit):
     def __init__(self, match_from: LeafNode, match_to: LeafNode):
         self.edit_distance: EditDistance = string_edit_distance(str(match_from.object), str(match_to.object))
@@ -625,3 +599,54 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
     return EditDistance(list1, list2, list1.children, list2.children, insert_remove_penalty=0)
+
+
+FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
+FILETYPES_BY_TYPENAME: Dict[str, 'Filetype'] = {}
+
+
+class FiletypeWatcher(ABCMeta):
+    def __init__(cls, name, bases, clsdict):
+        if len(cls.mro()) > 2:
+            # Instantiate a version of the filetype to add it to our global dicts:
+            instance = cls()
+            assert instance.name in FILETYPES_BY_TYPENAME
+            assert instance.default_mimetype in FILETYPES_BY_MIME
+        super().__init__(name, bases, clsdict)
+
+
+class Filetype(metaclass=FiletypeWatcher):
+    def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
+        self.name = type_name
+        self.default_mimetype: str = default_mimetype
+        self.mimetypes: Tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
+        for mime_type in self.mimetypes:
+            if mime_type in FILETYPES_BY_MIME:
+                raise ValueError(f"MIME type {mime_type} is already assigned to {FILETYPES_BY_MIME[mime_type]}")
+            FILETYPES_BY_MIME[mime_type] = self
+        FILETYPES_BY_MIME[default_mimetype] = self
+        if type_name in FILETYPES_BY_TYPENAME:
+            raise ValueError(
+                f'Type {type_name} is already associated with Filetype {FILETYPES_BY_TYPENAME[type_name]}')
+        FILETYPES_BY_TYPENAME[self.name] = self
+
+    @abstractmethod
+    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        raise NotImplementedError()
+
+
+def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) -> Filetype:
+    if path is None and mime_type is None:
+        raise ValueError("get_filetype requires a path or a MIME type")
+    elif mime_type is None:
+        mime_type = mimetypes.guess_type(path)[0]
+    if mime_type is None:
+        raise ValueError(f"Could not determine the filetype for {path}")
+    elif mime_type not in FILETYPES_BY_MIME:
+        raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
+    else:
+        return FILETYPES_BY_MIME[mime_type]

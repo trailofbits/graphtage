@@ -1,20 +1,14 @@
 import argparse
-import json
 import logging
 import mimetypes
 import os
 import sys
 import tempfile as tf
-from typing import Callable, Dict, Optional
-import xml.etree.ElementTree as ET
-from yaml import YAMLError
+from typing import Optional
 
-from . import csv
 from . import graphtage
 from . import printer as printermodule
 from . import version
-from . import xml
-from . import yaml
 from .printer import HTMLPrinter, Printer
 
 
@@ -57,100 +51,14 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-PARSERS_BY_MIME: Dict[str, Callable[[str, bool], graphtage.TreeNode]] = {}
-DEFAULT_MIME_BY_TYPENAME: Dict[str, str] = {}
-
-
-def set_mime_types(
-        parser: Callable[[str, bool], graphtage.TreeNode],
-        typename: str,
-        default_mime: str,
-        *mime_types: str
-):
-    if typename in DEFAULT_MIME_BY_TYPENAME:
-        if DEFAULT_MIME_BY_TYPENAME[typename] != default_mime:
-            raise ValueError(
-                f'Type {typename} is already associated with mime type {DEFAULT_MIME_BY_TYPENAME[typename]}')
-    else:
-        DEFAULT_MIME_BY_TYPENAME[typename] = default_mime
-    for mime_type in [default_mime] + list(mime_types):
-        if mime_type in PARSERS_BY_MIME:
-            if PARSERS_BY_MIME[mime_type] == parser:
-                continue
-            else:
-                raise ValueError(f"MIME type {mime_type} is already assigned to {PARSERS_BY_MIME[mime_type]}")
-        PARSERS_BY_MIME[mime_type] = parser
-
-
-def build_json_tree(path: str, *args, **kwargs):
-    with open(path) as f:
-        return graphtage.build_tree(json.load(f), *args, **kwargs)
-
-
-set_mime_types(
-    build_json_tree,
-    'json',
-    'application/json',
-    'application/x-javascript',
-    'text/javascript',
-    'text/x-javascript',
-    'text/x-json'
-)
-
-set_mime_types(
-    xml.build_tree,
-    'xml',
-    'application/xml',
-    'text/xml'
-)
-
-set_mime_types(
-    xml.build_tree,
-    'html',
-    'text/html',
-    'application/xhtml+xml'
-)
-
-set_mime_types(
-    yaml.build_tree,
-    'yaml',
-    'application/x-yaml',
-    'application/yaml',
-    'text/yaml',
-    'text/x-yaml',
-    'text/vnd.yaml'
-)
-
-set_mime_types(
-    csv.build_tree,
-    'csv',
-    'text/csv'
-)
-
-
 def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
-    if mime_type is None:
-        mime_type = mimetypes.guess_type(path)[0]
-    if mime_type is None:
-        raise ValueError(f"Could not determine the filetype for {path}")
-    elif mime_type not in PARSERS_BY_MIME:
-        raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
-    else:
-        return PARSERS_BY_MIME[mime_type](path, allow_key_edits=allow_key_edits)
+    return graphtage.get_filetype(path, mime_type).build_tree(path=path, allow_key_edits=allow_key_edits)
 
 
-def build_tree_handling_errors(path: str, *args, **kwargs):
-    try:
-        return build_tree(path, *args, **kwargs)
-    except ET.ParseError as pe:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
-        sys.exit(1)
-    except json.decoder.JSONDecodeError as de:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
-        sys.exit(1)
-    except YAMLError as ye:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {ye})\n\n')
-        sys.exit(1)
+def build_tree_handling_errors(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
+    return graphtage.get_filetype(path, mime_type).build_tree_handling_errors(
+        path=path, allow_key_edits=allow_key_edits
+    )
 
 
 def main(argv=None):
@@ -168,7 +76,7 @@ def main(argv=None):
         type=str,
         default=None,
         help='explicitly specify the MIME type of the first file',
-        choices=PARSERS_BY_MIME.keys()
+        choices=graphtage.FILETYPES_BY_MIME.keys()
     )
     file2_type_group = file_type_group.add_mutually_exclusive_group()
     file2_type_group.add_argument(
@@ -176,9 +84,10 @@ def main(argv=None):
         type=str,
         default=None,
         help='explicitly specify the MIME type of the second file',
-        choices=PARSERS_BY_MIME.keys()
+        choices=graphtage.FILETYPES_BY_MIME.keys()
     )
-    for typename, mime in sorted(DEFAULT_MIME_BY_TYPENAME.items()):
+    for typename, filetype in sorted(graphtage.FILETYPES_BY_TYPENAME.items()):
+        mime = filetype.default_mimetype
         file1_type_group.add_argument(
             f'--from-{typename}',
             action='store_const',
@@ -305,7 +214,7 @@ def main(argv=None):
     if args.from_mime is not None:
         from_mime = args.from_mime
     else:
-        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             from_mime = getattr(args, f'from_{typename}')
             if from_mime is not None:
                 break
@@ -315,7 +224,7 @@ def main(argv=None):
     if args.from_mime is not None:
         to_mime = args.from_mime
     else:
-        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             to_mime = getattr(args, f'to_{typename}')
             if to_mime is not None:
                 break

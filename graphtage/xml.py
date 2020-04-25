@@ -1,12 +1,14 @@
 import html
+import os
+import sys
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .graphtage import ContainerNode, DictNode, FixedKeyDictNode, ListNode, StringNode
+from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, ListNode, StringNode
 from .printer import Back, Fore, Printer
-from .tree import Edit, EditedTreeNode
+from .tree import Edit, EditedTreeNode, TreeNode
 
 
 class XMLElementEdit(AbstractCompoundEdit):
@@ -223,3 +225,32 @@ def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], all
         children=[build_tree(child, allow_key_edits=allow_key_edits) for child in root],
         allow_key_edits=allow_key_edits
     )
+
+
+class XML(Filetype):
+    def __init__(self):
+        super().__init__(
+            'xml',
+            'application/xml',
+            'text/xml'
+        )
+
+    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        return build_tree(path, allow_key_edits=allow_key_edits)
+
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        try:
+            return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+        except ET.ParseError as pe:
+            sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
+            sys.exit(1)
+
+
+class HTML(XML):
+    def __init__(self):
+        Filetype.__init__(
+            self,
+            'html',
+            'text/html',
+            'application/xhtml+xml'
+        )
