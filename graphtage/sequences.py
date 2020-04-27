@@ -22,40 +22,49 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
     def sequence(self) -> 'SequenceNode':
         return cast(SequenceNode, self.from_node)
 
-    def print(self, printer: Printer):
-        SequenceNode.print(self.sequence, printer, self)
+    def print(self, formatter: Formatter, printer: Printer):
+        formatter.get_formatter(self.sequence)(printer, self.sequence, self)
 
 
 class SequenceNode(ContainerNode, Iterable, Sized, ABC):
+    def make_edited(self) -> Union[EditedTreeNode, 'SequenceNode']:
+        return self.edited_type()([n.make_edited() for n in self])
+
+    def print(self, printer: Printer):
+        SequenceFormatter('[', ']', ',').print(printer, self)
+
+
+class SequenceFormatter(Formatter):
     def __init__(
             self,
-            start_symbol: str = '[',
-            end_symbol: str = ']',
-            delimiter: str = ',',
+            start_symbol: str,
+            end_symbol: str,
+            delimiter: str,
             delimiter_callback: Optional[Callable[[Printer], Any]] = None
     ):
-        super().__init__()
-        self.start_symbol: str = start_symbol
-        self.end_symbol: str = end_symbol
-        self.delimiter: str = delimiter
+        self.start_symbol = start_symbol
+        self.end_symbol = end_symbol
+        self.delimiter = delimiter
         if delimiter_callback is None:
             self.delimiter_callback: Callable[[Printer], Any] = lambda p: p.write(delimiter)
         else:
             self.delimiter_callback: Callable[[Printer], Any] = delimiter_callback
 
-    def make_edited(self) -> Union[EditedTreeNode, 'SequenceNode']:
-        return self.edited_type()([n.make_edited() for n in self])
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        printer.newline()
 
-    def print(self, printer: Printer, edit: Optional[SequenceEdit] = None):
+    def print_SequenceNode(self, printer: Printer, node: SequenceNode, sequence_edit: Optional[SequenceEdit] = None):
         with printer.bright():
             printer.write(self.start_symbol)
         with printer.indent() as p:
             to_remove: int = 0
             to_insert: int = 0
-            if edit is not None:
-                edits: List[Edit] = list(edit.edits())
+            if sequence_edit is not None:
+                edits: List[Edit] = sequence_edit.edits()
+            elif isinstance(node, EditedTreeNode):
+                edits: List[Edit] = node.edit.edits()
             else:
-                edits: List[Edit] = [Match(child, child, 0) for child in self]
+                edits: List[Edit] = [Match(child, child, 0) for child in node]
             for i, edit in enumerate(edits):
                 if isinstance(edit, Remove):
                     to_remove += 1
@@ -76,22 +85,9 @@ class SequenceNode(ContainerNode, Iterable, Sized, ABC):
                                 self.delimiter_callback(p)
                         else:
                             self.delimiter_callback(p)
-                self.print_item_newline(printer, is_first=i == 0)
-                edit.print(p)
-        if len(self) > 0:
-            self.print_item_newline(printer, is_last=True)
+                self.item_newline(printer, is_first=i == 0)
+                edit.print(self, p)
+        if len(node) > 0:
+            self.item_newline(printer, is_last=True)
         with printer.bright():
             printer.write(self.end_symbol)
-
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        printer.newline()
-
-
-class SequenceFormatter(Formatter):
-    def __init__(self, start_symbol: str, end_symbol: str, delimiter: str):
-        self.start_symbol = start_symbol
-        self.end_symbol = end_symbol
-        self.delimiter = delimiter
-
-    def print_SequenceNode(self, printer: Printer, node: SequenceNode):
-        node.print(printer)

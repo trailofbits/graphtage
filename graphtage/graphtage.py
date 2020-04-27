@@ -5,6 +5,7 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tupl
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
+from .formatter import Formatter
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
@@ -93,12 +94,12 @@ class KeyValuePairEdit(AbstractCompoundEdit):
         yield self.key_edit
         yield self.value_edit
 
-    def print(self, printer: Printer):
+    def print(self, formatter: Formatter, printer: Printer):
         with printer.color(Fore.BLUE):
-            self.key_edit.print(printer)
+            self.key_edit.print(formatter, printer)
         with printer.bright():
             printer.write(": ")
-        self.value_edit.print(printer)
+        self.value_edit.print(formatter, printer)
 
 
 class KeyValuePairNode(ContainerNode):
@@ -447,7 +448,7 @@ class StringEdit(AbstractEdit):
     def tighten_bounds(self) -> bool:
         return self.edit_distance.tighten_bounds()
 
-    def print(self, printer: Printer):
+    def print(self, formatter: Formatter, printer: Printer):
         if self.from_node.quoted:
             printer.write('"')
         remove_seq = []
@@ -636,6 +637,10 @@ class Filetype(metaclass=FiletypeWatcher):
 
     @abstractmethod
     def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_default_formatter(self) -> 'graphtage.formatter.Formatter':
         raise NotImplementedError()
 
 

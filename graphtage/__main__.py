@@ -51,16 +51,6 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
-    return graphtage.get_filetype(path, mime_type).build_tree(path=path, allow_key_edits=allow_key_edits)
-
-
-def build_tree_handling_errors(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
-    return graphtage.get_filetype(path, mime_type).build_tree_handling_errors(
-        path=path, allow_key_edits=allow_key_edits
-    )
-
-
 def main(argv=None):
     parser = argparse.ArgumentParser(
         description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
@@ -233,11 +223,12 @@ def main(argv=None):
 
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
-            from_tree = build_tree_handling_errors(
-                from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime)
-            to_tree = build_tree_handling_errors(
-                to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
-            from_tree.diff(to_tree).print(printer)
+            from_format = graphtage.get_filetype(from_path, from_mime)
+            to_format = graphtage.get_filetype(to_path, to_mime)
+            from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
+            to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
+            diff = from_tree.diff(to_tree)
+            from_format.get_default_formatter().print(printer, diff)
     printer.write('\n')
     printer.close()
 

@@ -2,8 +2,14 @@ import csv
 from typing import Any, Dict, Iterable, Union
 
 from . import graphtage, json
+from .json import JSONFormatter
 from .printer import Printer
+from .sequences import SequenceFormatter
 from .tree import EditedTreeNode, TreeNode
+
+
+class CSVRow(graphtage.ListNode):
+    pass
 
 
 class CSVNode(graphtage.ListNode):
@@ -11,13 +17,13 @@ class CSVNode(graphtage.ListNode):
         if isinstance(self, EditedTreeNode):
             super().__init__(
                 [
-                    graphtage.ListNode(list(row)).make_edited() for row in rows
+                    CSVRow(list(row)).make_edited() for row in rows
                 ]
             )
         else:
             super().__init__(
                 [
-                    graphtage.ListNode(list(row)) for row in rows
+                    CSVRow(list(row)) for row in rows
                 ]
             )
         self.start_symbol = ''
@@ -42,8 +48,40 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
     csv_data = []
     with open(path) as f:
         for row in csv.reader(f, *args, **kwargs):
-            csv_data.append([json.build_tree(i, allow_key_edits=allow_key_edits) for i in row])
+            rowdata = [json.build_tree(i, allow_key_edits=allow_key_edits) for i in row]
+            for col in rowdata:
+                if isinstance(col, graphtage.StringNode):
+                    col.quoted = False
+            csv_data.append(rowdata)
     return CSVNode(csv_data)
+
+
+class CSVRowFormatter(SequenceFormatter):
+    def __init__(self):
+        super().__init__('', '', ',')
+
+    def print_CSVRow(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+
+class CSVRows(SequenceFormatter):
+    sub_format_types = [CSVRowFormatter]
+
+    def __init__(self):
+        super().__init__('', '', '\n', lambda p: p.newline())
+
+    def print_CSVNode(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+
+class CSVFormatter(JSONFormatter):
+    sub_format_types = [CSVRows]
 
 
 class CSV(graphtage.Filetype):
@@ -58,3 +96,6 @@ class CSV(graphtage.Filetype):
 
     def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
         return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+
+    def get_default_formatter(self) -> CSVFormatter:
+        return CSVFormatter.DEFAULT_INSTANCE

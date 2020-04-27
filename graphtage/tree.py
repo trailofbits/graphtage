@@ -31,7 +31,7 @@ class Edit(Bounded, Protocol):
     def valid(self, is_valid: bool):
         raise NotImplementedError()
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):
@@ -70,28 +70,23 @@ class EditedTreeNode:
         self.inserted: List[TreeNode] = []
         self.matched_to: Optional[TreeNode] = None
         self.edit_list: List[Edit] = []
+        self.edit: Optional[Edit] = None
+
+    def edits(self, node: 'TreeNode') -> Edit:
+        self.edit = cast(TreeNode, super()).edits(node)
+        return self.edit
 
     def edited_cost(self) -> int:
         while any(e.tighten_bounds() for e in self.edit_list):
             pass
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
-    def print(self, *args, **kwargs):
-        if self.edit_list:
-            for edit in self.edit_list:
-                edit.print(*args, **kwargs)
-        else:
-            return cast(TreeNode, super()).print(*args, **kwargs)
-
-    def print_without_edits(self, *args, **kwargs):
-        super().print(*args, **kwargs)
-
 
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
 
     @abstractmethod
-    def edits(self, node) -> Edit:
+    def edits(self, node: 'TreeNode') -> Edit:
         raise NotImplementedError()
 
     @classmethod

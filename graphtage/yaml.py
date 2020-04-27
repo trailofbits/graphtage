@@ -8,12 +8,17 @@ except ImportError:
     from yaml import Loader, Dumper
 
 from . import graphtage, json, TreeNode
+from .formatter import Formatter
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> graphtage.TreeNode:
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
         return json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
+
+
+class YAMLFormatter(Formatter):
+    pass
 
 
 class YAML(graphtage.Filetype):
@@ -36,3 +41,6 @@ class YAML(graphtage.Filetype):
         except YAMLError as ye:
             sys.stderr.write(f'Error parsing {os.path.basename(path)}: {ye})\n\n')
             sys.exit(1)
+
+    def get_default_formatter(self) -> YAMLFormatter:
+        return YAMLFormatter.DEFAULT_INSTANCE

@@ -4,8 +4,8 @@ import sys
 
 from .formatter import Formatter
 from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, LeafNode, ListNode, StringNode
-from .printer import Printer
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringNode
+from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import TreeNode
 
@@ -38,6 +38,39 @@ def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeN
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 
 
+class JSONListFormatter(SequenceFormatter):
+    def __init__(self):
+        super().__init__('[', ']', ',')
+
+    def print_ListNode(self, *args, **kwargs):
+        self.print_SequenceNode(*args, **kwargs)
+
+
+class JSONDictFormatter(SequenceFormatter):
+    def __init__(self):
+        super().__init__('{', '}', ',')
+
+    def print_MultiSetNode(self, *args, **kwargs):
+        self.print_SequenceNode(*args, **kwargs)
+
+    def print_FixedKeyDictNode(self, *args, **kwargs):
+        self.print_SequenceNode(*args, **kwargs)
+
+
+class JSONFormatter(Formatter):
+    sub_format_types = [JSONListFormatter, JSONDictFormatter]
+
+    def print_LeafNode(self, printer: Printer, node: LeafNode):
+        node.print(printer)
+
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        with printer.color(Fore.BLUE):
+            self.print(printer, node.key)
+        with printer.bright():
+            printer.write(": ")
+        self.print(printer, node.value)
+
+
 class JSON(Filetype):
     def __init__(self):
         super().__init__(
@@ -61,29 +94,5 @@ class JSON(Filetype):
                 f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
             sys.exit(1)
 
-
-class JSONListFormatter(SequenceFormatter):
-    def __init__(self):
-        super().__init__('[', ']', ',')
-
-    def print_ListNode(self, printer: Printer, node: ListNode):
-        self.print_SequenceNode(printer=printer, node=node)
-
-
-class JSONDictFormatter(SequenceFormatter):
-    def __init__(self):
-        super().__init__('{', '}', ',')
-
-    def print_MultiSetNode(self, printer: Printer, node: SequenceNode):
-        self.print_SequenceNode(printer=printer, node=node)
-
-    def print_FixedKeyDictNode(self, printer: Printer, node: SequenceNode):
-        self.print_SequenceNode(printer=printer, node=node)
-
-
-class JSONFormatter(Formatter):
-    def __init__(self):
-        self.sub_formatters = [JSONListFormatter(), JSONDictFormatter()]
-
-    def print_LeafNode(self, printer: Printer, node: LeafNode):
-        node.print(printer)
+    def get_default_formatter(self) -> JSONFormatter:
+        return JSONFormatter.DEFAULT_INSTANCE

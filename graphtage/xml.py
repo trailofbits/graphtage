@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
+from .formatter import Formatter
 from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, ListNode, StringNode
 from .printer import Back, Fore, Printer
 from .tree import Edit, EditedTreeNode, TreeNode
@@ -227,6 +228,11 @@ def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], all
     )
 
 
+class XMLFormatter(Formatter):
+    def print_XMLElement(self, printer: Printer, node: XMLElement):
+        pass
+
+
 class XML(Filetype):
     def __init__(self):
         super().__init__(
@@ -244,6 +250,9 @@ class XML(Filetype):
         except ET.ParseError as pe:
             sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
             sys.exit(1)
+
+    def get_default_formatter(self) -> XMLFormatter:
+        return XMLFormatter.DEFAULT_INSTANCE
 
 
 class HTML(XML):
