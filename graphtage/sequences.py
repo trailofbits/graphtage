@@ -1,9 +1,10 @@
-from abc import ABC
+from abc import abstractmethod, ABC
 from typing import Any, Callable, cast, Iterable, Optional, Sized, Union, List
 
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
+from .formatter import Formatter
 from .printer import Printer
-from .tree import ContainerNode, Edit, EditedTreeNode, explode_edits
+from .tree import ContainerNode, Edit, EditedTreeNode
 
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
@@ -84,3 +85,13 @@ class SequenceNode(ContainerNode, Iterable, Sized, ABC):
 
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         printer.newline()
+
+
+class SequenceFormatter(Formatter):
+    def __init__(self, start_symbol: str, end_symbol: str, delimiter: str):
+        self.start_symbol = start_symbol
+        self.end_symbol = end_symbol
+        self.delimiter = delimiter
+
+    def print_SequenceNode(self, printer: Printer, node: SequenceNode):
+        node.print(printer)

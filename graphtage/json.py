@@ -2,8 +2,11 @@ import json
 import os
 import sys
 
-from . import Printer
-from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, FloatNode, IntegerNode, ListNode, StringNode
+from .formatter import Formatter
+from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
+    FloatNode, IntegerNode, LeafNode, ListNode, StringNode
+from .printer import Printer
+from .sequences import SequenceFormatter, SequenceNode
 from .tree import TreeNode
 
 
@@ -57,3 +60,30 @@ class JSON(Filetype):
             sys.stderr.write(
                 f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
             sys.exit(1)
+
+
+class JSONListFormatter(SequenceFormatter):
+    def __init__(self):
+        super().__init__('[', ']', ',')
+
+    def print_ListNode(self, printer: Printer, node: ListNode):
+        self.print_SequenceNode(printer=printer, node=node)
+
+
+class JSONDictFormatter(SequenceFormatter):
+    def __init__(self):
+        super().__init__('{', '}', ',')
+
+    def print_MultiSetNode(self, printer: Printer, node: SequenceNode):
+        self.print_SequenceNode(printer=printer, node=node)
+
+    def print_FixedKeyDictNode(self, printer: Printer, node: SequenceNode):
+        self.print_SequenceNode(printer=printer, node=node)
+
+
+class JSONFormatter(Formatter):
+    def __init__(self):
+        self.sub_formatters = [JSONListFormatter(), JSONDictFormatter()]
+
+    def print_LeafNode(self, printer: Printer, node: LeafNode):
+        node.print(printer)
