@@ -2,7 +2,7 @@ import itertools
 import logging
 from abc import abstractmethod, ABCMeta
 from collections.abc import Iterable
-from typing import Any, cast, Dict, Iterator, List, Optional, Type, TypeVar, Union
+from typing import Any, cast, Collection, Dict, Iterator, List, Optional, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -84,6 +84,10 @@ class EditedTreeNode:
 
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
+
+    @abstractmethod
+    def children(self) -> Collection['TreeNode']:
+        raise NotImplementedError()
 
     @abstractmethod
     def edits(self, node: 'TreeNode') -> Edit:

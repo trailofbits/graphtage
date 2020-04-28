@@ -1,10 +1,10 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 from typing import Any, Callable, cast, Iterable, Optional, Sized, Union, List
 
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .formatter import Formatter
 from .printer import Printer
-from .tree import ContainerNode, Edit, EditedTreeNode
+from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
 
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
@@ -30,11 +30,16 @@ class SequenceNode(ContainerNode, Iterable, Sized, ABC):
     def make_edited(self) -> Union[EditedTreeNode, 'SequenceNode']:
         return self.edited_type()([n.make_edited() for n in self])
 
+    def children(self) -> List[TreeNode]:
+        return list(self)
+
     def print(self, printer: Printer):
         SequenceFormatter('[', ']', ',').print(printer, self)
 
 
 class SequenceFormatter(Formatter):
+    is_partial = True
+
     def __init__(
             self,
             start_symbol: str,
@@ -53,18 +58,21 @@ class SequenceFormatter(Formatter):
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         printer.newline()
 
+    def items_indent(self, printer: Printer):
+        return printer.indent()
+
     def print_SequenceNode(self, printer: Printer, node: SequenceNode, sequence_edit: Optional[SequenceEdit] = None):
         with printer.bright():
             printer.write(self.start_symbol)
-        with printer.indent() as p:
+        with self.items_indent(printer) as p:
             to_remove: int = 0
             to_insert: int = 0
             if sequence_edit is not None:
-                edits: List[Edit] = sequence_edit.edits()
+                edits: Iterable[Edit] = sequence_edit.edits()
             elif isinstance(node, EditedTreeNode) and isinstance(node.edit, SequenceEdit):
-                edits: List[Edit] = node.edit.edits()
+                edits: Iterable[Edit] = node.edit.edits()
             else:
-                edits: List[Edit] = [Match(child, child, 0) for child in node]
+                edits: Iterable[Edit] = [Match(child, child, 0) for child in node]
             for i, edit in enumerate(edits):
                 if isinstance(edit, Remove):
                     to_remove += 1
@@ -77,16 +85,16 @@ class SequenceFormatter(Formatter):
                     with printer.bright():
                         if to_remove:
                             to_remove -= 1
-                            with p.strike():
-                                self.delimiter_callback(p)
+                            with printer.strike():
+                                self.delimiter_callback(printer)
                         elif to_insert:
                             to_insert -= 1
-                            with p.under_plus():
-                                self.delimiter_callback(p)
+                            with printer.under_plus():
+                                self.delimiter_callback(printer)
                         else:
                             self.delimiter_callback(p)
                 self.item_newline(printer, is_first=i == 0)
-                edit.print(self, p)
+                edit.print(self, printer)
         if len(node) > 0:
             self.item_newline(printer, is_last=True)
         with printer.bright():

@@ -36,7 +36,7 @@ class CSVNode(graphtage.ListNode):
     def init_args(self) -> Dict[str, Any]:
         return {
             'rows': [
-                row.children for row in self.children
+                row.children for row in self._children
             ]
         }
 

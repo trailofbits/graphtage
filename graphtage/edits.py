@@ -175,7 +175,7 @@ class Replace(ConstantCostEdit):
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().color(Fore.WHITE).background(Back.GREEN):
-                formatter.print(False, self.to_node, False)
+                formatter.print(printer, self.to_node, False)
         else:
             formatter.print(self.to_node, printer, False)
 

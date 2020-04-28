@@ -122,7 +122,7 @@ class XMLElement(ContainerNode):
     def _print_text(self, printer: Printer):
         if self.text is None:
             return
-        if '\n' not in self.text.object and not self.children.children:
+        if '\n' not in self.text.object and not self.children._children:
             printer.write(html.escape(self.text.object))
             return
         with printer.indent():
@@ -270,7 +270,7 @@ class XMLFormatter(Formatter):
     def _print_text(element: XMLElement, printer: Printer):
         if element.text is None:
             return
-        if '\n' not in element.text.object and not element.children.children:
+        if '\n' not in element.text.object and not element.children._children:
             printer.write(html.escape(element.text.object))
             return
         with printer.indent():
@@ -289,7 +289,7 @@ class XMLFormatter(Formatter):
         if node.attrib:
             #self.print(printer, node.attrib)
             edit.attrib_edit.print(self, printer)
-        if node.children.children or (node.text is not None and '\n' in node.text.object):
+        if node.children._children or (node.text is not None and '\n' in node.text.object):
             printer.write('>')
             self._print_text(node, printer)
             #self.print(printer, node.children)

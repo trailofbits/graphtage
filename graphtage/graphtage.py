@@ -1,6 +1,6 @@
 import mimetypes
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Any, Collection, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -17,6 +17,9 @@ from .utils import HashableCounter
 class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
+
+    def children(self) -> Collection[TreeNode]:
+        return ()
 
     def calculate_total_size(self):
         return len(str(self.object))
@@ -96,10 +99,12 @@ class KeyValuePairEdit(AbstractCompoundEdit):
 
     def print(self, formatter: Formatter, printer: Printer):
         with printer.color(Fore.BLUE):
-            self.key_edit.print(formatter, printer)
+            formatter.print(printer=printer, node=self.key_edit.from_node)
+            #self.key_edit.print(formatter, printer)
         with printer.bright():
             printer.write(": ")
-        self.value_edit.print(formatter, printer)
+        #self.value_edit.print(formatter, printer)
+        formatter.print(printer=printer, node=self.value_edit.from_node)
 
 
 class KeyValuePairNode(ContainerNode):
@@ -107,6 +112,9 @@ class KeyValuePairNode(ContainerNode):
         self.key: LeafNode = key
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
+
+    def children(self) -> Tuple[LeafNode, TreeNode]:
+        return self.key, self.value
 
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
@@ -173,21 +181,21 @@ class KeyValuePairNode(ContainerNode):
 class ListNode(SequenceNode):
     def __init__(self, list_like: Sequence[TreeNode]):
         super().__init__()
-        self.children: Tuple[TreeNode] = tuple(list_like)
+        self._children: Tuple[TreeNode] = tuple(list_like)
 
     def all_children_are_leaves(self) -> bool:
-        return all(isinstance(c, LeafNode) for c in self.children)
+        return all(isinstance(c, LeafNode) for c in self._children)
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            if len(self.children) == len(node.children) == 0:
+            if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
-            elif len(self.children) == len(node.children) == 1:
+            elif len(self._children) == len(node._children) == 1:
                 return EditSequence(from_node=self, to_node=node, edits=iter((
                     Match(self, node, 0),
-                    self.children[0].edits(node.children[0])
+                    self._children[0].edits(node._children[0])
                 )))
-            elif self.children == node.children:
+            elif self._children == node._children:
                 return Match(self, node, 0)
             else:
                 if self.all_children_are_leaves() and node.all_children_are_leaves():
@@ -197,8 +205,8 @@ class ListNode(SequenceNode):
                 return EditDistance(
                     self,
                     node,
-                    self.children,
-                    node.children,
+                    self._children,
+                    node._children,
                     insert_remove_penalty=insert_remove_penalty
                 )
         else:
@@ -206,7 +214,7 @@ class ListNode(SequenceNode):
 
     def init_args(self) -> Dict[str, Any]:
         return {
-            'list_like': self.children
+            'list_like': self._children
         }
 
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
@@ -217,68 +225,68 @@ class ListNode(SequenceNode):
             printer.newline()
 
     def calculate_total_size(self):
-        return sum(c.total_size for c in self.children)
+        return sum(c.total_size for c in self._children)
 
     def __eq__(self, other):
-        return isinstance(other, ListNode) and self.children == other.children
+        return isinstance(other, ListNode) and self._children == other._children
 
     def __hash__(self):
-        return hash(self.children)
+        return hash(self._children)
 
     def __len__(self):
-        return len(self.children)
+        return len(self._children)
 
     def __iter__(self) -> Iterator[TreeNode]:
-        return iter(self.children)
+        return iter(self._children)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.children!r})"
+        return f"{self.__class__.__name__}({self._children!r})"
 
     def __str__(self):
-        return str(self.children)
+        return str(self._children)
 
 
 class MultiSetNode(SequenceNode):
     def __init__(self, items: Iterable[TreeNode]):
         super().__init__()
-        self.children: HashableCounter[TreeNode] = HashableCounter(items)
+        self._children: HashableCounter[TreeNode] = HashableCounter(items)
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
-            if len(self.children) == len(node.children) == 0:
+            if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
-            elif self.children == node.children:
+            elif self._children == node._children:
                 return Match(self, node, 0)
             else:
-                return MultiSetEdit(self, node, self.children, node.children)
+                return MultiSetEdit(self, node, self._children, node._children)
         else:
             return Replace(self, node)
 
     def init_args(self) -> Dict[str, Any]:
         return {
-            'items': self.children.elements()
+            'items': self._children.elements()
         }
 
     def calculate_total_size(self):
-        return sum(c.total_size * count for c, count in self.children.items())
+        return sum(c.total_size * count for c, count in self._children.items())
 
     def __eq__(self, other):
-        return isinstance(other, MultiSetNode) and other.children == self.children
+        return isinstance(other, MultiSetNode) and other._children == self._children
 
     def __hash__(self):
-        return hash(self.children)
+        return hash(self._children)
 
     def __len__(self):
-        return sum(self.children.values())
+        return sum(self._children.values())
 
     def __iter__(self) -> Iterator[TreeNode]:
-        return self.children.elements()
+        return self._children.elements()
 
     def __repr__(self):
         return f"{self.__class__.__name__}({list(self)!r})"
 
     def __str__(self):
-        return str(self.children)
+        return str(self._children)
 
 
 class DictNode(MultiSetNode):
@@ -294,7 +302,7 @@ class DictNode(MultiSetNode):
         self.end_symbol = '}'
 
     def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
-        yield from self.children.elements()
+        yield from self._children.elements()
 
     def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
@@ -599,7 +607,7 @@ class EditedMatch(AbstractEdit):
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2, list1.children, list2.children, insert_remove_penalty=0)
+    return EditDistance(list1, list2, list1._children, list2._children, insert_remove_penalty=0)
 
 
 FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
