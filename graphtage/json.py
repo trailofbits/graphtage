@@ -39,6 +39,8 @@ def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeN
 
 
 class JSONListFormatter(SequenceFormatter):
+    is_partial = True
+
     def __init__(self):
         super().__init__('[', ']', ',')
 
@@ -47,6 +49,8 @@ class JSONListFormatter(SequenceFormatter):
 
 
 class JSONDictFormatter(SequenceFormatter):
+    is_partial = True
+
     def __init__(self):
         super().__init__('{', '}', ',')
 

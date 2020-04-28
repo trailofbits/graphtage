@@ -38,7 +38,8 @@ class FormatterChecker(ABCMeta):
                             a = sig.parameters['with_edits'].annotation
                             if a is not None and a is not bool:
                                 raise TypeError(f"The type annotation for {name}.{member}(with_edits: {a}) was expected to be a bool")
-                FORMATTERS.append(instance)
+                if not instance.is_partial:
+                    FORMATTERS.append(instance)
                 setattr(cls, 'DEFAULT_INSTANCE', instance)
             except TypeError:
                 log.debug(f"Formatter {name} cannot be instantiated as a default constructor")
@@ -72,6 +73,7 @@ class Formatter(metaclass=FormatterChecker):
     sub_format_types: Sequence[Type['Formatter']] = ()
     sub_formatters: List['Formatter'] = []
     parent: Optional['Formatter'] = None
+    is_partial: bool = False
 
     @property
     def root(self) -> 'Formatter':
