@@ -7,8 +7,9 @@ from typing import Any, Dict, Optional, Iterator, Sequence, Union
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .formatter import Formatter
-from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, ListNode, StringNode
+from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, ListNode, StringNode
 from .printer import Back, Fore, Printer
+from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, TreeNode
 
 
@@ -30,8 +31,8 @@ class XMLElementEdit(AbstractCompoundEdit):
             to_node=to_node
         )
 
-    def print(self, printer: Printer):
-        XMLElement.print(self.from_node, printer, self)
+    def print(self, formatter: Formatter, printer: Printer):
+        formatter.get_formatter(self.from_node)(printer, self.from_node, self)
 
     def bounds(self) -> Range:
         if self.text_edit is not None:
@@ -130,6 +131,8 @@ class XMLElement(ContainerNode):
                 printer.write(html.escape(section))
 
     def print(self, printer: Printer, edit: Optional[XMLElementEdit] = None):
+        XMLFormatter.DEFAULT_INSTANCE.print(printer=printer, node=self, with_edits=True)
+        return
         printer.write('<')
         self.tag.print(printer)
         for key, value in self.attrib.items():
@@ -228,9 +231,82 @@ def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], all
     )
 
 
-class XMLFormatter(Formatter):
-    def print_XMLElement(self, printer: Printer, node: XMLElement):
+class XMLChildFormatter(SequenceFormatter):
+    is_partial = True
+
+    def __init__(self):
+        super().__init__('', '', '', lambda p: p.newline())
+
+    def print_ListNode(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
+
+class XMLElementAttribFormatter(SequenceFormatter):
+    is_partial = True
+
+    def __init__(self):
+        super().__init__('', '', '')
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         pass
+
+    def print_MultiSetNode(self, *args, **kwargs):
+        self.print_SequenceNode(*args, **kwargs)
+
+    def print_FixedKeyDictNode(self, *args, **kwargs):
+        self.print_SequenceNode(*args, **kwargs)
+
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        printer.write(' ')
+        self.print(printer, node.key)
+        printer.write('=')
+        self.print(printer, node.value)
+
+
+class XMLFormatter(Formatter):
+    sub_format_types = [XMLChildFormatter, XMLElementAttribFormatter]
+
+    @staticmethod
+    def _print_text(element: XMLElement, printer: Printer):
+        if element.text is None:
+            return
+        if '\n' not in element.text.object and not element.children.children:
+            printer.write(html.escape(element.text.object))
+            return
+        with printer.indent():
+            for section in element.text.object.split('\n'):
+                printer.newline()
+                printer.write(html.escape(section))
+
+    def print_XMLElement(self, printer: Printer, node: XMLElement, edit: Optional[XMLElementEdit] = None):
+        if edit is None and isinstance(node, EditedTreeNode) and node.edit is not None:
+            edit = node.edit
+        else:
+            edit = XMLElementEdit(node, node)
+        printer.write('<')
+        edit.tag_edit.print(self, printer)
+        #self.print(printer, node.tag)
+        if node.attrib:
+            #self.print(printer, node.attrib)
+            edit.attrib_edit.print(self, printer)
+        if node.children.children or (node.text is not None and '\n' in node.text.object):
+            printer.write('>')
+            self._print_text(node, printer)
+            #self.print(printer, node.children)
+            edit.child_edit.print(self, printer)
+            printer.write('</')
+            #self.print(printer, node.tag)
+            edit.tag_edit.print(self, printer)
+            printer.write('>')
+        elif node.text is not None:
+            printer.write('>')
+            self._print_text(node, printer)
+            printer.write('</')
+            #self.print(printer, node.tag)
+            edit.tag_edit.print(self, printer)
+            printer.write('>')
+        else:
+            printer.write(' />')
 
 
 class XML(Filetype):

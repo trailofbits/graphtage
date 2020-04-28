@@ -61,7 +61,7 @@ class SequenceFormatter(Formatter):
             to_insert: int = 0
             if sequence_edit is not None:
                 edits: List[Edit] = sequence_edit.edits()
-            elif isinstance(node, EditedTreeNode):
+            elif isinstance(node, EditedTreeNode) and isinstance(node.edit, SequenceEdit):
                 edits: List[Edit] = node.edit.edits()
             else:
                 edits: List[Edit] = [Match(child, child, 0) for child in node]
