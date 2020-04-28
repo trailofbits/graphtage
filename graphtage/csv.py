@@ -57,6 +57,8 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
 
 
 class CSVRowFormatter(SequenceFormatter):
+    is_partial = True
+
     def __init__(self):
         super().__init__('', '', ',')
 
@@ -68,6 +70,8 @@ class CSVRowFormatter(SequenceFormatter):
 
 
 class CSVRows(SequenceFormatter):
+    is_partial = True
+
     sub_format_types = [CSVRowFormatter]
 
     def __init__(self):
