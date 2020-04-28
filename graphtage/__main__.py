@@ -4,7 +4,6 @@ import mimetypes
 import os
 import sys
 import tempfile as tf
-from typing import Optional
 
 from . import graphtage
 from . import printer as printermodule
@@ -93,6 +92,8 @@ def main(argv=None):
             help=f'equivalent to `--to-mime {mime}`'
         )
     formatting = parser.add_argument_group(title='output formatting')
+    formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
+                            help='output format for the diff (default is to use the format of FROM_PATH)')
     color_group = formatting.add_mutually_exclusive_group()
     color_group.add_argument(
         '--color', '-c',
@@ -228,7 +229,11 @@ def main(argv=None):
             from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
             to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
             diff = from_tree.diff(to_tree)
-            from_format.get_default_formatter().print(printer, diff)
+            if args.format is not None:
+                formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+            else:
+                formatter = from_format.get_default_formatter()
+            formatter.print(printer, diff)
     printer.write('\n')
     printer.close()
 
