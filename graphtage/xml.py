@@ -2,7 +2,7 @@ import html
 import os
 import sys
 import xml.etree.ElementTree as ET
-from typing import Any, Dict, Optional, Iterator, Sequence, Union
+from typing import Any, Collection, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
@@ -25,7 +25,7 @@ class XMLElementEdit(AbstractCompoundEdit):
             self.text_edit: Optional[Edit] = Remove(to_remove=from_node.text, remove_from=from_node)
         else:
             self.text_edit: Optional[Edit] = None
-        self.child_edit: Edit = from_node.children.edits(to_node.children)
+        self.child_edit: Edit = from_node._children.edits(to_node._children)
         super().__init__(
             from_node=from_node,
             to_node=to_node
@@ -93,15 +93,22 @@ class XMLElement(ContainerNode):
         self.text: Optional[StringNode] = text
         if self.text is not None:
             self.text.quoted = False
-        self.children: ListNode = ListNode(children)
+        self._children: ListNode = ListNode(children)
         if isinstance(self, EditedTreeNode):
-            self.children = self.children.make_edited()
+            self._children = self._children.make_edited()
         self.attrib.start_symbol = ''
         self.attrib.end_symbol = ''
         self.attrib.delimiter_callback = lambda p: p.newline()
 
+    def children(self) -> Collection['TreeNode']:
+        ret = (self.tag, self.attrib)
+        if self.text is not None:
+            return ret + (self.text, self._children)
+        else:
+            return ret + (self._children,)
+
     def __repr__(self):
-        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self.children!r})"
+        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r})"
 
     def __str__(self):
         return f"<{self.tag.object}{''.join(' ' + key.object + '=' + value.object for key, value in self.attrib.items())} ... />"
@@ -117,12 +124,12 @@ class XMLElement(ContainerNode):
             t_size = 0
         else:
             t_size = self.text.total_size
-        return t_size + self.tag.total_size + self.attrib.total_size + self.children.total_size
+        return t_size + self.tag.total_size + self.attrib.total_size + self._children.total_size
 
     def _print_text(self, printer: Printer):
         if self.text is None:
             return
-        if '\n' not in self.text.object and not self.children._children:
+        if '\n' not in self.text.object and not self._children._children:
             printer.write(html.escape(self.text.object))
             return
         with printer.indent():
@@ -165,7 +172,7 @@ class XMLElement(ContainerNode):
             'tag': self.tag,
             'attrib': {kvp.key: kvp.value for kvp in self.attrib},
             'text': self.text,
-            'children': tuple(self.children.__iter__())
+            'children': tuple(self._children.__iter__())
         }
 
     def make_edited(self) -> Union[EditedTreeNode, 'XMLElement']:
@@ -179,14 +186,14 @@ class XMLElement(ContainerNode):
                 kvp.key: kvp.value for kvp in self.attrib
             },
             text=et,
-            children=[c for c in self.children]
+            children=[c for c in self._children]
         )
 
     def __eq__(self, other):
         if not isinstance(other, XMLElement):
             return False
         return other.tag == self.tag and other.attrib == self.attrib \
-            and other.text == self.text and other.children == self.children
+               and other.text == self.text and other._children == self._children
 
 
 class EditedXMLElement(EditedTreeNode, XMLElement):
@@ -270,7 +277,7 @@ class XMLFormatter(Formatter):
     def _print_text(element: XMLElement, printer: Printer):
         if element.text is None:
             return
-        if '\n' not in element.text.object and not element.children._children:
+        if '\n' not in element.text.object and not element._children._children:
             printer.write(html.escape(element.text.object))
             return
         with printer.indent():
@@ -279,9 +286,7 @@ class XMLFormatter(Formatter):
                 printer.write(html.escape(section))
 
     def print_XMLElement(self, printer: Printer, node: XMLElement, edit: Optional[XMLElementEdit] = None):
-        if edit is None and isinstance(node, EditedTreeNode) and node.edit is not None:
-            edit = node.edit
-        else:
+        if edit is None:
             edit = XMLElementEdit(node, node)
         printer.write('<')
         edit.tag_edit.print(self, printer)
@@ -289,7 +294,7 @@ class XMLFormatter(Formatter):
         if node.attrib:
             #self.print(printer, node.attrib)
             edit.attrib_edit.print(self, printer)
-        if node.children._children or (node.text is not None and '\n' in node.text.object):
+        if node._children._children or (node.text is not None and '\n' in node.text.object):
             printer.write('>')
             self._print_text(node, printer)
             #self.print(printer, node.children)
