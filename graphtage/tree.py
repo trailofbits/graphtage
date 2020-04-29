@@ -76,6 +76,10 @@ class EditedTreeNode:
         self.edit = cast(TreeNode, super()).edits(node)
         return self.edit
 
+    @property
+    def edited(self) -> bool:
+        return True
+
     def edited_cost(self) -> int:
         while any(e.tighten_bounds() for e in self.edit_list):
             pass
@@ -84,10 +88,19 @@ class EditedTreeNode:
 
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
+    _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+
+    @property
+    def edited(self) -> bool:
+        return False
 
     @abstractmethod
     def children(self) -> Collection['TreeNode']:
         raise NotImplementedError()
+
+    @property
+    def is_leaf(self) -> bool:
+        return len(self.children()) == 0
 
     @abstractmethod
     def edits(self, node: 'TreeNode') -> Edit:
@@ -95,19 +108,24 @@ class TreeNode(metaclass=ABCMeta):
 
     @classmethod
     def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
-        def init(etn, *args, **kwargs):
-            EditedTreeNode.__init__(etn)
-            cls.__init__(etn, *args, **kwargs)
+        if cls._edited_type is None:
+            def init(etn, wrapped_tree_node: TreeNode):
+                etn.__dict__ = dict(wrapped_tree_node.editable_dict())
+                EditedTreeNode.__init__(etn)
 
-        return type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-            '__init__': init
-        })
+            cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
+                '__init__': init
+            })
+        return cls._edited_type
 
     def make_edited(self) -> Union[EditedTreeNode, T]:
-        ret = self.copy(new_class=self.edited_type())
+        ret = self.edited_type()(self)
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
+
+    def editable_dict(self) -> Dict[str, Any]:
+        return dict(self.__dict__)
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         ret = self.make_edited()
@@ -139,15 +157,6 @@ class TreeNode(metaclass=ABCMeta):
     @abstractmethod
     def print(self, printer: Printer):
         pass
-
-    @abstractmethod
-    def init_args(self) -> Dict[str, Any]:
-        pass
-
-    def copy(self, new_class: Optional[Type[T]] = None) -> T:
-        if new_class is None:
-            new_class = self.__class__
-        return new_class(**self.init_args())
 
 
 class ContainerNode(TreeNode, metaclass=ABCMeta):
