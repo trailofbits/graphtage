@@ -31,9 +31,9 @@ def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeN
                 build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
         }
         if allow_key_edits:
-            return DictNode(dict_items)
+            return DictNode.from_dict(dict_items)
         else:
-            return FixedKeyDictNode(dict_items)
+            return FixedKeyDictNode.from_dict(dict_items)
     else:
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 

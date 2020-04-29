@@ -1,8 +1,8 @@
 import itertools
 import logging
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from typing import Any, cast, Collection, Dict, Iterator, List, Optional, Type, TypeVar, Union
+from typing import Any, cast, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -125,7 +125,13 @@ class TreeNode(metaclass=ABCMeta):
         return ret
 
     def editable_dict(self) -> Dict[str, Any]:
-        return dict(self.__dict__)
+        ret = dict(self.__dict__)
+        if not self.is_leaf:
+            # Deep-copy any sub-nodes
+            for key, value in ret.items():
+                if isinstance(value, TreeNode):
+                    ret[key] = value.make_edited()
+        return ret
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         ret = self.make_edited()
@@ -159,5 +165,13 @@ class TreeNode(metaclass=ABCMeta):
         pass
 
 
-class ContainerNode(TreeNode, metaclass=ABCMeta):
-    pass
+class ContainerNode(TreeNode, Iterable, Sized, ABC):
+    def children(self) -> List[TreeNode]:
+        return list(self)
+
+    @property
+    def is_leaf(self) -> bool:
+        return False
+
+    def all_children_are_leaves(self) -> bool:
+        return all(c.is_leaf for c in self)

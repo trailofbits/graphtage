@@ -1,6 +1,6 @@
 import mimetypes
 from abc import ABCMeta, abstractmethod
-from typing import Any, Collection, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -10,7 +10,7 @@ from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
+from .tree import ContainerNode, Edit, TreeNode
 from .utils import HashableCounter
 
 
@@ -29,11 +29,6 @@ class LeafNode(TreeNode):
             return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'obj': self.object
-        }
 
     def print(self, printer: Printer):
         printer.write(repr(self.object))
@@ -113,6 +108,12 @@ class KeyValuePairNode(ContainerNode):
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
 
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        ret['key'] = self.key.make_edited()
+        ret['value'] = self.value.make_edited()
+        return ret
+
     def children(self) -> Tuple[LeafNode, TreeNode]:
         return self.key, self.value
 
@@ -123,20 +124,6 @@ class KeyValuePairNode(ContainerNode):
             return KeyValuePairEdit(self, node)
         else:
             return Replace(self, node)
-
-    def make_edited(self) -> Union[EditedTreeNode, 'KeyValuePairNode']:
-        return self.edited_type()(
-            key=self.key.make_edited(),
-            value=self.value.make_edited(),
-            allow_key_edits=self.allow_key_edits
-        )
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'key': self.key,
-            'value': self.value,
-            'allow_key_edits': self.allow_key_edits
-        }
 
     def print(self, printer: Printer):
         if isinstance(self.key, LeafNode):
@@ -178,13 +165,16 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class ListNode(SequenceNode):
-    def __init__(self, list_like: Sequence[TreeNode]):
-        super().__init__()
-        self._children: Tuple[TreeNode] = tuple(list_like)
+T = TypeVar('T', bound=TreeNode)
 
-    def all_children_are_leaves(self) -> bool:
-        return all(isinstance(c, LeafNode) for c in self._children)
+
+class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
+    def __init__(self, nodes: Iterable[T]):
+        super().__init__(tuple(nodes))
+
+    @property
+    def container_type(self) -> Type[Tuple[T, ...]]:
+        return tuple
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
@@ -212,44 +202,16 @@ class ListNode(SequenceNode):
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'list_like': self._children
-        }
 
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_lists') and printer.join_lists:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
+class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
+    def __init__(self, items: Iterable[T]):
+        if not isinstance(items, HashableCounter):
+            items = HashableCounter(items)
+        super().__init__(items)
 
-    def calculate_total_size(self):
-        return sum(c.total_size for c in self._children)
-
-    def __eq__(self, other):
-        return isinstance(other, ListNode) and self._children == other._children
-
-    def __hash__(self):
-        return hash(self._children)
-
-    def __len__(self):
-        return len(self._children)
-
-    def __iter__(self) -> Iterator[TreeNode]:
-        return iter(self._children)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self._children!r})"
-
-    def __str__(self):
-        return str(self._children)
-
-
-class MultiSetNode(SequenceNode):
-    def __init__(self, items: Iterable[TreeNode]):
-        super().__init__()
-        self._children: HashableCounter[TreeNode] = HashableCounter(items)
+    @property
+    def container_type(self) -> Type[HashableCounter[T]]:
+        return HashableCounter
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
@@ -262,19 +224,8 @@ class MultiSetNode(SequenceNode):
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'items': self._children.elements()
-        }
-
     def calculate_total_size(self):
         return sum(c.total_size * count for c, count in self._children.items())
-
-    def __eq__(self, other):
-        return isinstance(other, MultiSetNode) and other._children == self._children
-
-    def __hash__(self):
-        return hash(self._children)
 
     def __len__(self):
         return sum(self._children.values())
@@ -285,43 +236,16 @@ class MultiSetNode(SequenceNode):
     def __repr__(self):
         return f"{self.__class__.__name__}({list(self)!r})"
 
-    def __str__(self):
-        return str(self._children)
 
-
-class DictNode(MultiSetNode):
-    def __init__(self, dict_like_or_kvp_list: Union[Dict[LeafNode, TreeNode], Sequence[KeyValuePairNode]]):
-        if hasattr(dict_like_or_kvp_list, 'items'):
-            super().__init__(
-                sorted(KeyValuePairNode(key, value, allow_key_edits=True)
-                       for key, value in dict_like_or_kvp_list.items())
-            )
-        else:
-            super().__init__(dict_like_or_kvp_list)
-        self.start_symbol = '{'
-        self.end_symbol = '}'
+class DictNode(MultiSetNode[KeyValuePairNode]):
+    @staticmethod
+    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+        return DictNode(
+            sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
+        )
 
     def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
         yield from self._children.elements()
-
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
-
-    # def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
-    #     return self.edited_type()({
-    #         kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
-    #     })
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'dict_like': {
-                kvp.key: kvp.value for kvp in self
-            }
-        }
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
@@ -347,31 +271,20 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
         )
 
 
-class FixedKeyDictNode(SequenceNode):
+class FixedKeyDictNode(SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
     """A dictionary that only matches KeyValuePairs if they share the same key
     NOTE: This implementation does not currently support duplicate keys!
     """
-    def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
-        is_edited = isinstance(self, EditedTreeNode)
+    @property
+    def container_type(self) -> Type[Dict[LeafNode, KeyValuePairNode]]:
+        return dict
 
-        def kvp_type(key, value):
-            ret = KeyValuePairNode(key, value, allow_key_edits=False)
-            if is_edited:
-                return ret.make_edited()
-            else:
-                return ret
-
-        self.children: Dict[LeafNode, KeyValuePairNode] = {
-            kvp.key: kvp for kvp in (kvp_type(key, value) for key, value in dict_like.items())
-        }
-        super().__init__(start_symbol='{', end_symbol='}')
-
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
+    @staticmethod
+    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+        return FixedKeyDictNode({
+            kvp.key: kvp
+            for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
+        })
 
     def _child_edits(self, node: 'FixedKeyDictNode') -> Iterator[Edit]:
         unshared_kvps = set()
@@ -392,7 +305,7 @@ class FixedKeyDictNode(SequenceNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, FixedKeyDictNode):
-            if len(self.children) == len(node.children) == 0:
+            if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
             elif self.children == node.children:
                 return Match(self, node, 0)
@@ -401,38 +314,11 @@ class FixedKeyDictNode(SequenceNode):
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'dict_like': {
-                kvp.key: kvp.value for kvp in self.children.values()
-            }
-        }
-
-    def make_edited(self) -> Union[EditedTreeNode, 'FixedKeyDictNode']:
-        return self.edited_type()({
-            kvp.key: kvp.value for kvp in self.children.values()
-        })
-
-    def calculate_total_size(self):
-        return sum(c.total_size for c in self.children.values())
-
-    def __eq__(self, other):
-        return isinstance(other, FixedKeyDictNode) and other.children == self.children
-
     def __hash__(self):
-        return hash(frozenset(self.children.values()))
-
-    def __len__(self):
-        return len(self.children)
+        return hash(frozenset(self._children.values()))
 
     def __iter__(self) -> Iterator[TreeNode]:
-        return iter(self.children.values())
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({list(self)!r})"
-
-    def __str__(self):
-        return str(self.children)
+        return iter(self._children.values())
 
 
 class StringEdit(AbstractEdit):

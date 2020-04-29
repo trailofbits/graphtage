@@ -1,5 +1,5 @@
-from abc import ABC
-from typing import Any, Callable, cast, Iterable, Optional, Sized, Union, List
+from abc import ABC, abstractmethod
+from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, Optional, Sequence, Type, TypeVar
 
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .formatter import Formatter
@@ -26,12 +26,43 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
         formatter.get_formatter(self.sequence)(printer, self.sequence, self)
 
 
-class SequenceNode(ContainerNode, Iterable, Sized, ABC):
-    def make_edited(self) -> Union[EditedTreeNode, 'SequenceNode']:
-        return self.edited_type()([n.make_edited() for n in self])
+T = TypeVar('T', bound=Sequence[TreeNode])
 
-    def children(self) -> List[TreeNode]:
-        return list(self)
+
+class SequenceNode(ContainerNode, Generic[T], ABC):
+    def __init__(self, children: T):
+        self._children = children
+
+    def __len__(self) -> int:
+        return len(self._children)
+
+    def __iter__(self) -> Iterator[TreeNode]:
+        return iter(self._children)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self._children!r})"
+
+    def __str__(self):
+        return str(self._children)
+
+    def calculate_total_size(self):
+        return sum(c.total_size for c in self)
+
+    def __eq__(self, other):
+        return isinstance(other, SequenceNode) and self._children == other._children
+
+    def __hash__(self):
+        return hash(self._children)
+
+    @property
+    @abstractmethod
+    def container_type(self) -> Type[T]:
+        raise NotImplementedError()
+
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        ret['_children'] = self.container_type(n.make_edited() for n in self)
+        return ret
 
     def print(self, printer: Printer):
         SequenceFormatter('[', ']', ',').print(printer, self)

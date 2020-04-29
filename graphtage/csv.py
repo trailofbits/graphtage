@@ -5,43 +5,15 @@ from . import graphtage, json
 from .json import JSONFormatter
 from .printer import Printer
 from .sequences import SequenceFormatter
-from .tree import EditedTreeNode, TreeNode
+from .tree import TreeNode
 
 
-class CSVRow(graphtage.ListNode):
+class CSVRow(graphtage.ListNode[TreeNode]):
     pass
 
 
-class CSVNode(graphtage.ListNode):
-    def __init__(self, rows: Iterable[Iterable[TreeNode]]):
-        if isinstance(self, EditedTreeNode):
-            super().__init__(
-                [
-                    CSVRow(list(row)).make_edited() for row in rows
-                ]
-            )
-        else:
-            super().__init__(
-                [
-                    CSVRow(list(row)) for row in rows
-                ]
-            )
-        self.start_symbol = ''
-        self.end_symbol = ''
-        self.delimiter_callback = lambda p: p.newline()
-
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        printer.newline()
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'rows': [
-                row.children for row in self._children
-            ]
-        }
-
-    def make_edited(self) -> Union[EditedTreeNode, 'CSVNode']:
-        return self.copy(new_class=self.edited_type())
+class CSVNode(graphtage.ListNode[CSVRow]):
+    pass
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
@@ -52,7 +24,7 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
             for col in rowdata:
                 if isinstance(col, graphtage.StringNode):
                     col.quoted = False
-            csv_data.append(rowdata)
+            csv_data.append(CSVRow(rowdata))
     return CSVNode(csv_data)
 
 

@@ -79,9 +79,9 @@ class XMLElement(ContainerNode):
         if attrib is None:
             attrib = {}
         if allow_key_edits:
-            self.attrib: DictNode = DictNode(attrib)
+            self.attrib: DictNode = DictNode.from_dict(attrib)
         else:
-            self.attrib = FixedKeyDictNode(attrib)
+            self.attrib = FixedKeyDictNode.from_dict(attrib)
         if isinstance(self, EditedTreeNode):
             self.attrib = self.attrib.make_edited()
         self.attrib.start_symbol = ''
