@@ -108,7 +108,7 @@ class Formatter(metaclass=FormatterChecker):
             return self.root.print(printer, node, with_edits)
         formatter = self.get_formatter(node)
         if formatter is not None:
-            if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None and len(node.children()) == 0:
+            if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None and node.is_leaf:
                 # If the node is a leaf, delegate to its edit's implementation:
                 node.edit.print(self, printer)
             else:

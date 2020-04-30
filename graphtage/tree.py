@@ -36,6 +36,7 @@ class Edit(Bounded, Protocol):
 
     def on_diff(self, from_node: 'EditedTreeNode'):
         log.debug(repr(self))
+        from_node.edit = self
         from_node.edit_list.append(self)
 
 
@@ -49,6 +50,8 @@ class CompoundEdit(Edit, Iterable, Protocol):
         log.debug(repr(self))
         if hasattr(from_node, 'edit_list'):
             from_node.edit_list.append(self)
+        if hasattr(from_node, 'edit'):
+            from_node.edit = self
         for edit in self.edits():
             edit.on_diff(edit.from_node)
 
@@ -71,10 +74,6 @@ class EditedTreeNode:
         self.matched_to: Optional[TreeNode] = None
         self.edit_list: List[Edit] = []
         self.edit: Optional[Edit] = None
-
-    def edits(self, node: 'TreeNode') -> Edit:
-        self.edit = cast(TreeNode, super()).edits(node)
-        return self.edit
 
     @property
     def edited(self) -> bool:
