@@ -47,13 +47,17 @@ class CSVRows(SequenceFormatter):
     sub_format_types = [CSVRowFormatter]
 
     def __init__(self):
-        super().__init__('', '', '\n', lambda p: p.newline())
+        super().__init__('', '', '')
 
     def print_CSVNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        pass
+        if not is_first and not is_last:
+            printer.newline()
+
+    def items_indent(self, printer: Printer):
+        return printer
 
 
 class CSVFormatter(JSONFormatter):
