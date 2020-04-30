@@ -1,7 +1,7 @@
 import inspect
 import logging
 from abc import ABCMeta
-from typing import Any, Callable, List, Optional, Sequence, Type, TypeVar
+from typing import Any, Callable, List, Optional, Sequence, Set, Type, TypeVar
 
 from .printer import Printer
 from .tree import EditedTreeNode, TreeNode
@@ -49,30 +49,43 @@ class FormatterChecker(ABCMeta):
 T = TypeVar('T', bound=TreeNode)
 
 
-def _get_formatter(node_type: Type[T], base_formatter: 'Formatter') -> Optional[Callable[[Printer, T], Any]]:
-    for c in node_type.mro():
-        if hasattr(base_formatter, f'print_{c.__name__}'):
-            return getattr(base_formatter, f'print_{c.__name__}')
-        for sub_formatter in base_formatter.sub_formatters:
-            if hasattr(sub_formatter, f'print_{c.__name__}'):
-                return getattr(sub_formatter, f'print_{c.__name__}')
-    return None
+def _get_formatter(
+        node_type: Type[T],
+        base_formatter: 'Formatter',
+        tested: Set[Type['Formatter']]
+) -> Optional[Callable[[Printer, T], Any]]:
+    if base_formatter.__class__ not in tested:
+        grandchildren = []
+        for c in node_type.mro():
+            if hasattr(base_formatter, f'print_{c.__name__}'):
+                return getattr(base_formatter, f'print_{c.__name__}')
+            for sub_formatter in base_formatter.sub_formatters:
+                if sub_formatter not in tested:
+                    if hasattr(sub_formatter, f'print_{c.__name__}'):
+                        return getattr(sub_formatter, f'print_{c.__name__}')
+                    grandchildren.extend(sub_formatter.sub_formatters)
+        tested.add(base_formatter.__class__)
+        tested |= set(s.__class__ for s in base_formatter.sub_formatters)
+        for grandchild in grandchildren:
+            ret = _get_formatter(node_type, grandchild, tested)
+            if ret is not None:
+                return ret
+    if base_formatter.parent is not None:
+        return _get_formatter(node_type, base_formatter.parent, tested)
 
 
 def get_formatter(
         node_type: Type[T],
         base_formatter: Optional['Formatter'] = None
 ) -> Optional[Callable[[Printer, T], Any]]:
+    tested_formatters: Set[Type[Formatter]] = set()
     if base_formatter is not None:
-        ret = _get_formatter(node_type, base_formatter)
+        ret = _get_formatter(node_type, base_formatter, tested_formatters)
         if ret is not None:
             return ret
-        base_formatters = frozenset([base_formatter.__class__] + [s.__class__ for s in base_formatter.sub_formatters])
-    else:
-        base_formatters = frozenset()
     for formatter in FORMATTERS:
-        if formatter.__class__ not in base_formatters:
-            ret = _get_formatter(node_type, formatter)
+        if formatter.__class__ not in tested_formatters:
+            ret = _get_formatter(node_type, formatter, tested_formatters)
             if ret is not None:
                 return ret
     return None
@@ -104,8 +117,6 @@ class Formatter(metaclass=FormatterChecker):
         return get_formatter(node.__class__, base_formatter=self)
 
     def print(self, printer: Printer, node: TreeNode, with_edits: bool = True):
-        if self.parent is not None:
-            return self.root.print(printer, node, with_edits)
         formatter = self.get_formatter(node)
         if formatter is not None:
             if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None and node.is_leaf:
