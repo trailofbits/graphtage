@@ -11,19 +11,14 @@ from . import json
 from .formatter import Formatter
 from .graphtage import Filetype, KeyValuePairNode, LeafNode, StringNode
 from .printer import Printer
-from .sequences import SequenceFormatter
+from .sequences import SequenceFormatter, SequenceNode
 from .tree import TreeNode
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
-        ret = json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
-        for node in ret.dfs():
-            # YAML nodes are never quoted:
-            if isinstance(node, StringNode):
-                node.quoted = False
-        return ret
+        return json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
 
 
 class YAMLListFormatter(SequenceFormatter):
@@ -52,15 +47,16 @@ class YAMLListFormatter(SequenceFormatter):
 class YAMLKeyValuePairFormatter(Formatter):
     is_partial = True
 
-    def print_SequenceNode(self, printer: Printer, node):
-        printer.newline()
-        self.parent.parent.print(printer=printer, node=node)
-
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         self.print(printer, node.key)
         with printer.bright():
             printer.write(": ")
-        self.print(printer, node.value)
+        if isinstance(node.value, SequenceNode):
+            with printer.indent():
+                printer.newline()
+                self.parent.parent.print(printer, node.value)
+        else:
+            self.print(printer, node.value)
 
 
 class YAMLDictFormatter(SequenceFormatter):
@@ -88,6 +84,7 @@ class YAMLFormatter(Formatter):
         node.print(printer)
 
     def print_StringNode(self, printer: Printer, node: StringNode):
+        node.quoted = False
         if (node.edited and node.edit is not None) or '\n' not in node.object:
             node.print(printer)
         else:
