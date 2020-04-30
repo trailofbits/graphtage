@@ -97,6 +97,13 @@ class TreeNode(metaclass=ABCMeta):
     def children(self) -> Collection['TreeNode']:
         raise NotImplementedError()
 
+    def dfs(self) -> Iterator['TreeNode']:
+        stack = [self]
+        while stack:
+            node = stack.pop()
+            yield node
+            stack.extend(node.children())
+
     @property
     def is_leaf(self) -> bool:
         return len(self.children()) == 0
