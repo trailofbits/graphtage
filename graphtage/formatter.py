@@ -49,22 +49,32 @@ class FormatterChecker(ABCMeta):
 T = TypeVar('T', bound=TreeNode)
 
 
-def get_formatter(node_type: Type[T], base_formatter: Optional['Formatter'] = None) -> Optional[Callable[[Printer, T], Any]]:
+def _get_formatter(node_type: Type[T], base_formatter: 'Formatter') -> Optional[Callable[[Printer, T], Any]]:
+    for c in node_type.mro():
+        if hasattr(base_formatter, f'print_{c.__name__}'):
+            return getattr(base_formatter, f'print_{c.__name__}')
+        for sub_formatter in base_formatter.sub_formatters:
+            if hasattr(sub_formatter, f'print_{c.__name__}'):
+                return getattr(sub_formatter, f'print_{c.__name__}')
+    return None
+
+
+def get_formatter(
+        node_type: Type[T],
+        base_formatter: Optional['Formatter'] = None
+) -> Optional[Callable[[Printer, T], Any]]:
     if base_formatter is not None:
+        ret = _get_formatter(node_type, base_formatter)
+        if ret is not None:
+            return ret
         base_formatters = frozenset([base_formatter.__class__] + [s.__class__ for s in base_formatter.sub_formatters])
     else:
         base_formatters = frozenset()
-    if base_formatter is not None:
-        for c in node_type.mro():
-            if hasattr(base_formatter, f'print_{c.__name__}'):
-                return getattr(base_formatter, f'print_{c.__name__}')
-            for sub_formatter in base_formatter.sub_formatters:
-                if hasattr(sub_formatter, f'print_{c.__name__}'):
-                    return getattr(sub_formatter, f'print_{c.__name__}')
-    for c in node_type.mro():
-        for formatter in FORMATTERS:
-            if formatter.__class__ not in base_formatters and hasattr(formatter, f'print_{c.__name__}'):
-                return getattr(formatter, f'print_{c.__name__}')
+    for formatter in FORMATTERS:
+        if formatter.__class__ not in base_formatters:
+            ret = _get_formatter(node_type, formatter)
+            if ret is not None:
+                return ret
     return None
 
 
