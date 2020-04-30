@@ -133,6 +133,28 @@ class TreeNode(metaclass=ABCMeta):
                     ret[key] = value.make_edited()
         return ret
 
+    def get_all_edits(self, node: 'TreeNode') -> Iterator[Edit]:
+        edit = self.edits(node)
+        prev_bounds = edit.bounds()
+        total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
+        prev_range = total_range
+        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
+                new_bounds = edit.bounds()
+                new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                t.update(prev_range - new_range)
+                prev_range = new_range
+        edit_stack = [edit]
+        while edit_stack:
+            edit = edit_stack.pop()
+            if isinstance(edit, CompoundEdit):
+                edit_stack.extend(list(edit.edits()))
+            else:
+                while edit.bounds().lower_bound == 0 and not edit.bounds().definitive() and edit.tighten_bounds():
+                    pass
+                if edit.bounds().lower_bound > 0:
+                    yield edit
+
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         ret = self.make_edited()
         assert isinstance(ret, self.__class__)

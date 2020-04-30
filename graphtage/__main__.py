@@ -91,6 +91,7 @@ def main(argv=None):
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
+    parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
                             help='output format for the diff (default is to use the format of FROM_PATH)')
@@ -228,12 +229,17 @@ def main(argv=None):
             to_format = graphtage.get_filetype(to_path, to_mime)
             from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
             to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
-            diff = from_tree.diff(to_tree)
-            if args.format is not None:
-                formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+            if args.only_edits:
+                for edit in from_tree.get_all_edits(to_tree):
+                    printer.write(str(edit))
+                    printer.newline()
             else:
-                formatter = from_format.get_default_formatter()
-            formatter.print(printer, diff)
+                diff = from_tree.diff(to_tree)
+                if args.format is not None:
+                    formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                else:
+                    formatter = from_format.get_default_formatter()
+                formatter.print(printer, diff)
     printer.write('\n')
     printer.close()
 
