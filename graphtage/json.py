@@ -64,6 +64,18 @@ class JSONDictFormatter(SequenceFormatter):
 class JSONFormatter(Formatter):
     sub_format_types = [JSONListFormatter, JSONDictFormatter]
 
+    @staticmethod
+    def escape(text: str) -> str:
+        return text \
+            .replace('\n', "\\n") \
+            .replace("'", "\\'") \
+            .replace('"', '\\"') \
+            .replace('&', '\\&') \
+            .replace('\r', '\\r') \
+            .replace('\t', '\\t') \
+            .replace('\b', '\\b') \
+            .replace('\f', '\\f')
+
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         node.print(printer)
 
@@ -73,6 +85,12 @@ class JSONFormatter(Formatter):
         with printer.bright():
             printer.write(": ")
         self.print(printer, node.value)
+
+    def print_StringNode(self, printer: Printer, node: StringNode):
+        if node.edited and node.edit is not None:
+            node.print(printer)
+        else:
+            node.print(printer, escape_func=self.escape)
 
 
 class JSON(Filetype):

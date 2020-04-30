@@ -1,6 +1,6 @@
 import mimetypes
 from abc import ABCMeta, abstractmethod
-from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Callable, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -410,7 +410,18 @@ class StringNode(LeafNode):
         else:
             return super().edits(node)
 
-    def print(self, printer: Printer):
+    def print(self, printer: Printer, escape_func: Optional[Callable[[str], str]] = None):
+        if escape_func is None:
+            if self.quoted:
+                def e(text: str):
+                    return text.replace('"', '\\"')
+
+                escape_func = e
+            else:
+                def e(text: str):
+                    return text
+
+                escape_func = e
         if printer.context().fore is None:
             context = printer.color(Fore.GREEN)
             null_context = False
@@ -421,12 +432,13 @@ class StringNode(LeafNode):
             if self.quoted:
                 printer.write('"')
             for c in self.object:
-                if c == '"' and self.quoted:
+                escaped = escape_func(c)
+                if c != escaped:
                     if not null_context:
                         with printer.color(Fore.YELLOW):
-                            printer.write('\\"')
+                            printer.write(escaped)
                     else:
-                        printer.write('\\"')
+                        printer.write(escaped)
                 else:
                     printer.write(c)
             if self.quoted:
