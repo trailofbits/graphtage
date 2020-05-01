@@ -2,7 +2,9 @@ from io import StringIO
 from unittest import TestCase
 
 import graphtage
+import graphtage.json
 import graphtage.multiset
+import graphtage.tree
 
 from graphtage.printer import Printer
 
@@ -10,16 +12,16 @@ from graphtage.printer import Printer
 class TestGraphtage(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.small_from = graphtage.build_tree({
+        cls.small_from = graphtage.json.build_tree({
             "test": "foo",
             "baz": 1
         })
-        cls.small_to = graphtage.build_tree({
+        cls.small_to = graphtage.json.build_tree({
             "test": "bar",
             "baz": 2
         })
-        cls.list_from = graphtage.build_tree([0, 1, 2, 3, 4, 5])
-        cls.list_to = graphtage.build_tree([1, 2, 3, 4, 5])
+        cls.list_from = graphtage.json.build_tree([0, 1, 2, 3, 4, 5])
+        cls.list_to = graphtage.json.build_tree([1, 2, 3, 4, 5])
 
     def test_string_diff_printing(self):
         s1 = graphtage.StringNode("abcdef")
@@ -45,7 +47,7 @@ class TestGraphtage(TestCase):
     def test_small_diff(self):
         diff = self.small_from.diff(self.small_to)
         self.assertIsInstance(diff, graphtage.DictNode)
-        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.multiset.MultiSetEdit)
         has_test_match = False
@@ -78,7 +80,7 @@ class TestGraphtage(TestCase):
     def test_list_diff(self):
         diff = self.list_from.diff(self.list_to)
         self.assertIsInstance(diff, graphtage.ListNode)
-        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.EditDistance)
         for edit in diff.edit_list[0].edits():
@@ -92,7 +94,7 @@ class TestGraphtage(TestCase):
                 self.assertIsInstance(edit, graphtage.Match)
 
     def test_empty_list(self):
-        diff = graphtage.ListNode(list_like=()).diff(graphtage.ListNode(list_like=()))
+        diff = graphtage.ListNode(()).diff(graphtage.ListNode(()))
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.Match)
         self.assertEqual(0, diff.edit_list[0].bounds().upper_bound)
