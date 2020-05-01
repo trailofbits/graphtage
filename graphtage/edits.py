@@ -25,13 +25,6 @@ class AbstractEdit(Edit, ABC):
     def is_complete(self) -> bool:
         return not self.valid or self.bounds().definitive()
 
-    @staticmethod
-    def print_without_edits(node: TreeNode, printer: Printer):
-        if isinstance(node, EditedTreeNode):
-            node.print_without_edits(printer)
-        else:
-            node.print(printer)
-
     @property
     def valid(self) -> bool:
         return self._valid
@@ -78,9 +71,9 @@ class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     def edits(self) -> Iterator[Edit]:
         raise NotImplementedError()
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         for edit in self.edits():
-            edit.print(printer)
+            edit.print(formatter, printer)
 
     def __iter__(self) -> Iterator[Edit]:
         return self.edits()
@@ -149,18 +142,18 @@ class Match(ConstantCostEdit):
         super().on_diff(from_node)
         from_node.matched_to = self.to_node
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         if self.bounds() > Range(0, 0):
             with printer.bright().background(Back.RED).color(Fore.WHITE):
                 with printer.strike():
-                    self.print_without_edits(self.from_node, printer)
+                    formatter.print(printer=printer, node=self.from_node, with_edits=False)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().background(Back.GREEN).color(Fore.WHITE):
                 with printer.under_plus():
-                    self.print_without_edits(self.to_node, printer)
+                    formatter.print(printer=printer, node=self.to_node, with_edits=False)
         else:
-            self.print_without_edits(self.from_node, printer)
+            formatter.print(printer=printer, node=self.to_node, with_edits=False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.bounds().lower_bound!r})"
@@ -175,16 +168,16 @@ class Replace(ConstantCostEdit):
             cost=cost
         )
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         if self.bounds().upper_bound > 0:
             with printer.bright().color(Fore.WHITE).background(Back.RED):
-                self.print_without_edits(self.from_node, printer)
+                formatter.print(printer, self.from_node, False)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().color(Fore.WHITE).background(Back.GREEN):
-                self.print_without_edits(self.to_node, printer)
+                formatter.print(printer, self.to_node, False)
         else:
-            self.print_without_edits(self.to_node, printer)
+            formatter.print(self.to_node, printer, False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
@@ -202,17 +195,17 @@ class Remove(ConstantCostEdit):
         super().on_diff(from_node)
         from_node.removed = True
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         with printer.bright():
             with printer.background(Back.RED):
                 with printer.color(Fore.WHITE):
                     if not printer.ansi_color:
                         printer.write('~~~~')
-                        self.print_without_edits(self.from_node, printer)
+                        formatter.print(printer, self.from_node, False)
                         printer.write('~~~~')
                     else:
                         with printer.strike():
-                            self.print_without_edits(self.from_node, printer)
+                            formatter.print(printer, self.from_node, False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
@@ -238,15 +231,15 @@ class Insert(ConstantCostEdit):
     def to_insert(self) -> TreeNode:
         return self.from_node
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
                 printer.write('++++')
-                self.print_without_edits(self.to_insert, printer)
+                formatter.print(printer, self.to_insert, False)
                 printer.write('++++')
             else:
                 with printer.under_plus():
-                    self.print_without_edits(self.to_insert, printer)
+                    formatter.print(printer, self.to_insert, False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_insert={self.to_insert!r}, insert_into={self.insert_into!r})"
@@ -295,9 +288,9 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def print(self, printer: Printer):
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
         for sub_edit in self.edits():
-            sub_edit.print(printer)
+            sub_edit.print(formatter, printer)
 
     def _expand_edits(self) -> Optional[Edit]:
         if self._edit_iter is not None:

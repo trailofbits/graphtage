@@ -343,7 +343,8 @@ class Printer(StatusWriter, RawWriter):
         )
         self._context_type: Type[ANSIContext] = ANSIContext
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
-        self.indents = 0
+        self.indents: int = 0
+        self.indent_str: str = ' ' * 4
         self._ansi_color = None
         self.ansi_color = ansi_color
         if self.ansi_color:
@@ -355,6 +356,7 @@ class Printer(StatusWriter, RawWriter):
                 if hasattr(self, option):
                     raise ValueError(f"Illegal option name: {option}")
                 setattr(self, option, value)
+        self._last_was_newline = False
 
     @property
     def ansi_color(self) -> bool:
@@ -377,11 +379,15 @@ class Printer(StatusWriter, RawWriter):
         return super().write(s)
 
     def write(self, s: str) -> int:
+        if self._last_was_newline:
+            self._last_was_newline = False
+            if self.indents:
+                self.raw_write(self.indent_str * self.indents)
         return self.out_stream.write(s)
 
     def newline(self):
         self.raw_write('\n')
-        self.raw_write(' ' * (4 * self.indents))
+        self._last_was_newline = True
 
     def color(self, foreground_color: AnsiFore) -> ANSIContext:
         if self.ansi_color:
