@@ -9,7 +9,7 @@ except ImportError:
 
 from . import json
 from .formatter import Formatter
-from .graphtage import Filetype, KeyValuePairNode, LeafNode, StringNode
+from .graphtage import Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, MultiSetNode, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import TreeNode
@@ -28,11 +28,11 @@ class YAMLListFormatter(SequenceFormatter):
         super().__init__('', '', '')
 
     def print_SequenceNode(self, printer: Printer, node):
-        #printer.newline()
         self.parent.print(printer, node)
 
-    def print_ListNode(self, *args, **kwargs):
-        super().print_SequenceNode(*args, **kwargs)
+    def print_ListNode(self, printer: Printer, *args, **kwargs):
+        printer.newline()
+        super().print_SequenceNode(printer=printer, *args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_last:
@@ -40,8 +40,8 @@ class YAMLListFormatter(SequenceFormatter):
                 printer.newline()
             printer.write('- ')
 
-    def items_indent(self, printer: Printer):
-        return printer
+    # def items_indent(self, printer: Printer):
+    #     return printer
 
 
 class YAMLKeyValuePairFormatter(Formatter):
@@ -51,10 +51,13 @@ class YAMLKeyValuePairFormatter(Formatter):
         self.print(printer, node.key)
         with printer.bright():
             printer.write(": ")
-        if isinstance(node.value, SequenceNode):
-            with printer.indent():
-                printer.newline()
-                self.parent.parent.print(printer, node.value)
+        if isinstance(node.value, MultiSetNode) or isinstance(node.value, FixedKeyDictNode):
+            printer.newline()
+            printer.indents += 1
+            self.parent.print(printer, node.value)
+            printer.indents -= 1
+        elif isinstance(node.value, SequenceNode):
+            self.parent.parent.print(printer, node.value)
         else:
             self.print(printer, node.value)
 
@@ -67,14 +70,20 @@ class YAMLDictFormatter(SequenceFormatter):
         super().__init__('', '', '')
 
     def print_MultiSetNode(self, *args, **kwargs):
-        self.print_SequenceNode(*args, **kwargs)
+        super().print_SequenceNode(*args, **kwargs)
 
     def print_FixedKeyDictNode(self, *args, **kwargs):
-        self.print_SequenceNode(*args, **kwargs)
+        super().print_SequenceNode(*args, **kwargs)
+
+    def print_SequenceNode(self, *args, **kwargs):
+        self.parent.print(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_first and not is_last:
             printer.newline()
+
+    def items_indent(self, printer: Printer):
+        return printer
 
 
 class YAMLFormatter(Formatter):
