@@ -8,6 +8,10 @@ from .tree import Edit, TreeNode
 from .utils import HashableCounter
 
 
+def get_edge(from_node: TreeNode, to_node: TreeNode):
+    return from_node.edits(to_node)
+
+
 class MultiSetEdit(SequenceEdit):
     def __init__(
             self,
@@ -23,7 +27,7 @@ class MultiSetEdit(SequenceEdit):
         self._matcher = WeightedBipartiteMatcher(
             from_nodes=self.to_remove.elements(),
             to_nodes=self.to_insert.elements(),
-            get_edge=lambda f, t: f.edits(t)
+            get_edge=get_edge
         )
         self._is_tightened = False
         super().__init__(

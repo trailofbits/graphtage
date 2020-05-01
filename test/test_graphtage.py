@@ -1,4 +1,5 @@
-from io import StringIO
+import pickle
+from io import BytesIO, StringIO
 from unittest import TestCase
 
 import graphtage
@@ -98,3 +99,18 @@ class TestGraphtage(TestCase):
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.Match)
         self.assertEqual(0, diff.edit_list[0].bounds().upper_bound)
+
+    def pickle_test(self, obj):
+        out_stream = BytesIO()
+        pickle.dump(obj, out_stream)
+        out_stream.seek(0)
+        pickled = pickle.load(out_stream)
+        self.assertIs(obj.__class__, pickled.__class__)
+        self.assertEqual(obj, pickled)
+
+    def test_node_pickling(self):
+        self.pickle_test(self.small_from)
+
+    def test_edited_node_pickling(self):
+        self.pickle_test(graphtage.StringNode('foo').make_edited())
+        self.pickle_test(self.small_from.make_edited())

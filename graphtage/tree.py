@@ -3,7 +3,7 @@ import logging
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
 from multiprocessing import Pool
-from typing import Any, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
+from typing import Any, cast, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -15,6 +15,12 @@ log = logging.getLogger(__name__)
 class Edit(Bounded, Protocol):
     initial_bounds: Range
     from_node: 'TreeNode'
+
+    def __getstate__(self):
+        ret = self.__dict__.copy()
+        ret['initial_bounds'] = self.initial_bounds
+        ret['from_node'] = self.from_node
+        return ret
 
     @abstractmethod
     def is_complete(self) -> bool:
@@ -91,6 +97,33 @@ class EditedTreeNode:
             pass
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
+    @property
+    def tree_node_type(self) -> Type['TreeNode']:
+        return cast(Type[TreeNode], self.__class__.mro()[2])
+
+    def __getstate__(self):
+        return self.__dict__.copy()
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+    def __reduce__(self):
+        return _empty_edited_tree_node, (self.tree_node_type,), self.__dict__
+
+
+def _edited_tree_node_init(etn, wrapped_tree_node_or_dict: Union['TreeNode', Dict[str, Any]]):
+    if isinstance(wrapped_tree_node_or_dict, TreeNode):
+        etn.__dict__ = wrapped_tree_node_or_dict.editable_dict().copy()
+    else:
+        etn.__dict__ = wrapped_tree_node_or_dict.copy()
+    EditedTreeNode.__init__(etn)
+
+
+def _empty_edited_tree_node(cls: Type['TreeNode']):
+    ret = EditedTreeNode()
+    ret.__class__ = cls.edited_type()
+    return ret
+
 
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
@@ -122,19 +155,8 @@ class TreeNode(metaclass=ABCMeta):
     @classmethod
     def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
         if cls._edited_type is None:
-            def init(etn, wrapped_tree_node_or_dict: Union[TreeNode, Dict[str, Any]]):
-                if isinstance(wrapped_tree_node_or_dict, TreeNode):
-                    etn.__dict__ = wrapped_tree_node_or_dict.editable_dict().copy()
-                else:
-                    etn.__dict__ = wrapped_tree_node_or_dict
-                EditedTreeNode.__init__(etn)
-
-            def reduce(etn):
-                return cls.edited_type(), (), etn.__dict__.copy()
-
             cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-                '__init__': init,
-                '__reduce__': reduce
+                '__init__': _edited_tree_node_init
             })
         return cls._edited_type
 
