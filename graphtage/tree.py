@@ -2,6 +2,7 @@ import itertools
 import logging
 from abc import abstractmethod, ABCMeta
 from collections.abc import Iterable
+from multiprocessing import Pool
 from typing import Any, cast, Dict, Iterator, List, Optional, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
@@ -37,6 +38,12 @@ class Edit(Bounded, Protocol):
     def on_diff(self, from_node: 'EditedTreeNode'):
         log.debug(repr(self))
         from_node.edit_list.append(self)
+
+    def tighten_bounds_in_parallel(self, pool: Optional[Pool] = None) -> bool:
+        if pool is None:
+            return self.tighten_bounds()
+        else:
+            return pool.apply(self.tighten_bounds)
 
 
 @runtime_checkable
@@ -110,7 +117,7 @@ class TreeNode(metaclass=ABCMeta):
         assert isinstance(ret, EditedTreeNode)
         return ret
 
-    def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
+    def diff(self: T, node: 'TreeNode', pool: Optional[Pool] = None) -> Union[EditedTreeNode, T]:
         ret = self.make_edited()
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
@@ -119,7 +126,7 @@ class TreeNode(metaclass=ABCMeta):
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
         with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
-            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
+            while edit.valid and not edit.is_complete() and edit.tighten_bounds_in_parallel(pool):
                 new_bounds = edit.bounds()
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 t.update(prev_range - new_range)

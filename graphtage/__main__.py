@@ -5,6 +5,7 @@ import mimetypes
 import os
 import sys
 import tempfile as tf
+from multiprocessing import cpu_count, Pool
 from typing import Callable, Dict, Optional
 import xml.etree.ElementTree as ET
 from yaml import YAMLError
@@ -193,6 +194,9 @@ def main(argv=None):
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
+    default_thread_count = max(cpu_count() - 1, 1)
+    parser.add_argument('--threads', '-t', type=int, default=default_thread_count,
+        help=f'number of threads to use (default is #CPUs - 1 = {default_thread_count})')
     formatting = parser.add_argument_group(title='output formatting')
     color_group = formatting.add_mutually_exclusive_group()
     color_group.add_argument(
@@ -322,13 +326,19 @@ def main(argv=None):
         else:
             to_mime = None
 
+    if args.threads <= 1:
+        thread_pool = None
+    else:
+        thread_pool = Pool(processes=args.threads)
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
             from_tree = build_tree_handling_errors(
                 from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime)
             to_tree = build_tree_handling_errors(
                 to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
-            from_tree.diff(to_tree).print(printer)
+            with thread_pool as pool:
+                from_tree.diff(to_tree, pool=pool).print(printer)
     printer.write('\n')
     printer.close()
 
