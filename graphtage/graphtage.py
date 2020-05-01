@@ -109,7 +109,7 @@ class KeyValuePairNode(ContainerNode):
         self.allow_key_edits: bool = allow_key_edits
 
     def editable_dict(self) -> Dict[str, Any]:
-        ret = dict(self.__dict__)
+        ret = self.__dict__.copy()
         ret['key'] = self.key.make_edited()
         ret['value'] = self.value.make_edited()
         return ret

@@ -122,12 +122,19 @@ class TreeNode(metaclass=ABCMeta):
     @classmethod
     def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
         if cls._edited_type is None:
-            def init(etn, wrapped_tree_node: TreeNode):
-                etn.__dict__ = dict(wrapped_tree_node.editable_dict())
+            def init(etn, wrapped_tree_node_or_dict: Union[TreeNode, Dict[str, Any]]):
+                if isinstance(wrapped_tree_node_or_dict, TreeNode):
+                    etn.__dict__ = wrapped_tree_node_or_dict.editable_dict().copy()
+                else:
+                    etn.__dict__ = wrapped_tree_node_or_dict
                 EditedTreeNode.__init__(etn)
 
+            def reduce(etn):
+                return cls.edited_type(), (), etn.__dict__.copy()
+
             cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-                '__init__': init
+                '__init__': init,
+                '__reduce__': reduce
             })
         return cls._edited_type
 
