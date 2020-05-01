@@ -192,6 +192,7 @@ def main(argv=None):
             'join_dict_items': args.condensed or args.join_dict_items
         }
     )
+    printermodule.DEFAULT_PRINTER.quiet = printer.quiet
     printermodule.DEFAULT_PRINTER = printer
 
     logging.basicConfig(level=numeric_log_level, stream=Printer(
@@ -229,7 +230,14 @@ def main(argv=None):
             to_mime = None
 
     if args.threads <= 1:
-        thread_pool = None
+        class SingleThreadPool:
+            def __enter__(self):
+                return None
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                pass
+
+        thread_pool = SingleThreadPool()
     else:
         thread_pool = Pool(processes=args.threads)
 

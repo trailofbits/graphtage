@@ -2,13 +2,14 @@ import itertools
 import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
+from multiprocessing import Pool
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
 from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, make_distinct, Range
+from .bounds import Bounded, make_distinct, make_distinct_parallel, Range
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
 
@@ -554,9 +555,13 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 return ret
         return self._bounds
 
-    def _make_edges_distinct(self):
+    def _make_edges_distinct(self, pool: Optional[Pool] = None):
         if self._edges_are_distinct:
             return False
+        elif pool is not None:
+            make_distinct_parallel(pool, *itertools.chain(*self.edges))
+            self._bounds = None
+            return True
         else:
             make_distinct(*itertools.chain(*self.edges))
             self._bounds = None
@@ -586,10 +591,10 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             self._bounds = None
         return self._match
 
-    def tighten_bounds(self) -> bool:
+    def tighten_bounds(self, pool: Optional[Pool] = None) -> bool:
         if self._match is None:
             initial_bounds = self.bounds()
-            if self._make_edges_distinct():
+            if self._make_edges_distinct(pool):
                 new_bounds = self.bounds()
                 if new_bounds.lower_bound > initial_bounds.lower_bound or \
                         new_bounds.upper_bound < initial_bounds.upper_bound:

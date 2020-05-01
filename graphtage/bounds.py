@@ -1,9 +1,12 @@
-from typing import Callable, Iterable, Iterator, Optional, TypeVar, Union
+import itertools
+from multiprocessing import Pool
+from typing import Iterable, Iterator, Optional, Sequence, TypeVar, Union
 from typing_extensions import Protocol
 
 from intervaltree import Interval, IntervalTree
 
-from .fibonacci import FibonacciHeap, MaxFibonacciHeap
+from .fibonacci import FibonacciHeap
+from .printer import DEFAULT_PRINTER
 
 
 class Infinity:
@@ -271,3 +274,52 @@ def make_distinct(*bounded: Bounded):
         )
         if tree.overlaps(new_interval.begin, new_interval.end):
             tree.add(new_interval)
+
+
+T = TypeVar('T')
+
+
+def chunks(lst: Sequence[T], n: int) -> Iterator[Sequence[T]]:
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+
+def make_finite(bounded: Bounded) -> bool:
+    if not bounded.bounds().finite:
+        bounded.tighten_bounds()
+        return bounded.bounds().finite
+    return True
+
+
+def make_pair_distinct(bound1: Bounded, bound2: Bounded):
+    """Shrink the two intervals until they are distinct"""
+    while True:
+        biggest_bound: Range = bound1.bounds()
+        second_biggest_bound: Range = bound2.bounds()
+        if (biggest_bound.definitive() and second_biggest_bound.definitive()) or \
+                biggest_bound.upper_bound < second_biggest_bound.lower_bound or \
+                second_biggest_bound.upper_bound < biggest_bound.lower_bound:
+            break
+        bound1.tighten_bounds()
+        bound2.tighten_bounds()
+
+
+def _make_distinct(pair):
+    make_pair_distinct(pair[0], pair[1])
+
+
+def make_distinct_parallel(pool: Pool, *bounded: Bounded):
+    for success in pool.imap_unordered(make_finite, bounded):
+        if not success:
+            raise ValueError(f"Could not tighten bounds to a finite bound")
+    combinations = ((len(bounded) - 1) * len(bounded)) // 2
+    with DEFAULT_PRINTER.tqdm(
+            total=combinations,
+            initial=0,
+            desc=f"Building Bipartite Graph",
+            disable=combinations < 2,
+            leave=False
+    ) as t:
+        for _ in pool.imap_unordered(_make_distinct, itertools.combinations(bounded, 2)):
+            t.update(1)

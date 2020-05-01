@@ -9,6 +9,7 @@ from tqdm import tqdm, trange
 class StatusWriter(IO[str]):
     def __init__(self, out_stream: Optional[TextIO] = None, quiet: bool = False):
         self.quiet = quiet
+        self.forked_process = False
         if out_stream is None:
             out_stream = sys.stdout
         self.status_stream: TextIO = out_stream
@@ -22,6 +23,20 @@ class StatusWriter(IO[str]):
 
     def tqdm(self, *args, **kwargs) -> tqdm:
         if self.quiet:
+            class FakeTQDM:
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, exc_type, exc_val, exc_tb):
+                    pass
+
+                def __getattr__(self, item):
+                    return self
+
+                def __call__(self, *args, **kwargs):
+                    return self
+
+            return FakeTQDM()
             kwargs['disable'] = True
         return tqdm(*args, **kwargs)
 

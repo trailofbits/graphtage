@@ -1,6 +1,6 @@
 from typing import Iterator, List
 
-from .bounds import Range
+from .bounds import make_distinct_parallel, Range
 from .edits import Insert, Match, Remove
 from .matching import WeightedBipartiteMatcher
 from .sequences import SequenceEdit, SequenceNode
@@ -55,6 +55,10 @@ class MultiSetEdit(SequenceEdit):
     def tighten_bounds(self) -> bool:
         self._is_tightened = True
         return self._matcher.tighten_bounds()
+
+    def tighten_bounds_parallel(self, pool) -> bool:
+        self._is_tightened = True
+        return self._matcher.tighten_bounds(pool)
 
     def bounds(self) -> Range:
         return self._matcher.bounds()
