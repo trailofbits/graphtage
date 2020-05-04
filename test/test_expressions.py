@@ -3,7 +3,7 @@ from unittest import TestCase
 from graphtage.expressions import parse, ParseError, StringToken
 
 
-class Test(TestCase):
+class TestExpressions(TestCase):
     def test_string_parsing(self):
         input_str = 'This is a test'
         ret = parse(f'"{input_str}"').eval()
