@@ -2,7 +2,7 @@ import html
 import os
 import sys
 import xml.etree.ElementTree as ET
-from typing import Any, Collection, Dict, Optional, Iterator, Sequence, Union
+from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
@@ -32,7 +32,7 @@ class XMLElementEdit(AbstractCompoundEdit):
         )
 
     def print(self, formatter: Formatter, printer: Printer):
-        formatter.get_formatter(self.from_node)(printer, self.from_node, self)
+        formatter.get_formatter(self.from_node)(printer, self.from_node)
 
     def bounds(self) -> Range:
         if self.text_edit is not None:
@@ -100,12 +100,18 @@ class XMLElement(ContainerNode):
         self.attrib.end_symbol = ''
         self.attrib.delimiter_callback = lambda p: p.newline()
 
-    def children(self) -> Collection['TreeNode']:
+    def children(self) -> Collection[TreeNode]:
         ret = (self.tag, self.attrib)
         if self.text is not None:
             return ret + (self.text, self._children)
         else:
             return ret + (self._children,)
+
+    def __iter__(self) -> Iterator[TreeNode]:
+        return iter(self.children())
+
+    def __len__(self) -> int:
+        return len(self.children())
 
     def __repr__(self):
         return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r})"
@@ -129,11 +135,12 @@ class XMLElement(ContainerNode):
     def _print_text(self, printer: Printer):
         if self.text is None:
             return
-        if '\n' not in self.text.object and not self._children._children:
-            printer.write(html.escape(self.text.object))
+        text = self.text.object.strip()
+        if '\n' not in text and not self._children._children:
+            printer.write(html.escape(text))
             return
         with printer.indent():
-            for section in self.text.object.split('\n'):
+            for section in text.split('\n'):
                 printer.newline()
                 printer.write(html.escape(section))
 
@@ -166,28 +173,6 @@ class XMLElement(ContainerNode):
             printer.write('>')
         else:
             printer.write(' />')
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'tag': self.tag,
-            'attrib': {kvp.key: kvp.value for kvp in self.attrib},
-            'text': self.text,
-            'children': tuple(self._children.__iter__())
-        }
-
-    def make_edited(self) -> Union[EditedTreeNode, 'XMLElement']:
-        if self.text is None:
-            et = None
-        else:
-            et = self.text.make_edited()
-        return EditedXMLElement(
-            tag=self.tag.make_edited(),
-            attrib={
-                kvp.key: kvp.value for kvp in self.attrib
-            },
-            text=et,
-            children=[c for c in self._children]
-        )
 
     def __eq__(self, other):
         if not isinstance(other, XMLElement):
@@ -242,7 +227,7 @@ class XMLChildFormatter(SequenceFormatter):
     is_partial = True
 
     def __init__(self):
-        super().__init__('', '', '', lambda p: p.newline())
+        super().__init__('', '', '')
 
     def print_ListNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
@@ -273,42 +258,41 @@ class XMLElementAttribFormatter(SequenceFormatter):
 class XMLFormatter(Formatter):
     sub_format_types = [XMLChildFormatter, XMLElementAttribFormatter]
 
-    @staticmethod
-    def _print_text(element: XMLElement, printer: Printer):
+    def _print_text(self, element: XMLElement, printer: Printer):
         if element.text is None:
             return
-        if '\n' not in element.text.object and not element._children._children:
-            printer.write(html.escape(element.text.object))
+        elif element.text.edited and element.text.edit is not None and element.text.edit.bounds().lower_bound > 0:
+            self.print(printer, element.text)
+            return
+        text = element.text.object.strip()
+        if '\n' not in text and not element._children._children:
+            printer.write(html.escape(text))
             return
         with printer.indent():
-            for section in element.text.object.split('\n'):
-                printer.newline()
+            sections = text.split('\n')
+            if not sections[0]:
+                sections = sections[1:]
+            for section in sections:
                 printer.write(html.escape(section))
+                printer.newline()
 
-    def print_XMLElement(self, printer: Printer, node: XMLElement, edit: Optional[XMLElementEdit] = None):
-        if edit is None:
-            edit = XMLElementEdit(node, node)
+    def print_XMLElement(self, printer: Printer, node: XMLElement):
         printer.write('<')
-        edit.tag_edit.print(self, printer)
-        #self.print(printer, node.tag)
+        self.print(printer, node.tag)
         if node.attrib:
-            #self.print(printer, node.attrib)
-            edit.attrib_edit.print(self, printer)
+            self.print(printer, node.attrib)
         if node._children._children or (node.text is not None and '\n' in node.text.object):
             printer.write('>')
             self._print_text(node, printer)
-            #self.print(printer, node.children)
-            edit.child_edit.print(self, printer)
+            self.print(printer, node._children)
             printer.write('</')
-            #self.print(printer, node.tag)
-            edit.tag_edit.print(self, printer)
+            self.print(printer, node.tag)
             printer.write('>')
         elif node.text is not None:
             printer.write('>')
             self._print_text(node, printer)
             printer.write('</')
-            #self.print(printer, node.tag)
-            edit.tag_edit.print(self, printer)
+            self.print(printer, node.tag)
             printer.write('>')
         else:
             printer.write(' />')
