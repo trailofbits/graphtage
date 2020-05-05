@@ -110,7 +110,7 @@ this can sometimes be onerous for input files with huge dictionaries. The `--no-
 only attempt to match dictionary items that share the same key, drastically reducing computation.
 
 ### ANSI Color
-By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for examople, you would like
+By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like
 to have Graphtage emit colorized output from a script or pipe, use the `--color` or `-c` argument. To disable color even
 when running on a TTY, use `--no-color`.
 
