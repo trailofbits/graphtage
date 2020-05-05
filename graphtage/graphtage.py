@@ -18,6 +18,9 @@ class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
 
+    def to_obj(self):
+        return self.object
+
     def children(self) -> Collection[TreeNode]:
         return ()
 
@@ -108,6 +111,9 @@ class KeyValuePairNode(ContainerNode):
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
 
+    def to_obj(self):
+        return self.key, self.value
+
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
         ret['key'] = self.key.make_edited()
@@ -172,6 +178,9 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     def __init__(self, nodes: Iterable[T]):
         super().__init__(tuple(nodes))
 
+    def to_obj(self):
+        return [n.to_obj() for n in self]
+
     @property
     def container_type(self) -> Type[Tuple[T, ...]]:
         return tuple
@@ -209,6 +218,9 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             items = HashableCounter(items)
         super().__init__(items)
 
+    def to_obj(self):
+        return HashableCounter(n.to_obj() for n in self)
+
     @property
     def container_type(self) -> Type[HashableCounter[T]]:
         return HashableCounter
@@ -237,7 +249,18 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
         return f"{self.__class__.__name__}({list(self)!r})"
 
 
-class DictNode(MultiSetNode[KeyValuePairNode]):
+class MappingNode(metaclass=ABCMeta):
+    def to_obj(self) -> Dict[Any, Any]:
+        return {
+            k.to_obj(): v.to_obj() for k, v in self.items()
+        }
+
+    @abstractmethod
+    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+        raise NotImplementedError()
+
+
+class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
     @staticmethod
     def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
         return DictNode(
@@ -271,7 +294,7 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
         )
 
 
-class FixedKeyDictNode(SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
+class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
     """A dictionary that only matches KeyValuePairs if they share the same key
     NOTE: This implementation does not currently support duplicate keys!
     """
@@ -313,6 +336,10 @@ class FixedKeyDictNode(SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
                 return FixedKeyDictNodeEdit(from_node=self, to_node=node, edits=self._child_edits(node))
         else:
             return Replace(self, node)
+
+    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+        for k, v in self._children.items():
+            yield k.to_obj(), v.to_obj()
 
     def __hash__(self):
         return hash(frozenset(self._children.values()))
@@ -546,7 +573,7 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_default_formatter(self) -> 'graphtage.formatter.Formatter':
+    def get_default_formatter(self) -> Formatter:
         raise NotImplementedError()
 
 

@@ -2,7 +2,7 @@ import itertools
 import logging
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from typing import Any, cast, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
+from typing import Any, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -92,6 +92,10 @@ class TreeNode(metaclass=ABCMeta):
     @property
     def edited(self) -> bool:
         return False
+
+    @abstractmethod
+    def to_obj(self):
+        raise NotImplementedError()
 
     @abstractmethod
     def children(self) -> Collection['TreeNode']:

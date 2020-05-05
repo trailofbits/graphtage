@@ -65,6 +65,38 @@ class XMLElementEdit(AbstractCompoundEdit):
             return False
 
 
+class XMLElementObj:
+    def __init__(
+            self,
+            tag: str,
+            attrib: Dict[str, str],
+            text: Optional[str] = None,
+            children: Optional[Sequence['XMLElementObj']] = ()
+    ):
+        self.tag: str = tag
+        self.attrib: Dict[str, str] = attrib
+        self.text: Optional[str] = text
+        self.children: Optional[Sequence['XMLElementObj']] = children
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self.children!r})"
+
+    def __str__(self):
+        ret = f'<{self.tag}'
+        for k, v in self.attrib.items():
+            val = html.escape(v).replace('"', '\\"')
+            ret = f"{ret} {k!s}=\"{val!s}\""
+        if not self.text and not self.children:
+            return f"{ret} />"
+        ret = f"{ret}>"
+        if self.text is not None:
+            ret = f"{ret}{html.escape(self.text)!s}"
+        if self.children is not None:
+            for child in self.children:
+                ret = f"{ret}{child!s}"
+        return f"{ret}</{self.tag}>"
+
+
 class XMLElement(ContainerNode):
     def __init__(
             self,
@@ -100,6 +132,18 @@ class XMLElement(ContainerNode):
         self.attrib.end_symbol = ''
         self.attrib.delimiter_callback = lambda p: p.newline()
 
+    def to_obj(self):
+        if self.text is None:
+            text_obj = None
+        else:
+            text_obj = self.text.to_obj()
+        return XMLElementObj(
+            tag=self.tag.to_obj(),
+            attrib=self.attrib.to_obj(),
+            text=text_obj,
+            children=self._children.to_obj()
+        )
+
     def children(self) -> Collection[TreeNode]:
         ret = (self.tag, self.attrib)
         if self.text is not None:
@@ -117,7 +161,8 @@ class XMLElement(ContainerNode):
         return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r})"
 
     def __str__(self):
-        return f"<{self.tag.object}{''.join(' ' + key.object + '=' + value.object for key, value in self.attrib.items())} ... />"
+        #return f"<{self.tag.object}{''.join(' ' + key.object + '=' + value.object for key, value in self.attrib.items())} ... />"
+        return str(self.to_obj())
 
     def edits(self, node) -> Edit:
         if self == node:

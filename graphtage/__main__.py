@@ -4,12 +4,18 @@ import mimetypes
 import os
 import sys
 import tempfile as tf
+from typing import Callable
 
+from .edits import Edit
+from . import expressions
 from . import graphtage
 from . import printer as printermodule
 from . import version
 from .printer import HTMLPrinter, Printer
 from .yaml import YAMLFormatter
+
+
+log = logging.getLogger('graphtage')
 
 
 class Tempfile:
@@ -49,6 +55,44 @@ class PathOrStdin:
     def __exit__(self, *args, **kwargs):
         if self._tempfile is not None:
             return self._tempfile.__exit__(*args, **kwargs)
+
+
+class MatchIf:
+    def __init__(self, node: graphtage.TreeNode, match_if: expressions.Expression):
+        self.node: graphtage.TreeNode = node
+        self.old_edits: Callable[[graphtage.TreeNode, graphtage.TreeNode], Edit] = node.edits
+        self.match_if: expressions.Expression = match_if
+
+    def __call__(self, node: graphtage.TreeNode) -> Edit:
+        try:
+            if self.match_if.eval(locals={'from': self.node, 'to': node}):
+                return self.old_edits(node)
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-if for nodes {self.node} and {node}")
+        return graphtage.Replace(self.node, node)
+
+    @staticmethod
+    def apply(node: graphtage.TreeNode, match_if: expressions.Expression):
+        node.edits = MatchIf(node, match_if)
+
+
+class MatchUnless:
+    def __init__(self, node: graphtage.TreeNode, match_unless: expressions.Expression):
+        self.node: graphtage.TreeNode = node
+        self.old_edits: Callable[[graphtage.TreeNode, graphtage.TreeNode], Edit] = node.edits
+        self.match_unless: expressions.Expression = match_unless
+
+    def __call__(self, node: graphtage.TreeNode) -> Edit:
+        try:
+            if self.match_unless.eval(locals={'from': self.node.to_obj(), 'to': node.to_obj()}):
+                return graphtage.Replace(self.node, node)
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-unless for nodes {self.node} and {node}")
+        return self.old_edits(node)
+
+    @staticmethod
+    def apply(node: graphtage.TreeNode, match_unless: expressions.Expression):
+        node.edits = MatchUnless(node, match_unless)
 
 
 def main(argv=None):
@@ -92,6 +136,8 @@ def main(argv=None):
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
+    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
     parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
@@ -224,12 +270,27 @@ def main(argv=None):
         else:
             to_mime = None
 
+    if args.match_if:
+        match_if = expressions.parse(args.match_if)
+    else:
+        match_if = None
+    if args.match_unless:
+        match_unless = expressions.parse(args.match_unless)
+    else:
+        match_unless = None
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
             from_format = graphtage.get_filetype(from_path, from_mime)
             to_format = graphtage.get_filetype(to_path, to_mime)
             from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
             to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
+            if match_if is not None or match_unless is not None:
+                for node in from_tree.dfs():
+                    if match_if is not None:
+                        MatchIf.apply(node, match_if)
+                    if match_unless is not None:
+                        MatchUnless.apply(node, match_unless)
             if args.only_edits:
                 for edit in from_tree.get_all_edits(to_tree):
                     printer.write(str(edit))
