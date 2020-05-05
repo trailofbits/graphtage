@@ -70,6 +70,8 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             from_kvp: 'KeyValuePairNode',
             to_kvp: 'KeyValuePairNode'
     ):
+        if not from_kvp.edited:
+            breakpoint()
         if from_kvp.key == to_kvp.key:
             self.key_edit: Edit = Match(from_kvp.key, to_kvp.key, 0)
         elif from_kvp.allow_key_edits:

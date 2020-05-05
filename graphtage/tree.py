@@ -2,7 +2,7 @@ import itertools
 import logging
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from typing import Any, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
+from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -37,6 +37,8 @@ class Edit(Bounded, Protocol):
     def on_diff(self, from_node: 'EditedTreeNode'):
         log.debug(repr(self))
         from_node.edit = self
+        if not hasattr(from_node, 'edit_list'):
+            breakpoint()
         from_node.edit_list.append(self)
 
 
@@ -88,10 +90,24 @@ class EditedTreeNode:
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
     _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+    edit_modifiers: Optional[List[Callable[['TreeNode', 'TreeNode'], Optional[Edit]]]] = None
 
     @property
     def edited(self) -> bool:
         return False
+
+    def _edits_with_modifiers(self, node: 'TreeNode') -> Edit:
+        for modifier in self.edit_modifiers:
+            ret = modifier(self, node)
+            if ret is not None:
+                return ret
+        return self.__class__.edits(self, node)
+
+    def __getattribute__(self, item):
+        if item == 'edits' and super().__getattribute__('edit_modifiers'):
+            return super().__getattribute__('_edits_with_modifiers')
+        else:
+            return super().__getattribute__(item)
 
     @abstractmethod
     def to_obj(self):

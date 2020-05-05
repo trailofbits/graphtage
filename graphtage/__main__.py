@@ -4,7 +4,8 @@ import mimetypes
 import os
 import sys
 import tempfile as tf
-from typing import Callable
+from abc import ABCMeta, abstractmethod
+from typing import Optional
 
 from .edits import Edit
 from . import expressions
@@ -57,42 +58,39 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-class MatchIf:
-    def __init__(self, node: graphtage.TreeNode, match_if: expressions.Expression):
-        self.node: graphtage.TreeNode = node
-        self.old_edits: Callable[[graphtage.TreeNode, graphtage.TreeNode], Edit] = node.edits
-        self.match_if: expressions.Expression = match_if
+class ConditionalMatcher(metaclass=ABCMeta):
+    def __init__(self, condition: expressions.Expression):
+        self.condition: expressions.Expression = condition
 
-    def __call__(self, node: graphtage.TreeNode) -> Edit:
+    @abstractmethod
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        raise NotImplementedError()
+
+    @classmethod
+    def apply(cls, node: graphtage.TreeNode, condition: expressions.Expression):
+        if node.edit_modifiers is None:
+            node.edit_modifiers = []
+        node.edit_modifiers.append(cls(condition))
+
+
+class MatchIf(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
         try:
-            if self.match_if.eval(locals={'from': self.node, 'to': node}):
-                return self.old_edits(node)
+            if self.condition.eval(locals={'from': from_node, 'to': to_node}):
+                return None
         except Exception as e:
-            log.debug(f"{e!s} while evaluating --match-if for nodes {self.node} and {node}")
-        return graphtage.Replace(self.node, node)
-
-    @staticmethod
-    def apply(node: graphtage.TreeNode, match_if: expressions.Expression):
-        node.edits = MatchIf(node, match_if)
+            log.debug(f"{e!s} while evaluating --match-if for nodes {from_node} and {to_node}")
+        return graphtage.Replace(from_node, to_node)
 
 
-class MatchUnless:
-    def __init__(self, node: graphtage.TreeNode, match_unless: expressions.Expression):
-        self.node: graphtage.TreeNode = node
-        self.old_edits: Callable[[graphtage.TreeNode, graphtage.TreeNode], Edit] = node.edits
-        self.match_unless: expressions.Expression = match_unless
-
-    def __call__(self, node: graphtage.TreeNode) -> Edit:
+class MatchUnless(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
         try:
-            if self.match_unless.eval(locals={'from': self.node.to_obj(), 'to': node.to_obj()}):
-                return graphtage.Replace(self.node, node)
+            if self.condition.eval(locals={'from': from_node.to_obj(), 'to': to_node.to_obj()}):
+                return graphtage.Replace(from_node, to_node)
         except Exception as e:
-            log.debug(f"{e!s} while evaluating --match-unless for nodes {self.node} and {node}")
-        return self.old_edits(node)
-
-    @staticmethod
-    def apply(node: graphtage.TreeNode, match_unless: expressions.Expression):
-        node.edits = MatchUnless(node, match_unless)
+            log.debug(f"{e!s} while evaluating --match-unless for nodes {from_node} and {to_node}")
+        return None
 
 
 def main(argv=None):
