@@ -72,7 +72,7 @@ class YAMLDictFormatter(SequenceFormatter):
     def print_MultiSetNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
-    def print_FixedKeyDictNode(self, *args, **kwargs):
+    def print_MappingNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
     def print_SequenceNode(self, *args, **kwargs):

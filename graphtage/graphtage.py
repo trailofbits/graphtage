@@ -1,5 +1,5 @@
 import mimetypes
-from abc import ABCMeta, abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 from typing import Any, Callable, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
 
 from .bounds import Range
@@ -70,8 +70,6 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             from_kvp: 'KeyValuePairNode',
             to_kvp: 'KeyValuePairNode'
     ):
-        if not from_kvp.edited:
-            breakpoint()
         if from_kvp.key == to_kvp.key:
             self.key_edit: Edit = Match(from_kvp.key, to_kvp.key, 0)
         elif from_kvp.allow_key_edits:
@@ -251,14 +249,27 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
         return f"{self.__class__.__name__}({list(self)!r})"
 
 
-class MappingNode(metaclass=ABCMeta):
+class MappingNode(ContainerNode, ABC):
     def to_obj(self) -> Dict[Any, Any]:
         return {
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
 
+    def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
+        for kvp in self:
+            yield kvp.key, kvp.value
+
+    def __contains__(self, item: TreeNode):
+        return any(k == item for k, _ in self.items())
+
+    def __getitem__(self, item: TreeNode) -> KeyValuePairNode:
+        for kvp in self:
+            if kvp.key == item:
+                return kvp
+        raise KeyError(item)
+
     @abstractmethod
-    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
         raise NotImplementedError()
 
 
@@ -269,14 +280,14 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
             sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
         )
 
-    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
-        yield from self._children.elements()
-
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
             return super().edits(node)
         else:
             return Replace(self, node)
+
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
+        yield from self._children.elements()
 
 
 class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
@@ -311,11 +322,17 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
         })
 
-    def _child_edits(self, node: 'FixedKeyDictNode') -> Iterator[Edit]:
+    def __getitem__(self, item: TreeNode):
+        return self._children[item]
+
+    def __contains__(self, item: TreeNode):
+        return item in self._children
+
+    def _child_edits(self, node: MappingNode) -> Iterator[Edit]:
         unshared_kvps = set()
-        for key, kvp in self.children.items():
-            if key in node.children:
-                other_kvp = node.children[key]
+        for key, kvp in self._children.items():
+            if key in node:
+                other_kvp = node[key]
                 if kvp == other_kvp:
                     yield Match(kvp, other_kvp, 0)
                 else:
@@ -324,15 +341,15 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
                 unshared_kvps.add(kvp)
         for kvp in unshared_kvps:
             yield Remove(to_remove=kvp, remove_from=self)
-        for kvp in node.children.values():
-            if kvp.key not in self.children:
+        for kvp in node:
+            if kvp.key not in self._children:
                 yield Insert(to_insert=kvp, insert_into=self)
 
     def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, FixedKeyDictNode):
-            if len(self._children) == len(node._children) == 0:
+        if isinstance(node, MappingNode):
+            if len(self._children) == len(node) == 0:
                 return Match(self, node, 0)
-            elif self.children == node.children:
+            elif frozenset(self) == frozenset(node):
                 return Match(self, node, 0)
             else:
                 return FixedKeyDictNodeEdit(from_node=self, to_node=node, edits=self._child_edits(node))
@@ -343,10 +360,15 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         for k, v in self._children.items():
             yield k.to_obj(), v.to_obj()
 
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        return ret
+
     def __hash__(self):
         return hash(frozenset(self._children.values()))
 
-    def __iter__(self) -> Iterator[TreeNode]:
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
         return iter(self._children.values())
 
 

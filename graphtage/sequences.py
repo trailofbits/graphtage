@@ -31,7 +31,7 @@ T = TypeVar('T', bound=Sequence[TreeNode])
 
 class SequenceNode(ContainerNode, Generic[T], ABC):
     def __init__(self, children: T):
-        self._children = children
+        self._children: T = children
 
     def __len__(self) -> int:
         return len(self._children)

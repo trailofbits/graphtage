@@ -37,8 +37,6 @@ class Edit(Bounded, Protocol):
     def on_diff(self, from_node: 'EditedTreeNode'):
         log.debug(repr(self))
         from_node.edit = self
-        if not hasattr(from_node, 'edit_list'):
-            breakpoint()
         from_node.edit_list.append(self)
 
 

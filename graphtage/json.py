@@ -57,7 +57,7 @@ class JSONDictFormatter(SequenceFormatter):
     def print_MultiSetNode(self, *args, **kwargs):
         self.print_SequenceNode(*args, **kwargs)
 
-    def print_FixedKeyDictNode(self, *args, **kwargs):
+    def print_MappingNode(self, *args, **kwargs):
         self.print_SequenceNode(*args, **kwargs)
 
 
