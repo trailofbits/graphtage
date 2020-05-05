@@ -531,32 +531,10 @@ class BoolNode(LeafNode):
         }
 
 
-class EditedMatch(AbstractEdit):
-    def __init__(self, match_from: LeafNode, match_to: LeafNode):
-        self.edit_distance: EditDistance = string_edit_distance(str(match_from.object), str(match_to.object))
-        super().__init__(
-            from_node=match_from,
-            to_node=match_to
-        )
-
-    def print(self, printer: Printer):
-        for edit in self.edit_distance.edits():
-            edit.print(printer)
-
-    def bounds(self) -> Range:
-        return self.edit_distance.bounds()
-
-    def tighten_bounds(self) -> bool:
-        return self.edit_distance.tighten_bounds()
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
-
-
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2, list1._children, list2._children, insert_remove_penalty=0)
+    return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
 
 
 FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
