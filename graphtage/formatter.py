@@ -124,7 +124,8 @@ class Formatter(metaclass=FormatterChecker):
                 edit: Optional[Edit] = None
             node: TreeNode = node_or_edit.from_node
         elif with_edits:
-            if isinstance(node_or_edit, EditedTreeNode) and node_or_edit.edit is not None:
+            if isinstance(node_or_edit, EditedTreeNode) and \
+                    node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0:
                 edit: Optional[Edit] = node_or_edit.edit
                 node: TreeNode = node_or_edit
             else:
