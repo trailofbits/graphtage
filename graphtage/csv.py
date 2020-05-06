@@ -1,7 +1,8 @@
 import csv
-from typing import Any, Dict, Iterable, Union
+from io import StringIO
 
 from . import graphtage, json
+from .formatter import Formatter
 from .json import JSONFormatter
 from .printer import Printer
 from .sequences import SequenceFormatter
@@ -9,11 +10,16 @@ from .tree import TreeNode
 
 
 class CSVRow(graphtage.ListNode[TreeNode]):
-    pass
+    def __bool__(self):
+        return bool(self._children)
 
 
 class CSVNode(graphtage.ListNode[CSVRow]):
-    pass
+    def __bool__(self):
+        return bool(self._children) and any(self._children)
+
+    def __eq__(self, other: 'CSVNode'):
+        return self._children == other._children or (not self and not other)
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
@@ -60,8 +66,23 @@ class CSVRows(SequenceFormatter):
         return printer
 
 
-class CSVFormatter(JSONFormatter):
-    sub_format_types = [CSVRows]
+class CSVFormatter(Formatter):
+    sub_format_types = [CSVRows, JSONFormatter]
+
+    def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):
+        if node.edited and node.edit is not None:
+            self.sub_formatters[1].print(printer, node.edit)
+            return
+        s = StringIO()
+        writer = csv.writer(s)
+        writer.writerow([node.object])
+        r = s.getvalue()
+        if r.endswith('\r\n'):
+            r = r[:-2]
+        elif r.endswith('\n') or r.endswith('\r'):
+            r = r[:-1]
+        printer.write(r)
+        s.close()
 
 
 class CSV(graphtage.Filetype):

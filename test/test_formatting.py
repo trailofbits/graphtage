@@ -1,15 +1,17 @@
+import csv
 import json
 import random
+from functools import partial
 from io import StringIO
+from typing import FrozenSet
 from unittest import TestCase
 
 from tqdm import trange
 
 import graphtage
-from graphtage import Filetype
-from graphtage.formatter import Formatter
 
-STR_BYTES: str = ''.join([
+
+STR_BYTES: FrozenSet[str] = frozenset([
     chr(i) for i in range(32, 127)
 ] + ['\n', '\t', '\r'])
 
@@ -32,19 +34,24 @@ def filetype_test(test_func):
         formatter = filetype.get_default_formatter()
 
         for _ in trange(1000):
-            test_iter = test_func(self)
-            orig_obj, str_representation = next(test_iter)
-            with graphtage.utils.Tempfile(str_representation) as t:
+            orig_obj, str_representation = test_func(self)
+            with graphtage.utils.Tempfile(str_representation.encode('utf-8')) as t:
                 tree = filetype.build_tree(t)
                 stream = StringIO()
                 printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
                 formatter.print(printer, tree)
                 printer.flush(final=True)
-                test_iter.send(stream.getvalue())
-                new_obj = next(test_iter)
-                self.assertEqual(orig_obj, new_obj)
+                formatted_str = stream.getvalue()
+            with graphtage.utils.Tempfile(formatted_str.encode('utf-8')) as t:
+                try:
+                    new_obj = filetype.build_tree(t)
+                except Exception as e:
+                    self.fail(f"""{filetype_name.upper()} decode error {e}: Original version:
+{orig_obj!r}
+Formatted version:
+{formatted_str!s}""")
+            self.assertEqual(tree, new_obj)
 
-        return test_func(self)
     return wrapper
 
 
@@ -62,16 +69,16 @@ class TestFormatting(TestCase):
         return random.choice([True, False])
 
     @staticmethod
-    def make_random_str() -> str:
-        return ''.join(random.choices(STR_BYTES, k=random.randint(0, 128)))
+    def make_random_str(exclude_bytes: FrozenSet[str] = frozenset()) -> str:
+        return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(0, 128)))
 
     @staticmethod
-    def make_random_non_container():
+    def make_random_non_container(exclude_bytes: FrozenSet[str] = frozenset()):
         return random.choice([
             TestFormatting.make_random_int,
             TestFormatting.make_random_bool,
             TestFormatting.make_random_float,
-            TestFormatting.make_random_str
+            partial(TestFormatting.make_random_str, exclude_bytes=exclude_bytes)
         ])()
 
     @staticmethod
@@ -114,12 +121,18 @@ class TestFormatting(TestCase):
     @filetype_test
     def test_json_formatting(self):
         orig_obj = TestFormatting.make_random_obj(force_string_keys=True)
-        formatted_str = (yield orig_obj, json.dumps(orig_obj).encode('utf-8'))
-        yield orig_obj, formatted_str
-        try:
-            yield json.loads(formatted_str)
-        except json.decoder.JSONDecodeError as de:
-            self.fail(f"""JSON decode error {de}: Original version:
-        {orig_obj!r}
-        Formatted version:
-        {formatted_str!s}""")
+        return orig_obj, json.dumps(orig_obj)
+
+    @filetype_test
+    def test_csv_formatting(self):
+        orig_obj = [
+            [TestFormatting.make_random_non_container(
+                exclude_bytes=frozenset('\n\r\t,"\'')
+            ) for _ in range(random.randint(0, 10))]
+            for _ in range(random.randint(0, 10))
+        ]
+        s = StringIO()
+        writer = csv.writer(s)
+        for row in orig_obj:
+            writer.writerow(row)
+        return orig_obj, s.getvalue()
