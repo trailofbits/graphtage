@@ -1,7 +1,8 @@
 import os
 import sys
+from io import StringIO
 
-from yaml import load, YAMLError
+from yaml import dump, load, YAMLError
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -94,19 +95,39 @@ class YAMLDictFormatter(SequenceFormatter):
 class YAMLFormatter(Formatter):
     sub_format_types = [YAMLDictFormatter, YAMLListFormatter]
 
+    @staticmethod
+    def write_obj(printer: Printer, obj):
+        if obj == '':
+            return
+        s = StringIO()
+        dump(obj, stream=s, Dumper=Dumper)
+        ret = s.getvalue()
+        if isinstance(obj, str) and obj.strip().startswith('#'):
+            if ret.startswith("'"):
+                ret = ret[1:]
+            if ret.endswith("\n"):
+                ret = ret[:-1]
+            if ret.endswith("'"):
+                ret = ret[:-1]
+        if ret.endswith('\n...\n'):
+            ret = ret[:-len('\n...\n')]
+        printer.write(ret)
+
     def print_LeafNode(self, printer: Printer, node: LeafNode):
-        node.print(printer)
+        self.write_obj(printer, node.object)
 
     def print_StringNode(self, printer: Printer, node: StringNode):
-        node.quoted = False
-        if (node.edited and node.edit is not None) or '\n' not in node.object:
-            node.print(printer)
+        if '\n' not in node.object:
+            self.print_LeafNode(printer, node)
         else:
             printer.write('|')
             with printer.indent():
-                for line in node.object.split('\n'):
+                lines = node.object.split('\n')
+                if lines and lines[-1] == '':
+                    lines = lines[:-1]
+                for line in lines:
                     printer.newline()
-                    printer.write(line)
+                    self.write_obj(printer, line)
 
 
 class YAML(Filetype):
@@ -121,7 +142,11 @@ class YAML(Filetype):
         )
 
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
-        return build_tree(path=path, allow_key_edits=allow_key_edits)
+        tree = build_tree(path=path, allow_key_edits=allow_key_edits)
+        for node in tree.dfs():
+            if isinstance(node, StringNode):
+                node.quoted = False
+        return tree
 
     def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
         try:

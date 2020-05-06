@@ -6,6 +6,7 @@ from io import StringIO
 from typing import FrozenSet, Tuple
 from unittest import TestCase
 
+import yaml
 from tqdm import trange
 
 import graphtage
@@ -107,19 +108,27 @@ class TestFormatting(TestCase):
         return ret
 
     @staticmethod
-    def make_random_obj(force_string_keys: bool = False):
+    def make_random_obj(force_string_keys: bool = False, allow_empty_containers: bool = True):
         obj_stack = []
         ret = TestFormatting._make_random_obj(obj_stack)
+        if allow_empty_containers:
+            min_container_size = 0
+        else:
+            min_container_size = 1
+
+        def container_size() -> int:
+            return max(int(random.betavariate(0.75, 5) * 10), min_container_size)
+
         while obj_stack:
             expanding = obj_stack.pop()
             if isinstance(expanding, dict):
-                for _ in range(int(random.betavariate(0.75, 5) * 10)):
+                for _ in range(container_size()):
                     if force_string_keys:
                         expanding[TestFormatting.make_random_str()] = TestFormatting._make_random_obj(obj_stack)
                     else:
                         expanding[TestFormatting.make_random_non_container()] = TestFormatting._make_random_obj(obj_stack)
             else:
-                for _ in range(int(random.betavariate(0.75, 5) * 10)):
+                for _ in range(container_size()):
                     expanding.append(TestFormatting._make_random_obj(obj_stack))
         return ret
 
@@ -174,3 +183,10 @@ class TestFormatting(TestCase):
         # For now, HTML support is implemented through XML, so we don't need a separate test.
         # However, test_formatter_coverage will complain unless this function is here!
         pass
+
+    @filetype_test
+    def test_yaml_formatting(self):
+        orig_obj = TestFormatting.make_random_obj(allow_empty_containers=False)
+        s = StringIO()
+        yaml.dump(orig_obj, s, Dumper=graphtage.yaml.Dumper)
+        return orig_obj, s.getvalue()
