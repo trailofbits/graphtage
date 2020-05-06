@@ -119,7 +119,7 @@ class Formatter(metaclass=FormatterChecker):
     def print(self, printer: Printer, node: TreeNode, with_edits: bool = True):
         formatter = self.get_formatter(node)
         if formatter is not None:
-            if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None and node.is_leaf:
+            if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None:
                 # If the node is a leaf, delegate to its edit's implementation:
                 node.edit.print(self, printer)
             else:

@@ -23,7 +23,7 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
         return cast(SequenceNode, self.from_node)
 
     def print(self, formatter: Formatter, printer: Printer):
-        formatter.get_formatter(self.sequence)(printer, self.sequence, self)
+        formatter.get_formatter(self.sequence)(printer, self.sequence)
 
 
 T = TypeVar('T', bound=Sequence[TreeNode])
@@ -125,8 +125,7 @@ class SequenceFormatter(Formatter):
                         else:
                             self.delimiter_callback(p)
                 self.item_newline(printer, is_first=i == 0)
-                self.print(printer, edit.from_node)
-                #edit.print(self, printer)
+                edit.print(self, printer)
         if len(node) > 0:
             self.item_newline(printer, is_last=True)
         with printer.bright():

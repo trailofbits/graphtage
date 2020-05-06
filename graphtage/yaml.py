@@ -32,7 +32,7 @@ class YAMLListFormatter(SequenceFormatter):
 
     def print_ListNode(self, printer: Printer, *args, **kwargs):
         printer.newline()
-        super().print_SequenceNode(printer=printer, *args, **kwargs)
+        super().print_SequenceNode(printer, *args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_last:
