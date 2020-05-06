@@ -1,10 +1,10 @@
 import inspect
 import logging
 from abc import ABCMeta
-from typing import Any, Callable, List, Optional, Sequence, Set, Type, TypeVar
+from typing import Any, Callable, List, Optional, Sequence, Set, Type, TypeVar, Union
 
 from .printer import Printer
-from .tree import EditedTreeNode, TreeNode
+from .tree import Edit, EditedTreeNode, TreeNode
 
 
 log = logging.getLogger(__name__)
@@ -116,14 +116,32 @@ class Formatter(metaclass=FormatterChecker):
     def get_formatter(self, node: T) -> Callable[[Printer, T], Any]:
         return get_formatter(node.__class__, base_formatter=self)
 
-    def print(self, printer: Printer, node: TreeNode, with_edits: bool = True):
+    def print(self, printer: Printer, node_or_edit: Union[TreeNode, Edit], with_edits: bool = True):
+        if isinstance(node_or_edit, Edit):
+            if with_edits:
+                edit: Optional[Edit] = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit.from_node
+        elif with_edits:
+            if isinstance(node_or_edit, EditedTreeNode) and node_or_edit.edit is not None:
+                edit: Optional[Edit] = node_or_edit.edit
+                node: TreeNode = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+                node: TreeNode = node_or_edit
+        else:
+            edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit
+        if edit is not None:
+            try:
+                edit.print(self, printer)
+                return
+            except NotImplementedError:
+                pass
         formatter = self.get_formatter(node)
         if formatter is not None:
-            if with_edits and isinstance(node, EditedTreeNode) and node.edit is not None:
-                # If the node is a leaf, delegate to its edit's implementation:
-                node.edit.print(self, printer)
-            else:
-                formatter(printer=printer, node=node)
+            formatter(printer, node)
         else:
             log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
 Falling back to the node's internal printer

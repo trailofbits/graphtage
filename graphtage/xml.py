@@ -190,7 +190,7 @@ class XMLElement(ContainerNode):
                 printer.write(html.escape(section))
 
     def print(self, printer: Printer, edit: Optional[XMLElementEdit] = None):
-        XMLFormatter.DEFAULT_INSTANCE.print(printer=printer, node=self, with_edits=True)
+        XMLFormatter.DEFAULT_INSTANCE.print(printer=printer, node_or_edit=self, with_edits=True)
         return
         printer.write('<')
         self.tag.print(printer)

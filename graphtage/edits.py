@@ -146,14 +146,14 @@ class Match(ConstantCostEdit):
         if self.bounds() > Range(0, 0):
             with printer.bright().background(Back.RED).color(Fore.WHITE):
                 with printer.strike():
-                    formatter.print(printer=printer, node=self.from_node, with_edits=False)
+                    formatter.print(printer=printer, node_or_edit=self.from_node, with_edits=False)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
             with printer.bright().background(Back.GREEN).color(Fore.WHITE):
                 with printer.under_plus():
-                    formatter.print(printer=printer, node=self.to_node, with_edits=False)
+                    formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
         else:
-            formatter.print(printer=printer, node=self.to_node, with_edits=False)
+            formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.bounds().lower_bound!r})"

@@ -85,6 +85,10 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             to_node=to_kvp
         )
 
+    def print(self, formatter: Formatter, printer: Printer):
+        # Raise NotImplementedError() to cause the formatter to fall back on its own implementations
+        raise NotImplementedError()
+
     def bounds(self) -> Range:
         return self.key_edit.bounds() + self.value_edit.bounds()
 
@@ -94,15 +98,6 @@ class KeyValuePairEdit(AbstractCompoundEdit):
     def edits(self) -> Iterator[Edit]:
         yield self.key_edit
         yield self.value_edit
-
-    def print(self, formatter: Formatter, printer: Printer):
-        with printer.color(Fore.BLUE):
-            formatter.print(printer=printer, node=self.key_edit.from_node)
-            #self.key_edit.print(formatter, printer)
-        with printer.bright():
-            printer.write(": ")
-        #self.value_edit.print(formatter, printer)
-        formatter.print(printer=printer, node=self.value_edit.from_node)
 
 
 class KeyValuePairNode(ContainerNode):

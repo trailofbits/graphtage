@@ -32,6 +32,11 @@ class Edit(Bounded, Protocol):
         raise NotImplementedError()
 
     def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+        """Edits can optionally implement a printing method
+           This function is called automatically from the formatter in the printing protocol and should
+           never be called directly unless you really know what you're doing!
+           Raising NotImplementedError() will cause the formatter to fall back on its own printing implementations.
+        """
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):

@@ -125,7 +125,7 @@ class SequenceFormatter(Formatter):
                         else:
                             self.delimiter_callback(p)
                 self.item_newline(printer, is_first=i == 0)
-                edit.print(self, printer)
+                self.print(printer, edit)
         if len(node) > 0:
             self.item_newline(printer, is_last=True)
         with printer.bright():
