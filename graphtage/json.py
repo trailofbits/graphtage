@@ -45,7 +45,10 @@ class JSONListFormatter(SequenceFormatter):
         super().__init__('[', ']', ',')
 
     def print_ListNode(self, *args, **kwargs):
-        self.print_SequenceNode(*args, **kwargs)
+        super().print_SequenceNode(*args, **kwargs)
+
+    def print_SequenceNode(self, *args, **kwargs):
+        self.parent.print(*args, **kwargs)
 
 
 class JSONDictFormatter(SequenceFormatter):
@@ -55,29 +58,23 @@ class JSONDictFormatter(SequenceFormatter):
         super().__init__('{', '}', ',')
 
     def print_MultiSetNode(self, *args, **kwargs):
-        self.print_SequenceNode(*args, **kwargs)
+        super().print_SequenceNode(*args, **kwargs)
 
     def print_MappingNode(self, *args, **kwargs):
-        self.print_SequenceNode(*args, **kwargs)
+        super().print_SequenceNode(*args, **kwargs)
+
+    def print_SequenceNode(self, *args, **kwargs):
+        self.parent.print(*args, **kwargs)
 
 
 class JSONFormatter(Formatter):
     sub_format_types = [JSONListFormatter, JSONDictFormatter]
 
-    @staticmethod
-    def escape(text: str) -> str:
-        return text \
-            .replace('\n', "\\n") \
-            .replace("'", "\\'") \
-            .replace('"', '\\"') \
-            .replace('&', '\\&') \
-            .replace('\r', '\\r') \
-            .replace('\t', '\\t') \
-            .replace('\b', '\\b') \
-            .replace('\f', '\\f')
-
     def print_LeafNode(self, printer: Printer, node: LeafNode):
-        node.print(printer)
+        if node.edited and node.edit is not None:
+            node.print(printer)
+        else:
+            printer.write(json.dumps(node.object))
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         with printer.color(Fore.BLUE):
@@ -85,12 +82,6 @@ class JSONFormatter(Formatter):
         with printer.bright():
             printer.write(": ")
         self.print(printer, node.value)
-
-    def print_StringNode(self, printer: Printer, node: StringNode):
-        if node.edited and node.edit is not None:
-            node.print(printer)
-        else:
-            node.print(printer, escape_func=self.escape)
 
 
 class JSON(Filetype):
