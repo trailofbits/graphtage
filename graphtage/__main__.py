@@ -3,7 +3,6 @@ import logging
 import mimetypes
 import os
 import sys
-import tempfile as tf
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
@@ -13,30 +12,11 @@ from . import graphtage
 from . import printer as printermodule
 from . import version
 from .printer import HTMLPrinter, Printer
+from .utils import Tempfile
 from .yaml import YAMLFormatter
 
 
 log = logging.getLogger('graphtage')
-
-
-class Tempfile:
-    def __init__(self, contents, prefix=None, suffix=None):
-        self._temp = None
-        self._data = contents
-        self._prefix = prefix
-        self._suffix = suffix
-
-    def __enter__(self):
-        self._temp = tf.NamedTemporaryFile(prefix=self._prefix, suffix=self._suffix, delete=False)
-        self._temp.write(self._data)
-        self._temp.flush()
-        self._temp.close()
-        return self._temp.name
-
-    def __exit__(self, type, value, traceback):
-        if self._temp is not None:
-            os.unlink(self._temp.name)
-            self._temp = None
 
 
 class PathOrStdin:

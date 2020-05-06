@@ -92,15 +92,16 @@ class SequenceFormatter(Formatter):
     def items_indent(self, printer: Printer):
         return printer.indent()
 
-    def print_SequenceNode(self, printer: Printer, node: SequenceNode, sequence_edit: Optional[SequenceEdit] = None):
+    def edit_print(self, printer: Printer, edit: Edit):
+        self.print(printer, edit)
+
+    def print_SequenceNode(self, printer: Printer, node: SequenceNode):
         with printer.bright():
             printer.write(self.start_symbol)
         with self.items_indent(printer) as p:
             to_remove: int = 0
             to_insert: int = 0
-            if sequence_edit is not None:
-                edits: Iterable[Edit] = sequence_edit.edits()
-            elif isinstance(node, EditedTreeNode) and isinstance(node.edit, SequenceEdit):
+            if isinstance(node, EditedTreeNode) and isinstance(node.edit, SequenceEdit):
                 edits: Iterable[Edit] = node.edit.edits()
             else:
                 edits: Iterable[Edit] = [Match(child, child, 0) for child in node]
@@ -125,7 +126,7 @@ class SequenceFormatter(Formatter):
                         else:
                             self.delimiter_callback(p)
                 self.item_newline(printer, is_first=i == 0)
-                self.print(printer, edit)
+                self.edit_print(printer, edit)
         if len(node) > 0:
             self.item_newline(printer, is_last=True)
         with printer.bright():

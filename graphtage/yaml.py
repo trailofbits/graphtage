@@ -9,10 +9,10 @@ except ImportError:
 
 from . import json
 from .formatter import Formatter
-from .graphtage import Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, MultiSetNode, StringNode
+from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter, SequenceNode
-from .tree import TreeNode
+from .tree import Edit, TreeNode
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
@@ -34,14 +34,19 @@ class YAMLListFormatter(SequenceFormatter):
         printer.newline()
         super().print_SequenceNode(printer, *args, **kwargs)
 
+    def edit_print(self, printer: Printer, edit: Edit):
+        printer.indents += 1
+        self.print(printer, edit)
+        printer.indents -= 1
+
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_last:
             if not is_first:
                 printer.newline()
             printer.write('- ')
 
-    # def items_indent(self, printer: Printer):
-    #     return printer
+    def items_indent(self, printer: Printer):
+        return printer
 
 
 class YAMLKeyValuePairFormatter(Formatter):
@@ -51,7 +56,7 @@ class YAMLKeyValuePairFormatter(Formatter):
         self.print(printer, node.key)
         with printer.bright():
             printer.write(": ")
-        if isinstance(node.value, MultiSetNode) or isinstance(node.value, FixedKeyDictNode):
+        if isinstance(node.value, MappingNode):
             printer.newline()
             printer.indents += 1
             self.parent.print(printer, node.value)

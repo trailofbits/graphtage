@@ -1,6 +1,8 @@
+import os
 import sys
+import tempfile as tf
 from collections import Counter, OrderedDict
-from typing import Callable, Dict, Generic, Optional, Iterator, Mapping, MutableMapping, Tuple, TypeVar
+from typing import Callable, Dict, Generic, Optional, IO, Iterator, Mapping, MutableMapping, Tuple, TypeVar, Union
 from typing_extensions import Protocol
 import typing
 
@@ -156,3 +158,23 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
         else:
             cols = self.num_cols
         return rows, cols
+
+
+class Tempfile:
+    def __init__(self, contents: Union[str, bytes], prefix: Optional[str] = None, suffix: Optional[str] = None):
+        self._temp: Optional[IO] = None
+        self._data: Union[str, bytes] = contents
+        self._prefix: Optional[str] = prefix
+        self._suffix: Optional[str] = suffix
+
+    def __enter__(self) -> str:
+        self._temp = tf.NamedTemporaryFile(prefix=self._prefix, suffix=self._suffix, delete=False)
+        self._temp.write(self._data)
+        self._temp.flush()
+        self._temp.close()
+        return self._temp.name
+
+    def __exit__(self, type, value, traceback):
+        if self._temp is not None:
+            os.unlink(self._temp.name)
+            self._temp = None
