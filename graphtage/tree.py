@@ -11,6 +11,7 @@ from .printer import DEFAULT_PRINTER, Printer
 log = logging.getLogger(__name__)
 
 
+@runtime_checkable
 class Edit(Bounded, Protocol):
     initial_bounds: Range
     from_node: 'TreeNode'
