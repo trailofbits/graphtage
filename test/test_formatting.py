@@ -54,14 +54,17 @@ class TestFormatting(TestCase):
         return ret
 
     @staticmethod
-    def make_random_obj():
+    def make_random_obj(force_string_keys: bool = False):
         obj_stack = []
         ret = TestFormatting._make_random_obj(obj_stack)
         while obj_stack:
             expanding = obj_stack.pop()
             if isinstance(expanding, dict):
                 for _ in range(int(random.betavariate(0.75, 5) * 10)):
-                    expanding[TestFormatting.make_random_non_container()] = TestFormatting._make_random_obj(obj_stack)
+                    if force_string_keys:
+                        expanding[TestFormatting.make_random_str()] = TestFormatting._make_random_obj(obj_stack)
+                    else:
+                        expanding[TestFormatting.make_random_non_container()] = TestFormatting._make_random_obj(obj_stack)
             else:
                 for _ in range(int(random.betavariate(0.75, 5) * 10)):
                     expanding.append(TestFormatting._make_random_obj(obj_stack))
@@ -76,7 +79,7 @@ class TestFormatting(TestCase):
         filetype = graphtage.FILETYPES_BY_TYPENAME['json']
         formatter = filetype.get_default_formatter()
         for _ in trange(1000):
-            orig_obj = TestFormatting.make_random_obj()
+            orig_obj = TestFormatting.make_random_obj(force_string_keys=True)
             with graphtage.utils.Tempfile(json.dumps(orig_obj).encode('utf-8')) as t:
                 tree = filetype.build_tree(t)
                 stream = StringIO()
