@@ -1,26 +1,35 @@
 import csv
 import json
 import random
-from functools import partial
+from functools import partial, wraps
 from io import StringIO
-from typing import FrozenSet
+from typing import FrozenSet, Tuple
 from unittest import TestCase
 
 from tqdm import trange
 
 import graphtage
+from graphtage import xml
 
 
 STR_BYTES: FrozenSet[str] = frozenset([
     chr(i) for i in range(32, 127)
 ] + ['\n', '\t', '\r'])
-
+LETTERS: Tuple[str, ...] = tuple(
+    chr(i) for i in range(ord('a'), ord('z'))
+) + tuple(
+    chr(i) for i in range(ord('A'), ord('Z'))
+)
 
 FILETYPE_TEST_PREFIX = 'test_'
 FILETYPE_TEST_SUFFIX = '_formatting'
 
 
-def filetype_test(test_func):
+def filetype_test(test_func=None, *, test_equality=True):
+    if test_func is None:
+        return partial(filetype_test, test_equality=test_equality)
+
+    @wraps(test_func)
     def wrapper(self: 'TestFormatting'):
         name = test_func.__name__
         if not name.startswith(FILETYPE_TEST_PREFIX):
@@ -50,7 +59,8 @@ def filetype_test(test_func):
 {orig_obj!r}
 Formatted version:
 {formatted_str!s}""")
-            self.assertEqual(tree, new_obj)
+            if test_equality:
+                self.assertEqual(tree, new_obj)
 
     return wrapper
 
@@ -136,3 +146,31 @@ class TestFormatting(TestCase):
         for row in orig_obj:
             writer.writerow(row)
         return orig_obj, s.getvalue()
+
+    @staticmethod
+    def make_random_xml() -> xml.XMLElementObj:
+        ret = xml.XMLElementObj('', {})
+        elem_stack = [ret]
+        while elem_stack:
+            elem = elem_stack.pop()
+            elem.tag = ''.join(random.choices(LETTERS, k=random.randint(1, 20)))
+            elem.attrib = {
+               ''.join(random.choices(LETTERS, k=random.randint(1, 10))): TestFormatting.make_random_str()
+               for _ in range(int(random.betavariate(0.75, 5) * 10))
+            }
+            if random.random() <= 0.5:
+               elem.text = TestFormatting.make_random_str()
+            elem.children = [xml.XMLElementObj('', {}) for _ in range(int(random.betavariate(0.75, 5) * 10))]
+            elem_stack.extend(elem.children)
+        return ret
+
+    # Do not test equality for XML because the XMLFormatter auto-indents and thereby adds extra spaces to element text
+    @filetype_test(test_equality=False)
+    def test_xml_formatting(self):
+        orig_obj = self.make_random_xml()
+        return orig_obj, str(orig_obj)
+
+    def test_html_formatting(self):
+        # For now, HTML support is implemented through XML, so we don't need a separate test.
+        # However, test_formatter_coverage will complain unless this function is here!
+        pass

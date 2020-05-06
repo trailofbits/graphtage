@@ -7,7 +7,8 @@ from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .formatter import Formatter
-from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, ListNode, StringNode
+from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
+    ListNode, StringNode
 from .printer import Back, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, TreeNode
@@ -222,8 +223,18 @@ class XMLElement(ContainerNode):
     def __eq__(self, other):
         if not isinstance(other, XMLElement):
             return False
+        my_text = self.text
+        if my_text is not None:
+            my_text = my_text.object.strip()
+        else:
+            my_text = ''
+        other_text = other.text
+        if other_text is not None:
+            other_text = other_text.object.strip()
+        else:
+            other_text = ''
         return other.tag == self.tag and other.attrib == self.attrib \
-               and other.text == self.text and other._children == self._children
+               and other_text == my_text and other._children == self._children
 
 
 class EditedXMLElement(EditedTreeNode, XMLElement):
@@ -296,8 +307,15 @@ class XMLElementAttribFormatter(SequenceFormatter):
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         printer.write(' ')
         self.print(printer, node.key)
-        printer.write('=')
+        printer.write('="')
         self.print(printer, node.value)
+        printer.write('"')
+
+    def print_LeafNode(self, printer: Printer, node: LeafNode):
+        if node.edited and node.edit is not None and node.edit.bounds().lower_bound > 0:
+            self.print(printer, node.edit)
+        else:
+            printer.write(html.escape(str(node.object)))
 
 
 class XMLFormatter(Formatter):
@@ -307,7 +325,7 @@ class XMLFormatter(Formatter):
         if element.text is None:
             return
         elif element.text.edited and element.text.edit is not None and element.text.edit.bounds().lower_bound > 0:
-            self.print(printer, element.text)
+            self.print(printer, element.text.edit)
             return
         text = element.text.object.strip()
         if '\n' not in text and not element._children._children:
