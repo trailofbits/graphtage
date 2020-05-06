@@ -6,10 +6,46 @@ from unittest import TestCase
 from tqdm import trange
 
 import graphtage
+from graphtage import Filetype
+from graphtage.formatter import Formatter
 
 STR_BYTES: str = ''.join([
     chr(i) for i in range(32, 127)
 ] + ['\n', '\t', '\r'])
+
+
+FILETYPE_TEST_PREFIX = 'test_'
+FILETYPE_TEST_SUFFIX = '_formatting'
+
+
+def filetype_test(test_func):
+    def wrapper(self: 'TestFormatting'):
+        name = test_func.__name__
+        if not name.startswith(FILETYPE_TEST_PREFIX):
+            raise ValueError(f'@filetype_test {name} must start with "{FILETYPE_TEST_PREFIX}"')
+        elif not name.endswith(FILETYPE_TEST_SUFFIX):
+            raise ValueError(f'@filetype_test {name} must end with "{FILETYPE_TEST_SUFFIX}"')
+        filetype_name = name[len(FILETYPE_TEST_PREFIX):-len(FILETYPE_TEST_SUFFIX)]
+        if filetype_name not in graphtage.FILETYPES_BY_TYPENAME:
+            raise ValueError(f'Filetype "{filetype_name}" for @filetype_test {name} not found in graphtage.FILETYPES_BY_TYPENAME')
+        filetype = graphtage.FILETYPES_BY_TYPENAME[filetype_name]
+        formatter = filetype.get_default_formatter()
+
+        for _ in trange(1000):
+            test_iter = test_func(self)
+            orig_obj, str_representation = next(test_iter)
+            with graphtage.utils.Tempfile(str_representation) as t:
+                tree = filetype.build_tree(t)
+                stream = StringIO()
+                printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
+                formatter.print(printer, tree)
+                printer.flush(final=True)
+                test_iter.send(stream.getvalue())
+                new_obj = next(test_iter)
+                self.assertEqual(orig_obj, new_obj)
+
+        return test_func(self)
+    return wrapper
 
 
 class TestFormatting(TestCase):
@@ -75,23 +111,15 @@ class TestFormatting(TestCase):
             if not hasattr(self, f'test_{name}_formatting'):
                 self.fail(f"Filetype {name} is missing a `test_{name}_formatting` test function")
 
+    @filetype_test
     def test_json_formatting(self):
-        filetype = graphtage.FILETYPES_BY_TYPENAME['json']
-        formatter = filetype.get_default_formatter()
-        for _ in trange(1000):
-            orig_obj = TestFormatting.make_random_obj(force_string_keys=True)
-            with graphtage.utils.Tempfile(json.dumps(orig_obj).encode('utf-8')) as t:
-                tree = filetype.build_tree(t)
-                stream = StringIO()
-                printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
-                formatter.print(printer, tree)
-                printer.flush(final=True)
-                # Now confirm the formatted output is still valid JSON:
-                try:
-                    new_obj = json.loads(stream.getvalue())
-                except json.decoder.JSONDecodeError as de:
-                    self.fail(f"""JSON decode error {de}: Original version:
-{orig_obj!r}
-Formatted version:
-{stream.getvalue()!s}""")
-                self.assertEqual(orig_obj, new_obj)
+        orig_obj = TestFormatting.make_random_obj(force_string_keys=True)
+        formatted_str = (yield orig_obj, json.dumps(orig_obj).encode('utf-8'))
+        yield orig_obj, formatted_str
+        try:
+            yield json.loads(formatted_str)
+        except json.decoder.JSONDecodeError as de:
+            self.fail(f"""JSON decode error {de}: Original version:
+        {orig_obj!r}
+        Formatted version:
+        {formatted_str!s}""")
