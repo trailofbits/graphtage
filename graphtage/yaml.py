@@ -10,7 +10,8 @@ except ImportError:
 
 from . import json
 from .formatter import Formatter
-from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode
+from .edits import Insert, Match
+from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, StringEditFormatter
 from .printer import Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import Edit, TreeNode
@@ -92,8 +93,40 @@ class YAMLDictFormatter(SequenceFormatter):
         return printer
 
 
+class YAMLStringFormatter(StringEditFormatter):
+    has_newline = False
+
+    def write_start_quote(self, printer: Printer, edit: StringEdit):
+        for sub_edit in edit.edit_distance.edits():
+            if isinstance(sub_edit, Match) and '\n' in sub_edit.from_node.object:
+                self.has_newline = True
+                break
+            elif isinstance(sub_edit, Insert) and '\n' in sub_edit.from_node.object:
+                self.has_newline = True
+                break
+        else:
+            self.has_newline = False
+        if self.has_newline:
+            printer.write('|')
+            printer.indents += 1
+            printer.newline()
+
+    def write_end_quote(self, printer: Printer, edit: StringEdit):
+        if self.has_newline:
+            printer.indents -= 1
+
+    def write_char(self, printer: Printer, c: str, removed=False, inserted=False):
+        if c == '\n':
+            if removed or inserted:
+                printer.write('\u23CE')
+            if not removed:
+                printer.newline()
+        else:
+            printer.write(c)
+
+
 class YAMLFormatter(Formatter):
-    sub_format_types = [YAMLDictFormatter, YAMLListFormatter]
+    sub_format_types = [YAMLStringFormatter, YAMLDictFormatter, YAMLListFormatter]
 
     @staticmethod
     def write_obj(printer: Printer, obj):

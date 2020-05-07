@@ -388,6 +388,9 @@ class StringEdit(AbstractEdit):
     def tighten_bounds(self) -> bool:
         return self.edit_distance.tighten_bounds()
 
+    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+        raise NotImplementedError()
+
 
 class StringEditFormatter(Formatter):
     def write_start_quote(self, printer: Printer, edit: StringEdit):
@@ -397,6 +400,9 @@ class StringEditFormatter(Formatter):
     def write_end_quote(self, printer: Printer, edit: StringEdit):
         if edit.from_node.quoted:
             printer.write('"')
+
+    def write_char(self, printer: Printer, c: str, removed=False, inserted=False):
+        printer.write(c)
 
     def print_StringEdit(self, printer: Printer, edit: StringEdit):
         self.write_start_quote(printer, edit)
@@ -425,27 +431,27 @@ class StringEditFormatter(Formatter):
                 with printer.color(Fore.WHITE).background(Back.RED).bright():
                     with printer.strike():
                         for rm in remove_seq:
-                            printer.write(rm)
+                            self.write_char(printer, rm, removed=True)
                 remove_seq = []
                 with printer.color(Fore.WHITE).background(Back.GREEN).bright():
                     with printer.under_plus():
                         for add in add_seq:
-                            printer.write(add)
+                            self.write_char(printer, add, inserted=True)
                 add_seq = []
                 if to_remove is not None:
                     remove_seq.append(to_remove)
                 if to_add is not None:
                     add_seq.append(to_add)
                 if matched is not None:
-                    printer.write(matched)
+                    self.write_char(printer, matched)
         with printer.color(Fore.WHITE).background(Back.RED).bright():
             with printer.strike():
                 for rm in remove_seq:
-                    printer.write(rm)
+                    self.write_char(printer, rm, removed=True)
         with printer.color(Fore.WHITE).background(Back.GREEN).bright():
             with printer.under_plus():
                 for add in add_seq:
-                    printer.write(add)
+                    self.write_char(printer, add, inserted=True)
         self.write_end_quote(printer, edit)
 
 
