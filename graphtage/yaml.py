@@ -115,11 +115,12 @@ class YAMLStringFormatter(StringEditFormatter):
         if self.has_newline:
             printer.indents -= 1
 
-    def write_char(self, printer: Printer, c: str, removed=False, inserted=False):
+    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c == '\n':
             if removed or inserted:
                 printer.write('\u23CE')
-            if not removed:
+            if not removed and index < num_edits - 1:
+                # Do not print a trailing newline
                 printer.newline()
         else:
             printer.write(c)

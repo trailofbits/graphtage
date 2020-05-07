@@ -401,14 +401,17 @@ class StringEditFormatter(Formatter):
         if edit.from_node.quoted:
             printer.write('"')
 
-    def write_char(self, printer: Printer, c: str, removed=False, inserted=False):
+    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         printer.write(c)
 
     def print_StringEdit(self, printer: Printer, edit: StringEdit):
         self.write_start_quote(printer, edit)
         remove_seq = []
         add_seq = []
-        for sub_edit in edit.edit_distance.edits():
+        index = 0
+        edits = list(edit.edit_distance.edits())
+        num_edits = len(edits)
+        for sub_edit in edits:
             to_remove = None
             to_add = None
             matched = None
@@ -431,27 +434,32 @@ class StringEditFormatter(Formatter):
                 with printer.color(Fore.WHITE).background(Back.RED).bright():
                     with printer.strike():
                         for rm in remove_seq:
-                            self.write_char(printer, rm, removed=True)
+                            self.write_char(printer, rm, index, num_edits, removed=True)
+                            index += 1
                 remove_seq = []
                 with printer.color(Fore.WHITE).background(Back.GREEN).bright():
                     with printer.under_plus():
                         for add in add_seq:
-                            self.write_char(printer, add, inserted=True)
+                            self.write_char(printer, add, index, num_edits, inserted=True)
+                            index += 1
                 add_seq = []
                 if to_remove is not None:
                     remove_seq.append(to_remove)
                 if to_add is not None:
                     add_seq.append(to_add)
                 if matched is not None:
-                    self.write_char(printer, matched)
+                    self.write_char(printer, matched, index, num_edits)
+                    index += 1
         with printer.color(Fore.WHITE).background(Back.RED).bright():
             with printer.strike():
-                for rm in remove_seq:
-                    self.write_char(printer, rm, removed=True)
+                for j, rm in enumerate(remove_seq):
+                    self.write_char(printer, rm, index, num_edits, removed=True)
+                    index += 1
         with printer.color(Fore.WHITE).background(Back.GREEN).bright():
             with printer.under_plus():
                 for add in add_seq:
-                    self.write_char(printer, add, inserted=True)
+                    self.write_char(printer, add, index, num_edits, inserted=True)
+                    index += 1
         self.write_end_quote(printer, edit)
 
 
