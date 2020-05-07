@@ -4,9 +4,9 @@ import sys
 
 from .formatter import Formatter
 from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringEdit, StringEditFormatter, StringNode
 from .printer import Fore, Printer
-from .sequences import SequenceFormatter, SequenceNode
+from .sequences import SequenceFormatter
 from .tree import TreeNode
 
 
@@ -67,14 +67,17 @@ class JSONDictFormatter(SequenceFormatter):
         self.parent.print(*args, **kwargs)
 
 
+class JSONStringFormatter(StringEditFormatter):
+    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+        # json.dumps will enclose the string in quotes, so remove them
+        printer.write(json.dumps(c)[1:-1])
+
+
 class JSONFormatter(Formatter):
-    sub_format_types = [JSONListFormatter, JSONDictFormatter]
+    sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
-        if node.edited and node.edit is not None:
-            node.print(printer)
-        else:
-            printer.write(json.dumps(node.object))
+        printer.write(json.dumps(node.object))
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         with printer.color(Fore.BLUE):
