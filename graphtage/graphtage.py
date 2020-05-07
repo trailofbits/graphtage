@@ -388,12 +388,21 @@ class StringEdit(AbstractEdit):
     def tighten_bounds(self) -> bool:
         return self.edit_distance.tighten_bounds()
 
-    def print(self, formatter: Formatter, printer: Printer):
-        if self.from_node.quoted:
+
+class StringEditFormatter(Formatter):
+    def write_start_quote(self, printer: Printer, edit: StringEdit):
+        if edit.from_node.quoted:
             printer.write('"')
+
+    def write_end_quote(self, printer: Printer, edit: StringEdit):
+        if edit.from_node.quoted:
+            printer.write('"')
+
+    def print_StringEdit(self, printer: Printer, edit: StringEdit):
+        self.write_start_quote(printer, edit)
         remove_seq = []
         add_seq = []
-        for sub_edit in self.edit_distance.edits():
+        for sub_edit in edit.edit_distance.edits():
             to_remove = None
             to_add = None
             matched = None
@@ -437,8 +446,7 @@ class StringEdit(AbstractEdit):
             with printer.under_plus():
                 for add in add_seq:
                     printer.write(add)
-        if self.from_node.quoted:
-            printer.write('"')
+        self.write_end_quote(printer, edit)
 
 
 class StringNode(LeafNode):

@@ -23,30 +23,32 @@ class FormatterChecker(ABCMeta):
                     pass
                 # if we got this far then the Formatter class has a default constructor
                 instance = cls()
+            except TypeError:
+                log.debug(f"Formatter {name} cannot be instantiated as a default constructor")
+                instance = None
+            if instance is not None:
                 for member, member_type in inspect.getmembers(instance):
                     if member.startswith('print_'):
                         sig = inspect.signature(member_type)
                         if 'printer' in sig.parameters:
                             a = sig.parameters['printer'].annotation
-                            if a is not None and not issubclass(Printer, a):
+                            if a is not None and a != inspect.Signature.empty and not issubclass(Printer, a):
                                 raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
                         if 'node' in sig.parameters:
                             a = sig.parameters['node'].annotation
-                            if a is not None and not issubclass(a, TreeNode):
-                                raise TypeError(f"The type annotation for {name}.{member}(node: {a}) was expected to be a subclass of graphtage.tree.TreeNode")
+                            if a is not None and a != inspect.Signature.empty and not issubclass(a, TreeNode):
+                                raise TypeError(f"The type annotation for {name}.{member}(node: {a}) was expected to be a subclass of either graphtage.tree.TreeNode")
                         if 'with_edits' in sig.parameters:
                             a = sig.parameters['with_edits'].annotation
-                            if a is not None and a is not bool:
+                            if a is not None and a != inspect.Signature.empty and a is not bool:
                                 raise TypeError(f"The type annotation for {name}.{member}(with_edits: {a}) was expected to be a bool")
                 if not instance.is_partial:
                     FORMATTERS.append(instance)
                 setattr(cls, 'DEFAULT_INSTANCE', instance)
-            except TypeError:
-                log.debug(f"Formatter {name} cannot be instantiated as a default constructor")
         super().__init__(name, bases, clsdict)
 
 
-T = TypeVar('T', bound=TreeNode)
+T = TypeVar('T', bound=Union[TreeNode, Edit])
 
 
 def _get_formatter(
@@ -113,8 +115,8 @@ class Formatter(metaclass=FormatterChecker):
             ret.sub_formatters[-1].parent = ret
         return ret
 
-    def get_formatter(self, node: T) -> Callable[[Printer, T], Any]:
-        return get_formatter(node.__class__, base_formatter=self)
+    def get_formatter(self, node_or_edit: T) -> Optional[Callable[[Printer, T], Any]]:
+        return get_formatter(node_or_edit.__class__, base_formatter=self)
 
     def print(self, printer: Printer, node_or_edit: Union[TreeNode, Edit], with_edits: bool = True):
         if isinstance(node_or_edit, Edit):
@@ -135,6 +137,11 @@ class Formatter(metaclass=FormatterChecker):
             edit: Optional[Edit] = None
             node: TreeNode = node_or_edit
         if edit is not None:
+            # First, see if we have a specialized formatter for this edit:
+            edit_formatter = self.get_formatter(edit)
+            if edit_formatter is not None:
+                edit_formatter(printer, edit)
+                return
             try:
                 edit.print(self, printer)
                 return
