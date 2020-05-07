@@ -32,11 +32,13 @@ class FormatterChecker(ABCMeta):
                         sig = inspect.signature(member_type)
                         if 'printer' in sig.parameters:
                             a = sig.parameters['printer'].annotation
-                            if a is not None and a != inspect.Signature.empty and not issubclass(Printer, a):
+                            if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
+                                    and not issubclass(Printer, a):
                                 raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
                         if 'node' in sig.parameters:
                             a = sig.parameters['node'].annotation
-                            if a is not None and a != inspect.Signature.empty and not issubclass(a, TreeNode):
+                            if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
+                                    and not issubclass(a, TreeNode):
                                 raise TypeError(f"The type annotation for {name}.{member}(node: {a}) was expected to be a subclass of either graphtage.tree.TreeNode")
                         if 'with_edits' in sig.parameters:
                             a = sig.parameters['with_edits'].annotation

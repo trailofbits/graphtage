@@ -8,7 +8,7 @@ from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .formatter import Formatter
 from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
-    ListNode, StringNode
+    ListNode, StringEdit, StringFormatter, StringNode
 from .printer import Back, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, TreeNode
@@ -162,7 +162,6 @@ class XMLElement(ContainerNode):
         return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r})"
 
     def __str__(self):
-        #return f"<{self.tag.object}{''.join(' ' + key.object + '=' + value.object for key, value in self.attrib.items())} ... />"
         return str(self.to_obj())
 
     def edits(self, node) -> Edit:
@@ -177,48 +176,6 @@ class XMLElement(ContainerNode):
         else:
             t_size = self.text.total_size
         return t_size + self.tag.total_size + self.attrib.total_size + self._children.total_size
-
-    def _print_text(self, printer: Printer):
-        if self.text is None:
-            return
-        text = self.text.object.strip()
-        if '\n' not in text and not self._children._children:
-            printer.write(html.escape(text))
-            return
-        with printer.indent():
-            for section in text.split('\n'):
-                printer.newline()
-                printer.write(html.escape(section))
-
-    def print(self, printer: Printer, edit: Optional[XMLElementEdit] = None):
-        XMLFormatter.DEFAULT_INSTANCE.print(printer=printer, node_or_edit=self, with_edits=True)
-        return
-        printer.write('<')
-        self.tag.print(printer)
-        for key, value in self.attrib.items():
-            printer.write(' ')
-            key.print(printer)
-            printer.write('=')
-            value.print(printer)
-        if self.children.children or (self.text is not None and '\n' in self.text.object):
-            printer.write('>')
-            self._print_text(printer)
-            for child in self.children.children:
-                with printer.indent():
-                    printer.newline()
-                    child.print(printer)
-            printer.newline()
-            printer.write('</')
-            self.tag.print(printer)
-            printer.write('>')
-        elif self.text is not None:
-            printer.write('>')
-            self._print_text(printer)
-            printer.write('</')
-            self.tag.print(printer)
-            printer.write('>')
-        else:
-            printer.write(' />')
 
     def __eq__(self, other):
         if not isinstance(other, XMLElement):
@@ -236,23 +193,8 @@ class XMLElement(ContainerNode):
         return other.tag == self.tag and other.attrib == self.attrib \
                and other_text == my_text and other._children == self._children
 
-
-class EditedXMLElement(EditedTreeNode, XMLElement):
-    def __init__(self, *args, **kwargs):
-        EditedTreeNode.__init__(self)
-        XMLElement.__init__(self, *args, **kwargs)
-
     def print(self, printer: Printer):
-        xml_edit = None
-        for edit in self.edit_list:
-            if isinstance(edit, XMLElementEdit):
-                xml_edit = xml_edit
-        if self.removed:
-            with printer.strike():
-                with printer.color(Fore.WHITE).background(Back.RED).bright() as p:
-                    XMLElement.print(self, p, xml_edit)
-        else:
-            XMLElement.print(self, printer, xml_edit)
+        return XMLFormatter.DEFAULT_INSTANCE.print(printer, self)
 
 
 def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], allow_key_edits=True) -> XMLElement:
@@ -285,6 +227,10 @@ class XMLChildFormatter(SequenceFormatter):
     def __init__(self):
         super().__init__('', '', '')
 
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if not is_first:
+            printer.newline()
+
     def print_ListNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
@@ -306,20 +252,23 @@ class XMLElementAttribFormatter(SequenceFormatter):
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         printer.write(' ')
+        node.key.quoted = False
         self.print(printer, node.key)
-        printer.write('="')
+        printer.write('=')
+        node.value.quoted = True
         self.print(printer, node.value)
-        printer.write('"')
 
-    def print_LeafNode(self, printer: Printer, node: LeafNode):
-        if node.edited and node.edit is not None and node.edit.bounds().lower_bound > 0:
-            self.print(printer, node.edit)
-        else:
-            printer.write(html.escape(str(node.object)))
+
+class XMLStringFormatter(StringFormatter):
+    is_partial = True
+
+    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+        if c != '\n' or index < num_edits - 1:
+            printer.write(html.escape(c))
 
 
 class XMLFormatter(Formatter):
-    sub_format_types = [XMLChildFormatter, XMLElementAttribFormatter]
+    sub_format_types = [XMLStringFormatter, XMLChildFormatter, XMLElementAttribFormatter]
 
     def _print_text(self, element: XMLElement, printer: Printer):
         if element.text is None:
@@ -339,6 +288,9 @@ class XMLFormatter(Formatter):
                 printer.write(html.escape(section))
                 printer.newline()
 
+    def print_LeafNode(self, printer: Printer, node: LeafNode):
+        printer.write(html.escape(str(node.object)))
+
     def print_XMLElement(self, printer: Printer, node: XMLElement):
         printer.write('<')
         self.print(printer, node.tag)
@@ -346,14 +298,16 @@ class XMLFormatter(Formatter):
             self.print(printer, node.attrib)
         if node._children._children or (node.text is not None and '\n' in node.text.object):
             printer.write('>')
-            self._print_text(node, printer)
+            #self._print_text(node, printer)
+            self.print(printer, node.text)
             self.print(printer, node._children)
             printer.write('</')
             self.print(printer, node.tag)
             printer.write('>')
         elif node.text is not None:
             printer.write('>')
-            self._print_text(node, printer)
+            #self._print_text(node, printer)
+            self.print(printer, node.text)
             printer.write('</')
             self.print(printer, node.tag)
             printer.write('>')

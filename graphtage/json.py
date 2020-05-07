@@ -4,7 +4,7 @@ import sys
 
 from .formatter import Formatter
 from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringEdit, StringEditFormatter, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringEdit, StringFormatter, StringNode
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import TreeNode
@@ -67,7 +67,7 @@ class JSONDictFormatter(SequenceFormatter):
         self.parent.print(*args, **kwargs)
 
 
-class JSONStringFormatter(StringEditFormatter):
+class JSONStringFormatter(StringFormatter):
     is_partial = True
 
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):

@@ -392,75 +392,109 @@ class StringEdit(AbstractEdit):
         raise NotImplementedError()
 
 
-class StringEditFormatter(Formatter):
+class StringFormatter(Formatter):
+    is_quoted = False
+
     def write_start_quote(self, printer: Printer, edit: StringEdit):
         if edit.from_node.quoted:
+            self.is_quoted = True
             printer.write('"')
+        else:
+            self.is_quoted = False
 
     def write_end_quote(self, printer: Printer, edit: StringEdit):
         if edit.from_node.quoted:
+            self.is_quoted = True
             printer.write('"')
+        else:
+            self.is_quoted = False
+
+    def escape(self, c: str):
+        if self.is_quoted:
+            return c.replace('"', '\\"')
+        else:
+            return c
 
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
-        printer.write(c)
+        escaped = self.escape(c)
+        if escaped != c and not isinstance(printer, NullANSIContext):
+            with printer.color(Fore.YELLOW):
+                printer.write(escaped)
+        else:
+            printer.write(c)
+
+    def context(self, printer: Printer):
+        if printer.context().fore is None:
+            return printer.color(Fore.GREEN)
+        else:
+            return printer
+
+    def print_StringNode(self, printer: Printer, node: 'StringNode'):
+        with self.context(printer) as p:
+            self.write_start_quote(p, StringEdit(node, node))
+            num_edits = len(node.object)
+            for i, c in enumerate(node.object):
+                self.write_char(p, c, i, num_edits)
+            self.write_end_quote(p, StringEdit(node, node))
 
     def print_StringEdit(self, printer: Printer, edit: StringEdit):
-        self.write_start_quote(printer, edit)
-        remove_seq = []
-        add_seq = []
-        index = 0
-        edits = list(edit.edit_distance.edits())
-        num_edits = len(edits)
-        for sub_edit in edits:
-            to_remove = None
-            to_add = None
-            matched = None
-            if isinstance(sub_edit, Match):
-                if sub_edit.from_node.object == sub_edit.to_node.object:
-                    matched = sub_edit.from_node.object
-                else:
+        with self.context(printer) as p:
+            self.write_start_quote(p, edit)
+            remove_seq = []
+            add_seq = []
+            index = 0
+            edits = list(edit.edit_distance.edits())
+            num_edits = len(edits)
+            for sub_edit in edits:
+                to_remove = None
+                to_add = None
+                matched = None
+                if isinstance(sub_edit, Match):
+                    if sub_edit.from_node.object == sub_edit.to_node.object:
+                        matched = sub_edit.from_node.object
+                    else:
+                        to_remove = sub_edit.from_node.object
+                        to_add = sub_edit.to_node.object
+                elif isinstance(sub_edit, Remove):
                     to_remove = sub_edit.from_node.object
-                    to_add = sub_edit.to_node.object
-            elif isinstance(sub_edit, Remove):
-                to_remove = sub_edit.from_node.object
-            else:
-                assert isinstance(sub_edit, Insert)
-                to_add = sub_edit.to_insert.object
-            if to_remove is not None and to_add is not None:
-                assert matched is None
-                remove_seq.append(to_remove)
-                add_seq.append(to_add)
-            else:
-                with printer.color(Fore.WHITE).background(Back.RED).bright():
-                    with printer.strike():
-                        for rm in remove_seq:
-                            self.write_char(printer, rm, index, num_edits, removed=True)
-                            index += 1
-                remove_seq = []
-                with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                    with printer.under_plus():
-                        for add in add_seq:
-                            self.write_char(printer, add, index, num_edits, inserted=True)
-                            index += 1
-                add_seq = []
-                if to_remove is not None:
+                else:
+                    assert isinstance(sub_edit, Insert)
+                    to_add = sub_edit.to_insert.object
+                if to_remove is not None and to_add is not None:
+                    assert matched is None
                     remove_seq.append(to_remove)
-                if to_add is not None:
                     add_seq.append(to_add)
-                if matched is not None:
-                    self.write_char(printer, matched, index, num_edits)
-                    index += 1
-        with printer.color(Fore.WHITE).background(Back.RED).bright():
-            with printer.strike():
-                for j, rm in enumerate(remove_seq):
-                    self.write_char(printer, rm, index, num_edits, removed=True)
-                    index += 1
-        with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-            with printer.under_plus():
-                for add in add_seq:
-                    self.write_char(printer, add, index, num_edits, inserted=True)
-                    index += 1
-        self.write_end_quote(printer, edit)
+                else:
+                    with printer.color(Fore.WHITE).background(Back.RED).bright():
+                        with printer.strike():
+                            for rm in remove_seq:
+                                self.write_char(p, rm, index, num_edits, removed=True)
+                                index += 1
+                    remove_seq = []
+                    with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                        with printer.under_plus():
+                            for add in add_seq:
+                                self.write_char(p, add, index, num_edits, inserted=True)
+                                index += 1
+                    add_seq = []
+                    if to_remove is not None:
+                        remove_seq.append(to_remove)
+                    if to_add is not None:
+                        add_seq.append(to_add)
+                    if matched is not None:
+                        self.write_char(p, matched, index, num_edits)
+                        index += 1
+            with printer.color(Fore.WHITE).background(Back.RED).bright():
+                with printer.strike():
+                    for j, rm in enumerate(remove_seq):
+                        self.write_char(p, rm, index, num_edits, removed=True)
+                        index += 1
+            with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                with printer.under_plus():
+                    for add in add_seq:
+                        self.write_char(p, add, index, num_edits, inserted=True)
+                        index += 1
+            self.write_end_quote(p, edit)
 
 
 class StringNode(LeafNode):
@@ -478,39 +512,8 @@ class StringNode(LeafNode):
         else:
             return super().edits(node)
 
-    def print(self, printer: Printer, escape_func: Optional[Callable[[str], str]] = None):
-        if escape_func is None:
-            if self.quoted:
-                def e(text: str):
-                    return text.replace('"', '\\"')
-
-                escape_func = e
-            else:
-                def e(text: str):
-                    return text
-
-                escape_func = e
-        if printer.context().fore is None:
-            context = printer.color(Fore.GREEN)
-            null_context = False
-        else:
-            context = NullANSIContext()
-            null_context = True
-        with context:
-            if self.quoted:
-                printer.write('"')
-            for c in self.object:
-                escaped = escape_func(c)
-                if c != escaped:
-                    if not null_context:
-                        with printer.color(Fore.YELLOW):
-                            printer.write(escaped)
-                    else:
-                        printer.write(escaped)
-                else:
-                    printer.write(c)
-            if self.quoted:
-                printer.write('"')
+    def print(self, printer: Printer):
+        StringFormatter.DEFAULT_INSTANCE.print(printer, self)
 
     def init_args(self) -> Dict[str, Any]:
         return {

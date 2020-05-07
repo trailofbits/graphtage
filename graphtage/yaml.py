@@ -11,8 +11,8 @@ except ImportError:
 from . import json
 from .formatter import Formatter
 from .edits import Insert, Match
-from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, StringEditFormatter
-from .printer import Printer
+from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, StringFormatter
+from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import Edit, TreeNode
 
@@ -45,7 +45,8 @@ class YAMLListFormatter(SequenceFormatter):
         if not is_last:
             if not is_first:
                 printer.newline()
-            printer.write('- ')
+            with printer.bright().color(Fore.WHITE):
+                printer.write('- ')
 
     def items_indent(self, printer: Printer):
         return printer
@@ -56,7 +57,7 @@ class YAMLKeyValuePairFormatter(Formatter):
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         self.print(printer, node.key)
-        with printer.bright():
+        with printer.bright().color(Fore.CYAN):
             printer.write(": ")
         if isinstance(node.value, MappingNode):
             printer.newline()
@@ -93,7 +94,7 @@ class YAMLDictFormatter(SequenceFormatter):
         return printer
 
 
-class YAMLStringFormatter(StringEditFormatter):
+class YAMLStringFormatter(StringFormatter):
     is_partial = True
     has_newline = False
 
@@ -111,6 +112,9 @@ class YAMLStringFormatter(StringEditFormatter):
             printer.write('|')
             printer.indents += 1
             printer.newline()
+
+    def context(self, printer: Printer):
+        return printer
 
     def write_end_quote(self, printer: Printer, edit: StringEdit):
         if self.has_newline:
@@ -150,19 +154,6 @@ class YAMLFormatter(Formatter):
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         self.write_obj(printer, node.object)
-
-    def print_StringNode(self, printer: Printer, node: StringNode):
-        if '\n' not in node.object:
-            self.print_LeafNode(printer, node)
-        else:
-            printer.write('|')
-            with printer.indent():
-                lines = node.object.split('\n')
-                if lines and lines[-1] == '':
-                    lines = lines[:-1]
-                for line in lines:
-                    printer.newline()
-                    self.write_obj(printer, line)
 
 
 class YAML(Filetype):
