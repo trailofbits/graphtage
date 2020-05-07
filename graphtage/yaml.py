@@ -28,7 +28,7 @@ class YAMLListFormatter(SequenceFormatter):
     def __init__(self):
         super().__init__('', '', '')
 
-    def print_SequenceNode(self, printer: Printer, node):
+    def print_SequenceNode(self, printer: Printer, node: SequenceNode):
         self.parent.print(printer, node)
 
     def print_ListNode(self, printer: Printer, *args, **kwargs):
