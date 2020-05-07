@@ -56,7 +56,11 @@ class YAMLKeyValuePairFormatter(Formatter):
     is_partial = True
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
-        self.print(printer, node.key)
+        if printer.context().fore is None:
+            with printer.color(Fore.BLUE) as p:
+                self.print(p, node.key)
+        else:
+            self.print(printer, node.key)
         with printer.bright().color(Fore.CYAN):
             printer.write(": ")
         if isinstance(node.value, MappingNode):
@@ -119,6 +123,26 @@ class YAMLStringFormatter(StringFormatter):
     def write_end_quote(self, printer: Printer, edit: StringEdit):
         if self.has_newline:
             printer.indents -= 1
+
+    def print_StringNode(self, printer: Printer, node: 'StringNode'):
+        s = node.object
+        if '\n' in s:
+            if printer.context().fore is None:
+                context = printer.color(Fore.CYAN)
+            else:
+                context = printer
+            with context as c:
+                c.write('|')
+                with c.indent():
+                    lines = s.split('\n')
+                    if lines[-1] == '':
+                        # Remove trailing newline
+                        lines = lines[:-1]
+                    for line in lines:
+                        c.newline()
+                        self.parent.write_obj(c, line)
+        else:
+            self.parent.write_obj(printer, s)
 
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c == '\n':
