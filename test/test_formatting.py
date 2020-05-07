@@ -26,9 +26,9 @@ FILETYPE_TEST_PREFIX = 'test_'
 FILETYPE_TEST_SUFFIX = '_formatting'
 
 
-def filetype_test(test_func=None, *, test_equality=True):
+def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int = 1000):
     if test_func is None:
-        return partial(filetype_test, test_equality=test_equality)
+        return partial(filetype_test, test_equality=test_equality, iterations=iterations)
 
     @wraps(test_func)
     def wrapper(self: 'TestFormatting'):
@@ -43,7 +43,7 @@ def filetype_test(test_func=None, *, test_equality=True):
         filetype = graphtage.FILETYPES_BY_TYPENAME[filetype_name]
         formatter = filetype.get_default_formatter()
 
-        for _ in trange(1000):
+        for _ in trange(iterations):
             orig_obj, str_representation = test_func(self)
             with graphtage.utils.Tempfile(str_representation.encode('utf-8')) as t:
                 tree = filetype.build_tree(t)
@@ -174,7 +174,7 @@ class TestFormatting(TestCase):
         return ret
 
     # Do not test equality for XML because the XMLFormatter auto-indents and thereby adds extra spaces to element text
-    @filetype_test(test_equality=False)
+    @filetype_test(test_equality=False, iterations=250)
     def test_xml_formatting(self):
         orig_obj = self.make_random_xml()
         return orig_obj, str(orig_obj)
