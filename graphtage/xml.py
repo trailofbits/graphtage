@@ -298,15 +298,14 @@ class XMLFormatter(Formatter):
             self.print(printer, node.attrib)
         if node._children._children or (node.text is not None and '\n' in node.text.object):
             printer.write('>')
-            #self._print_text(node, printer)
-            self.print(printer, node.text)
+            if node.text is not None:
+                self.print(printer, node.text)
             self.print(printer, node._children)
             printer.write('</')
             self.print(printer, node.tag)
             printer.write('>')
         elif node.text is not None:
             printer.write('>')
-            #self._print_text(node, printer)
             self.print(printer, node.text)
             printer.write('</')
             self.print(printer, node.tag)
