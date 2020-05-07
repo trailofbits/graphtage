@@ -68,6 +68,8 @@ class JSONDictFormatter(SequenceFormatter):
 
 
 class JSONStringFormatter(StringEditFormatter):
+    is_partial = True
+
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         # json.dumps will enclose the string in quotes, so remove them
         printer.write(json.dumps(c)[1:-1])

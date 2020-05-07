@@ -94,6 +94,7 @@ class YAMLDictFormatter(SequenceFormatter):
 
 
 class YAMLStringFormatter(StringEditFormatter):
+    is_partial = True
     has_newline = False
 
     def write_start_quote(self, printer: Printer, edit: StringEdit):
