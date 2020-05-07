@@ -158,6 +158,11 @@ class YAMLStringFormatter(StringFormatter):
 class YAMLFormatter(Formatter):
     sub_format_types = [YAMLStringFormatter, YAMLDictFormatter, YAMLListFormatter]
 
+    def print(self, printer: Printer, *args, **kwargs):
+        # YAML only gets a two-space indent
+        printer.indent_str = '  '
+        super().print(printer, *args, **kwargs)
+
     @staticmethod
     def write_obj(printer: Printer, obj):
         if obj == '':
@@ -174,6 +179,8 @@ class YAMLFormatter(Formatter):
                 ret = ret[:-1]
         if ret.endswith('\n...\n'):
             ret = ret[:-len('\n...\n')]
+        elif ret.endswith('\n'):
+            ret = ret[:-1]
         printer.write(ret)
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):

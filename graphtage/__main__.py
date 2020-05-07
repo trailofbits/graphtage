@@ -279,9 +279,6 @@ def main(argv=None):
                     formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                 else:
                     formatter = from_format.get_default_formatter()
-                if formatter.__class__ is YAMLFormatter and not args.html:
-                    # YAML only gets a two-space indent
-                    printer.indent_str = '  '
                 formatter.print(printer, diff)
     printer.write('\n')
     printer.close()
