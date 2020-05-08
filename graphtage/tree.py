@@ -1,16 +1,66 @@
 import itertools
 import logging
-from abc import abstractmethod, ABCMeta
+import sys
+from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from typing import Any, cast, Dict, Iterator, List, Optional, Type, TypeVar, Union
+from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
+from .formatter import Formatter, FORMATTERS
 from .printer import DEFAULT_PRINTER, Printer
 
 log = logging.getLogger(__name__)
 
 
+if sys.version_info.major == 3 and sys.version_info.minor < 7:
+    # For some reason, the type checker breaks on the generic argument in Py3.6 and earlier
+    FormatterType = Formatter
+else:
+    FormatterType = Formatter[Union['TreeNode', 'Edit']]
+
+
+class GraphtageFormatter(FormatterType):
+    def print(self, printer: Printer, node_or_edit: Union['TreeNode', 'Edit'], with_edits: bool = True):
+        if isinstance(node_or_edit, Edit):
+            if with_edits:
+                edit: Optional[Edit] = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit.from_node
+        elif with_edits:
+            if isinstance(node_or_edit, EditedTreeNode) and \
+                    node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0:
+                edit: Optional[Edit] = node_or_edit.edit
+                node: TreeNode = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+                node: TreeNode = node_or_edit
+        else:
+            edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit
+        if edit is not None:
+            # First, see if we have a specialized formatter for this edit:
+            edit_formatter = self.get_formatter(edit)
+            if edit_formatter is not None:
+                edit_formatter(printer, edit)
+                return
+            try:
+                edit.print(self, printer)
+                return
+            except NotImplementedError:
+                pass
+        formatter = self.get_formatter(node)
+        if formatter is not None:
+            formatter(printer, node)
+        else:
+            log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
+    Falling back to the node's internal printer
+    Registered formatters: {''.join([f.__class__.__name__ for f in FORMATTERS])}""")
+            node.print(printer)
+
+
+@runtime_checkable
 class Edit(Bounded, Protocol):
     initial_bounds: Range
     from_node: 'TreeNode'
@@ -31,11 +81,17 @@ class Edit(Bounded, Protocol):
     def valid(self, is_valid: bool):
         raise NotImplementedError()
 
-    def print(self, printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        """Edits can optionally implement a printing method
+           This function is called automatically from the formatter in the printing protocol and should
+           never be called directly unless you really know what you're doing!
+           Raising NotImplementedError() will cause the formatter to fall back on its own printing implementations.
+        """
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):
         log.debug(repr(self))
+        from_node.edit = self
         from_node.edit_list.append(self)
 
 
@@ -49,6 +105,8 @@ class CompoundEdit(Edit, Iterable, Protocol):
         log.debug(repr(self))
         if hasattr(from_node, 'edit_list'):
             from_node.edit_list.append(self)
+        if hasattr(from_node, 'edit'):
+            from_node.edit = self
         for edit in self.edits():
             edit.on_diff(edit.from_node)
 
@@ -70,45 +128,111 @@ class EditedTreeNode:
         self.inserted: List[TreeNode] = []
         self.matched_to: Optional[TreeNode] = None
         self.edit_list: List[Edit] = []
+        self.edit: Optional[Edit] = None
+
+    @property
+    def edited(self) -> bool:
+        return True
 
     def edited_cost(self) -> int:
         while any(e.tighten_bounds() for e in self.edit_list):
             pass
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
-    def print(self, *args, **kwargs):
-        if self.edit_list:
-            for edit in self.edit_list:
-                edit.print(*args, **kwargs)
-        else:
-            return cast(TreeNode, super()).print(*args, **kwargs)
-
-    def print_without_edits(self, *args, **kwargs):
-        super().print(*args, **kwargs)
-
 
 class TreeNode(metaclass=ABCMeta):
     _total_size = None
+    _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+    edit_modifiers: Optional[List[Callable[['TreeNode', 'TreeNode'], Optional[Edit]]]] = None
+
+    @property
+    def edited(self) -> bool:
+        return False
+
+    def _edits_with_modifiers(self, node: 'TreeNode') -> Edit:
+        for modifier in self.edit_modifiers:
+            ret = modifier(self, node)
+            if ret is not None:
+                return ret
+        return self.__class__.edits(self, node)
+
+    def __getattribute__(self, item):
+        if item == 'edits' and super().__getattribute__('edit_modifiers'):
+            return super().__getattribute__('_edits_with_modifiers')
+        else:
+            return super().__getattribute__(item)
 
     @abstractmethod
-    def edits(self, node) -> Edit:
+    def to_obj(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def children(self) -> Collection['TreeNode']:
+        raise NotImplementedError()
+
+    def dfs(self) -> Iterator['TreeNode']:
+        stack = [self]
+        while stack:
+            node = stack.pop()
+            yield node
+            stack.extend(node.children())
+
+    @property
+    def is_leaf(self) -> bool:
+        return len(self.children()) == 0
+
+    @abstractmethod
+    def edits(self, node: 'TreeNode') -> Edit:
         raise NotImplementedError()
 
     @classmethod
     def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
-        def init(etn, *args, **kwargs):
-            EditedTreeNode.__init__(etn)
-            cls.__init__(etn, *args, **kwargs)
+        if cls._edited_type is None:
+            def init(etn, wrapped_tree_node: TreeNode):
+                etn.__dict__ = dict(wrapped_tree_node.editable_dict())
+                EditedTreeNode.__init__(etn)
 
-        return type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-            '__init__': init
-        })
+            cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
+                '__init__': init
+            })
+        return cls._edited_type
 
     def make_edited(self) -> Union[EditedTreeNode, T]:
-        ret = self.copy(new_class=self.edited_type())
+        ret = self.edited_type()(self)
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
+
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        if not self.is_leaf:
+            # Deep-copy any sub-nodes
+            for key, value in ret.items():
+                if isinstance(value, TreeNode):
+                    ret[key] = value.make_edited()
+        return ret
+
+    def get_all_edits(self, node: 'TreeNode') -> Iterator[Edit]:
+        edit = self.edits(node)
+        prev_bounds = edit.bounds()
+        total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
+        prev_range = total_range
+        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
+                new_bounds = edit.bounds()
+                new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                t.update(prev_range - new_range)
+                prev_range = new_range
+        edit_stack = [edit]
+        while edit_stack:
+            edit = edit_stack.pop()
+            if isinstance(edit, CompoundEdit):
+                edit_stack.extend(list(edit.edits()))
+            else:
+                while edit.bounds().lower_bound == 0 and not edit.bounds().definitive() and edit.tighten_bounds():
+                    pass
+                if edit.bounds().lower_bound > 0:
+                    yield edit
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         ret = self.make_edited()
@@ -141,15 +265,14 @@ class TreeNode(metaclass=ABCMeta):
     def print(self, printer: Printer):
         pass
 
-    @abstractmethod
-    def init_args(self) -> Dict[str, Any]:
-        pass
 
-    def copy(self, new_class: Optional[Type[T]] = None) -> T:
-        if new_class is None:
-            new_class = self.__class__
-        return new_class(**self.init_args())
+class ContainerNode(TreeNode, Iterable, Sized, ABC):
+    def children(self) -> List[TreeNode]:
+        return list(self)
 
+    @property
+    def is_leaf(self) -> bool:
+        return False
 
-class ContainerNode(TreeNode, metaclass=ABCMeta):
-    pass
+    def all_children_are_leaves(self) -> bool:
+        return all(c.is_leaf for c in self)

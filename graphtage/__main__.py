@@ -1,41 +1,22 @@
 import argparse
-import json
 import logging
 import mimetypes
 import os
 import sys
-import tempfile as tf
-from typing import Callable, Dict, Optional
-import xml.etree.ElementTree as ET
-from yaml import YAMLError
+from abc import ABCMeta, abstractmethod
+from typing import Optional
 
-from . import csv
+from .edits import Edit
+from . import expressions
 from . import graphtage
 from . import printer as printermodule
 from . import version
-from . import xml
-from . import yaml
 from .printer import HTMLPrinter, Printer
+from .utils import Tempfile
+from .yaml import YAMLFormatter
 
 
-class Tempfile:
-    def __init__(self, contents, prefix=None, suffix=None):
-        self._temp = None
-        self._data = contents
-        self._prefix = prefix
-        self._suffix = suffix
-
-    def __enter__(self):
-        self._temp = tf.NamedTemporaryFile(prefix=self._prefix, suffix=self._suffix, delete=False)
-        self._temp.write(self._data)
-        self._temp.flush()
-        self._temp.close()
-        return self._temp.name
-
-    def __exit__(self, type, value, traceback):
-        if self._temp is not None:
-            os.unlink(self._temp.name)
-            self._temp = None
+log = logging.getLogger('graphtage')
 
 
 class PathOrStdin:
@@ -57,100 +38,39 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-PARSERS_BY_MIME: Dict[str, Callable[[str, bool], graphtage.TreeNode]] = {}
-DEFAULT_MIME_BY_TYPENAME: Dict[str, str] = {}
+class ConditionalMatcher(metaclass=ABCMeta):
+    def __init__(self, condition: expressions.Expression):
+        self.condition: expressions.Expression = condition
+
+    @abstractmethod
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        raise NotImplementedError()
+
+    @classmethod
+    def apply(cls, node: graphtage.TreeNode, condition: expressions.Expression):
+        if node.edit_modifiers is None:
+            node.edit_modifiers = []
+        node.edit_modifiers.append(cls(condition))
 
 
-def set_mime_types(
-        parser: Callable[[str, bool], graphtage.TreeNode],
-        typename: str,
-        default_mime: str,
-        *mime_types: str
-):
-    if typename in DEFAULT_MIME_BY_TYPENAME:
-        if DEFAULT_MIME_BY_TYPENAME[typename] != default_mime:
-            raise ValueError(
-                f'Type {typename} is already associated with mime type {DEFAULT_MIME_BY_TYPENAME[typename]}')
-    else:
-        DEFAULT_MIME_BY_TYPENAME[typename] = default_mime
-    for mime_type in [default_mime] + list(mime_types):
-        if mime_type in PARSERS_BY_MIME:
-            if PARSERS_BY_MIME[mime_type] == parser:
-                continue
-            else:
-                raise ValueError(f"MIME type {mime_type} is already assigned to {PARSERS_BY_MIME[mime_type]}")
-        PARSERS_BY_MIME[mime_type] = parser
+class MatchIf(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        try:
+            if self.condition.eval(locals={'from': from_node, 'to': to_node}):
+                return None
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-if for nodes {from_node} and {to_node}")
+        return graphtage.Replace(from_node, to_node)
 
 
-def build_json_tree(path: str, *args, **kwargs):
-    with open(path) as f:
-        return graphtage.build_tree(json.load(f), *args, **kwargs)
-
-
-set_mime_types(
-    build_json_tree,
-    'json',
-    'application/json',
-    'application/x-javascript',
-    'text/javascript',
-    'text/x-javascript',
-    'text/x-json'
-)
-
-set_mime_types(
-    xml.build_tree,
-    'xml',
-    'application/xml',
-    'text/xml'
-)
-
-set_mime_types(
-    xml.build_tree,
-    'html',
-    'text/html',
-    'application/xhtml+xml'
-)
-
-set_mime_types(
-    yaml.build_tree,
-    'yaml',
-    'application/x-yaml',
-    'application/yaml',
-    'text/yaml',
-    'text/x-yaml',
-    'text/vnd.yaml'
-)
-
-set_mime_types(
-    csv.build_tree,
-    'csv',
-    'text/csv'
-)
-
-
-def build_tree(path: str, allow_key_edits=True, mime_type: Optional[str] = None):
-    if mime_type is None:
-        mime_type = mimetypes.guess_type(path)[0]
-    if mime_type is None:
-        raise ValueError(f"Could not determine the filetype for {path}")
-    elif mime_type not in PARSERS_BY_MIME:
-        raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
-    else:
-        return PARSERS_BY_MIME[mime_type](path, allow_key_edits=allow_key_edits)
-
-
-def build_tree_handling_errors(path: str, *args, **kwargs):
-    try:
-        return build_tree(path, *args, **kwargs)
-    except ET.ParseError as pe:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
-        sys.exit(1)
-    except json.decoder.JSONDecodeError as de:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
-        sys.exit(1)
-    except YAMLError as ye:
-        sys.stderr.write(f'Error parsing {os.path.basename(path)}: {ye})\n\n')
-        sys.exit(1)
+class MatchUnless(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        try:
+            if self.condition.eval(locals={'from': from_node.to_obj(), 'to': to_node.to_obj()}):
+                return graphtage.Replace(from_node, to_node)
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-unless for nodes {from_node} and {to_node}")
+        return None
 
 
 def main(argv=None):
@@ -168,7 +88,7 @@ def main(argv=None):
         type=str,
         default=None,
         help='explicitly specify the MIME type of the first file',
-        choices=PARSERS_BY_MIME.keys()
+        choices=graphtage.FILETYPES_BY_MIME.keys()
     )
     file2_type_group = file_type_group.add_mutually_exclusive_group()
     file2_type_group.add_argument(
@@ -176,9 +96,10 @@ def main(argv=None):
         type=str,
         default=None,
         help='explicitly specify the MIME type of the second file',
-        choices=PARSERS_BY_MIME.keys()
+        choices=graphtage.FILETYPES_BY_MIME.keys()
     )
-    for typename, mime in sorted(DEFAULT_MIME_BY_TYPENAME.items()):
+    for typename, filetype in sorted(graphtage.FILETYPES_BY_TYPENAME.items()):
+        mime = filetype.default_mimetype
         file1_type_group.add_argument(
             f'--from-{typename}',
             action='store_const',
@@ -193,7 +114,12 @@ def main(argv=None):
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
+    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
+    parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
     formatting = parser.add_argument_group(title='output formatting')
+    formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
+                            help='output format for the diff (default is to use the format of FROM_PATH)')
     color_group = formatting.add_mutually_exclusive_group()
     color_group.add_argument(
         '--color', '-c',
@@ -305,7 +231,7 @@ def main(argv=None):
     if args.from_mime is not None:
         from_mime = args.from_mime
     else:
-        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             from_mime = getattr(args, f'from_{typename}')
             if from_mime is not None:
                 break
@@ -315,20 +241,45 @@ def main(argv=None):
     if args.from_mime is not None:
         to_mime = args.from_mime
     else:
-        for typename in DEFAULT_MIME_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             to_mime = getattr(args, f'to_{typename}')
             if to_mime is not None:
                 break
         else:
             to_mime = None
 
+    if args.match_if:
+        match_if = expressions.parse(args.match_if)
+    else:
+        match_if = None
+    if args.match_unless:
+        match_unless = expressions.parse(args.match_unless)
+    else:
+        match_unless = None
+
     with PathOrStdin(args.FROM_PATH) as from_path:
         with PathOrStdin(args.TO_PATH) as to_path:
-            from_tree = build_tree_handling_errors(
-                from_path, allow_key_edits=not args.no_key_edits, mime_type=from_mime)
-            to_tree = build_tree_handling_errors(
-                to_path, allow_key_edits=not args.no_key_edits, mime_type=to_mime)
-            from_tree.diff(to_tree).print(printer)
+            from_format = graphtage.get_filetype(from_path, from_mime)
+            to_format = graphtage.get_filetype(to_path, to_mime)
+            from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
+            to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
+            if match_if is not None or match_unless is not None:
+                for node in from_tree.dfs():
+                    if match_if is not None:
+                        MatchIf.apply(node, match_if)
+                    if match_unless is not None:
+                        MatchUnless.apply(node, match_unless)
+            if args.only_edits:
+                for edit in from_tree.get_all_edits(to_tree):
+                    printer.write(str(edit))
+                    printer.newline()
+            else:
+                diff = from_tree.diff(to_tree)
+                if args.format is not None:
+                    formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                else:
+                    formatter = from_format.get_default_formatter()
+                formatter.print(printer, diff)
     printer.write('\n')
     printer.close()
 

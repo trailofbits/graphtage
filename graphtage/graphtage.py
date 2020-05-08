@@ -1,4 +1,6 @@
-from typing import Any, cast, Dict, Iterable, Iterator, List, Sequence, Tuple, Union
+import mimetypes
+from abc import ABC, ABCMeta, abstractmethod
+from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -7,13 +9,19 @@ from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
+from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
 
 class LeafNode(TreeNode):
     def __init__(self, obj):
         self.object = obj
+
+    def to_obj(self):
+        return self.object
+
+    def children(self) -> Collection[TreeNode]:
+        return ()
 
     def calculate_total_size(self):
         return len(str(self.object))
@@ -23,11 +31,6 @@ class LeafNode(TreeNode):
             return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'obj': self.object
-        }
 
     def print(self, printer: Printer):
         printer.write(repr(self.object))
@@ -81,6 +84,10 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             to_node=to_kvp
         )
 
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        # Raise NotImplementedError() to cause the formatter to fall back on its own implementations
+        raise NotImplementedError()
+
     def bounds(self) -> Range:
         return self.key_edit.bounds() + self.value_edit.bounds()
 
@@ -91,19 +98,24 @@ class KeyValuePairEdit(AbstractCompoundEdit):
         yield self.key_edit
         yield self.value_edit
 
-    def print(self, printer: Printer):
-        with printer.color(Fore.BLUE):
-            self.key_edit.print(printer)
-        with printer.bright():
-            printer.write(": ")
-        self.value_edit.print(printer)
-
 
 class KeyValuePairNode(ContainerNode):
     def __init__(self, key: LeafNode, value: TreeNode, allow_key_edits: bool = True):
         self.key: LeafNode = key
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
+
+    def to_obj(self):
+        return self.key, self.value
+
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        ret['key'] = self.key.make_edited()
+        ret['value'] = self.value.make_edited()
+        return ret
+
+    def children(self) -> Tuple[LeafNode, TreeNode]:
+        return self.key, self.value
 
     def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, KeyValuePairNode):
@@ -112,20 +124,6 @@ class KeyValuePairNode(ContainerNode):
             return KeyValuePairEdit(self, node)
         else:
             return Replace(self, node)
-
-    def make_edited(self) -> Union[EditedTreeNode, 'KeyValuePairNode']:
-        return self.edited_type()(
-            key=self.key.make_edited(),
-            value=self.value.make_edited(),
-            allow_key_edits=self.allow_key_edits
-        )
-
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'key': self.key,
-            'value': self.value,
-            'allow_key_edits': self.allow_key_edits
-        }
 
     def print(self, printer: Printer):
         if isinstance(self.key, LeafNode):
@@ -167,24 +165,30 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class ListNode(SequenceNode):
-    def __init__(self, list_like: Sequence[TreeNode]):
-        super().__init__()
-        self.children: Tuple[TreeNode] = tuple(list_like)
+T = TypeVar('T', bound=TreeNode)
 
-    def all_children_are_leaves(self) -> bool:
-        return all(isinstance(c, LeafNode) for c in self.children)
+
+class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
+    def __init__(self, nodes: Iterable[T]):
+        super().__init__(tuple(nodes))
+
+    def to_obj(self):
+        return [n.to_obj() for n in self]
+
+    @property
+    def container_type(self) -> Type[Tuple[T, ...]]:
+        return tuple
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            if len(self.children) == len(node.children) == 0:
+            if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
-            elif len(self.children) == len(node.children) == 1:
+            elif len(self._children) == len(node._children) == 1:
                 return EditSequence(from_node=self, to_node=node, edits=iter((
                     Match(self, node, 0),
-                    self.children[0].edits(node.children[0])
+                    self._children[0].edits(node._children[0])
                 )))
-            elif self.children == node.children:
+            elif self._children == node._children:
                 return Match(self, node, 0)
             else:
                 if self.all_children_are_leaves() and node.all_children_are_leaves():
@@ -194,129 +198,90 @@ class ListNode(SequenceNode):
                 return EditDistance(
                     self,
                     node,
-                    self.children,
-                    node.children,
+                    self._children,
+                    node._children,
                     insert_remove_penalty=insert_remove_penalty
                 )
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'list_like': self.children
-        }
 
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_lists') and printer.join_lists:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
+class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
+    def __init__(self, items: Iterable[T]):
+        if not isinstance(items, HashableCounter):
+            items = HashableCounter(items)
+        super().__init__(items)
 
-    def calculate_total_size(self):
-        return sum(c.total_size for c in self.children)
+    def to_obj(self):
+        return HashableCounter(n.to_obj() for n in self)
 
-    def __eq__(self, other):
-        return isinstance(other, ListNode) and self.children == other.children
-
-    def __hash__(self):
-        return hash(self.children)
-
-    def __len__(self):
-        return len(self.children)
-
-    def __iter__(self) -> Iterator[TreeNode]:
-        return iter(self.children)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.children!r})"
-
-    def __str__(self):
-        return str(self.children)
-
-
-class MultiSetNode(SequenceNode):
-    def __init__(self, items: Iterable[TreeNode]):
-        super().__init__()
-        self.children: HashableCounter[TreeNode] = HashableCounter(items)
+    @property
+    def container_type(self) -> Type[HashableCounter[T]]:
+        return HashableCounter
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
-            if len(self.children) == len(node.children) == 0:
+            if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
-            elif self.children == node.children:
+            elif self._children == node._children:
                 return Match(self, node, 0)
             else:
-                return MultiSetEdit(self, node, self.children, node.children)
+                return MultiSetEdit(self, node, self._children, node._children)
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'items': self.children.elements()
-        }
-
     def calculate_total_size(self):
-        return sum(c.total_size * count for c, count in self.children.items())
-
-    def __eq__(self, other):
-        return isinstance(other, MultiSetNode) and other.children == self.children
-
-    def __hash__(self):
-        return hash(self.children)
+        return sum(c.total_size * count for c, count in self._children.items())
 
     def __len__(self):
-        return sum(self.children.values())
+        return sum(self._children.values())
 
     def __iter__(self) -> Iterator[TreeNode]:
-        return self.children.elements()
+        return self._children.elements()
 
     def __repr__(self):
         return f"{self.__class__.__name__}({list(self)!r})"
 
-    def __str__(self):
-        return str(self.children)
 
-
-class DictNode(MultiSetNode):
-    def __init__(self, dict_like_or_kvp_list: Union[Dict[LeafNode, TreeNode], Sequence[KeyValuePairNode]]):
-        if hasattr(dict_like_or_kvp_list, 'items'):
-            super().__init__(
-                sorted(KeyValuePairNode(key, value, allow_key_edits=True)
-                       for key, value in dict_like_or_kvp_list.items())
-            )
-        else:
-            super().__init__(dict_like_or_kvp_list)
-        self.start_symbol = '{'
-        self.end_symbol = '}'
-
-    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
-        yield from self.children.elements()
-
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
-
-    # def make_edited(self) -> Union[EditedTreeNode, 'DictNode']:
-    #     return self.edited_type()({
-    #         kvp.key.make_edited(): kvp.value.make_edited() for kvp in cast(Iterator[KeyValuePairNode], self)
-    #     })
-
-    def init_args(self) -> Dict[str, Any]:
+class MappingNode(ContainerNode, ABC):
+    def to_obj(self) -> Dict[Any, Any]:
         return {
-            'dict_like': {
-                kvp.key: kvp.value for kvp in self
-            }
+            k.to_obj(): v.to_obj() for k, v in self.items()
         }
+
+    def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
+        for kvp in self:
+            yield kvp.key, kvp.value
+
+    def __contains__(self, item: TreeNode):
+        return any(k == item for k, _ in self.items())
+
+    def __getitem__(self, item: TreeNode) -> KeyValuePairNode:
+        for kvp in self:
+            if kvp.key == item:
+                return kvp
+        raise KeyError(item)
+
+    @abstractmethod
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
+        raise NotImplementedError()
+
+
+class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
+    @staticmethod
+    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+        return DictNode(
+            sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
+        )
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, MultiSetNode):
             return super().edits(node)
         else:
             return Replace(self, node)
+
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
+        yield from self._children.elements()
 
 
 class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
@@ -336,37 +301,32 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
         )
 
 
-class FixedKeyDictNode(SequenceNode):
+class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
     """A dictionary that only matches KeyValuePairs if they share the same key
     NOTE: This implementation does not currently support duplicate keys!
     """
-    def __init__(self, dict_like: Dict[LeafNode, TreeNode]):
-        is_edited = isinstance(self, EditedTreeNode)
+    @property
+    def container_type(self) -> Type[Dict[LeafNode, KeyValuePairNode]]:
+        return dict
 
-        def kvp_type(key, value):
-            ret = KeyValuePairNode(key, value, allow_key_edits=False)
-            if is_edited:
-                return ret.make_edited()
-            else:
-                return ret
+    @staticmethod
+    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+        return FixedKeyDictNode({
+            kvp.key: kvp
+            for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
+        })
 
-        self.children: Dict[LeafNode, KeyValuePairNode] = {
-            kvp.key: kvp for kvp in (kvp_type(key, value) for key, value in dict_like.items())
-        }
-        super().__init__(start_symbol='{', end_symbol='}')
+    def __getitem__(self, item: TreeNode):
+        return self._children[item]
 
-    def print_item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if hasattr(printer, 'join_dict_items') and printer.join_dict_items:
-            if not is_first and not is_last:
-                printer.write(' ')
-        else:
-            printer.newline()
+    def __contains__(self, item: TreeNode):
+        return item in self._children
 
-    def _child_edits(self, node: 'FixedKeyDictNode') -> Iterator[Edit]:
+    def _child_edits(self, node: MappingNode) -> Iterator[Edit]:
         unshared_kvps = set()
-        for key, kvp in self.children.items():
-            if key in node.children:
-                other_kvp = node.children[key]
+        for key, kvp in self._children.items():
+            if key in node:
+                other_kvp = node[key]
                 if kvp == other_kvp:
                     yield Match(kvp, other_kvp, 0)
                 else:
@@ -375,53 +335,35 @@ class FixedKeyDictNode(SequenceNode):
                 unshared_kvps.add(kvp)
         for kvp in unshared_kvps:
             yield Remove(to_remove=kvp, remove_from=self)
-        for kvp in node.children.values():
-            if kvp.key not in self.children:
+        for kvp in node:
+            if kvp.key not in self._children:
                 yield Insert(to_insert=kvp, insert_into=self)
 
     def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, FixedKeyDictNode):
-            if len(self.children) == len(node.children) == 0:
+        if isinstance(node, MappingNode):
+            if len(self._children) == len(node) == 0:
                 return Match(self, node, 0)
-            elif self.children == node.children:
+            elif frozenset(self) == frozenset(node):
                 return Match(self, node, 0)
             else:
                 return FixedKeyDictNodeEdit(from_node=self, to_node=node, edits=self._child_edits(node))
         else:
             return Replace(self, node)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'dict_like': {
-                kvp.key: kvp.value for kvp in self.children.values()
-            }
-        }
+    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+        for k, v in self._children.items():
+            yield k.to_obj(), v.to_obj()
 
-    def make_edited(self) -> Union[EditedTreeNode, 'FixedKeyDictNode']:
-        return self.edited_type()({
-            kvp.key: kvp.value for kvp in self.children.values()
-        })
-
-    def calculate_total_size(self):
-        return sum(c.total_size for c in self.children.values())
-
-    def __eq__(self, other):
-        return isinstance(other, FixedKeyDictNode) and other.children == self.children
+    def editable_dict(self) -> Dict[str, Any]:
+        ret = dict(self.__dict__)
+        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        return ret
 
     def __hash__(self):
-        return hash(frozenset(self.children.values()))
+        return hash(frozenset(self._children.values()))
 
-    def __len__(self):
-        return len(self.children)
-
-    def __iter__(self) -> Iterator[TreeNode]:
-        return iter(self.children.values())
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}({list(self)!r})"
-
-    def __str__(self):
-        return str(self.children)
+    def __iter__(self) -> Iterator[KeyValuePairNode]:
+        return iter(self._children.values())
 
 
 class StringEdit(AbstractEdit):
@@ -445,57 +387,113 @@ class StringEdit(AbstractEdit):
     def tighten_bounds(self) -> bool:
         return self.edit_distance.tighten_bounds()
 
-    def print(self, printer: Printer):
-        if self.from_node.quoted:
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        raise NotImplementedError()
+
+
+class StringFormatter(GraphtageFormatter):
+    is_quoted = False
+
+    def write_start_quote(self, printer: Printer, edit: StringEdit):
+        if edit.from_node.quoted:
+            self.is_quoted = True
             printer.write('"')
-        remove_seq = []
-        add_seq = []
-        for sub_edit in self.edit_distance.edits():
-            to_remove = None
-            to_add = None
-            matched = None
-            if isinstance(sub_edit, Match):
-                if sub_edit.from_node.object == sub_edit.to_node.object:
-                    matched = sub_edit.from_node.object
-                else:
+        else:
+            self.is_quoted = False
+
+    def write_end_quote(self, printer: Printer, edit: StringEdit):
+        if edit.from_node.quoted:
+            self.is_quoted = True
+            printer.write('"')
+        else:
+            self.is_quoted = False
+
+    def escape(self, c: str):
+        if self.is_quoted:
+            return c.replace('"', '\\"')
+        else:
+            return c
+
+    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+        escaped = self.escape(c)
+        if escaped != c and not isinstance(printer, NullANSIContext):
+            with printer.color(Fore.YELLOW):
+                printer.write(escaped)
+        else:
+            printer.write(c)
+
+    def context(self, printer: Printer):
+        if printer.context().fore is None:
+            return printer.color(Fore.GREEN)
+        else:
+            return printer
+
+    def print_StringNode(self, printer: Printer, node: 'StringNode'):
+        with self.context(printer) as p:
+            self.write_start_quote(p, StringEdit(node, node))
+            num_edits = len(node.object)
+            for i, c in enumerate(node.object):
+                self.write_char(p, c, i, num_edits)
+            self.write_end_quote(p, StringEdit(node, node))
+
+    def print_StringEdit(self, printer: Printer, edit: StringEdit):
+        with self.context(printer) as p:
+            self.write_start_quote(p, edit)
+            remove_seq = []
+            add_seq = []
+            index = 0
+            edits = list(edit.edit_distance.edits())
+            num_edits = len(edits)
+            for sub_edit in edits:
+                to_remove = None
+                to_add = None
+                matched = None
+                if isinstance(sub_edit, Match):
+                    if sub_edit.from_node.object == sub_edit.to_node.object:
+                        matched = sub_edit.from_node.object
+                    else:
+                        to_remove = sub_edit.from_node.object
+                        to_add = sub_edit.to_node.object
+                elif isinstance(sub_edit, Remove):
                     to_remove = sub_edit.from_node.object
-                    to_add = sub_edit.to_node.object
-            elif isinstance(sub_edit, Remove):
-                to_remove = sub_edit.from_node.object
-            else:
-                assert isinstance(sub_edit, Insert)
-                to_add = sub_edit.to_insert.object
-            if to_remove is not None and to_add is not None:
-                assert matched is None
-                remove_seq.append(to_remove)
-                add_seq.append(to_add)
-            else:
-                with printer.color(Fore.WHITE).background(Back.RED).bright():
-                    with printer.strike():
-                        for rm in remove_seq:
-                            printer.write(rm)
-                remove_seq = []
-                with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                    with printer.under_plus():
-                        for add in add_seq:
-                            printer.write(add)
-                add_seq = []
-                if to_remove is not None:
+                else:
+                    assert isinstance(sub_edit, Insert)
+                    to_add = sub_edit.to_insert.object
+                if to_remove is not None and to_add is not None:
+                    assert matched is None
                     remove_seq.append(to_remove)
-                if to_add is not None:
                     add_seq.append(to_add)
-                if matched is not None:
-                    printer.write(matched)
-        with printer.color(Fore.WHITE).background(Back.RED).bright():
-            with printer.strike():
-                for rm in remove_seq:
-                    printer.write(rm)
-        with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-            with printer.under_plus():
-                for add in add_seq:
-                    printer.write(add)
-        if self.from_node.quoted:
-            printer.write('"')
+                else:
+                    with printer.color(Fore.WHITE).background(Back.RED).bright():
+                        with printer.strike():
+                            for rm in remove_seq:
+                                self.write_char(p, rm, index, num_edits, removed=True)
+                                index += 1
+                    remove_seq = []
+                    with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                        with printer.under_plus():
+                            for add in add_seq:
+                                self.write_char(p, add, index, num_edits, inserted=True)
+                                index += 1
+                    add_seq = []
+                    if to_remove is not None:
+                        remove_seq.append(to_remove)
+                    if to_add is not None:
+                        add_seq.append(to_add)
+                    if matched is not None:
+                        self.write_char(p, matched, index, num_edits)
+                        index += 1
+            with printer.color(Fore.WHITE).background(Back.RED).bright():
+                with printer.strike():
+                    for j, rm in enumerate(remove_seq):
+                        self.write_char(p, rm, index, num_edits, removed=True)
+                        index += 1
+            with printer.color(Fore.WHITE).background(Back.GREEN).bright():
+                with printer.under_plus():
+                    for add in add_seq:
+                        self.write_char(p, add, index, num_edits, inserted=True)
+                        index += 1
+            self.write_end_quote(p, edit)
 
 
 class StringNode(LeafNode):
@@ -514,26 +512,7 @@ class StringNode(LeafNode):
             return super().edits(node)
 
     def print(self, printer: Printer):
-        if printer.context().fore is None:
-            context = printer.color(Fore.GREEN)
-            null_context = False
-        else:
-            context = NullANSIContext()
-            null_context = True
-        with context:
-            if self.quoted:
-                printer.write('"')
-            for c in self.object:
-                if c == '"' and self.quoted:
-                    if not null_context:
-                        with printer.color(Fore.YELLOW):
-                            printer.write('\\"')
-                    else:
-                        printer.write('\\"')
-                else:
-                    printer.write(c)
-            if self.quoted:
-                printer.write('"')
+        StringFormatter.DEFAULT_INSTANCE.print(printer, self)
 
     def init_args(self) -> Dict[str, Any]:
         return {
@@ -571,57 +550,62 @@ class BoolNode(LeafNode):
         }
 
 
-def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeNode:
-    if isinstance(python_obj, int):
-        return IntegerNode(python_obj)
-    elif isinstance(python_obj, float):
-        return FloatNode(python_obj)
-    elif isinstance(python_obj, bool):
-        return BoolNode(python_obj)
-    elif isinstance(python_obj, str):
-        return StringNode(python_obj)
-    elif isinstance(python_obj, bytes):
-        return StringNode(python_obj.decode('utf-8'))
-    elif force_leaf_node:
-        raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
-    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n, allow_key_edits=allow_key_edits) for n in python_obj])
-    elif isinstance(python_obj, dict):
-        dict_items = {
-            build_tree(k, allow_key_edits=allow_key_edits, force_leaf_node=True):
-                build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
-        }
-        if allow_key_edits:
-            return DictNode(dict_items)
-        else:
-            return FixedKeyDictNode(dict_items)
-    else:
-        raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
-
-
-class EditedMatch(AbstractEdit):
-    def __init__(self, match_from: LeafNode, match_to: LeafNode):
-        self.edit_distance: EditDistance = string_edit_distance(str(match_from.object), str(match_to.object))
-        super().__init__(
-            from_node=match_from,
-            to_node=match_to
-        )
-
-    def print(self, printer: Printer):
-        for edit in self.edit_distance.edits():
-            edit.print(printer)
-
-    def bounds(self) -> Range:
-        return self.edit_distance.bounds()
-
-    def tighten_bounds(self) -> bool:
-        return self.edit_distance.tighten_bounds()
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
-
-
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2, list1.children, list2.children, insert_remove_penalty=0)
+    return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
+
+
+FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
+FILETYPES_BY_TYPENAME: Dict[str, 'Filetype'] = {}
+
+
+class FiletypeWatcher(ABCMeta):
+    def __init__(cls, name, bases, clsdict):
+        if len(cls.mro()) > 2:
+            # Instantiate a version of the filetype to add it to our global dicts:
+            instance = cls()
+            assert instance.name in FILETYPES_BY_TYPENAME
+            assert instance.default_mimetype in FILETYPES_BY_MIME
+        super().__init__(name, bases, clsdict)
+
+
+class Filetype(metaclass=FiletypeWatcher):
+    def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
+        self.name = type_name
+        self.default_mimetype: str = default_mimetype
+        self.mimetypes: Tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
+        for mime_type in self.mimetypes:
+            if mime_type in FILETYPES_BY_MIME:
+                raise ValueError(f"MIME type {mime_type} is already assigned to {FILETYPES_BY_MIME[mime_type]}")
+            FILETYPES_BY_MIME[mime_type] = self
+        FILETYPES_BY_MIME[default_mimetype] = self
+        if type_name in FILETYPES_BY_TYPENAME:
+            raise ValueError(
+                f'Type {type_name} is already associated with Filetype {FILETYPES_BY_TYPENAME[type_name]}')
+        FILETYPES_BY_TYPENAME[self.name] = self
+
+    @abstractmethod
+    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_default_formatter(self) -> GraphtageFormatter:
+        raise NotImplementedError()
+
+
+def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) -> Filetype:
+    if path is None and mime_type is None:
+        raise ValueError("get_filetype requires a path or a MIME type")
+    elif mime_type is None:
+        mime_type = mimetypes.guess_type(path)[0]
+    if mime_type is None:
+        raise ValueError(f"Could not determine the filetype for {path}")
+    elif mime_type not in FILETYPES_BY_MIME:
+        raise ValueError(f"Unsupported MIME type {mime_type} for {path}")
+    else:
+        return FILETYPES_BY_MIME[mime_type]

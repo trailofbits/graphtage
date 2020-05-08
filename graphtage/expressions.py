@@ -55,6 +55,7 @@ class Operator(Enum):
     SUBTRACTION = ('-', 5, lambda a, b: a - b)
     BITWISE_LEFT_SHIFT = ('<<', 6, lambda a, b: a << b)
     BITWISE_RIGHT_SHIFT = ('>>', 6, lambda a, b: a >> b)
+    IN = ('in', 7, lambda a, b: a in b)
     LESS_THAN = ('<', 7, lambda a, b: a < b)
     GREATER_THAN = ('>', 7, lambda a, b: a > b)
     LESS_THAN_EQUAL = ('<=', 7, lambda a, b: a <= b)

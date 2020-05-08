@@ -2,7 +2,9 @@ from io import StringIO
 from unittest import TestCase
 
 import graphtage
+import graphtage.json
 import graphtage.multiset
+import graphtage.tree
 
 from graphtage.printer import Printer
 
@@ -10,16 +12,16 @@ from graphtage.printer import Printer
 class TestGraphtage(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.small_from = graphtage.build_tree({
+        cls.small_from = graphtage.json.build_tree({
             "test": "foo",
             "baz": 1
         })
-        cls.small_to = graphtage.build_tree({
+        cls.small_to = graphtage.json.build_tree({
             "test": "bar",
             "baz": 2
         })
-        cls.list_from = graphtage.build_tree([0, 1, 2, 3, 4, 5])
-        cls.list_to = graphtage.build_tree([1, 2, 3, 4, 5])
+        cls.list_from = graphtage.json.build_tree([0, 1, 2, 3, 4, 5])
+        cls.list_to = graphtage.json.build_tree([1, 2, 3, 4, 5])
 
     def test_string_diff_printing(self):
         s1 = graphtage.StringNode("abcdef")
@@ -30,7 +32,7 @@ class TestGraphtage(TestCase):
         diff.print(p)
         p.flush(final=True)
         self.assertEqual(diff.edited_cost(), 5)
-        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mz̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mb̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mc\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39me\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1md̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mf̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
+        self.assertEqual('\x1b[32m"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1mz̟\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1mb̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32mc\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32me\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1md̟\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1mf̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m"\x1b[39m\n', out_stream.getvalue())
 
     def test_string_diff_remove_insert_reordering(self):
         s1 = graphtage.StringNode('abcdefg')
@@ -40,12 +42,12 @@ class TestGraphtage(TestCase):
         p = Printer(ansi_color=True, out_stream=out_stream)
         diff.print(p)
         p.flush(final=True)
-        self.assertEqual('"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mb\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mh̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mi̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1mj̟\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1mc̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[41m\x1b[1me̶\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mf\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39mg\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[39m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[39m"\n', out_stream.getvalue())
+        self.assertEqual('\x1b[32m"\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32ma\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32mb\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1mh̟\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1mi̟\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1mj̟\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1mc̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1md̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[41m\x1b[1me̶\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32mf\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32mg\x1b[37m\x1b[41m\x1b[1m\x1b[0m\x1b[49m\x1b[32m\x1b[37m\x1b[42m\x1b[1m\x1b[0m\x1b[49m\x1b[32m"\x1b[39m\n', out_stream.getvalue())
 
     def test_small_diff(self):
         diff = self.small_from.diff(self.small_to)
         self.assertIsInstance(diff, graphtage.DictNode)
-        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.multiset.MultiSetEdit)
         has_test_match = False
@@ -78,7 +80,7 @@ class TestGraphtage(TestCase):
     def test_list_diff(self):
         diff = self.list_from.diff(self.list_to)
         self.assertIsInstance(diff, graphtage.ListNode)
-        self.assertIsInstance(diff, graphtage.EditedTreeNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.EditDistance)
         for edit in diff.edit_list[0].edits():
@@ -92,7 +94,7 @@ class TestGraphtage(TestCase):
                 self.assertIsInstance(edit, graphtage.Match)
 
     def test_empty_list(self):
-        diff = graphtage.ListNode(list_like=()).diff(graphtage.ListNode(list_like=()))
+        diff = graphtage.ListNode(()).diff(graphtage.ListNode(()))
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.Match)
         self.assertEqual(0, diff.edit_list[0].bounds().upper_bound)

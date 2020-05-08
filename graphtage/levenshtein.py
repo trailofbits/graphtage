@@ -284,4 +284,4 @@ class EditDistance(SequenceEdit):
         )
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}<from_seq={list(map(str, self.from_seq))!r}, to_seq={list(map(str, self.to_seq))!r}. insert_remove_penalty={self.penalty}>"
+        return f"{self.__class__.__name__}<from_seq={list(map(str, self.from_seq))!r}, to_seq={list(map(str, self.to_seq))!r}, insert_remove_penalty={self.penalty}>"

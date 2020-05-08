@@ -118,11 +118,11 @@ class StatusWriter(IO[str]):
         return iter(self.status_stream)
 
     def __enter__(self) -> IO[AnyStr]:
-        return self.status_stream.__enter__()
+        return self
 
     def __exit__(self, t: Optional[Type[BaseException]], value: Optional[BaseException],
                  traceback: Optional[TracebackType]) -> Optional[bool]:
-        return self.status_stream.__exit__(t, value, traceback)
+        pass
 
     def __delete__(self, instance):
         self.flush(final=True)

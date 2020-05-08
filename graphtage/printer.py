@@ -307,9 +307,24 @@ class HTMLANSIContext(ANSIContext):
         self._end_code = f"{self._end_code}{parent_end_code}"
 
 
+ONLY_ANSI_FUNCS: Set[str] = set()
+
+
+def only_ansi(func):
+    ONLY_ANSI_FUNCS.add(func.__name__)
+
+    def wrapper(self: 'Printer', *args, **kwargs):
+        if self.ansi_color:
+            return func(self, *args, **kwargs)
+        else:
+            return NullANSIContext(self)
+
+    return wrapper
+
+
 class NullANSIContext:
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, printer: 'Printer'):
+        self._printer = printer
 
     def __enter__(self):
         return self
@@ -318,10 +333,13 @@ class NullANSIContext:
         pass
 
     def __getattr__(self, item):
-        def fake_fun(*args, **kwargs):
-            return self
+        if item in ONLY_ANSI_FUNCS:
+            def fake_fun(*args, **kwargs):
+                return self
 
-        return fake_fun
+            return fake_fun
+
+        return getattr(self._printer, item)
 
 
 ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
@@ -343,7 +361,8 @@ class Printer(StatusWriter, RawWriter):
         )
         self._context_type: Type[ANSIContext] = ANSIContext
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
-        self.indents = 0
+        self.indents: int = 0
+        self.indent_str: str = ' ' * 4
         self._ansi_color = None
         self.ansi_color = ansi_color
         if self.ansi_color:
@@ -355,6 +374,7 @@ class Printer(StatusWriter, RawWriter):
                 if hasattr(self, option):
                     raise ValueError(f"Illegal option name: {option}")
                 setattr(self, option, value)
+        self._last_was_newline = False
 
     @property
     def ansi_color(self) -> bool:
@@ -377,47 +397,39 @@ class Printer(StatusWriter, RawWriter):
         return super().write(s)
 
     def write(self, s: str) -> int:
+        if self._last_was_newline:
+            self._last_was_newline = False
+            if self.indents:
+                self.raw_write(self.indent_str * self.indents)
         return self.out_stream.write(s)
 
     def newline(self):
         self.raw_write('\n')
-        self.raw_write(' ' * (4 * self.indents))
+        self._last_was_newline = True
 
+    @only_ansi
     def color(self, foreground_color: AnsiFore) -> ANSIContext:
-        if self.ansi_color:
-            return self._context_type(self, fore=foreground_color)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self._context_type(self, fore=foreground_color)
 
+    @only_ansi
     def background(self, bg_color: AnsiBack) -> ANSIContext:
-        if self.ansi_color:
-            return self._context_type(self, back=bg_color)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self._context_type(self, back=bg_color)
 
+    @only_ansi
     def bright(self) -> ANSIContext:
-        if self.ansi_color:
-            return self._context_type(self, style=Style.BRIGHT)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self._context_type(self, style=Style.BRIGHT)
 
+    @only_ansi
     def dim(self) -> ANSIContext:
-        if self.ansi_color:
-            return self._context_type(self, style=Style.DIM)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self._context_type(self, style=Style.DIM)
 
+    @only_ansi
     def strike(self) -> CombiningMarkContext:
-        if self.ansi_color:
-            return self.out_stream.context(STRIKETHROUGH)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self.out_stream.context(STRIKETHROUGH)
 
+    @only_ansi
     def under_plus(self):
-        if self.ansi_color:
-            return self.out_stream.context(UNDER_PLUS)
-        else:
-            return NullANSIContext()    # type: ignore
+        return self.out_stream.context(UNDER_PLUS)
 
     def indent(self) -> 'Printer':
         class Indent:
