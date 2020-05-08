@@ -32,6 +32,9 @@ setup(
             'graphtage = graphtage.__main__:main'
         ]
     },
+    extras_require={
+        "dev": ["flake8", "Sphinx", "pytest"]
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
