@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: graphtage
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF#refs/*/}
@@ -22,13 +24,14 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
+          cd graphtage
           python -m pip install --upgrade pip
           pip install setuptools
           pip install .[dev]
       - name: Build documentation
         uses: ammaraskar/sphinx-action@master
         with:
-          docs-folder: "docs/"
+          docs-folder: "graphtage/docs/"
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
         with:
@@ -37,10 +40,12 @@ jobs:
           fetch-depth: 0
       - name: Commit documentation changes
         run: |
-          rm -rf gh-pages/${VERSION}
-          mkdir gh-pages/${VERSION}
-          cp -r docs/_build/html/* gh-pages/${VERSION}
-          cd gh-pages/${VERSION}
+          cd gh-pages
+          git pull
+          rm -rf ${VERSION}
+          mkdir ${VERSION}
+          cp -r ../graphtage/docs/_build/html/* ${VERSION}/
+          cd ${VERSION}
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
