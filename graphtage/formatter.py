@@ -86,7 +86,7 @@ def get_formatter(
 
 
 class Formatter(Generic[T], metaclass=FormatterChecker):
-    DEFAULT_INSTANCE: __qualname__ = None
+    DEFAULT_INSTANCE: 'Formatter[T]' = None
     sub_format_types: Sequence[Type['Formatter[T]']] = ()
     sub_formatters: List['Formatter[T]'] = []
     parent: Optional['Formatter[T]'] = None

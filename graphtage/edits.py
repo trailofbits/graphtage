@@ -5,7 +5,7 @@ from typing import Any, Callable, cast, Collection, Generic, Iterator, List, Opt
 from .printer import Back, Fore, Printer
 from .search import IterativeTighteningSearch
 from .bounds import Range
-from .tree import CompoundEdit, Edit, EditedTreeNode, TreeNode
+from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 class AbstractEdit(Edit, ABC):
@@ -71,7 +71,7 @@ class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     def edits(self) -> Iterator[Edit]:
         raise NotImplementedError()
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         for edit in self.edits():
             edit.print(formatter, printer)
 
@@ -142,7 +142,7 @@ class Match(ConstantCostEdit):
         super().on_diff(from_node)
         from_node.matched_to = self.to_node
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         if self.bounds() > Range(0, 0):
             with printer.bright().background(Back.RED).color(Fore.WHITE):
                 with printer.strike():
@@ -168,7 +168,7 @@ class Replace(ConstantCostEdit):
             cost=cost
         )
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         if self.bounds().upper_bound > 0:
             with printer.bright().color(Fore.WHITE).background(Back.RED):
                 formatter.print(printer, self.from_node, False)
@@ -195,7 +195,7 @@ class Remove(ConstantCostEdit):
         super().on_diff(from_node)
         from_node.removed = True
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         with printer.bright():
             with printer.background(Back.RED):
                 with printer.color(Fore.WHITE):
@@ -231,7 +231,7 @@ class Insert(ConstantCostEdit):
     def to_insert(self) -> TreeNode:
         return self.from_node
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
                 printer.write('++++')
@@ -288,7 +288,7 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         for sub_edit in self.edits():
             sub_edit.print(formatter, printer)
 

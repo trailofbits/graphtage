@@ -387,7 +387,7 @@ class StringEdit(AbstractEdit):
     def tighten_bounds(self) -> bool:
         return self.edit_distance.tighten_bounds()
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         raise NotImplementedError()
 
 
