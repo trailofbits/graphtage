@@ -1,6 +1,6 @@
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
-from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
@@ -571,7 +571,25 @@ class FiletypeWatcher(ABCMeta):
 
 
 class Filetype(metaclass=FiletypeWatcher):
+    """Abstract base class from which all Graphtage file formats should extend.
+
+    When this class is subclassed, the subclass will automatically be added to Graphtage's filetype registry.
+    This includes automatic inclusion in `graphtage`'s command line arguments and mime type auto-detection.
+    """
+
     def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
+        """Initializes a new Graphtage file format type
+
+        Args:
+            type_name: A short name for the :obj:`Filetype`. This will be used for specifying this :obj:`Filetype` via
+                command line arguments.
+            default_mimetype: The default mimetype to be assigned to this :obj:`Filetype`.
+            *mimetypes: Zero or more additional mimetypes that should be associated with this :obj:`Filetype`.
+
+        Raises:
+            ValueError: The `type_name` and/or one of the mimetypes of this :obj:`Filetype` conflicts with that of a
+                preexisting :obj:`Filetype`.
+        """
         self.name = type_name
         self.default_mimetype: str = default_mimetype
         self.mimetypes: Tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
@@ -587,10 +605,28 @@ class Filetype(metaclass=FiletypeWatcher):
 
     @abstractmethod
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        """Builds an intermediate representation tree from a file of this :obj:`Filetype`.
+
+        Args:
+            path: Path to the file to parse
+            allow_key_edits: Whether to allow dictionary keys to be editable
+
+        Returns: The root tree node of the provided file
+        """
         raise NotImplementedError()
 
     @abstractmethod
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+        """Same as :func:`build_tree`, but it should return a human-readable error string on failure.
+
+        This function should never throw an exception.
+
+        Args:
+            path: Path to the file to parse
+            allow_key_edits: Whether to allow dictionary keys to be editable
+
+        Returns: The root tree node, on success, or a string containing the error message on failure.
+        """
         raise NotImplementedError()
 
     @abstractmethod

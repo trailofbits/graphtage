@@ -1,6 +1,6 @@
 import json
 import os
-import sys
+from typing import Union
 
 from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
     FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
@@ -103,13 +103,11 @@ class JSON(Filetype):
         with open(path) as f:
             return build_tree(json.load(f), allow_key_edits=allow_key_edits)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
         try:
             return self.build_tree(path=path, allow_key_edits=allow_key_edits)
         except json.decoder.JSONDecodeError as de:
-            sys.stderr.write(
-                f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})\n\n')
-            sys.exit(1)
+            return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE

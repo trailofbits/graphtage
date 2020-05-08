@@ -1,6 +1,5 @@
 import html
 import os
-import sys
 import xml.etree.ElementTree as ET
 from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 
@@ -324,12 +323,11 @@ class XML(Filetype):
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
         return build_tree(path, allow_key_edits=allow_key_edits)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
         try:
             return self.build_tree(path=path, allow_key_edits=allow_key_edits)
         except ET.ParseError as pe:
-            sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
-            sys.exit(1)
+            return f'Error parsing {os.path.basename(path)}: {pe.msg}'
 
     def get_default_formatter(self) -> XMLFormatter:
         return XMLFormatter.DEFAULT_INSTANCE
