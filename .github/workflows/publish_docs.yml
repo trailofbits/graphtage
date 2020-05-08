@@ -49,6 +49,13 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
+          if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+            cd ..
+            # This is a tag; assume it is the latest and update accordingly
+            rm -f latest
+            ln -s ${VERSION} latest
+            git add latest
+          fi
           git commit -m "Update documentation for ${GITHUB_REF}" -a || true
           # The above command will fail if no changes were present, so we ignore
           # the return code.
