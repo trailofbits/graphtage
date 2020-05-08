@@ -19,7 +19,6 @@ formats. For instructions on using Graphtage as a utility, see the documentation
    :maxdepth: 2
    :caption: Contents:
 
-   filetype
    graphtage
 
 Indices and tables

@@ -1,3 +1,5 @@
+__docformat__ = "google"
+
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
@@ -392,9 +394,11 @@ class StringEdit(AbstractEdit):
 
 
 class StringFormatter(GraphtageFormatter):
-    is_quoted = False
+    """A default string formatter"""
+    is_quoted: bool = False
 
     def write_start_quote(self, printer: Printer, edit: StringEdit):
+        """Prints a starting quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
             printer.write('"')
@@ -402,6 +406,7 @@ class StringFormatter(GraphtageFormatter):
             self.is_quoted = False
 
     def write_end_quote(self, printer: Printer, edit: StringEdit):
+        """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
             printer.write('"')
@@ -409,12 +414,39 @@ class StringFormatter(GraphtageFormatter):
             self.is_quoted = False
 
     def escape(self, c: str):
+        """String escape.
+
+        This function is called once for each character in the string.
+
+        Returns: The escaped version of `c`, or `c` itself if no escaping is required.
+
+        """
         if self.is_quoted:
             return c.replace('"', '\\"')
         else:
             return c
 
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+        """Writes a character to the printer.
+
+        Note:
+            This function calls :func:`graphtage.StringFormatter.escape`; classes extending
+            :class:`graphtage.StringFormatter` should also call :func:`graphtage.StringFormatter.escape` when
+            reimplementing this function.
+
+        Note:
+            There is no need to specially format characters that have been removed or inserted; the printer will have
+            already automatically been configured to format them prior to the call to `write_char`.
+
+        Args:
+            printer: The printer to which to write the character.
+            c: The character to write.
+            index: The index of the character in the string.
+            num_edits: The total number of characters that will be printed.
+            removed: Whether this character was removed from the source string.
+            inserted: Whether this character is inserted into the source string.
+
+        """
         escaped = self.escape(c)
         if escaped != c and not isinstance(printer, NullANSIContext):
             with printer.color(Fore.YELLOW):
@@ -497,7 +529,15 @@ class StringFormatter(GraphtageFormatter):
 
 
 class StringNode(LeafNode):
+    """A node containing a string"""
+
     def __init__(self, string_like: str, quoted=True):
+        """Initializes a string node.
+
+        Args:
+            string_like: the string contained by the node
+            quoted: whether or not the string should be quoted when being formatted
+        """
         super().__init__(string_like)
         self.quoted = quoted
 
@@ -514,43 +554,44 @@ class StringNode(LeafNode):
     def print(self, printer: Printer):
         StringFormatter.DEFAULT_INSTANCE.print(printer, self)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'string_like': self.object
-        }
-
 
 class IntegerNode(LeafNode):
+    """A node containing an int"""
+
     def __init__(self, int_like: int):
         super().__init__(int_like)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'int_like': self.object
-        }
-
 
 class FloatNode(LeafNode):
+    """A node containing a float"""
+
     def __init__(self, float_like: float):
         super().__init__(float_like)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'float_like': self.object
-        }
-
 
 class BoolNode(LeafNode):
+    """A node containing either :const:`True` or :const:`False`."""
+
     def __init__(self, bool_like: bool):
         super().__init__(bool_like)
 
-    def init_args(self) -> Dict[str, Any]:
-        return {
-            'bool_like': self.object
-        }
-
 
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
+    """A convenience function for computing the edit distance between two strings.
+
+    This is equivalent to::
+
+        list1 = ListNode([StringNode(c) for c in s1])
+        list2 = ListNode([StringNode(c) for c in s2])
+        return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
+
+    Args:
+        s1: the string to compare from
+        s2: the string to compare to
+
+    Returns: The :class:`graphtage.levenshtein.EditDistance` edit object for the strings
+
+    """
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
     return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
@@ -561,6 +602,11 @@ FILETYPES_BY_TYPENAME: Dict[str, 'Filetype'] = {}
 
 
 class FiletypeWatcher(ABCMeta):
+    """Abstract metaclass for the :class:`Filetype` class.
+
+    This registers any subclasses of :class:`Filetype`, automatically adding them to the `graphtage` command line
+    arguments and mimetype lookup in :func:`get_filetype`.
+    """
     def __init__(cls, name, bases, clsdict):
         if len(cls.mro()) > 2:
             # Instantiate a version of the filetype to add it to our global dicts:
@@ -574,7 +620,8 @@ class Filetype(metaclass=FiletypeWatcher):
     """Abstract base class from which all Graphtage file formats should extend.
 
     When this class is subclassed, the subclass will automatically be added to Graphtage's filetype registry.
-    This includes automatic inclusion in `graphtage`'s command line arguments and mime type auto-detection.
+    This includes automatic inclusion in `graphtage`'s command line arguments and mime type auto-detection in
+    :func:`get_filetype`.
     """
 
     def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
@@ -589,6 +636,7 @@ class Filetype(metaclass=FiletypeWatcher):
         Raises:
             ValueError: The `type_name` and/or one of the mimetypes of this :obj:`Filetype` conflicts with that of a
                 preexisting :obj:`Filetype`.
+
         """
         self.name = type_name
         self.default_mimetype: str = default_mimetype
@@ -612,6 +660,7 @@ class Filetype(metaclass=FiletypeWatcher):
             allow_key_edits: Whether to allow dictionary keys to be editable
 
         Returns: The root tree node of the provided file
+
         """
         raise NotImplementedError()
 
@@ -626,15 +675,35 @@ class Filetype(metaclass=FiletypeWatcher):
             allow_key_edits: Whether to allow dictionary keys to be editable
 
         Returns: The root tree node, on success, or a string containing the error message on failure.
+
         """
         raise NotImplementedError()
 
     @abstractmethod
     def get_default_formatter(self) -> GraphtageFormatter:
+        """Returns the default formatter for printing files of this type."""
         raise NotImplementedError()
 
 
 def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) -> Filetype:
+    """Looks up the filetype for the given path.
+
+    At least one of `path` or `mime_type` must be not :const:`None`. If both are provided, only `mime_type` will be
+    used. If only `path` is provided, its mimetype will be guessed using :func:`mimetypes.guess_type`.
+
+    Args:
+        path:
+        mime_type:
+
+    Returns:
+
+    Raises:
+        ValueError: If both `path` and `mime_type` are :const:`None`.
+        ValueError: If `mime_type` was not provided and :func:`mimetypes.guess_type` could not identify the file at
+            `path`.
+        ValueError: If either the provided or guessed mimetype is not supported by any registered
+            :class:`Filetype`.
+    """
     if path is None and mime_type is None:
         raise ValueError("get_filetype requires a path or a MIME type")
     elif mime_type is None:
