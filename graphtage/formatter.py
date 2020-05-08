@@ -9,7 +9,8 @@ if sys.version_info.major == 3 and sys.version_info.minor < 7:
     from typing import GenericMeta
 else:
     # Create a dummy type for GenericMeta since it was removed in Python3.7
-    GenericMeta = type
+    # It was a subclass of ABCMeta in Python3.6, anyway
+    GenericMeta = ABCMeta
 
 from .printer import Printer
 
@@ -20,7 +21,7 @@ log = logging.getLogger(__name__)
 FORMATTERS: Sequence['Formatter[Any]'] = []
 
 
-class FormatterChecker(ABCMeta, GenericMeta):
+class FormatterChecker(GenericMeta):
     def __init__(cls, name, bases, clsdict):
         if len(cls.mro()) > 2 and not cls.__abstractmethods__:
             # Instantiate a version of the Formatter to add it to our global dicts:

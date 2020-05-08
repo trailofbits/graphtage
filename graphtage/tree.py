@@ -1,5 +1,6 @@
 import itertools
 import logging
+import sys
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
 from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
@@ -12,7 +13,14 @@ from .printer import DEFAULT_PRINTER, Printer
 log = logging.getLogger(__name__)
 
 
-class GraphtageFormatter(Formatter[Union['TreeNode', 'Edit']]):
+if sys.version_info.major == 3 and sys.version_info.minor < 7:
+    # For some reason, the type checker breaks on the generic argument in Py3.6 and earlier
+    FormatterType = Formatter
+else:
+    FormatterType = Formatter[Union['TreeNode', 'Edit']]
+
+
+class GraphtageFormatter(FormatterType):
     def print(self, printer: Printer, node_or_edit: Union['TreeNode', 'Edit'], with_edits: bool = True):
         if isinstance(node_or_edit, Edit):
             if with_edits:
