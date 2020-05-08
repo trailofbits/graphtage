@@ -1,0 +1,49 @@
+name: Publish documentation
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - *
+
+jobs:
+  deploydocs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/*/}
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools
+          pip install .[dev]
+      - name: Build documentation
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+      - name: Commit documentation changes
+        run: |
+          git clone https://github.com/trailofbits/graphtage.git --branch gh-pages --single-branch gh-pages
+          rm -rf gh-pages/${VERSION}
+          cp -r docs/_build/html/* gh-pages/${VERSION}
+          cd gh-pages/${VERSION}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation for ${GITHUB_REF}" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # the return code.
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
