@@ -1,16 +1,15 @@
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
-from typing import Any, Callable, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection, EditSequence
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
-from .formatter import Formatter
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, TreeNode
+from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
 
@@ -85,7 +84,7 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             to_node=to_kvp
         )
 
-    def print(self, formatter: Formatter, printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         # Raise NotImplementedError() to cause the formatter to fall back on its own implementations
         raise NotImplementedError()
 
@@ -392,7 +391,7 @@ class StringEdit(AbstractEdit):
         raise NotImplementedError()
 
 
-class StringFormatter(Formatter):
+class StringFormatter(GraphtageFormatter):
     is_quoted = False
 
     def write_start_quote(self, printer: Printer, edit: StringEdit):
@@ -595,7 +594,7 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_default_formatter(self) -> Formatter:
+    def get_default_formatter(self) -> GraphtageFormatter:
         raise NotImplementedError()
 
 

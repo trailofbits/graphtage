@@ -2,11 +2,10 @@ import csv
 from io import StringIO
 
 from . import graphtage, json
-from .formatter import Formatter
 from .json import JSONFormatter
 from .printer import Printer
 from .sequences import SequenceFormatter
-from .tree import TreeNode
+from .tree import GraphtageFormatter, TreeNode
 
 
 class CSVRow(graphtage.ListNode[TreeNode]):
@@ -66,7 +65,7 @@ class CSVRows(SequenceFormatter):
         return printer
 
 
-class CSVFormatter(Formatter):
+class CSVFormatter(GraphtageFormatter):
     sub_format_types = [CSVRows, JSONFormatter]
 
     def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):

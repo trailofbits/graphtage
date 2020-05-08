@@ -6,9 +6,50 @@ from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Si
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
+from .formatter import Formatter, FORMATTERS
 from .printer import DEFAULT_PRINTER, Printer
 
 log = logging.getLogger(__name__)
+
+
+class GraphtageFormatter(Formatter[Union['TreeNode', 'Edit']]):
+    def print(self, printer: Printer, node_or_edit: Union['TreeNode', 'Edit'], with_edits: bool = True):
+        if isinstance(node_or_edit, Edit):
+            if with_edits:
+                edit: Optional[Edit] = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit.from_node
+        elif with_edits:
+            if isinstance(node_or_edit, EditedTreeNode) and \
+                    node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0:
+                edit: Optional[Edit] = node_or_edit.edit
+                node: TreeNode = node_or_edit
+            else:
+                edit: Optional[Edit] = None
+                node: TreeNode = node_or_edit
+        else:
+            edit: Optional[Edit] = None
+            node: TreeNode = node_or_edit
+        if edit is not None:
+            # First, see if we have a specialized formatter for this edit:
+            edit_formatter = self.get_formatter(edit)
+            if edit_formatter is not None:
+                edit_formatter(printer, edit)
+                return
+            try:
+                edit.print(self, printer)
+                return
+            except NotImplementedError:
+                pass
+        formatter = self.get_formatter(node)
+        if formatter is not None:
+            formatter(printer, node)
+        else:
+            log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
+    Falling back to the node's internal printer
+    Registered formatters: {''.join([f.__class__.__name__ for f in FORMATTERS])}""")
+            node.print(printer)
 
 
 @runtime_checkable
@@ -32,7 +73,7 @@ class Edit(Bounded, Protocol):
     def valid(self, is_valid: bool):
         raise NotImplementedError()
 
-    def print(self, formatter: 'graphtage.formatter.Formatter', printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         """Edits can optionally implement a printing method
            This function is called automatically from the formatter in the printing protocol and should
            never be called directly unless you really know what you're doing!

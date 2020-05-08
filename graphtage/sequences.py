@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, Optional, Sequence, Type, TypeVar
 
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .formatter import Formatter
 from .printer import Printer
-from .tree import ContainerNode, Edit, EditedTreeNode, TreeNode
+from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
@@ -22,7 +21,7 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
     def sequence(self) -> 'SequenceNode':
         return cast(SequenceNode, self.from_node)
 
-    def print(self, formatter: Formatter, printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         formatter.get_formatter(self.sequence)(printer, self.sequence)
 
 
@@ -68,7 +67,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         SequenceFormatter('[', ']', ',').print(printer, self)
 
 
-class SequenceFormatter(Formatter):
+class SequenceFormatter(GraphtageFormatter):
     is_partial = True
 
     def __init__(

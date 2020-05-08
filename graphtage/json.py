@@ -2,12 +2,11 @@ import json
 import os
 import sys
 
-from .formatter import Formatter
 from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringEdit, StringFormatter, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
-from .tree import TreeNode
+from .tree import GraphtageFormatter, TreeNode
 
 
 def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeNode:
@@ -75,7 +74,7 @@ class JSONStringFormatter(StringFormatter):
         printer.write(json.dumps(c)[1:-1])
 
 
-class JSONFormatter(Formatter):
+class JSONFormatter(GraphtageFormatter):
     sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):

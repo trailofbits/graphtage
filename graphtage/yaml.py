@@ -9,12 +9,11 @@ except ImportError:
     from yaml import Loader, Dumper
 
 from . import json
-from .formatter import Formatter
 from .edits import Insert, Match
 from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, StringFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
-from .tree import Edit, TreeNode
+from .tree import Edit, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
@@ -52,7 +51,7 @@ class YAMLListFormatter(SequenceFormatter):
         return printer
 
 
-class YAMLKeyValuePairFormatter(Formatter):
+class YAMLKeyValuePairFormatter(GraphtageFormatter):
     is_partial = True
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
@@ -155,7 +154,7 @@ class YAMLStringFormatter(StringFormatter):
             printer.write(c)
 
 
-class YAMLFormatter(Formatter):
+class YAMLFormatter(GraphtageFormatter):
     sub_format_types = [YAMLStringFormatter, YAMLDictFormatter, YAMLListFormatter]
 
     def print(self, printer: Printer, *args, **kwargs):

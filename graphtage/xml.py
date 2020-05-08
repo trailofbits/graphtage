@@ -6,12 +6,11 @@ from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .formatter import Formatter
 from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
-    ListNode, StringEdit, StringFormatter, StringNode
-from .printer import Back, Fore, Printer
+    ListNode, StringFormatter, StringNode
+from .printer import Printer
 from .sequences import SequenceFormatter
-from .tree import Edit, EditedTreeNode, TreeNode
+from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 class XMLElementEdit(AbstractCompoundEdit):
@@ -32,7 +31,7 @@ class XMLElementEdit(AbstractCompoundEdit):
             to_node=to_node
         )
 
-    def print(self, formatter: Formatter, printer: Printer):
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
         formatter.get_formatter(self.from_node)(printer, self.from_node)
 
     def bounds(self) -> Range:
@@ -267,7 +266,7 @@ class XMLStringFormatter(StringFormatter):
             printer.write(html.escape(c))
 
 
-class XMLFormatter(Formatter):
+class XMLFormatter(GraphtageFormatter):
     sub_format_types = [XMLStringFormatter, XMLChildFormatter, XMLElementAttribFormatter]
 
     def _print_text(self, element: XMLElement, printer: Printer):

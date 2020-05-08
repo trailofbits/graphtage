@@ -1,16 +1,15 @@
 import inspect
 import logging
-from abc import ABCMeta
-from typing import Any, Callable, List, Optional, Sequence, Set, Type, TypeVar, Union
+from abc import ABCMeta, abstractmethod
+from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
 
 from .printer import Printer
-from .tree import Edit, EditedTreeNode, TreeNode
 
 
 log = logging.getLogger(__name__)
 
 
-FORMATTERS: Sequence['Formatter'] = []
+FORMATTERS: Sequence['Formatter[Any]'] = []
 
 
 class FormatterChecker(ABCMeta):
@@ -35,22 +34,13 @@ class FormatterChecker(ABCMeta):
                             if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
                                     and not issubclass(Printer, a):
                                 raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
-                        if 'node' in sig.parameters:
-                            a = sig.parameters['node'].annotation
-                            if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
-                                    and not issubclass(a, TreeNode):
-                                raise TypeError(f"The type annotation for {name}.{member}(node: {a}) was expected to be a subclass of either graphtage.tree.TreeNode")
-                        if 'with_edits' in sig.parameters:
-                            a = sig.parameters['with_edits'].annotation
-                            if a is not None and a != inspect.Signature.empty and a is not bool:
-                                raise TypeError(f"The type annotation for {name}.{member}(with_edits: {a}) was expected to be a bool")
                 if not instance.is_partial:
                     FORMATTERS.append(instance)
                 setattr(cls, 'DEFAULT_INSTANCE', instance)
         super().__init__(name, bases, clsdict)
 
 
-T = TypeVar('T', bound=Union[TreeNode, Edit])
+T = TypeVar('T')
 
 
 def _get_formatter(
@@ -95,65 +85,31 @@ def get_formatter(
     return None
 
 
-class Formatter(metaclass=FormatterChecker):
+class Formatter(Generic[T], metaclass=FormatterChecker):
     DEFAULT_INSTANCE: __qualname__ = None
-    sub_format_types: Sequence[Type['Formatter']] = ()
-    sub_formatters: List['Formatter'] = []
-    parent: Optional['Formatter'] = None
+    sub_format_types: Sequence[Type['Formatter[T]']] = ()
+    sub_formatters: List['Formatter[T]'] = []
+    parent: Optional['Formatter[T]'] = None
     is_partial: bool = False
 
     @property
-    def root(self) -> 'Formatter':
+    def root(self) -> 'Formatter[T]':
         node = self
         while node.parent is not None:
             node = node.parent
         return node
 
     def __new__(cls, *args, **kwargs):
-        ret: Formatter = super().__new__(cls, *args, **kwargs)
+        ret: Formatter[T] = super().__new__(cls, *args, **kwargs)
         setattr(ret, 'sub_formatters', [])
         for sub_formatter in ret.sub_format_types:
             ret.sub_formatters.append(sub_formatter())
             ret.sub_formatters[-1].parent = ret
         return ret
 
-    def get_formatter(self, node_or_edit: T) -> Optional[Callable[[Printer, T], Any]]:
-        return get_formatter(node_or_edit.__class__, base_formatter=self)
+    def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
+        return get_formatter(item.__class__, base_formatter=self)
 
-    def print(self, printer: Printer, node_or_edit: Union[TreeNode, Edit], with_edits: bool = True):
-        if isinstance(node_or_edit, Edit):
-            if with_edits:
-                edit: Optional[Edit] = node_or_edit
-            else:
-                edit: Optional[Edit] = None
-            node: TreeNode = node_or_edit.from_node
-        elif with_edits:
-            if isinstance(node_or_edit, EditedTreeNode) and \
-                    node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0:
-                edit: Optional[Edit] = node_or_edit.edit
-                node: TreeNode = node_or_edit
-            else:
-                edit: Optional[Edit] = None
-                node: TreeNode = node_or_edit
-        else:
-            edit: Optional[Edit] = None
-            node: TreeNode = node_or_edit
-        if edit is not None:
-            # First, see if we have a specialized formatter for this edit:
-            edit_formatter = self.get_formatter(edit)
-            if edit_formatter is not None:
-                edit_formatter(printer, edit)
-                return
-            try:
-                edit.print(self, printer)
-                return
-            except NotImplementedError:
-                pass
-        formatter = self.get_formatter(node)
-        if formatter is not None:
-            formatter(printer, node)
-        else:
-            log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
-Falling back to the node's internal printer
-Registered formatters: {''.join([f.__class__.__name__ for f in FORMATTERS])}""")
-            node.print(printer)
+    @abstractmethod
+    def print(self, printer: Printer, item: T):
+        raise NotImplementedError()
