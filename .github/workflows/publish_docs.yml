@@ -34,6 +34,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
+          fetch-depth: 0
       - name: Commit documentation changes
         run: |
           rm -rf gh-pages/${VERSION}
