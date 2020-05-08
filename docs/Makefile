@@ -21,7 +21,7 @@ help:
 
 .PHONY: graphtage.rst
 graphtage.rst:
-	sphinx-apidoc -f -M -T -o . ../graphtage
+	sphinx-apidoc -f -e -M -T -o . ../graphtage
 
 .PHONY: clean
 clean:
