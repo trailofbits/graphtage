@@ -29,9 +29,13 @@ jobs:
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
       - name: Commit documentation changes
         run: |
-          git clone https://github.com/trailofbits/graphtage.git --branch gh-pages --single-branch gh-pages
           rm -rf gh-pages/${VERSION}
           cp -r docs/_build/html/* gh-pages/${VERSION}
           cd gh-pages/${VERSION}
