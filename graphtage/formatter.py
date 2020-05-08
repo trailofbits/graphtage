@@ -1,7 +1,15 @@
 import inspect
 import logging
+import sys
 from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
+
+if sys.version_info.major == 3 and sys.version_info.minor < 7:
+    # Backward compatibility for pre-Python3.7
+    from typing import GenericMeta
+else:
+    # Create a dummy type for GenericMeta since it was removed in Python3.7
+    GenericMeta = type
 
 from .printer import Printer
 
@@ -12,7 +20,7 @@ log = logging.getLogger(__name__)
 FORMATTERS: Sequence['Formatter[Any]'] = []
 
 
-class FormatterChecker(ABCMeta):
+class FormatterChecker(ABCMeta, GenericMeta):
     def __init__(cls, name, bases, clsdict):
         if len(cls.mro()) > 2 and not cls.__abstractmethods__:
             # Instantiate a version of the Formatter to add it to our global dicts:
