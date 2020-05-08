@@ -61,7 +61,7 @@ Not entirely useful, particularly if the input files are large.
 
 Here, on the other hand, is what Graphtage will output:
 <p align="center">
-  <img src="doc/example.png?raw=true" title="Graphtage Example">
+  <img src="docs/example.png?raw=true" title="Graphtage Example">
 </p>
  
 ## Installation
