@@ -37,6 +37,7 @@ jobs:
       - name: Commit documentation changes
         run: |
           rm -rf gh-pages/${VERSION}
+          mkdir gh-pages/${VERSION}
           cp -r docs/_build/html/* gh-pages/${VERSION}
           cd gh-pages/${VERSION}
           git config --local user.email "action@github.com"
