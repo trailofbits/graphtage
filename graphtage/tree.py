@@ -105,6 +105,26 @@ class Edit(Bounded, Protocol):
     from_node: 'TreeNode'
 
     @abstractmethod
+    def bounds(self) -> Range:
+        """The bounds on the cost of this edit.
+
+        The lower bound must always be finite and non-negative.
+
+        Returns: The bounds on the cost of this edit.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def tighten_bounds(self) -> bool:
+        """Tightens the :meth:`Edit.bounds` on the cost of this edit, if possible.
+
+        Returns: :const:`True` if the bounds have been tightened. Implementations of this function should return
+            :const:`False` if and only if :meth:`self.bounds().definitive() <graphtage.bounds.Range.definitive>`.
+
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
     def is_complete(self) -> bool:
         """Returns :const:`True` if all of the final edits are available.
 

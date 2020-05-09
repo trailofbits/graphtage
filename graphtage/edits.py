@@ -9,12 +9,22 @@ from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNo
 
 
 class AbstractEdit(Edit, ABC):
+    """Abstract base class for the :class:`Edit` protocol."""
+
     def __init__(self,
                  from_node: TreeNode,
                  to_node: TreeNode = None,
                  constant_cost: Optional[int] = 0,
                  cost_upper_bound: Optional[int] = None
     ):
+        """Constructs a new Edit.
+
+        Args:
+            from_node: The node that this edit transforms.
+            to_node: The node that this edit transforms :obj:`from_node` into.
+            constant_cost: A optional lower bound on the cost of this edit.
+            cost_upper_bound: An optional upper bound on the cost of this edit.
+        """
         self.from_node: TreeNode = from_node
         self.to_node: TreeNode = to_node
         self._constant_cost = constant_cost
@@ -23,10 +33,27 @@ class AbstractEdit(Edit, ABC):
         self.initial_bounds = self.bounds()
 
     def is_complete(self) -> bool:
+        """An edit is complete when no further calls to :meth:`Edit.tighten_bounds` will change the nature of the edit.
+
+        This implementation considers an edit complete if it is valid and its bounds are definitive::
+
+            return not self.valid or self.bounds().definitive()
+
+        If an edit is able to discern that it has a unique solution even if its final bounds are unknown, it should
+        reimplement this method to define that check.
+
+        For example, in the case of a :class:`CompoundEdit`, this method should only return :const:`True` if no future
+        calls to :meth:`Edit.tighten_bounds` will affect the result of :meth:`CompoundEdit.edits`.
+
+        Returns: :const:`True` if subsequent calls to :meth:`Edit.tighten_bounds` will only serve to tighten the bounds
+            of this edit and will not affect the semantics of the edit.
+
+        """
         return not self.valid or self.bounds().definitive()
 
     @property
     def valid(self) -> bool:
+        """Returns whether this edit is valid"""
         return self._valid
 
     @valid.setter
@@ -34,9 +61,20 @@ class AbstractEdit(Edit, ABC):
         self._valid = is_valid
 
     def __lt__(self, other):
+        """Tests whether the bounds of this edit are less than the bounds of :obj:`other`."""
         return self.bounds() < other.bounds()
 
     def bounds(self) -> Range:
+        """Returns the bounds of this edit.
+
+        This defaults to the bounds provided when this :class:`AbstractEdit` was constructed. If an upper bound was not
+        provided to the constructor, the upper bound defaults to::
+
+            self.from_node.total_size + self.to_node.total_size + 1
+
+        Returns: A :class:`graphtage.bounds.Range` bounding the cost of this edit.
+
+        """
         lb = self._constant_cost
         if self._cost_upper_bound is None:
             if self.to_node is None:
@@ -49,12 +87,20 @@ class AbstractEdit(Edit, ABC):
 
 
 class ConstantCostEdit(AbstractEdit, ABC):
+    """An edit whose definitive cost is known at the time of construction."""
     def __init__(
             self,
             from_node: TreeNode,
             to_node: TreeNode = None,
             cost: int = 0
     ):
+        """Constructs a new edit.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node into which :obj:`from_node` is being transformed.
+            cost: The constant cost of the edit.
+        """
         super().__init__(
             from_node=from_node,
             to_node=to_node,
@@ -63,19 +109,39 @@ class ConstantCostEdit(AbstractEdit, ABC):
         )
 
     def tighten_bounds(self) -> bool:
+        """This always returns :const:`False`"""
         return False
 
 
 class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
+    """Abastract base class implementing the :class:`CompoundEdit` protocol."""
+
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
         raise NotImplementedError()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
+        """Edits can optionally implement a printing method
+
+        This function is called automatically from the formatter in the
+        :ref:`printing protocol<PrintingProtocol>` and should
+        never be called directly unless you really know what you're doing!
+        Raising :exc:`NotImplementedError` will cause the formatter to fall back on its own printing implementations.
+
+        This implementation is equivalent to::
+
+            for edit in self.edits():
+                edit.print(formatter, printer)
+
+        """
         for edit in self.edits():
             edit.print(formatter, printer)
 
     def __iter__(self) -> Iterator[Edit]:
+        """Returns an iterator over this edit's sub-edits.
+
+        Returns: the result of :meth:`AbstractCompoundEdit.edits`
+        """
         return self.edits()
 
 
