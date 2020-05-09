@@ -141,11 +141,18 @@ class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
         """Returns an iterator over this edit's sub-edits.
 
         Returns: the result of :meth:`AbstractCompoundEdit.edits`
+
         """
         return self.edits()
 
 
 class PossibleEdits(AbstractCompoundEdit):
+    """A compound edit that chooses the best option among one or more competing alternatives.
+
+    The best option is chosen by performing :class:`graphtage.search.IterativeTighteningSearch` on the alternatives.
+
+    """
+
     def __init__(
             self,
             from_node: TreeNode,
@@ -153,6 +160,15 @@ class PossibleEdits(AbstractCompoundEdit):
             edits: Iterator[Edit] = (),
             initial_cost: Optional[Range] = None
     ):
+        """Constructs a new Possible Edits object.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node into which :obj:`from_node` is being transformed.
+            edits: One or more edits from which to choose.
+            initial_cost: Initial bounds on the cost of the best choice, if known.
+
+        """
         if initial_cost is not None:
             self.initial_bounds = initial_cost
         self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
@@ -178,7 +194,8 @@ class PossibleEdits(AbstractCompoundEdit):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def best_possibility(self) -> Edit:
+    def best_possibility(self) -> Optional[Edit]:
+        """Returns the best possibility as of yet."""
         return self._search.best_match
 
     def edits(self) -> Iterator[Edit]:
@@ -197,6 +214,8 @@ class PossibleEdits(AbstractCompoundEdit):
 
 
 class Match(ConstantCostEdit):
+    """A constant cost edit specifying that one node should be matched to another."""
+
     def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
         super().__init__(
             from_node=match_from,
@@ -226,6 +245,8 @@ class Match(ConstantCostEdit):
 
 
 class Replace(ConstantCostEdit):
+    """A constant cost edit specifying that one node should be replaced with another."""
+
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
         cost = max(to_replace.total_size, replace_with.total_size) + 1
         super().__init__(
@@ -250,6 +271,8 @@ class Replace(ConstantCostEdit):
 
 
 class Remove(ConstantCostEdit):
+    """A constant cost edit specifying that a node should be removed from a container."""
+
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_remove,
@@ -278,6 +301,8 @@ class Remove(ConstantCostEdit):
 
 
 class Insert(ConstantCostEdit):
+    """A constant cost edit specifying that a node should be added to a container."""
+
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_insert,
@@ -315,6 +340,8 @@ C = TypeVar('C', bound=Collection)
 
 
 class EditCollection(AbstractCompoundEdit, Generic[C]):
+    """An edit comprised of one or more sub-edits."""
+
     def __init__(
             self,
             from_node: TreeNode,
@@ -441,6 +468,8 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
 
 
 class EditSequence(EditCollection[List]):
+    """An :class:`EditCollection` using a :class:`list` as the underlying container."""
+
     def __init__(
             self,
             from_node: TreeNode,
