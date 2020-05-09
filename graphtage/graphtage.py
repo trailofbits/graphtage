@@ -16,16 +16,46 @@ from .utils import HashableCounter
 
 
 class LeafNode(TreeNode):
+    """Abstract class for nodes that have no children."""
+
     def __init__(self, obj):
+        """Creates a node with the given object.
+
+        Args:
+            obj: The underlying Python object wrapped by the node.
+        """
         self.object = obj
 
     def to_obj(self):
+        """Returns the object wrapped by this node.
+
+        This is equivalent to::
+
+            return self.object
+
+        """
         return self.object
 
     def children(self) -> Collection[TreeNode]:
+        """Leaf nodes have no children, so this always returns an empty tuple.
+
+        Returns: `()`
+
+        """
         return ()
 
     def calculate_total_size(self):
+        """By default, leaf nodes' sizes are equal to the length of their wrapped object's string representation.
+
+        This is equivalent to::
+
+            return len(str(self.object))
+
+        However, subclasses may override this function to return whatever size is required.
+
+        Returns: The length of the string representation of `self.object`.
+
+        """
         return len(str(self.object))
 
     def edits(self, node: TreeNode) -> Edit:
@@ -35,6 +65,16 @@ class LeafNode(TreeNode):
             return Replace(self, node)
 
     def print(self, printer: Printer):
+        """Prints this leaf node.
+
+        By default, leaf nodes print the :func:`repr` of their wrapped object::
+
+            printer.write(repr(self.object))
+
+        Args:
+            printer: The printer to which to write this node.
+
+        """
         printer.write(repr(self.object))
 
     def __lt__(self, other):
@@ -66,11 +106,22 @@ class LeafNode(TreeNode):
 
 
 class KeyValuePairEdit(AbstractCompoundEdit):
+    """An edit type for two key/value pairs"""
+
     def __init__(
             self,
             from_kvp: 'KeyValuePairNode',
             to_kvp: 'KeyValuePairNode'
     ):
+        """Creates a key/value pair edit.
+
+        Args:
+            from_kvp: The key/value pair from which to match.
+            to_kvp: The key/value pair to which to match.
+
+        Raises:
+            ValueError: If `from_kvp.allow_key_edits` and the keys do not match.
+        """
         if from_kvp.key == to_kvp.key:
             self.key_edit: Edit = Match(from_kvp.key, to_kvp.key, 0)
         elif from_kvp.allow_key_edits:
@@ -102,7 +153,20 @@ class KeyValuePairEdit(AbstractCompoundEdit):
 
 
 class KeyValuePairNode(ContainerNode):
+    """A node containing a key/value pair.
+
+    This is used by nodes subclassing :class:`MappingNode`.
+    """
+
     def __init__(self, key: LeafNode, value: TreeNode, allow_key_edits: bool = True):
+        """Creates a new key/value pair node.
+
+        Args:
+            key: The key of the pair.
+            value: The value of the pair.
+            allow_key_edits: If :const:`False`, only consider matching against another key/value pair node if it has
+                the same key.
+        """
         self.key: LeafNode = key
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
@@ -128,6 +192,10 @@ class KeyValuePairNode(ContainerNode):
             return Replace(self, node)
 
     def print(self, printer: Printer):
+        """Prints this node.
+
+        This default implementation prints the key in blue, followed by a bright white ": ", followed by the value.
+        """
         if isinstance(self.key, LeafNode):
             with printer.color(Fore.BLUE):
                 self.key.print(printer)
@@ -141,11 +209,41 @@ class KeyValuePairNode(ContainerNode):
         return self.key.total_size + self.value.total_size
 
     def __lt__(self, other):
+        """ Compares this key/value pair to another.
+
+        If `other` is also an instance of :class:`KeyValuePairNode`, return::
+
+            (self.key < other.key) or (self.key == other.key and self.value < other.value)
+
+        otherwise, return::
+
+            self.key < other
+
+        Args:
+            other: The object to which to compare.
+
+        Returns:
+            :const:`True` if this key/value pair is smaller than `other`.
+
+        """
         if not isinstance(other, KeyValuePairNode):
             return self.key < other
         return (self.key < other.key) or (self.key == other.key and self.value < other.value)
 
     def __eq__(self, other):
+        """Tests whether this key/value pair equals another.
+
+        Equivalent to::
+
+            isinstance(other, KeyValuePair) and self.key == other.key and self.value == other.value
+
+        Args:
+            other: The object to test.
+
+        Returns:
+            :const:`True` if this key/value pair is equal to `other`.
+
+        """
         if not isinstance(other, KeyValuePairNode):
             return False
         return self.key == other.key and self.value == other.value
@@ -171,6 +269,8 @@ T = TypeVar('T', bound=TreeNode)
 
 
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
+    """A node containing an ordered sequence of nodes."""
+
     def __init__(self, nodes: Iterable[T]):
         super().__init__(tuple(nodes))
 
@@ -179,6 +279,11 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 
     @property
     def container_type(self) -> Type[Tuple[T, ...]]:
+        """The container type required by :class:`graphtage.sequences.SequenceNode`
+
+        Returns: :class:`tuple`
+
+        """
         return tuple
 
     def edits(self, node: TreeNode) -> Edit:
@@ -209,6 +314,8 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 
 
 class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
+    """A node representing a set that can contain duplicate items."""
+
     def __init__(self, items: Iterable[T]):
         if not isinstance(items, HashableCounter):
             items = HashableCounter(items)
@@ -246,19 +353,67 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
 
 
 class MappingNode(ContainerNode, ABC):
+    """An abstract base class for nodes that represent mappings."""
+
     def to_obj(self) -> Dict[Any, Any]:
         return {
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
 
     def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
+        """Iterates over the key/value pairs in this mapping, similar to :func:`dict.items`.
+
+        The implementation is equivalent to::
+
+            for kvp in self:
+                yield kvp.key, kvp.value
+
+        since :func:`MappingNode.__iter__` returns an iterator over :class:`graphtage.KeyValuePairNode`.
+        """
         for kvp in self:
             yield kvp.key, kvp.value
 
     def __contains__(self, item: TreeNode):
+        """Tests whether the given item is a key in this mapping.
+
+        The implementation is equivalent to::
+
+            return any(k == item for k, _ in self.items())
+
+        Note:
+            This implementation runs in worst-case linear time in the size of the mapping.
+
+        Args:
+            item: The key of the item sought.
+
+        Returns:
+            :const:`True` if the key exists in this mapping.
+
+        """
         return any(k == item for k, _ in self.items())
 
     def __getitem__(self, item: TreeNode) -> KeyValuePairNode:
+        """Looks up a key/value pair item from this mapping by its key.
+
+        The implementation is equivalent to::
+
+            for kvp in self:
+                if kvp.key == item:
+                    return kvp
+            raise KeyError(item)
+
+        Note:
+            This implementation runs in worst-case linear time in the size of the mapping.
+
+        Args:
+            item: The key of the key/value pair that is sought.
+
+        Returns:
+            The first key/value pair found with key `item`.
+
+        Raises:
+             KeyError: If the key is not found.
+        """
         for kvp in self:
             if kvp.key == item:
                 return kvp
@@ -266,12 +421,27 @@ class MappingNode(ContainerNode, ABC):
 
     @abstractmethod
     def __iter__(self) -> Iterator[KeyValuePairNode]:
+        """Mappings should return an iterator over :class:`graphtage.KeyValuePairNode`."""
         raise NotImplementedError()
 
 
 class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
+    """A dictionary node implemented as a multiset of key/value pairs.
+
+    This is the default dictionary type used by Graphtage. Unlike its more efficient alternative,
+    :class:`FixedKeyDictNode`, this class supports matching dictionaries with duplicate keys.
+    """
+
     @staticmethod
     def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+        """Constructs a :class:`DictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
+
+        Args:
+            source_dict: The source mapping.
+
+        Returns: The resulting :class:`DictNode`.
+
+        """
         return DictNode(
             sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
         )
@@ -287,6 +457,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
 
 class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
+    """The edit type returned by :class:`FixedKeyDictNode`."""
     def __init__(
             self,
             from_node: 'FixedKeyDictNode',
@@ -304,24 +475,46 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
 
 
 class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
-    """A dictionary that only matches KeyValuePairs if they share the same key
-    NOTE: This implementation does not currently support duplicate keys!
+    """A dictionary that only attempts to match two :class:`KeyValuePairNode` objects if they share the same key.
+
+    This is the most efficient dictionary matching node type, and is what is used with the `--no-key-edits`/`-k`
+    command line argument.
+
+    Note:
+        This implementation does not currently support duplicate keys.
     """
     @property
     def container_type(self) -> Type[Dict[LeafNode, KeyValuePairNode]]:
+        """The container type required by :class:`graphtage.sequences.SequenceNode`
+
+        Returns: :class:`dict`
+
+        """
         return dict
 
     @staticmethod
     def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+        """Constructs a :class:`FixedKeyDictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
+
+        Args:
+            source_dict: The source mapping.
+
+        Note:
+            This implementation does not currently check for duplicate keys. Only the first key returned from
+            `source_dict.items()` will be included in the output.
+
+        Returns: The resulting :class:`FixedKeyDictNode`
+
+        """
         return FixedKeyDictNode({
             kvp.key: kvp
             for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
         })
 
-    def __getitem__(self, item: TreeNode):
+    def __getitem__(self, item: LeafNode):
         return self._children[item]
 
-    def __contains__(self, item: TreeNode):
+    def __contains__(self, item: LeafNode):
         return item in self._children
 
     def _child_edits(self, node: MappingNode) -> Iterator[Edit]:
@@ -369,6 +562,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
 
 
 class StringEdit(AbstractEdit):
+    """An edit returned from a :class:`StringNode`"""
+
     def __init__(
             self,
             from_node: 'StringNode',
@@ -390,6 +585,12 @@ class StringEdit(AbstractEdit):
         return self.edit_distance.tighten_bounds()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
+        """`StringEdit` does not implement :func:`graphtage.tree.Edit.print`.
+
+        Instead, it raises :class:`NotImplementedError` so that the formatting protocol will default to using a
+        formatter like :class:`StringFormatter`.
+
+        """
         raise NotImplementedError()
 
 

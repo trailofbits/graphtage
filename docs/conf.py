@@ -71,6 +71,8 @@ def skip(app, what, name, obj, would_skip, options):
 def setup(app):
     app.connect("autodoc-skip-member", skip)
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
-add_package_names=False
+add_package_names = False
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
