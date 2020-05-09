@@ -23,6 +23,7 @@ class LeafNode(TreeNode):
 
         Args:
             obj: The underlying Python object wrapped by the node.
+
         """
         self.object = obj
 
@@ -39,7 +40,7 @@ class LeafNode(TreeNode):
     def children(self) -> Collection[TreeNode]:
         """Leaf nodes have no children, so this always returns an empty tuple.
 
-        Returns: `()`
+        Returns: An empty tuple.
 
         """
         return ()
@@ -53,7 +54,7 @@ class LeafNode(TreeNode):
 
         However, subclasses may override this function to return whatever size is required.
 
-        Returns: The length of the string representation of `self.object`.
+        Returns: The length of the string representation of :obj:`self.object`.
 
         """
         return len(str(self.object))
@@ -120,7 +121,8 @@ class KeyValuePairEdit(AbstractCompoundEdit):
             to_kvp: The key/value pair to which to match.
 
         Raises:
-            ValueError: If `from_kvp.allow_key_edits` and the keys do not match.
+            ValueError: If :meth:`from_kvp.allow_key_edits<KeyValuePairNode.__init__>` and the keys do not match.
+
         """
         if from_kvp.key == to_kvp.key:
             self.key_edit: Edit = Match(from_kvp.key, to_kvp.key, 0)
@@ -156,6 +158,7 @@ class KeyValuePairNode(ContainerNode):
     """A node containing a key/value pair.
 
     This is used by nodes subclassing :class:`MappingNode`.
+
     """
 
     def __init__(self, key: LeafNode, value: TreeNode, allow_key_edits: bool = True):
@@ -166,6 +169,7 @@ class KeyValuePairNode(ContainerNode):
             value: The value of the pair.
             allow_key_edits: If :const:`False`, only consider matching against another key/value pair node if it has
                 the same key.
+
         """
         self.key: LeafNode = key
         self.value: TreeNode = value
@@ -195,6 +199,7 @@ class KeyValuePairNode(ContainerNode):
         """Prints this node.
 
         This default implementation prints the key in blue, followed by a bright white ": ", followed by the value.
+
         """
         if isinstance(self.key, LeafNode):
             with printer.color(Fore.BLUE):
@@ -211,7 +216,7 @@ class KeyValuePairNode(ContainerNode):
     def __lt__(self, other):
         """ Compares this key/value pair to another.
 
-        If `other` is also an instance of :class:`KeyValuePairNode`, return::
+        If :obj:`other` is also an instance of :class:`KeyValuePairNode`, return::
 
             (self.key < other.key) or (self.key == other.key and self.value < other.value)
 
@@ -223,7 +228,7 @@ class KeyValuePairNode(ContainerNode):
             other: The object to which to compare.
 
         Returns:
-            :const:`True` if this key/value pair is smaller than `other`.
+            :const:`True` if this key/value pair is smaller than :obj:`other`.
 
         """
         if not isinstance(other, KeyValuePairNode):
@@ -241,7 +246,7 @@ class KeyValuePairNode(ContainerNode):
             other: The object to test.
 
         Returns:
-            :const:`True` if this key/value pair is equal to `other`.
+            :const:`True` if this key/value pair is equal to :obj:`other`.
 
         """
         if not isinstance(other, KeyValuePairNode):
@@ -361,14 +366,15 @@ class MappingNode(ContainerNode, ABC):
         }
 
     def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
-        """Iterates over the key/value pairs in this mapping, similar to :func:`dict.items`.
+        """Iterates over the key/value pairs in this mapping, similar to :meth:`dict.items`.
 
         The implementation is equivalent to::
 
             for kvp in self:
                 yield kvp.key, kvp.value
 
-        since :func:`MappingNode.__iter__` returns an iterator over :class:`graphtage.KeyValuePairNode`.
+        since :meth:`MappingNode.__iter__` returns an iterator over :class:`graphtage.KeyValuePairNode`.
+
         """
         for kvp in self:
             yield kvp.key, kvp.value
@@ -409,10 +415,11 @@ class MappingNode(ContainerNode, ABC):
             item: The key of the key/value pair that is sought.
 
         Returns:
-            The first key/value pair found with key `item`.
+            The first key/value pair found with key :obj:`item`.
 
         Raises:
              KeyError: If the key is not found.
+
         """
         for kvp in self:
             if kvp.key == item:
@@ -430,6 +437,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
     This is the default dictionary type used by Graphtage. Unlike its more efficient alternative,
     :class:`FixedKeyDictNode`, this class supports matching dictionaries with duplicate keys.
+
     """
 
     @staticmethod
@@ -477,8 +485,8 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
 class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
     """A dictionary that only attempts to match two :class:`KeyValuePairNode` objects if they share the same key.
 
-    This is the most efficient dictionary matching node type, and is what is used with the `--no-key-edits`/`-k`
-    command line argument.
+    This is the most efficient dictionary matching node type, and is what is used with the
+    :obj:`--no-key-edits`/:obj:`-k` command line argument.
 
     Note:
         This implementation does not currently support duplicate keys.
@@ -585,9 +593,9 @@ class StringEdit(AbstractEdit):
         return self.edit_distance.tighten_bounds()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
-        """`StringEdit` does not implement :func:`graphtage.tree.Edit.print`.
+        """`StringEdit` does not implement :meth:`graphtage.tree.Edit.print`.
 
-        Instead, it raises :class:`NotImplementedError` so that the formatting protocol will default to using a
+        Instead, it raises :exc:`NotImplementedError` so that the formatting protocol will default to using a
         formatter like :class:`StringFormatter`.
 
         """
@@ -631,13 +639,14 @@ class StringFormatter(GraphtageFormatter):
         """Writes a character to the printer.
 
         Note:
-            This function calls :func:`graphtage.StringFormatter.escape`; classes extending
-            :class:`graphtage.StringFormatter` should also call :func:`graphtage.StringFormatter.escape` when
+            This function calls :meth:`graphtage.StringFormatter.escape`; classes extending
+            :class:`graphtage.StringFormatter` should also call :meth:`graphtage.StringFormatter.escape` when
             reimplementing this function.
 
         Note:
             There is no need to specially format characters that have been removed or inserted; the printer will have
-            already automatically been configured to format them prior to the call to `write_char`.
+            already automatically been configured to format them prior to the call to
+            :meth:`StringFormatter.write_char`.
 
         Args:
             printer: The printer to which to write the character.
@@ -738,6 +747,7 @@ class StringNode(LeafNode):
         Args:
             string_like: the string contained by the node
             quoted: whether or not the string should be quoted when being formatted
+
         """
         super().__init__(string_like)
         self.quoted = quoted
@@ -821,7 +831,7 @@ class Filetype(metaclass=FiletypeWatcher):
     """Abstract base class from which all Graphtage file formats should extend.
 
     When this class is subclassed, the subclass will automatically be added to Graphtage's filetype registry.
-    This includes automatic inclusion in `graphtage`'s command line arguments and mime type auto-detection in
+    This includes automatic inclusion in :mod:`graphtage`'s command line arguments and mime type auto-detection in
     :func:`get_filetype`.
     """
 
@@ -829,14 +839,14 @@ class Filetype(metaclass=FiletypeWatcher):
         """Initializes a new Graphtage file format type
 
         Args:
-            type_name: A short name for the :obj:`Filetype`. This will be used for specifying this :obj:`Filetype` via
-                command line arguments.
-            default_mimetype: The default mimetype to be assigned to this :obj:`Filetype`.
-            *mimetypes: Zero or more additional mimetypes that should be associated with this :obj:`Filetype`.
+            type_name: A short name for the :class:`Filetype`. This will be used for specifying this :class:`Filetype`
+                via command line arguments.
+            default_mimetype: The default mimetype to be assigned to this :class:`Filetype`.
+            *mimetypes: Zero or more additional mimetypes that should be associated with this :class:`Filetype`.
 
         Raises:
-            ValueError: The `type_name` and/or one of the mimetypes of this :obj:`Filetype` conflicts with that of a
-                preexisting :obj:`Filetype`.
+            ValueError: The :obj:`type_name` and/or one of the mimetypes of this :class:`Filetype` conflicts with that
+                of a preexisting :class:`Filetype`.
 
         """
         self.name = type_name
@@ -854,7 +864,7 @@ class Filetype(metaclass=FiletypeWatcher):
 
     @abstractmethod
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
-        """Builds an intermediate representation tree from a file of this :obj:`Filetype`.
+        """Builds an intermediate representation tree from a file of this :class:`Filetype`.
 
         Args:
             path: Path to the file to parse
@@ -867,7 +877,7 @@ class Filetype(metaclass=FiletypeWatcher):
 
     @abstractmethod
     def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
-        """Same as :func:`build_tree`, but it should return a human-readable error string on failure.
+        """Same as :meth:`Filetype.build_tree`, but it should return a human-readable error string on failure.
 
         This function should never throw an exception.
 
@@ -889,8 +899,9 @@ class Filetype(metaclass=FiletypeWatcher):
 def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) -> Filetype:
     """Looks up the filetype for the given path.
 
-    At least one of `path` or `mime_type` must be not :const:`None`. If both are provided, only `mime_type` will be
-    used. If only `path` is provided, its mimetype will be guessed using :func:`mimetypes.guess_type`.
+    At least one of :obj:`path` or :obj:`mime_type` must be not :const:`None`. If both are provided, only
+    :obj:`mime_type` will be used. If only :obj:`path` is provided, its mimetype will be guessed using
+    :func:`mimetypes.guess_type`.
 
     Args:
         path:
@@ -899,9 +910,9 @@ def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) ->
     Returns:
 
     Raises:
-        ValueError: If both `path` and `mime_type` are :const:`None`.
-        ValueError: If `mime_type` was not provided and :func:`mimetypes.guess_type` could not identify the file at
-            `path`.
+        ValueError: If both :obj:`path` and :obj:`mime_type` are :const:`None`.
+        ValueError: If :obj:`mime_type` was not provided and :func:`mimetypes.guess_type` could not identify the file at
+            :obj:`path`.
         ValueError: If either the provided or guessed mimetype is not supported by any registered
             :class:`Filetype`.
     """
