@@ -21,8 +21,10 @@ help:
 
 .PHONY: graphtage.rst
 graphtage.rst:
-	sphinx-apidoc -f -e -M -T -o . ../graphtage
+	# graphtage.py, edits.py, and tree.py are all merged into the main graphtage module by __init__.py,
+	# so we should not generate separate submodules for them:
+	sphinx-apidoc -f -e -M -T -o . ../graphtage ../graphtage/graphtage.py ../graphtage/edits.py ../graphtage/tree.py
 
 .PHONY: clean
 clean:
-	rm -rf _build graphtage.rst
+	rm -rf _build graphtage*.rst
