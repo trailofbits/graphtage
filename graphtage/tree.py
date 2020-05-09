@@ -21,7 +21,45 @@ else:
 
 
 class GraphtageFormatter(FormatterType):
+    """A base class for defining formatters that operate on :class:`TreeNode` and :class:`Edit`."""
+
     def print(self, printer: Printer, node_or_edit: Union['TreeNode', 'Edit'], with_edits: bool = True):
+        """Prints the given node or edit.
+
+        Args:
+            printer: The printer to which to write.
+            node_or_edit: The node or edit to print.
+            with_edits: If :keyword:True, print any edits associated with the node.
+
+        .. _PrintingProtocol:
+
+        The protocol for delegating the print is as follows:
+
+        #. Determine the actual object to be printed:
+            * If :obj:`node_or_edit` is an :class:`Edit`:
+                * If :obj:`with_edits`, then choose the edit
+                * Otherwise, choose :obj:`node_or_edit.from_node`
+            * If :obj:`node_or_edit` is a :class:`TreeNode`:
+                * If :obj:`with_edits` *and* the node is edited and has a non-zero cost,
+                    then choose :obj:`node_or_edit.edit`::
+
+                        node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0
+
+                * Otherwise choose `node_or_edit`
+        #. If the chosen object is an edit:
+            * See if there is a specialized formatter for this edit by calling
+                :meth:`graphtage.formatter.Formatter.get_formatter`
+            * If so, delegate to that formatter and return.
+            * If not, try calling the edit's :func:`graphtage.Edit.print` method. If :exc:`NotImplementedError` is
+                *not* raised, return.
+        #. If the chosen object is a node, or if we failed to find a printer for the edit:
+            * See if there is a specialized formatter for this node by calling
+                :meth:`graphtage.formatter.Formatter.get_formatter`
+            * If so, delegate to that formatter and return.
+            * If not, print a debug warning and delegate to the node's internal print implementation
+                :meth:`graphtage.TreeNode.print`.
+
+        """
         if isinstance(node_or_edit, Edit):
             if with_edits:
                 edit: Optional[Edit] = node_or_edit
@@ -62,18 +100,24 @@ class GraphtageFormatter(FormatterType):
 
 @runtime_checkable
 class Edit(Bounded, Protocol):
+    """A protocol for defining an edit."""
     initial_bounds: Range
     from_node: 'TreeNode'
 
     @abstractmethod
     def is_complete(self) -> bool:
-        """Returns True if all of the final edits() are available,
-        regardless of whether our bounds have been fully tightened"""
+        """Returns :const:`True` if all of the final edits are available.
+
+        This should return :const:`True` if the edit can determine that its representation will no longer change,
+        regardless of whether our bounds have been fully tightened.
+
+        """
         raise NotImplementedError()
 
     @property
     @abstractmethod
     def valid(self) -> bool:
+        """Returns :const:`False` if the edit has determined that it is no longer valid"""
         raise NotImplementedError()
 
     @valid.setter
@@ -83,26 +127,59 @@ class Edit(Bounded, Protocol):
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         """Edits can optionally implement a printing method
-           This function is called automatically from the formatter in the printing protocol and should
-           never be called directly unless you really know what you're doing!
-           Raising NotImplementedError() will cause the formatter to fall back on its own printing implementations.
+
+        This function is called automatically from the formatter in the
+        :ref:`printing protocol<PrintingProtocol>` and should
+        never be called directly unless you really know what you're doing!
+        Raising :exc:`NotImplementedError` will cause the formatter to fall back on its own printing implementations.
+
         """
         raise NotImplementedError()
 
-    def on_diff(self, from_node: 'EditedTreeNode'):
-        log.debug(repr(self))
+    def on_diff(self, from_node: Union['EditedTreeNode', 'TreeNode']):
+        """A callback for when an edit is assigned to an :class:`EditedTreeNode` in :meth:`TreeNode.diff`.
+
+        This default implementation adds the edit to the node::
+
+            from_node.edit = self
+            from_node.edit_list.append(self)
+
+        Implementations of the :class:`Edit` protocol that have sub-edits (like :class:`CompoundEdit`) should
+        recursively call :meth:`Edit.on_diff` on its sub-edits.
+
+        Args:
+            from_node: The edited node that was added to the diff
+
+        """
+
         from_node.edit = self
         from_node.edit_list.append(self)
 
 
 @runtime_checkable
 class CompoundEdit(Edit, Iterable, Protocol):
+    """A protocol for edits that are composed of sub-edits"""
+
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
+        """Returns an iterator over this edit's sub-edits"""
         raise NotImplementedError()
 
     def on_diff(self, from_node: 'EditedTreeNode'):
-        log.debug(repr(self))
+        """A callback for when an edit is assigned to an :class:`EditedTreeNode` in :meth:`TreeNode.diff`.
+
+        This default implementation adds the edit to the node, and recursively calls :meth:`Edit.on_diff` on all of
+        the sub-edits::
+
+            from_node.edit = self
+            from_node.edit_list.append(self)
+            for edit in self.edits():
+                edit.on_diff(edit.from_node)
+
+        Args:
+            from_node: The edited node that was added to the diff
+
+        """
         if hasattr(from_node, 'edit_list'):
             from_node.edit_list.append(self)
         if hasattr(from_node, 'edit'):
@@ -112,6 +189,23 @@ class CompoundEdit(Edit, Iterable, Protocol):
 
 
 def explode_edits(edit: Edit) -> Iterator[Edit]:
+    """Performs a depth-first traversal over a potentially compound edit.
+
+    If an edit implements the :class:`CompoundEdit` protocol, its sub-edits are recursively included in the output.
+
+    This implementation is equivalent to::
+
+        if isinstance(edit, CompoundEdit):
+            return itertools.chain(*map(explode_edits, edit.edits()))
+        else:
+            return iter((edit,))
+
+    Args:
+        edit: The edit that is to be exploded
+
+    Returns: An iterator over the edits.
+
+    """
     if isinstance(edit, CompoundEdit):
         return itertools.chain(*map(explode_edits, edit.edits()))
     else:
@@ -123,6 +217,13 @@ T = TypeVar('T', bound='TreeNode')
 
 
 class EditedTreeNode:
+    """A mixin for a :class:`TreeNode` that has been edited.
+
+    In practice, an object that is an instance of :class:`EditedTreeNode` will always *also* be an instance of
+    :class:`TreeNode`.
+
+    This class should almost never be instantiated directly; it is used by :meth:`TreeNode.diff`.
+    """
     def __init__(self):
         self.removed: bool = False
         self.inserted: List[TreeNode] = []
@@ -132,21 +233,46 @@ class EditedTreeNode:
 
     @property
     def edited(self) -> bool:
+        """Edited tree nodes are always edited"""
         return True
 
     def edited_cost(self) -> int:
+        """The cost of the edit applied to this node.
+
+        This will first fully tighten all of the bounds of :obj:`self.edit_list`, and then return the sum of their
+        upper bounds::
+
+            while any(e.tighten_bounds() for e in self.edit_list):
+                pass
+            return sum(e.bounds().upper_bound for e in self.edit_list)
+
+        Since all of the edits are fully tightened, this function returns a :class:`int` instead of a
+        :class:`graphtage.bounds.Bounds`.
+
+        Returns: The sum of the costs of the edits applied to this node.
+
+        """
         while any(e.tighten_bounds() for e in self.edit_list):
             pass
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
 
 class TreeNode(metaclass=ABCMeta):
+    """Abstract base class for nodes in Graphtage's intermediate representation.
+
+    Tree nodes are intended to be immutable. :class:`EditedTreeNode`, on the other hand, can be mutable. See
+    :meth:`TreeNode.make_edited`.
+    """
     _total_size = None
     _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
     edit_modifiers: Optional[List[Callable[['TreeNode', 'TreeNode'], Optional[Edit]]]] = None
 
     @property
     def edited(self) -> bool:
+        """Returns whether this node has been edited.
+
+        The default implementation returns :const:`False`, whereas :meth:`EditedTreeNode.edited` returns :const:`True`.
+        """
         return False
 
     def _edits_with_modifiers(self, node: 'TreeNode') -> Edit:
@@ -164,13 +290,37 @@ class TreeNode(metaclass=ABCMeta):
 
     @abstractmethod
     def to_obj(self):
+        """Returns a pure Python representation of this node.
+
+        For example, a node representing a list, like :class:`graphtage.ListNode`, should return a Python :class:`list`.
+        A node representing a mapping, like :class:`graphtage.MappingNode`, should return a Python :class:`dict`.
+        Container nodes should recursively call :meth:`TreeNode.to_obj` on all of their children.
+
+        This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
+        options like `--match-if` and `--match-unless`.
+
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def children(self) -> Collection['TreeNode']:
+        """Returns a collection of this node's children, if any."""
         raise NotImplementedError()
 
     def dfs(self) -> Iterator['TreeNode']:
+        """Performs a depth-first traversal over all of this node's descendants.
+
+        :obj:`self` is always included and yielded first.
+
+        This implementation is equivalent to::
+
+            stack = [self]
+            while stack:
+                node = stack.pop()
+                yield node
+                stack.extend(node.children())
+
+        """
         stack = [self]
         while stack:
             node = stack.pop()
@@ -179,14 +329,40 @@ class TreeNode(metaclass=ABCMeta):
 
     @property
     def is_leaf(self) -> bool:
+        """Returns whether this node is a leaf.
+
+        This implementation is equivalent to::
+
+            return len(self.children()) == 0
+
+        """
         return len(self.children()) == 0
 
     @abstractmethod
     def edits(self, node: 'TreeNode') -> Edit:
+        """Calculates the best edit to transform this node into the provided node.
+
+        Args:
+            node: The node to which to transform.
+
+        Returns: The best possible edit.
+
+        """
         raise NotImplementedError()
 
     @classmethod
     def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
+        """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+
+        The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
+        :class:`TreeNode` it wraps::
+
+            new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
+
+        Returns: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`. Its constructor accepts
+            a :class:`TreeNode` that it will wrap.
+
+        """
         if cls._edited_type is None:
             def init(etn, wrapped_tree_node: TreeNode):
                 etn.__dict__ = dict(wrapped_tree_node.editable_dict())
@@ -198,12 +374,34 @@ class TreeNode(metaclass=ABCMeta):
         return cls._edited_type
 
     def make_edited(self) -> Union[EditedTreeNode, T]:
+        """Returns a new, copied instance of this node that is also an instance of :class:`EditedTreeNode`.
+
+        This is equivalent to::
+
+            return self.edited_type()(self)
+
+        Returns: A copied version of this node that is also an instance of :class:`EditedTreeNode` and thereby mutable.
+        """
         ret = self.edited_type()(self)
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
 
     def editable_dict(self) -> Dict[str, Any]:
+        """Copies :obj:`self.__dict__`, calling :meth:`TreeNode.editable_dict` on any :class:`TreeNode` objects therein.
+
+        This is equivalent to::
+
+            ret = dict(self.__dict__)
+            if not self.is_leaf:
+                for key, value in ret.items():
+                    if isinstance(value, TreeNode):
+                        ret[key] = value.make_edited()
+            return ret
+
+        This is used by :meth:`TreeNode.make_edited`.
+
+        """
         ret = dict(self.__dict__)
         if not self.is_leaf:
             # Deep-copy any sub-nodes
@@ -213,6 +411,16 @@ class TreeNode(metaclass=ABCMeta):
         return ret
 
     def get_all_edits(self, node: 'TreeNode') -> Iterator[Edit]:
+        """Returns an iterator over all edits that will transform this node into the provided node.
+
+        Args:
+            node: The node to which to transform this one.
+
+        Returns: An iterator over edits. Note that this iterator will automatically :func:`explode <explode_edits>`
+            any :class:`CompoundEdit` in the sequence.
+
+        """
+
         edit = self.edits(node)
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
@@ -235,6 +443,14 @@ class TreeNode(metaclass=ABCMeta):
                     yield edit
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
+        """Performs a diff against the provided node.
+
+        Args:
+            node: The node against which to perform the diff.
+
+        Returns: An edited version of this node with all edits being :meth:`completed <Edit.is_complete>`.
+
+        """
         ret = self.make_edited()
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
@@ -253,26 +469,66 @@ class TreeNode(metaclass=ABCMeta):
 
     @property
     def total_size(self) -> int:
+        """The size of this node.
+
+        This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.
+
+        The first time this property is called, its value will be set and memoized by calling
+        :meth:`TreeNode.calculate_total_size`.
+
+        Returns: An arbitrary integer representing the size of this node.
+
+        """
         if self._total_size is None:
             self._total_size = self.calculate_total_size()
         return self._total_size
 
     @abstractmethod
     def calculate_total_size(self) -> int:
+        """Calculates the size of this node.
+        This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.
+
+        Returns: An arbitrary integer representing the size of this node.
+
+        """
         return 0
 
     @abstractmethod
     def print(self, printer: Printer):
-        pass
+        """Prints this node."""
+        raise NotImplementedError()
 
 
 class ContainerNode(TreeNode, Iterable, Sized, ABC):
+    """A tree node that has children."""
+
     def children(self) -> List[TreeNode]:
+        """The children of this node.
+
+        Equivalent to::
+
+            list(self)
+
+        """
         return list(self)
 
     @property
     def is_leaf(self) -> bool:
+        """Container nodes are never leaves, even if they have no children.
+
+        Returns: :const:`False`
+
+        """
         return False
 
     def all_children_are_leaves(self) -> bool:
+        """Tests whether all of the children of this container are leaves.
+
+        Equivalent to::
+
+            all(c.is_leaf for c in self)
+
+        Returns: :const:`True` if all children are leaves.
+
+        """
         return all(c.is_leaf for c in self)
