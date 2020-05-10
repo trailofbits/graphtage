@@ -32,6 +32,7 @@ jobs:
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "graphtage/docs/"
+          build-command: "make html"
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
         with:

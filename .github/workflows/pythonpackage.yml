@@ -39,6 +39,7 @@ jobs:
       uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: "docs/"
+        build-command: "make html"
     - name: Test with pytest
       run: |
         pip install pytest
