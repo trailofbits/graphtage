@@ -38,7 +38,7 @@ release = get_version_string()
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.intersphinx', 'sphinx.ext.todo']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -76,3 +76,4 @@ add_package_names = False
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
+todo_include_todos = True
