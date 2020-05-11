@@ -24,6 +24,7 @@ class AbstractEdit(Edit, ABC):
             to_node: The node that this edit transforms :obj:`from_node` into.
             constant_cost: A optional lower bound on the cost of this edit.
             cost_upper_bound: An optional upper bound on the cost of this edit.
+
         """
         self.from_node: TreeNode = from_node
         self.to_node: TreeNode = to_node
@@ -45,7 +46,8 @@ class AbstractEdit(Edit, ABC):
         For example, in the case of a :class:`CompoundEdit`, this method should only return :const:`True` if no future
         calls to :meth:`Edit.tighten_bounds` will affect the result of :meth:`CompoundEdit.edits`.
 
-        Returns: :const:`True` if subsequent calls to :meth:`Edit.tighten_bounds` will only serve to tighten the bounds
+        Returns:
+            bool: :const:`True` if subsequent calls to :meth:`Edit.tighten_bounds` will only serve to tighten the bounds
             of this edit and will not affect the semantics of the edit.
 
         """
@@ -72,7 +74,8 @@ class AbstractEdit(Edit, ABC):
 
             self.from_node.total_size + self.to_node.total_size + 1
 
-        Returns: A :class:`graphtage.bounds.Range` bounding the cost of this edit.
+        Returns:
+            Range: A range bounding the cost of this edit.
 
         """
         lb = self._constant_cost
@@ -100,6 +103,7 @@ class ConstantCostEdit(AbstractEdit, ABC):
             from_node: The node being edited.
             to_node: The node into which :obj:`from_node` is being transformed.
             cost: The constant cost of the edit.
+
         """
         super().__init__(
             from_node=from_node,
@@ -114,7 +118,7 @@ class ConstantCostEdit(AbstractEdit, ABC):
 
 
 class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
-    """Abastract base class implementing the :class:`CompoundEdit` protocol."""
+    """Abstract base class implementing the :class:`CompoundEdit` protocol."""
 
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
@@ -140,7 +144,8 @@ class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     def __iter__(self) -> Iterator[Edit]:
         """Returns an iterator over this edit's sub-edits.
 
-        Returns: the result of :meth:`AbstractCompoundEdit.edits`
+        Returns:
+            Iterator[Edit]: The result of :meth:`AbstractCompoundEdit.edits`
 
         """
         return self.edits()

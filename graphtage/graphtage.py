@@ -499,7 +499,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
     def container_type(self) -> Type[Dict[LeafNode, KeyValuePairNode]]:
         """The container type required by :class:`graphtage.sequences.SequenceNode`
 
-        Returns: :class:`dict`
+        Returns:
+            Type[Dict[LeafNode, KeyValuePairNode]]: :class:`dict`
 
         """
         return dict

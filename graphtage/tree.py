@@ -110,7 +110,8 @@ class Edit(Bounded, Protocol):
 
         The lower bound must always be finite and non-negative.
 
-        Returns: The bounds on the cost of this edit.
+        Returns:
+            Range: The bounds on the cost of this edit.
         """
         raise NotImplementedError()
 
@@ -118,8 +119,12 @@ class Edit(Bounded, Protocol):
     def tighten_bounds(self) -> bool:
         """Tightens the :meth:`Edit.bounds` on the cost of this edit, if possible.
 
-        Returns: :const:`True` if the bounds have been tightened. Implementations of this function should return
-            :const:`False` if and only if :meth:`self.bounds().definitive() <graphtage.bounds.Range.definitive>`.
+        Returns:
+            bool: :const:`True` if the bounds have been tightened.
+
+        Note:
+            Implementations of this function should return :const:`False` if and only if
+            :meth:`self.bounds().definitive() <graphtage.bounds.Range.definitive>`.
 
         """
         raise NotImplementedError()
@@ -128,8 +133,9 @@ class Edit(Bounded, Protocol):
     def is_complete(self) -> bool:
         """Returns :const:`True` if all of the final edits are available.
 
-        This should return :const:`True` if the edit can determine that its representation will no longer change,
-        regardless of whether our bounds have been fully tightened.
+        Note:
+            This should return :const:`True` if the edit can determine that its representation will no longer change,
+            regardless of whether our bounds have been fully tightened.
 
         """
         raise NotImplementedError()
@@ -223,7 +229,8 @@ def explode_edits(edit: Edit) -> Iterator[Edit]:
     Args:
         edit: The edit that is to be exploded
 
-    Returns: An iterator over the edits.
+    Returns:
+        Iterator[Edit]: An iterator over the edits.
 
     """
     if isinstance(edit, CompoundEdit):
@@ -243,6 +250,7 @@ class EditedTreeNode:
     :class:`TreeNode`.
 
     This class should almost never be instantiated directly; it is used by :meth:`TreeNode.diff`.
+
     """
     def __init__(self):
         self.removed: bool = False
@@ -269,7 +277,8 @@ class EditedTreeNode:
         Since all of the edits are fully tightened, this function returns a :class:`int` instead of a
         :class:`graphtage.bounds.Bounds`.
 
-        Returns: The sum of the costs of the edits applied to this node.
+        Returns:
+            int: The sum of the costs of the edits applied to this node.
 
         """
         while any(e.tighten_bounds() for e in self.edit_list):
@@ -282,6 +291,7 @@ class TreeNode(metaclass=ABCMeta):
 
     Tree nodes are intended to be immutable. :class:`EditedTreeNode`, on the other hand, can be mutable. See
     :meth:`TreeNode.make_edited`.
+
     """
     _total_size = None
     _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
@@ -292,6 +302,7 @@ class TreeNode(metaclass=ABCMeta):
         """Returns whether this node has been edited.
 
         The default implementation returns :const:`False`, whereas :meth:`EditedTreeNode.edited` returns :const:`True`.
+
         """
         return False
 
@@ -365,7 +376,8 @@ class TreeNode(metaclass=ABCMeta):
         Args:
             node: The node to which to transform.
 
-        Returns: The best possible edit.
+        Returns:
+            Edit: The best possible edit.
 
         """
         raise NotImplementedError()
@@ -379,8 +391,9 @@ class TreeNode(metaclass=ABCMeta):
 
             new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
 
-        Returns: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`. Its constructor accepts
-            a :class:`TreeNode` that it will wrap.
+        Returns:
+            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+            Its constructor accepts a :class:`TreeNode` that it will wrap.
 
         """
         if cls._edited_type is None:
@@ -400,7 +413,10 @@ class TreeNode(metaclass=ABCMeta):
 
             return self.edited_type()(self)
 
-        Returns: A copied version of this node that is also an instance of :class:`EditedTreeNode` and thereby mutable.
+        Returns:
+            Union[EditedTreeNode, T]: A copied version of this node that is also an instance of :class:`EditedTreeNode`
+            and thereby mutable.
+
         """
         ret = self.edited_type()(self)
         assert isinstance(ret, self.__class__)
@@ -436,8 +452,9 @@ class TreeNode(metaclass=ABCMeta):
         Args:
             node: The node to which to transform this one.
 
-        Returns: An iterator over edits. Note that this iterator will automatically :func:`explode <explode_edits>`
-            any :class:`CompoundEdit` in the sequence.
+        Returns:
+            Iterator[Edit]: An iterator over edits. Note that this iterator will automatically
+            :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
 
         """
 
@@ -468,7 +485,9 @@ class TreeNode(metaclass=ABCMeta):
         Args:
             node: The node against which to perform the diff.
 
-        Returns: An edited version of this node with all edits being :meth:`completed <Edit.is_complete>`.
+        Returns:
+            Union[EditedTreeNode, T]: An edited version of this node with all edits being
+            :meth:`completed <Edit.is_complete>`.
 
         """
         ret = self.make_edited()
@@ -496,7 +515,8 @@ class TreeNode(metaclass=ABCMeta):
         The first time this property is called, its value will be set and memoized by calling
         :meth:`TreeNode.calculate_total_size`.
 
-        Returns: An arbitrary integer representing the size of this node.
+        Returns:
+            int: An arbitrary integer representing the size of this node.
 
         """
         if self._total_size is None:
@@ -508,7 +528,8 @@ class TreeNode(metaclass=ABCMeta):
         """Calculates the size of this node.
         This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.
 
-        Returns: An arbitrary integer representing the size of this node.
+        Returns:
+            int: An arbitrary integer representing the size of this node.
 
         """
         return 0
@@ -536,7 +557,8 @@ class ContainerNode(TreeNode, Iterable, Sized, ABC):
     def is_leaf(self) -> bool:
         """Container nodes are never leaves, even if they have no children.
 
-        Returns: :const:`False`
+        Returns:
+            bool: :const:`False`
 
         """
         return False
@@ -548,7 +570,8 @@ class ContainerNode(TreeNode, Iterable, Sized, ABC):
 
             all(c.is_leaf for c in self)
 
-        Returns: :const:`True` if all children are leaves.
+        Returns:
+            bool: :const:`True` if all children are leaves.
 
         """
         return all(c.is_leaf for c in self)

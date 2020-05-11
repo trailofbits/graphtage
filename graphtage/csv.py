@@ -44,7 +44,8 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> CSVNode:
         *args: Any extra positional arguments are passed on to :func:`csv.reader`.
         **kwargs: Any extra keyword arguments are passed on to :func:`csv.reader`.
 
-    Returns: The resulting CSV node object.
+    Returns:
+        CSVNode: The resulting CSV node object.
 
     """
     csv_data = []

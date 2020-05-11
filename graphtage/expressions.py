@@ -86,7 +86,8 @@ def get_member(obj, member: 'IdentifierToken'):
         ParseError: If :obj:`member` is not an :class:`IdentifierToken`.
         ParseError: If :attr:`member.name <IdentifierToken.name>` starts with "_".
 
-    Returns: The requested attribute of :obj:`obj`.
+    Returns:
+        Any: The requested attribute of :obj:`obj`.
 
     Todo:
         * Provide an API to programmatically override and customize the behavior of this function.
@@ -190,6 +191,7 @@ class Token:
         Args:
             raw_text: The raw parsed text of the token.
             offset: The offset of the token within the input.
+
         """
         self._raw: str = raw_text
         self.offset = offset
@@ -320,7 +322,7 @@ class Comma(Token):
 class FixedSizeCollection(Token):
     """A meta-token injected by the tokenizer specifying a fixed-size collection of items on the stack.
 
-    This is used for parsing and evaulating argument lists of functions of unknown arity.
+    This is used for parsing and evaluating argument lists of functions of unknown arity.
 
     """
     def __init__(self, size: int, container_type: Type[Collection], offset: int):
@@ -395,6 +397,7 @@ class Tokenizer:
 
         Args:
             stream: The input stream from which to tokenize.
+
         """
         if isinstance(stream, str):
             stream = StringIO(stream)
@@ -427,8 +430,9 @@ class Tokenizer:
 
         This function actually computes and caches the next token if it has not already been cached.
 
-        Returns: The next token that would be returned from a call to :meth:`Tokenizer.next`, or :const:`None` if
-            there are no more tokens.
+        Returns:
+            Optional[Token]: The next token that would be returned from a call to :meth:`Tokenizer.next`,
+            or :const:`None` if there are no more tokens.
 
         """
         if self._next_token is not None:
@@ -565,7 +569,8 @@ class Tokenizer:
     def next(self) -> Optional[Token]:
         """Returns the next token in the stream.
 
-        Returns: The next token, or :const:`None` if there are no more tokens.
+        Returns:
+            Optional[Token]: The next token, or :const:`None` if there are no more tokens.
 
         """
         ret = self.peek()
@@ -701,7 +706,8 @@ class Expression:
 
             ValueError: If the token is not numeric, a string, or an identifier.
 
-        Returns: The resolved value of the token.
+        Returns:
+            Any: The resolved value of the token.
 
         """
         if isinstance(token, NumericToken):
@@ -729,7 +735,8 @@ class Expression:
             globals: An optional mapping of global variables, by name. If omitted, it will default to
                 :attr:`graphtage.expressions.DEFAULT_GLOBALS`.
 
-        Returns: The result of evaluating the expression.
+        Returns:
+            Any: The result of evaluating the expression.
 
         """
         if locals is None:

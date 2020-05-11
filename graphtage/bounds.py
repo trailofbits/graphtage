@@ -219,7 +219,8 @@ class Bounded(Protocol):
     def tighten_bounds(self) -> bool:
         """Attempts to shrink the bounds of this object.
 
-        Returns: :const:`True` if the bounds were tightened.
+        Returns:
+            bool: :const:`True` if the bounds were tightened.
 
         """
         raise NotImplementedError(f"Class {self.__class__.__name__} must implement tighten_bounds")
@@ -236,6 +237,7 @@ class ConstantBound(Bounded):
 
         Args:
             value: The constant value of the object, which will constitute both its lower and upper bound.
+
         """
         self._range = Range(value, value)
 
@@ -312,7 +314,8 @@ def sort(items: Iterable[B]) -> Iterator[B]:
     Args:
         items: Zero or more bounded objects.
 
-    Returns: An iterator over the sorted sequence of items.
+    Returns:
+        Iterator[B]: An iterator over the sorted sequence of items.
 
     This is equivalent to::
 
