@@ -40,12 +40,13 @@ class LeafNode(TreeNode):
     def children(self) -> Collection[TreeNode]:
         """Leaf nodes have no children, so this always returns an empty tuple.
 
-        Returns: An empty tuple.
+        Returns:
+            tuple: An empty tuple.
 
         """
         return ()
 
-    def calculate_total_size(self):
+    def calculate_total_size(self) -> int:
         """By default, leaf nodes' sizes are equal to the length of their wrapped object's string representation.
 
         This is equivalent to::
@@ -54,7 +55,8 @@ class LeafNode(TreeNode):
 
         However, subclasses may override this function to return whatever size is required.
 
-        Returns: The length of the string representation of :obj:`self.object`.
+        Returns:
+            int: The length of the string representation of :obj:`self.object`.
 
         """
         return len(str(self.object))
@@ -228,7 +230,7 @@ class KeyValuePairNode(ContainerNode):
             other: The object to which to compare.
 
         Returns:
-            :const:`True` if this key/value pair is smaller than :obj:`other`.
+            bool: :const:`True` if this key/value pair is smaller than :obj:`other`.
 
         """
         if not isinstance(other, KeyValuePairNode):
@@ -246,7 +248,7 @@ class KeyValuePairNode(ContainerNode):
             other: The object to test.
 
         Returns:
-            :const:`True` if this key/value pair is equal to :obj:`other`.
+            bool: :const:`True` if this key/value pair is equal to :obj:`other`.
 
         """
         if not isinstance(other, KeyValuePairNode):
@@ -286,7 +288,8 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     def container_type(self) -> Type[Tuple[T, ...]]:
         """The container type required by :class:`graphtage.sequences.SequenceNode`
 
-        Returns: :class:`tuple`
+        Returns:
+            Type[Tuple[T, ...]]: :class:`tuple`
 
         """
         return tuple
@@ -393,7 +396,7 @@ class MappingNode(ContainerNode, ABC):
             item: The key of the item sought.
 
         Returns:
-            :const:`True` if the key exists in this mapping.
+            bool: :const:`True` if the key exists in this mapping.
 
         """
         return any(k == item for k, _ in self.items())
@@ -415,10 +418,10 @@ class MappingNode(ContainerNode, ABC):
             item: The key of the key/value pair that is sought.
 
         Returns:
-            The first key/value pair found with key :obj:`item`.
+            KeyValuePairNode: The first key/value pair found with key :obj:`item`.
 
         Raises:
-             KeyError: If the key is not found.
+            KeyError: If the key is not found.
 
         """
         for kvp in self:
@@ -447,7 +450,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
         Args:
             source_dict: The source mapping.
 
-        Returns: The resulting :class:`DictNode`.
+        Returns:
+            DictNode: The resulting :class:`DictNode`.
 
         """
         return DictNode(
@@ -511,7 +515,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             This implementation does not currently check for duplicate keys. Only the first key returned from
             `source_dict.items()` will be included in the output.
 
-        Returns: The resulting :class:`FixedKeyDictNode`
+        Returns:
+            FixedKeyDictNode: The resulting :class:`FixedKeyDictNode`
 
         """
         return FixedKeyDictNode({
@@ -622,12 +627,13 @@ class StringFormatter(GraphtageFormatter):
         else:
             self.is_quoted = False
 
-    def escape(self, c: str):
+    def escape(self, c: str) -> str:
         """String escape.
 
         This function is called once for each character in the string.
 
-        Returns: The escaped version of `c`, or `c` itself if no escaping is required.
+        Returns:
+            str: The escaped version of `c`, or `c` itself if no escaping is required.
 
         """
         if self.is_quoted:
@@ -800,7 +806,8 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
         s1: the string to compare from
         s2: the string to compare to
 
-    Returns: The :class:`graphtage.levenshtein.EditDistance` edit object for the strings
+    Returns:
+        EditDistance: The :class:`graphtage.levenshtein.EditDistance` edit object for the strings.
 
     """
     list1 = ListNode([StringNode(c) for c in s1])
@@ -817,6 +824,7 @@ class FiletypeWatcher(ABCMeta):
 
     This registers any subclasses of :class:`Filetype`, automatically adding them to the `graphtage` command line
     arguments and mimetype lookup in :func:`get_filetype`.
+
     """
     def __init__(cls, name, bases, clsdict):
         if len(cls.mro()) > 2:
@@ -833,6 +841,7 @@ class Filetype(metaclass=FiletypeWatcher):
     When this class is subclassed, the subclass will automatically be added to Graphtage's filetype registry.
     This includes automatic inclusion in :mod:`graphtage`'s command line arguments and mime type auto-detection in
     :func:`get_filetype`.
+
     """
 
     def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
@@ -870,7 +879,8 @@ class Filetype(metaclass=FiletypeWatcher):
             path: Path to the file to parse
             allow_key_edits: Whether to allow dictionary keys to be editable
 
-        Returns: The root tree node of the provided file
+        Returns:
+            TreeNode: The root tree node of the provided file
 
         """
         raise NotImplementedError()
@@ -885,7 +895,8 @@ class Filetype(metaclass=FiletypeWatcher):
             path: Path to the file to parse
             allow_key_edits: Whether to allow dictionary keys to be editable
 
-        Returns: The root tree node, on success, or a string containing the error message on failure.
+        Returns:
+            Union[str, TreeNode]: On success, the root tree node, or a string containing the error message on failure.
 
         """
         raise NotImplementedError()
@@ -904,10 +915,11 @@ def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) ->
     :func:`mimetypes.guess_type`.
 
     Args:
-        path:
-        mime_type:
+        path: An optional path to a file.
+        mime_type: An optional MIME type string.
 
     Returns:
+        Filetype: The filetype object associated with the given path and/or MIME type.
 
     Raises:
         ValueError: If both :obj:`path` and :obj:`mime_type` are :const:`None`.
