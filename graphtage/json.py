@@ -1,3 +1,10 @@
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering `JSON files`_.
+
+.. _JSON files:
+    https://tools.ietf.org/html/std90
+
+"""
+
 import json
 import os
 from typing import Union
@@ -9,7 +16,26 @@ from .sequences import SequenceFormatter
 from .tree import GraphtageFormatter, TreeNode
 
 
-def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeNode:
+def build_tree(
+        python_obj: Union[int, float, bool, str, bytes, list, dict],
+        allow_key_edits: bool = True,
+        force_leaf_node: bool = False) -> TreeNode:
+    """Builds a Graphtage tree from an arbitrary Python object.
+
+    Args:
+        python_obj: The object from which to build the tree.
+        allow_key_edits: Whether or not to try and match key/value pairs in dicts if their keys differ.
+        force_leaf_node: If :const:`True`, assume that :obj:`python_obj` is *not* a :func:`list` or :func:`dict`.
+
+    Returns:
+        TreeNode: The resulting tree.
+
+    Raises:
+        ValueError: If :obj:`force_leaf_node` is :const:`True` and :obj:`python_obj` is *not* one of :class:`int`,
+            :class:`float`, :class:`bool`, :class:`str`, or :class:`bytes`.
+        ValueError: If the object is of an unsupported type.
+
+    """
     if isinstance(python_obj, int):
         return IntegerNode(python_obj)
     elif isinstance(python_obj, float):
@@ -38,49 +64,120 @@ def build_tree(python_obj, allow_key_edits=True, force_leaf_node=False) -> TreeN
 
 
 class JSONListFormatter(SequenceFormatter):
+    """A sub-formatter for JSON lists."""
     is_partial = True
 
     def __init__(self):
+        """Initializes the JSON list formatter.
+
+        Equivalent to::
+
+            super().__init__('[', ']', ',')
+
+        """
         super().__init__('[', ']', ',')
 
     def print_ListNode(self, *args, **kwargs):
+        """Prints a :class:`graphtage.ListNode`.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
         super().print_SequenceNode(*args, **kwargs)
 
     def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-List sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONDictFormatter` in
+        instances where a list contains a dict.
+
+        """
         self.parent.print(*args, **kwargs)
 
 
 class JSONDictFormatter(SequenceFormatter):
+    """A sub-formatter for JSON dicts."""
     is_partial = True
 
     def __init__(self):
         super().__init__('{', '}', ',')
 
     def print_MultiSetNode(self, *args, **kwargs):
+        """Prints a :class:`graphtage.MultiSetNode`.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
         super().print_SequenceNode(*args, **kwargs)
 
     def print_MappingNode(self, *args, **kwargs):
+        """Prints a :class:`graphtage.MappingNode`.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
         super().print_SequenceNode(*args, **kwargs)
 
     def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-Dict sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONListFormatter` in
+        instances where a dict contains a list.
+
+        """
         self.parent.print(*args, **kwargs)
 
 
 class JSONStringFormatter(StringFormatter):
+    """A JSON formatter for strings."""
     is_partial = True
 
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+        """Writes a character, escaping if necessary.
+
+        This is equivalent to::
+
+            printer.write(json.dumps(c)[1:-1])
+
+        """
         # json.dumps will enclose the string in quotes, so remove them
         printer.write(json.dumps(c)[1:-1])
 
 
 class JSONFormatter(GraphtageFormatter):
+    """The default JSON formatter."""
     sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
+        """Prints a :class:`graphtage.LeafNode`.
+
+        This is equivalent to::
+
+            printer.write(json.dumps(node.object))
+
+        """
         printer.write(json.dumps(node.object))
 
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        """Prints a :class:`graphtage.KeyValuePairNode`.
+
+        By default, the key is printed in blue, followed by a bright ": ", followed by the value.
+
+        """
         with printer.color(Fore.BLUE):
             self.print(printer, node.key)
         with printer.bright():
@@ -89,7 +186,14 @@ class JSONFormatter(GraphtageFormatter):
 
 
 class JSON(Filetype):
+    """The JSON file type."""
     def __init__(self):
+        """Initializes the JSON file type.
+
+        By default, JSON associates itself with the "json", "application/json", "application/x-javascript",
+        "text/javascript", "text/x-javascript", and "text/x-json" MIME types.
+
+        """
         super().__init__(
             'json',
             'application/json',
