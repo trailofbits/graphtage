@@ -29,10 +29,9 @@ jobs:
           pip install setuptools
           pip install .[dev]
       - name: Build documentation
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "graphtage/docs/"
-          build-command: "make html"
+        run: |
+          cd docs
+          make html
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
         with:
