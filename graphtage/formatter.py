@@ -300,7 +300,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
 if sys.version_info.major == 3 and sys.version_info.minor < 7:
     # Backward compatibility for pre-Python3.7
-    basic_formatter_types = (Formatter[T],)
+    basic_formatter_types = (Formatter,)
 else:
     basic_formatter_types = (Generic[T], Formatter[T])
 
