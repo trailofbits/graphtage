@@ -159,7 +159,7 @@ Examples:
     ``self.print`` in the ``BarFormatter`` example, above; **and** the ``item`` that is to be formatted.
 
     * If ``formatter`` is given:
-        * For each ``type`` in :meth:`item.__class__.mro() <type.mro>`:
+        * For each ``type`` in :meth:`item.__class__.__mro__ <type.__mro__>`:
             * If a print function specifically associated with :obj:`type.__name__` exists in ``formatter``, then use
               that function.
             * Else, repeat this process recursively for any formatters in :attr:`Formatter.sub_format_types`.
