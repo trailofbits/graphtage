@@ -27,11 +27,18 @@ class AbstractEdit(Edit, ABC):
 
         """
         self.from_node: TreeNode = from_node
+        """The node that this edit transforms."""
         self.to_node: TreeNode = to_node
+        """The node into which this edit transforms :attr:`AbstractEdit.from_node`."""
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
         self.initial_bounds = self.bounds()
+        """The initial bounds of this edit.
+         
+         This is automatically set by calling :meth:`self.bounds()<AbstractEdit.bounds>` during initialization.
+         
+         """
 
     def is_complete(self) -> bool:
         """An edit is complete when no further calls to :meth:`Edit.tighten_bounds` will change the nature of the edit.
