@@ -44,7 +44,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.autosectionlabel',
-    'sphinxcontrib.fulltoc'
+    #'sphinxcontrib.fulltoc'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,7 +61,8 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'classic'
+#html_theme = 'classic'
+html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -75,8 +76,19 @@ def skip(app, what, name, obj, would_skip, options):
     return would_skip
 
 
+def docstring_callback(app, what, name, obj, options, lines: list):
+    if what == 'class' or what == 'function':
+        if lines and lines[0].strip():
+            lines.insert(1, '')
+            lines.insert(2, name)
+            lines.insert(3, '*' * len(name))
+            if len(lines) == 4:
+                lines.append('')
+
+
 def setup(app):
     app.connect("autodoc-skip-member", skip)
+    #app.connect('autodoc-process-docstring', docstring_callback)
 
 
 add_package_names = False
