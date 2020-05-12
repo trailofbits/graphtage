@@ -33,7 +33,7 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["flake8", "Sphinx", "pytest"]
+        "dev": ["flake8", "Sphinx", "pytest", "sphinxcontrib-fulltoc==1.2.0"]
     },
     classifiers=[
         'Development Status :: 4 - Beta',
