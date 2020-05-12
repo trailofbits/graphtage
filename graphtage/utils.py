@@ -34,6 +34,32 @@ class HashableCounter(Generic[T], typing.Counter[T], Counter):
             h ^= hash((key, value))
         return h
 
+    def elements(self) -> Iterator:
+        """Iterator over elements repeating each as many times as its count.
+
+        Examples:
+
+        .. code-block:: python
+
+            >>> c = Counter('ABCABC')
+            >>> sorted(c.elements())
+            ['A', 'A', 'B', 'B', 'C', 'C']
+
+            # Knuth's example for prime factors of 1836:  2**2 * 3**3 * 17**1
+            >>> prime_factors = Counter({2: 2, 3: 3, 17: 1})
+            >>> product = 1
+            >>> for factor in prime_factors.elements():     # loop over factors
+            ...     product *= factor                       # and multiply them
+            >>> product
+            1836
+
+        Note:
+            If an element's count has been set to zero or is a negative number, elements() will ignore it.
+
+        """
+        # Extending this solely to fix the broken docstring in Counter.elements!
+        return super().elements()
+
 
 class OrderedCounter(Counter, OrderedDict):
     """A counter that remembers the order elements are first encountered"""
@@ -49,6 +75,32 @@ class OrderedCounter(Counter, OrderedDict):
 
     def __reduce__(self):
         return self.__class__, (OrderedDict(self),)
+
+    def elements(self) -> Iterator:
+        """Iterator over elements repeating each as many times as its count.
+
+        Examples:
+
+        .. code-block:: python
+
+            >>> c = Counter('ABCABC')
+            >>> sorted(c.elements())
+            ['A', 'A', 'B', 'B', 'C', 'C']
+
+            # Knuth's example for prime factors of 1836:  2**2 * 3**3 * 17**1
+            >>> prime_factors = Counter({2: 2, 3: 3, 17: 1})
+            >>> product = 1
+            >>> for factor in prime_factors.elements():     # loop over factors
+            ...     product *= factor                       # and multiply them
+            >>> product
+            1836
+
+        Note:
+            If an element's count has been set to zero or is a negative number, elements() will ignore it.
+
+        """
+        # Extending this solely to fix the broken docstring in Counter.elements!
+        return super().elements()
 
 
 class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
