@@ -3,7 +3,7 @@
 Much of the code in this module is a nearly complete (but partial) implementation of Karp's solution to the minimum
 weight bipartite matching problem [Karp78]_. This is the problem of finding an edge between all pairs of nodes such
 that the sum of their weights is minimized. It is only a partial implementation because, part way through developing it,
-it was discovered that `scipy's implementation <scipy_linear_sum_assignment>`_—while asymptotically inferior—is, in
+it was discovered that |scipy_linear_sum_assignment|_—while asymptotically inferior—is, in
 practice, almost always superior because it is compiled and not implemented in pure Python.
 
 The two components of this module in which you will most likely be interested are :func:`min_weight_bipartite_matching`
@@ -28,6 +28,7 @@ Example:
 .. |karp78title| replace:: *An Algorithm to Solve the 𝑚×𝑛 Assignment Problem in Expected Time 𝑂(𝑚𝑛 log 𝑛)*
 .. _scipy_linear_sum_assignment:
     https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.optimize.linear_sum_assignment.html
+.. |scipy_linear_sum_assignment| replace:: scipy's implementation
 
 """
 
