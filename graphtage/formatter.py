@@ -298,7 +298,14 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         raise NotImplementedError()
 
 
-class BasicFormatter(Generic[T], Formatter[T]):
+if sys.version_info.major == 3 and sys.version_info.minor < 7:
+    # Backward compatibility for pre-Python3.7
+    basic_formatter_types = (Formatter[T],)
+else:
+    basic_formatter_types = (Generic[T], Formatter[T])
+
+
+class BasicFormatter(*basic_formatter_types):
     def print(self, printer: Printer, item: T):
         f = self.get_formatter(item)
         if f is None:
