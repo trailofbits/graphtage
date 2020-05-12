@@ -135,8 +135,7 @@ class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
         """Edits can optionally implement a printing method
 
         This function is called automatically from the formatter in the
-        :ref:`printing protocol<PrintingProtocol>` and should
-        never be called directly unless you really know what you're doing!
+        :ref:`Printing Protocol` and should never be called directly unless you really know what you're doing!
         Raising :exc:`NotImplementedError` will cause the formatter to fall back on its own printing implementations.
 
         This implementation is equivalent to::

@@ -20,6 +20,7 @@ formats. For instructions on using Graphtage as a utility, see the documentation
    :caption: Contents:
 
    graphtage
+   printing
 
 Indices and tables
 ==================

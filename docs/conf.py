@@ -83,3 +83,7 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
 todo_include_todos = True
+
+autodoc_default_options = {
+    'inherited-members': True
+}
