@@ -59,6 +59,8 @@ class GraphtageFormatter(FormatterType):
             * If not, print a debug warning and delegate to the node's internal print implementation
                 :meth:`graphtage.TreeNode.print`.
 
+        See the :ref:`Formatting Protocol` for how formatters are chosen.
+
         """
         if isinstance(node_or_edit, Edit):
             if with_edits:
