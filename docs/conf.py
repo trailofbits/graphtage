@@ -17,10 +17,14 @@ VERSION_MODULE_PATH = os.path.join(Path(os.path.dirname(__file__)).parents[0], "
 
 
 def get_version_string():
-    version = {}
+    attrs = {}
     with open(VERSION_MODULE_PATH) as f:
-        exec(f.read(), version)
-    return version['VERSION_STRING']
+        exec(f.read(), attrs)
+    vstring = attrs['VERSION_STRING']
+    if 'git' in vstring:
+        return vstring
+    else:
+        return f"v{vstring}"
 
 
 # -- Project information -----------------------------------------------------
@@ -31,6 +35,10 @@ author = 'Evan Sultanik'
 
 # The full version, including alpha/beta/rc tags
 release = get_version_string()
+version = release
+github_url = 'https://github.com/trailofbits/graphtage/'
+if 'git' not in version:
+    github_url = f"{github_url}releases/tag/{ version }"
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,6 +52,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.autosectionlabel',
+    'sphinx_rtd_theme',
     #'sphinxcontrib.fulltoc'
 ]
 
@@ -63,6 +72,26 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 #html_theme = 'classic'
 html_theme = 'sphinx_rtd_theme'
+
+html_theme_options = {
+    'canonical_url': f'https://trailofbits.github.io/graphtage/latest/',
+    'logo_only': False,
+    'display_version': False,   # This manually configured in our custom templates
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': True,
+    #'vcs_pageview_mode': '',
+    #'style_nav_header_background': 'white',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
+
+html_context = {
+    'github_url': github_url
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
