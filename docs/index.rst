@@ -16,7 +16,7 @@ formats. For instructions on using Graphtage as a utility, see the documentation
 .. _GitHub page: https://github.com/trailofbits/graphtage
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
    graphtage
