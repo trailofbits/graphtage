@@ -168,8 +168,6 @@ Examples:
     * If no formatter has been found by this point, iterate over all other global registered formatters that have not
       yet been tested, and repeat this process given each one.
 
-    Formatting API
-    ==============
 """
 
 import inspect
