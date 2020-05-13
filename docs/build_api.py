@@ -60,6 +60,29 @@ def process_module(module):
 .. autofunction:: {func.__name__}
 """)
 
+#         attrs = []
+#         for name in dir(module):
+#             if name.startswith('_'):
+#                 continue
+#             attr = getattr(module, name)
+#             if not inspect.isfunction(attr) and not inspect.isclass(attr) and not inspect.ismodule(attr) and (
+#                 not hasattr(attr, '__module__') or attr.__module__ == module.__name__
+#             ) and inspect.getattr_static(attr, '__doc__') is not None:
+#                 attrs.append(name)
+#         if attrs:
+#             f.write(f"""
+# {shortname} attributes
+# {'-' * len(shortname)}-----------
+# """)
+#             for name in sorted(attrs):
+#                 f.write(f"""
+# {name}
+# {'*' * len(name)}
+#
+# .. autoattribute:: {name}
+# """)
+
+
 
 for name, obj in inspect.getmembers(graphtage, inspect.ismodule):
     if obj.__name__.startswith('graphtage') and name not in ('graphtage', 'tree', 'edits'):
