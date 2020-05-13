@@ -191,10 +191,28 @@ log = logging.getLogger(__name__)
 
 
 FORMATTERS: Sequence['Formatter[Any]'] = []
+"""A list of default instances of non-partial formatters that have subclassed :class:`Formatter`."""
 
 
 class FormatterChecker(GenericMeta):
+    """The metaclass for :class:`Formatter`.
+
+    For every class that subclasses :class:`Formatter`, if :attr:`Formatter.is_partial` is :const:`False` (the default)
+    and if the class is not abstract, then an instance of that class is automatically constructed and added to the
+    global list of formatters. This same automatically constructed instance will be assigned to the
+    :attr:`Formatter.DEFAULT_INSTANCE` attribute.
+
+    All methods of the subclass that begin with "``print_``" will be verified insofar as it is possible.
+
+    """
     def __init__(cls, name, bases, clsdict):
+        """Initializes the formatter checker.
+
+        Raises:
+            TypeError: If :obj:`cls` defines a method starting with "``print``" that has a keyword argument ``printer``
+                with a type hint that is not a subclass of :class:`graphtage.printer.Printer`.
+
+        """
         if len(cls.mro()) > 2 and not cls.__abstractmethods__:
             # Instantiate a version of the Formatter to add it to our global dicts:
             # If the formatter has a custom init, we can't use it as a default
@@ -253,6 +271,18 @@ def get_formatter(
         node_type: Type[T],
         base_formatter: Optional['Formatter'] = None
 ) -> Optional[Callable[[Printer, T], Any]]:
+    """Uses the :ref:`Formatting Protocol` to determine the correct formatter for a given type.
+
+    See :ref:`this section <What the formatter module can do>` for a number of examples.
+
+    Args:
+        node_type: The type of the object to be formatted.
+        base_formatter: An existing formatter from which the request is being made. This will affect the formatter
+            resolution according to the :ref:`Formatting Protocol`.
+
+    Returns: The formatter for object type :obj:`node_type`, or :const:`None` if none was found.
+
+    """
     tested_formatters: Set[Type[Formatter]] = set()
     if base_formatter is not None:
         ret = _get_formatter(node_type, base_formatter, tested_formatters)
@@ -267,20 +297,41 @@ def get_formatter(
 
 
 class Formatter(Generic[T], metaclass=FormatterChecker):
+    """"""
+
     DEFAULT_INSTANCE: 'Formatter[T]' = None
+    """A default instance of this formatter, automatically instantiated by the :class:`FormatterChecker` metaclass."""
     sub_format_types: Sequence[Type['Formatter[T]']] = ()
+    """A list of formatter types that should be used as sub-formatters in the :ref:`Formatting Protocol`."""
     sub_formatters: List['Formatter[T]'] = []
+    """The list of instantiated formatters corresponding to :attr:`Formatter.sub_format_types`.
+    
+    This list is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
+    
+    """
     parent: Optional['Formatter[T]'] = None
+    """The parent formatter for this formatter instance.
+    
+    This is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
+
+    """
     is_partial: bool = False
 
     @property
     def root(self) -> 'Formatter[T]':
+        """Returns the root formatter."""
         node = self
         while node.parent is not None:
             node = node.parent
         return node
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs) -> 'Formatter[T]':
+        """Instantiates a new formatter.
+
+        This automatically instantiates and populates :attr:`Formatter.sub_formatters` and sets their
+        :attr:`parent<Formatter.parent>` to this new formatter.
+
+        """
         ret: Formatter[T] = super().__new__(cls, *args, **kwargs)
         setattr(ret, 'sub_formatters', [])
         for sub_formatter in ret.sub_format_types:
@@ -289,10 +340,23 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         return ret
 
     def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
+        """Looks up a formatter for the given item using this formatter as a base.
+
+        Equivalent to::
+
+            get_formatter(item.__class__, base_formatter=self)
+
+        """
         return get_formatter(item.__class__, base_formatter=self)
 
     @abstractmethod
     def print(self, printer: Printer, item: T):
+        """Prints an item to the printer using the proper formatter.
+
+        This method is abstract because subclasses should decide how to handle the case when a formatter was not found
+        (*i.e.*, when :meth:`self.get_formatter<Formatter.get_formatter>` returns :const:`None`).
+
+        """
         raise NotImplementedError()
 
 
@@ -304,7 +368,20 @@ else:
 
 
 class BasicFormatter(*basic_formatter_types):
+    """A basic formatter that falls back on an item's natural string representation if no formatter is found."""
+
     def print(self, printer: Printer, item: T):
+        """Prints the item to the printer.
+
+        This is equivalent to::
+
+            formatter = self.get_formatter(item)
+            if formatter is None:
+                printer.write(str(item))
+            else:
+                formatter(printer, item)
+
+        """
         f = self.get_formatter(item)
         if f is None:
             printer.write(str(item))
