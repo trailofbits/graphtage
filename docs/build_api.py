@@ -24,7 +24,7 @@ def process_module(module):
 """)
         classes = []
         for name, c in inspect.getmembers(module, inspect.isclass):
-            if hasattr(c, '__module__') and c.__module__ == module.__name__:
+            if hasattr(c, '__module__') and c.__module__ == module.__name__ and not name.startswith('_'):
                 classes.append(c)
         if classes:
             f.write(f"""
@@ -45,7 +45,7 @@ def process_module(module):
 
         functions = []
         for name, func in inspect.getmembers(module, inspect.isfunction):
-            if hasattr(func, '__module__') and func.__module__ == module.__name__:
+            if hasattr(func, '__module__') and func.__module__ == module.__name__ and not name.startswith('_'):
                 functions.append(func)
         if functions:
             f.write(f"""
