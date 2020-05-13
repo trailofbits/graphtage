@@ -40,6 +40,7 @@ def process_module(module):
    :members:
    :undoc-members:
    :inherited-members:
+   :show-inheritance:
 """)
 
         functions = []
