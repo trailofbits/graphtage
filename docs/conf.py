@@ -98,9 +98,10 @@ html_context = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_js_files = [
-    'localtoc.js',
-]
+#html_js_files = [
+#    'localtoc.js',
+#]
+
 
 def skip(app, what, name, obj, would_skip, options):
     if name == "__init__":
@@ -129,6 +130,6 @@ napoleon_include_private_with_doc = True
 napoleon_include_special_with_doc = True
 todo_include_todos = True
 
-autodoc_default_options = {
-    'inherited-members': True
-}
+#autodoc_default_options = {
+#    'inherited-members': True
+#}

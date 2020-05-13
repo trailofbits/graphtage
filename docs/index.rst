@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Graphtage
-=========
+Graphtage Documentation
+=======================
 
 Graphtage is *both* a commandline utility *and* a general purpose library for semantically comparing and merging
 tree-like structures, such as JSON, XML, HTML, YAML, and CSV files. Its name is a portmanteau of “graph” and
@@ -19,7 +19,7 @@ formats. For instructions on using Graphtage as a utility, see the documentation
    :maxdepth: 4
    :caption: Contents:
 
-   graphtage
+   package
    printing
 
 Indices and tables

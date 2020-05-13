@@ -21,4 +21,4 @@ for module_to_subsume in SUBMODULES_TO_SUBSUME:
             obj.__module__ = 'graphtage'
     del module_to_subsume
 
-del inspect
+del inspect, SUBMODULES_TO_SUBSUME
