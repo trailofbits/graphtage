@@ -76,7 +76,15 @@ class GraphtageFormatter(FormatterType):
 
 @runtime_checkable
 class Edit(Bounded, Protocol):
-    """A protocol for defining an edit."""
+    """A protocol for defining an edit.
+
+    Attributes:
+        initial_bounds (Range): The initial bounds of this edit. Classes implementing this protocol can, for example,
+            set this by calling :meth:`self.bounds()<Edit.bounds>` during initialization.
+
+        from_node (TreeNode): The node that this edit transforms.
+
+    """
     initial_bounds: Range
     """The initial bounds of this edit.
 
