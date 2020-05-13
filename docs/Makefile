@@ -21,11 +21,11 @@ help:
 
 .PHONY: graphtage.rst
 graphtage.rst package.rst:
-	# sphinx-apidoc wasn't configurable enough, so I wrote my own version:
+# sphinx-apidoc wasn't configurable enough, so I wrote my own version:
 	python3 build_api.py
-	# graphtage.py, edits.py, and tree.py are all merged into the main graphtage module by __init__.py,
-	# so we should not generate separate submodules for them:
-	#sphinx-apidoc -f -e -M -T -o . ../graphtage ../graphtage/graphtage.py ../graphtage/edits.py ../graphtage/tree.py
+# graphtage.py, edits.py, and tree.py are all merged into the main graphtage module by __init__.py,
+# so we should not generate separate submodules for them:
+#sphinx-apidoc -f -e -M -T -o . ../graphtage ../graphtage/graphtage.py ../graphtage/edits.py ../graphtage/tree.py
 
 .PHONY: clean
 clean:
