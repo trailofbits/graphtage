@@ -48,8 +48,8 @@ class StatusWriter(IO[str]):
                 )
             
             """
-        except io.UnsupportedOperation:
-            self.write_raw = False
+        except io.UnsupportedOperation as e:
+            self.write_raw = True
 
     def tqdm(self, *args, **kwargs) -> tqdm:
         """Returns a :class:`tqdm.tqdm` object."""
@@ -67,6 +67,7 @@ class StatusWriter(IO[str]):
         """Flushes this writer.
 
         If :obj:`final` is :const:`True`, any extra bytes will be flushed along with a final newline.
+
         """
         if final and self._buffer and not self._buffer[-1].endswith('\n'):
             self._buffer.append('\n')

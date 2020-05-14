@@ -116,7 +116,7 @@ class CSVRows(SequenceFormatter):
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         """Prints a newline on all but the first and last items."""
-        if not is_first and not is_last:
+        if not is_first:
             printer.newline()
 
     def items_indent(self, printer: Printer):
