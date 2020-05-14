@@ -30,6 +30,7 @@ class StatusWriter(IO[str]):
         """
         self.quiet = quiet
         """Whether or not :mod:`tqdm` status messages and progress should be suppressed."""
+        self._reentries: int = 0
         if out_stream is None:
             out_stream = sys.stdout
         self.status_stream: TextIO = out_stream
@@ -156,11 +157,14 @@ class StatusWriter(IO[str]):
         return iter(self.status_stream)
 
     def __enter__(self) -> IO[AnyStr]:
+        self._reentries += 1
         return self
 
     def __exit__(self, t: Optional[Type[BaseException]], value: Optional[BaseException],
                  traceback: Optional[TracebackType]) -> Optional[bool]:
-        self.flush(final=True)
+        self._reentries -= 1
+        if self._reentries == 0:
+            self.flush(final=True)
 
     def __delete__(self, instance):
         self.flush(final=True)
