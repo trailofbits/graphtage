@@ -77,6 +77,10 @@ class JSONListFormatter(SequenceFormatter):
         """
         super().__init__('[', ']', ',')
 
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if not hasattr(printer, 'join_lists') or not printer.join_lists:
+            printer.newline()
+
     def print_ListNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.ListNode`.
 
@@ -107,6 +111,10 @@ class JSONDictFormatter(SequenceFormatter):
 
     def __init__(self):
         super().__init__('{', '}', ',')
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if not hasattr(printer, 'join_dict_items') or not printer.join_dict_items:
+            printer.newline()
 
     def print_MultiSetNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.MultiSetNode`.
