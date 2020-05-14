@@ -21,7 +21,7 @@ from .fibonacci import FibonacciHeap, HeapNode
 B = TypeVar('B', bound=Bounded)
 
 
-class IterativeTighteningSearch(Generic[B], Bounded):
+class IterativeTighteningSearch(Bounded, Generic[B]):
     """Implementation of iterative tightening search on a given sequence of :class:`graphtage.bounds.Bounded` objects.
 
     The search class itself is :class:`graphtage.bounds.Bounded`, with bounds on the value of the optimal solution.
