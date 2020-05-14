@@ -139,7 +139,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
     """A sparse matrix that can store arbitrary Python objects.
 
     For sparse matrices storing homogeneous items and/or native types, it is more efficient to use an implementation
-    like a `scipy sparse matrix <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_.
+    like a `scipy sparse matrix <https://docs.scipy.org/doc/scipy/reference/sparse.html>`__.
 
     """
     class SparseMatrixRow(Sized, MutableMapping[int, Optional[T]]):
