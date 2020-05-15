@@ -286,7 +286,7 @@ to <code class="xref py py-const docutils literal notranslate"><span class="pre"
 <span class="go">StringFormatter: foo</span>
 </pre></div>
 </div>
-<p>As you can see, <code class="docutils literal notranslate"><span class="pre">self.print(printer,</span> <span class="pre">item.bar</span></code> gives preference to locally defined implementations before doing
+<p>As you can see, <code class="docutils literal notranslate"><span class="pre">self.print(printer,</span> <span class="pre">item.bar)</span></code> gives preference to locally defined implementations before doing
 a global lookup for a formatter with a print function.</p>
 <p>We just got “lucky” with that last printout, though, because the <code class="docutils literal notranslate"><span class="pre">print_str</span></code> in <code class="docutils literal notranslate"><span class="pre">BarFormatter</span></code> has the
 same precedence in the global <a class="reference internal" href="#graphtage.formatter.get_formatter" title="graphtage.formatter.get_formatter"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_formatter()</span></code></a> lookup as the implementation in <code class="docutils literal notranslate"><span class="pre">StringFormatter</span></code>. So:</p>
