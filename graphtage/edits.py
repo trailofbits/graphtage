@@ -284,6 +284,9 @@ class Replace(ConstantCostEdit):
 class Remove(ConstantCostEdit):
     """A constant cost edit specifying that a node should be removed from a container."""
 
+    REMOVE_STRING: str = '~~'
+    """The string used to denote a removal if ANSI color is disabled."""
+
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_remove,
@@ -300,9 +303,9 @@ class Remove(ConstantCostEdit):
             with printer.background(Back.RED):
                 with printer.color(Fore.WHITE):
                     if not printer.ansi_color:
-                        printer.write('~~~~')
+                        printer.write(self.REMOVE_STRING)
                         formatter.print(printer, self.from_node, False)
-                        printer.write('~~~~')
+                        printer.write(self.REMOVE_STRING)
                     else:
                         with printer.strike():
                             formatter.print(printer, self.from_node, False)
@@ -313,6 +316,9 @@ class Remove(ConstantCostEdit):
 
 class Insert(ConstantCostEdit):
     """A constant cost edit specifying that a node should be added to a container."""
+
+    INSERT_STRING: str = '++'
+    """The string used to denote an insertion if ANSI color is disabled."""
 
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode, penalty: int = 1):
         super().__init__(
@@ -336,9 +342,9 @@ class Insert(ConstantCostEdit):
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
-                printer.write('++++')
+                printer.write(self.INSERT_STRING)
                 formatter.print(printer, self.to_insert, False)
-                printer.write('++++')
+                printer.write(self.INSERT_STRING)
             else:
                 with printer.under_plus():
                     formatter.print(printer, self.to_insert, False)

@@ -611,6 +611,8 @@ class StringEdit(AbstractEdit):
 class StringFormatter(GraphtageFormatter):
     """A default string formatter"""
     is_quoted: bool = False
+    _last_was_inserted: bool = False
+    _last_was_removed: bool = False
 
     def write_start_quote(self, printer: Printer, edit: StringEdit):
         """Prints a starting quote for the string, if necessary"""
@@ -664,6 +666,21 @@ class StringFormatter(GraphtageFormatter):
             inserted: Whether this character is inserted into the source string.
 
         """
+        if not printer.ansi_color:
+            if self._last_was_inserted and not inserted:
+                printer.write(Insert.INSERT_STRING)
+                if removed:
+                    printer.write(Remove.REMOVE_STRING)
+            elif self._last_was_removed and not removed:
+                printer.write(Remove.REMOVE_STRING)
+                if inserted:
+                    printer.write(Insert.INSERT_STRING)
+            elif removed and not self._last_was_removed:
+                printer.write(Remove.REMOVE_STRING)
+            elif inserted and not self._last_was_inserted:
+                printer.write(Insert.INSERT_STRING)
+            self._last_was_removed = removed
+            self._last_was_inserted = inserted
         escaped = self.escape(c)
         if escaped != c and not isinstance(printer, NullANSIContext):
             with printer.color(Fore.YELLOW):
@@ -686,6 +703,8 @@ class StringFormatter(GraphtageFormatter):
             self.write_end_quote(p, StringEdit(node, node))
 
     def print_StringEdit(self, printer: Printer, edit: StringEdit):
+        self._last_was_inserted = False
+        self._last_was_removed = False
         with self.context(printer) as p:
             self.write_start_quote(p, edit)
             remove_seq = []
@@ -742,6 +761,12 @@ class StringFormatter(GraphtageFormatter):
                     for add in add_seq:
                         self.write_char(p, add, index, num_edits, inserted=True)
                         index += 1
+            if self._last_was_inserted:
+                printer.write(Insert.INSERT_STRING)
+                self._last_was_inserted = False
+            elif self._last_was_removed:
+                printer.write(Remove.REMOVE_STRING)
+                self._last_was_removed = False
             self.write_end_quote(p, edit)
 
 
