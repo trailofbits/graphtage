@@ -1,3 +1,41 @@
+"""A safer-than-Python-eval expression evaluation module.
+
+It is extensible, supporting infix operators with adjustable precedence.
+It supports function calls, member lookup (:func:`getitem`), and provides a modicum of safety by only allowing access to
+a programmer-defined set of variables. By default, it also disallows access to protected and private member variables.
+
+Example:
+    Here is an example of its usage::
+
+        >>> parsed = parse('foo[(bar + 10) * 2]')
+        >>> parsed
+        Expression(rpn=(IdentifierToken('foo'), IdentifierToken('bar'), IntegerToken(raw_str='10', value=10), OperatorToken(op=<Operator.ADDITION: ('+', 5, <function Operator.<lambda> at 0x135057f80>)>), IntegerToken(raw_str='2', value=2), OperatorToken(op=<Operator.MULTIPLICATION: ('*', 4, <function Operator.<lambda> at 0x135057d40>)>), OpenBracket()))
+        >>> parsed.eval(locals={
+        ...     'foo': {
+        ...         40: 1234
+        ...     },
+        ...     'bar': 10
+        ... })
+        1234
+        >>> parse('parsed.__dict__', locals=locals())
+        # Elided stack trace
+        graphtage.expressions.ParseError: Cannot read protected and private member variables: Expression(rpn=(IdentifierToken('foo'), IdentifierToken('bar'), IntegerToken(raw_str='10', value=10), OperatorToken(op=<Operator.ADDITION: ('+', 5, <function Operator.<lambda> at 0x127808170>)>), IntegerToken(raw_str='2', value=2), OperatorToken(op=<Operator.MULTIPLICATION: ('*', 4, <function Operator.<lambda> at 0x127805ef0>)>), OpenBracket())).__dict__ at offset 15
+
+
+Attributes:
+    DEFAULT_GLOBALS (Dict[str, Any]): The default set of globals available to expressions that will be provided if
+        the :obj:`globals` argument to :meth:`Expression.eval` is not provided. This includes the following functions
+        and types:
+
+            :func:`abs`, :func:`all`, :func:`any`, :func:`ascii`, :func:`bin`, :class:`bool`, :class:`bytearray`, :class:`bytes`, :func:`chr`, :class:`complex`, :class:`dict`, :func:`enumerate`, :func:`filter`, :class:`float`, :class:`frozenset`, :func:`hash`, :func:`hex`, :func:`id`, :class:`int`, :func:`iter`, :func:`len`, :class:`list`, :func:`map`, :func:`max`, :func:`min`, :func:`oct`, :func:`ord`, :func:`round`, :class:`set`, :class:`slice`, :func:`sorted`, :class:`str`, :func:`sum`, :class:`tuple`, :func:`zip`
+
+    OPERATORS_BY_NAME (Dict[str, Operator]): A mapping of operator names to :class:`Operator` objects, used in parsing.
+
+    IDENTIFIER_BYTES (Set[str]): The set of valid bytes that can be used in a :class:`IdentifierToken` string. This is
+        currently the set of all letters and numbers plus "_" and "-".
+
+"""
+
 from collections import deque
 from enum import Enum
 from io import StringIO
@@ -19,6 +57,7 @@ OPERATORS_BY_NAME: Dict[str, 'Operator'] = {}
 
 
 class ParseError(RuntimeError):
+    """Base error type of the :mod:`expressions` module."""
     def __init__(self, message, offset):
         super().__init__(message)
         self.offset = offset
@@ -27,11 +66,33 @@ class ParseError(RuntimeError):
         return f"{super().__str__()} at offset {self.offset}"
 
 
-def function_call(obj, function_name):
-    raise NotImplementedError("TODO: Implement")
+def get_member(obj, member: 'IdentifierToken'):
+    """Gets a member of an object by the member's identifier.
 
+    Args:
+        obj: Any Python object.
+        member: An identifier token representing the name of the member.
 
-def get_member(obj, member):
+    This is equivalent to::
+
+        getattr(obj, member.name)
+
+    However, this implementation will not permit retrieving members that start with an underscore::
+
+        if member.name.startswith('_'):
+            raise ParseError(...)
+
+    Raises:
+        ParseError: If :obj:`member` is not an :class:`IdentifierToken`.
+        ParseError: If :attr:`member.name <IdentifierToken.name>` starts with "_".
+
+    Returns:
+        Any: The requested attribute of :obj:`obj`.
+
+    Todo:
+        * Provide an API to programmatically override and customize the behavior of this function.
+
+    """
     if not isinstance(member, IdentifierToken):
         raise ParseError(f"member name expected, instead found {member}", member.offset)
     if member.name.startswith('_'):
@@ -40,6 +101,7 @@ def get_member(obj, member):
 
 
 class Operator(Enum):
+    """An enumeration of operators."""
     MEMBER_ACCESS = ('.', 1, lambda a, b: get_member(a, b), True, 2, False, (True, False))
     GETITEM = ('[', 1, lambda a, b: a[b])
     FUNCTION_CALL = ('→', 2, lambda a, b: a(*b), True, 2, True)
@@ -76,19 +138,36 @@ class Operator(Enum):
                  execute: Callable[[Any, Any], Any],
                  is_left_associative: bool = True,
                  arity: int = 2,
-                 multiple_arity: bool = False,
+                 include_in_global_operator_table: bool = False,
                  expand: Optional[Tuple[bool, ...]] = None):
+        """Initializes an operator enum.
+
+        Raises:
+            ValueError: If the length of :obj:`token` is greater than three. The token will be used to automatically
+                parse the operator, and the tokenizer currently supports tokens of at most three characters.
+
+        """
+        if len(token) > 3:
+            raise ValueError("Operators of length greater than three are currently not supported by the tokenizer.")
         self.token: str = token
+        """The token string associated with this operator. It is used for automatically parsing the operators.
+        
+        Tokens must be unique. There is no programmatic check to ensure this.
+        """
         self.priority: int = priority
+        """The operator's precedence priority."""
         self.execute: Callable[[Any, Any], Any] = execute
+        """A function to call when the operator is being executed."""
         self.left_associative: bool = is_left_associative
+        """Whether the operator is left-associative."""
         self.arity: int = arity
-        self.multiple_arity: bool = multiple_arity
+        """The number of arguments consumed by the operator."""
         if expand is None:
             self.expand: Tuple[bool, ...] = (True,) * self.arity
+            """Whether each of the operator's arguments should be auto-expanded before execution."""
         else:
             self.expand: Tuple[bool, ...] = expand
-        if not multiple_arity:
+        if not include_in_global_operator_table:
             OPERATORS_BY_NAME[self.token] = self
 
 
@@ -104,12 +183,23 @@ IDENTIFIER_BYTES: Set[str] = {
 
 
 class Token:
+    """Base class for an expression token."""
+
     def __init__(self, raw_text: str, offset: int):
+        """Initializes a token.
+
+        Args:
+            raw_text: The raw parsed text of the token.
+            offset: The offset of the token within the input.
+
+        """
         self._raw: str = raw_text
         self.offset = offset
+        """Offset of the token in the input."""
 
     @property
     def raw_token(self) -> str:
+        """Returns the original string parsed from input."""
         return self._raw
 
     def __len__(self):
@@ -123,18 +213,38 @@ class Token:
 
 
 class PairedToken:
+    """Abstract base class for a token that is always paried with another.
+
+    Examples include brackets and parenthesis.
+
+    """
     name: str = None
+    """The name of this type of pair. For example, \"parenthesis\"."""
 
 
 class PairedStartToken(PairedToken):
+    """The starting token of a pair.
+
+    Examples include "[" and "(".
+
+    """
     discard: bool = True
+    """Whether this token should be discarded after it is parsed. (*e.g.*, if it is solely used for operator precedence,
+        like parenthesis)."""
 
 
 class PairedEndToken(PairedToken):
+    """The ending token of a pair.
+
+    Examples include "]" and ")".
+
+    """
     start_token_type: Type[PairedStartToken] = None
 
 
 class Parenthesis(Token):
+    """Abstract base class for parenthesis."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -143,6 +253,7 @@ class Parenthesis(Token):
 
 
 class OpenParen(Parenthesis, PairedStartToken):
+    """An opening parenthesis token."""
     name = 'parenthesis'
 
     def __init__(self, offset: int, is_function_call: bool):
@@ -151,6 +262,7 @@ class OpenParen(Parenthesis, PairedStartToken):
 
 
 class CloseParen(Parenthesis, PairedEndToken):
+    """An closing parenthesis token."""
     name = 'parenthesis'
     start_token_type = OpenParen
 
@@ -159,29 +271,35 @@ class CloseParen(Parenthesis, PairedEndToken):
 
 
 class OperatorToken(Token):
+    """A token associated with an :class:`Operator`."""
     def __init__(self, op: Union[str, Operator], offset: int):
         if isinstance(op, str):
             op = OPERATORS_BY_NAME[op]
         super().__init__(op.token, offset)
         self.op: Operator = op
+        """The operator associated with this token."""
 
     def __repr__(self):
         return f"{self.__class__.__name__}(op={self.op!r})"
 
 
 class OpenBracket(OperatorToken, PairedStartToken):
+    """An opening bracket token."""
     name = 'brackets'
     discard = False
 
     def __init__(self, offset: int, is_list: bool):
         super().__init__(Operator.GETITEM, offset)
-        self.is_list = is_list
+        self.is_list: bool = is_list
+        """If :const:`True`, this pair of brackets delimits a list.
+            Otherwise it is a :attr:`Operator.GETITEM` access."""
 
     def __repr__(self):
         return f"{self.__class__.__name__}()"
 
 
 class CloseBracket(Token, PairedEndToken):
+    """A closing bracket token."""
     name = 'brackets'
     start_token_type = OpenBracket
 
@@ -193,6 +311,7 @@ class CloseBracket(Token, PairedEndToken):
 
 
 class Comma(Token):
+    """A comma token."""
     def __init__(self, offset: int):
         super().__init__(',', offset)
 
@@ -201,28 +320,39 @@ class Comma(Token):
 
 
 class FixedSizeCollection(Token):
+    """A meta-token injected by the tokenizer specifying a fixed-size collection of items on the stack.
+
+    This is used for parsing and evaluating argument lists of functions of unknown arity.
+
+    """
     def __init__(self, size: int, container_type: Type[Collection], offset: int):
         super().__init__(container_type.__name__, offset)
         self.size: int = size
+        """The number of items on the stack to include."""
         self.container_type: Type[Collection] = container_type
+        """The type of collection in which to store the items."""
 
     def __repr__(self):
         return f"{self.__class__.__name__}(size={self.size}, container_type={self.container_type!r})"
 
 
 class IdentifierToken(Token):
+    """An identifier, such as a variable name or attribute name."""
     def __init__(self, name: str, offset: int):
         super().__init__(name, offset)
         self.name: str = name
+        """The name of this identifier"""
 
 
 N = TypeVar('N', bound=Union[SupportsInt, SupportsFloat])
 
 
 class NumericToken(Token, Generic[N]):
+    """An abstract base class for numeric tokens."""
     def __init__(self, raw_str: str, value: N, offset: int):
         super().__init__(raw_str, offset)
         self.value: N = value
+        """The numeric value of this token."""
 
     def __int__(self):
         return int(self.value)
@@ -235,30 +365,47 @@ class NumericToken(Token, Generic[N]):
 
 
 class IntegerToken(NumericToken[int]):
+    """A numeric token for integers."""
     pass
 
 
 class FloatToken(NumericToken[float]):
+    """A numeric token for floats."""
     pass
 
 
 class StringToken(Token):
+    """A token representing a string constant"""
     pass
 
 
 class FunctionCall(OperatorToken):
+    """A meta-token for when parenthesis are being used to indicate a function call.
+
+    This is automatically inserted by the tokenizer in contexts where parenthesis are being used to represent a
+    function call.
+
+    """
     def __init__(self, offset: int):
         super().__init__(Operator.FUNCTION_CALL, offset)
 
 
 class Tokenizer:
+    """The expression tokenizer."""
     def __init__(self, stream: Union[str, IO]):
+        """Initializes a tokenizer, but does not commence any tokenization.
+
+        Args:
+            stream: The input stream from which to tokenize.
+
+        """
         if isinstance(stream, str):
             stream = StringIO(stream)
         self._stream: IO = stream
         self._buffer: deque = deque()
         self._next_token: Optional[Token] = None
         self.prev_token: Optional[Token] = None
+        """The previous token yielded by this tokenizer."""
         self._offset: int = 0
         self._function_parens: List[bool] = []
 
@@ -279,6 +426,15 @@ class Tokenizer:
         return ret
 
     def peek(self) -> Optional[Token]:
+        """Returns the next token that would be returned from a call to :meth:`Tokenizer.next`.
+
+        This function actually computes and caches the next token if it has not already been cached.
+
+        Returns:
+            Optional[Token]: The next token that would be returned from a call to :meth:`Tokenizer.next`,
+            or :const:`None` if there are no more tokens.
+
+        """
         if self._next_token is not None:
             return self._next_token
         elif isinstance(self.prev_token, FunctionCall):
@@ -401,15 +557,29 @@ class Tokenizer:
         return ret
 
     def has_next(self) -> bool:
+        """Returns whether another token is available.
+
+        This is equivalent to::
+
+            return self.peek() is not None
+
+        """
         return self.peek() is not None
 
     def next(self) -> Optional[Token]:
+        """Returns the next token in the stream.
+
+        Returns:
+            Optional[Token]: The next token, or :const:`None` if there are no more tokens.
+
+        """
         ret = self.peek()
         self.prev_token = ret
         self._next_token = None
         return ret
 
     def __iter__(self) -> Iterator[Token]:
+        """Iterates over all of the tokens in the stream."""
         while True:
             ret = self.next()
             if ret is None:
@@ -417,11 +587,19 @@ class Tokenizer:
             yield ret
 
 
-def tokenize(stream_or_str) -> Iterator[Token]:
+def tokenize(stream_or_str: Union[IO, str]) -> Iterator[Token]:
+    """Convenience function for tokenizing a string.
+
+    This is equivalent to::
+
+        yield from Tokenizer(stream_or_str)
+
+    """
     yield from Tokenizer(stream_or_str)
 
 
 class CollectionInfo:
+    """A datastructure used by the :func:`infix_to_rpn` function to keep track of list and tuple semantics."""
     def __init__(self, collection_type: Union[Type[tuple], Type[list]]):
         self.num_commas: int = 0
         self.collection_type: Union[Type[tuple], Type[list]] = collection_type
@@ -429,7 +607,7 @@ class CollectionInfo:
 
 
 def infix_to_rpn(tokens: Iterable[Token]) -> Iterator[Token]:
-    """Converts an infix expression to reverse Polish notation using the Shunting Yard algorithm"""
+    """Converts an infix expression to reverse Polish notation using the Shunting Yard algorithm."""
     operators: List[OperatorToken] = []
     collection_stack: List[CollectionInfo] = []
 
@@ -501,11 +679,37 @@ def infix_to_rpn(tokens: Iterable[Token]) -> Iterator[Token]:
 
 
 class Expression:
+    """An expression is a sequence of tuples in `Reverse Polish Notation`_ that can be evaluated.
+
+    .. _Reverse Polish Notation:
+        https://en.wikipedia.org/wiki/Reverse_Polish_notation
+
+    """
     def __init__(self, rpn: Iterable[Token]):
         self.tokens: Tuple[Token, ...] = tuple(rpn)
 
     @staticmethod
     def get_value(token: Token, locals: Dict[str, Any], globals: Dict[str, Any]):
+        """Determines the value of a token given the provided state.
+
+        Literal tokens like :class:`NumericToken` and :class:`StringToken` will return their values, and identifiers
+        will be resolved using :obj:`locals` and :obj:`globals`.
+
+        Args:
+            token: The token to resolve.
+            locals: A mapping of local variables, by name.
+            globals: A mapping of global variables, by name.
+
+        Raises:
+            KeyError: If :obj:`token` is an :class:`IdentifierToken` and its name was not found in either :obj:`locals`
+                or :obj:`globals`.
+
+            ValueError: If the token is not numeric, a string, or an identifier.
+
+        Returns:
+            Any: The resolved value of the token.
+
+        """
         if isinstance(token, NumericToken):
             return token.value
         elif isinstance(token, StringToken):
@@ -523,6 +727,18 @@ class Expression:
             return token
 
     def eval(self, locals: Optional[Dict[str, Any]] = None, globals: Optional[Dict[str, Any]] = None):
+        """Evaluates this expression given the provided state.
+
+        Args:
+            locals: An optional mapping of local variables, by name. If omitted, it will be equivalent to an empty
+                dict.
+            globals: An optional mapping of global variables, by name. If omitted, it will default to
+                :attr:`graphtage.expressions.DEFAULT_GLOBALS`.
+
+        Returns:
+            Any: The result of evaluating the expression.
+
+        """
         if locals is None:
             locals: Dict[str, Any] = {}
         if globals is None:
@@ -555,4 +771,11 @@ class Expression:
 
 
 def parse(expression_str: str) -> Expression:
+    """Convenience function for parsing an expression string.
+
+    This is equivalent to::
+
+        Expression(infix_to_rpn(tokenize(expression_str)))
+
+    """
     return Expression(infix_to_rpn(tokenize(expression_str)))

@@ -1,3 +1,10 @@
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering `CSV files`_.
+
+.. _CSV files:
+    https://en.wikipedia.org/wiki/Comma-separated_values
+
+"""
+
 import csv
 from io import StringIO
 
@@ -9,11 +16,13 @@ from .tree import GraphtageFormatter, TreeNode
 
 
 class CSVRow(graphtage.ListNode[TreeNode]):
+    """A node representing a row of a CSV file."""
     def __bool__(self):
         return bool(self._children)
 
 
 class CSVNode(graphtage.ListNode[CSVRow]):
+    """A node representing zero or more CSV rows."""
     def __bool__(self):
         return bool(self._children) and any(self._children)
 
@@ -21,7 +30,24 @@ class CSVNode(graphtage.ListNode[CSVRow]):
         return self._children == other._children or (not self and not other)
 
 
-def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
+def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> CSVNode:
+    """Constructs a :class:`CSVNode` from a CSV file.
+
+    The file is parsed using Python's :func:`csv.reader`. The elements in each row are constructed by delegating to
+    :func:`graphtage.json.build_tree`::
+
+        CSVRow([json.build_tree(i, allow_key_edits=allow_key_edits) for i in row])
+
+    Args:
+        path: The path to the file to be parsed.
+        allow_key_edits: This is effectively ignored since CSV files cannot contain mappings.
+        *args: Any extra positional arguments are passed on to :func:`csv.reader`.
+        **kwargs: Any extra keyword arguments are passed on to :func:`csv.reader`.
+
+    Returns:
+        CSVNode: The resulting CSV node object.
+
+    """
     csv_data = []
     with open(path) as f:
         for row in csv.reader(f, *args, **kwargs):
@@ -34,41 +60,82 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
 
 
 class CSVRowFormatter(SequenceFormatter):
+    """A formatter for CSV rows."""
     is_partial = True
 
     def __init__(self):
+        """Initializes the formatter.
+
+        Equivalent to::
+
+            super().__init__('', '', ',')
+
+        """
         super().__init__('', '', ',')
 
     def print_CSVRow(self, *args, **kwargs):
+        """Prints a CSV row.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
         super().print_SequenceNode(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        """An empty implementation, since each row should be printed as a single line."""
         pass
 
 
 class CSVRows(SequenceFormatter):
+    """A sub formatter for printing the sequence of rows in a CSV file."""
     is_partial = True
 
     sub_format_types = [CSVRowFormatter]
 
     def __init__(self):
+        """Initializes the formatter.
+
+        Equivalent to::
+
+            super().__init__('', '', '')
+
+        """
         super().__init__('', '', '')
 
     def print_CSVNode(self, *args, **kwargs):
+        """Prints a CSV node.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
         super().print_SequenceNode(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if not is_first and not is_last:
+        """Prints a newline on all but the first and last items."""
+        if not is_first:
             printer.newline()
 
     def items_indent(self, printer: Printer):
+        """Returns :obj:`printer` because CSV rows do not need to be indented."""
         return printer
 
 
 class CSVFormatter(GraphtageFormatter):
+    """Top-level formatter for CSV files."""
     sub_format_types = [CSVRows, JSONFormatter]
 
     def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):
+        """Prints a leaf node, which should always be a column in a CSV row.
+
+        The node is escaped by first writing it to :func:`csv.writer`::
+
+            csv.writer(...).writerow([node.object])
+
+        """
         if node.edited and node.edit is not None:
             self.sub_formatters[1].print(printer, node.edit)
             return
@@ -85,13 +152,20 @@ class CSVFormatter(GraphtageFormatter):
 
 
 class CSV(graphtage.Filetype):
+    """The CSV filetype."""
     def __init__(self):
+        """Initializes the CSV filetype.
+
+        CSV identifies itself with the MIME types `csv` and `text/csv`.
+
+        """
         super().__init__(
             'csv',
             'text/csv'
         )
 
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+        """Equivalent to :func:`build_tree`"""
         return build_tree(path, allow_key_edits=allow_key_edits)
 
     def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:

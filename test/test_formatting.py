@@ -50,7 +50,6 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
                 stream = StringIO()
                 printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
                 formatter.print(printer, tree)
-                printer.flush(final=True)
                 formatted_str = stream.getvalue()
             with graphtage.utils.Tempfile(formatted_str.encode('utf-8')) as t:
                 try:

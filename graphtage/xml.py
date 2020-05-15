@@ -1,6 +1,14 @@
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering XML files.
+
+This class is also currently used for parsing HTML.
+
+The parser is implemented atop :mod:`xml.etree.ElementTree`. Any XML or HTML accepted by that module will also be
+accepted by this module.
+
+"""
+
 import html
 import os
-import sys
 import xml.etree.ElementTree as ET
 from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 
@@ -14,11 +22,21 @@ from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 class XMLElementEdit(AbstractCompoundEdit):
+    """An edit on an XML element."""
     def __init__(self, from_node: 'XMLElement', to_node: 'XMLElement'):
+        """Initializes an XML element edit.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node to which :obj:`from_node` will be transformed.
+        """
         self.tag_edit: Edit = from_node.tag.edits(to_node.tag)
+        """The edit to transform this element's tag."""
         self.attrib_edit: Edit = from_node.attrib.edits(to_node.attrib)
+        """The edit to transform this element's attributes."""
         if from_node.text is not None and to_node.text is not None:
             self.text_edit: Optional[Edit] = from_node.text.edits(to_node.text)
+            """The edit to transform this element's text."""
         elif from_node.text is None and to_node.text is not None:
             self.text_edit: Optional[Edit] = Insert(to_insert=to_node.text, insert_into=from_node)
         elif to_node.text is None and from_node.text is not None:
@@ -26,6 +44,7 @@ class XMLElementEdit(AbstractCompoundEdit):
         else:
             self.text_edit: Optional[Edit] = None
         self.child_edit: Edit = from_node._children.edits(to_node._children)
+        """The edit to transform this node's children."""
         super().__init__(
             from_node=from_node,
             to_node=to_node
@@ -66,6 +85,7 @@ class XMLElementEdit(AbstractCompoundEdit):
 
 
 class XMLElementObj:
+    """An object for interacting with :class:`XMLElement` from command line expressions."""
     def __init__(
             self,
             tag: str,
@@ -73,10 +93,22 @@ class XMLElementObj:
             text: Optional[str] = None,
             children: Optional[Sequence['XMLElementObj']] = ()
     ):
+        """Initializes an XML Element Object.
+
+        Args:
+            tag: The tag of the element.
+            attrib: The attributes of the element.
+            text: The text of the element.
+            children: The children of the element.
+        """
         self.tag: str = tag
+        """The tag of this element."""
         self.attrib: Dict[str, str] = attrib
+        """The attributes of this element."""
         self.text: Optional[str] = text
+        """The text of this element."""
         self.children: Optional[Sequence['XMLElementObj']] = children
+        """The children of this element."""
 
     def __repr__(self):
         return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self.children!r})"
@@ -98,6 +130,8 @@ class XMLElementObj:
 
 
 class XMLElement(ContainerNode):
+    """"A node representing an XML element."""
+
     def __init__(
             self,
             tag: StringNode,
@@ -106,31 +140,36 @@ class XMLElement(ContainerNode):
             children: Sequence['XMLElement'] = (),
             allow_key_edits: bool = True
     ):
+        """Initializes an XML element.
+
+        Args:
+            tag: The tag of the element.
+            attrib: The attributes of the element.
+            text: The text of the element.
+            children: The children of the element.
+            allow_key_edits: Whether or not to allow keys to be edited when matching element attributes.
+        """
         self.tag: StringNode = tag
+        """The tag of this element."""
         tag.quoted = False
         if attrib is None:
             attrib = {}
         if allow_key_edits:
             self.attrib: DictNode = DictNode.from_dict(attrib)
+            """The attributes of this element."""
         else:
             self.attrib = FixedKeyDictNode.from_dict(attrib)
         if isinstance(self, EditedTreeNode):
             self.attrib = self.attrib.make_edited()
-        self.attrib.start_symbol = ''
-        self.attrib.end_symbol = ''
-        self.attrib.delimiter = ''
-        self.attrib.delimiter_callback = lambda p: p.newline()
         for key, _ in self.attrib.items():
             key.quoted = False
         self.text: Optional[StringNode] = text
+        """The text of this element."""
         if self.text is not None:
             self.text.quoted = False
         self._children: ListNode = ListNode(children)
         if isinstance(self, EditedTreeNode):
             self._children = self._children.make_edited()
-        self.attrib.start_symbol = ''
-        self.attrib.end_symbol = ''
-        self.attrib.delimiter_callback = lambda p: p.newline()
 
     def to_obj(self):
         if self.text is None:
@@ -197,6 +236,7 @@ class XMLElement(ContainerNode):
 
 
 def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], allow_key_edits=True) -> XMLElement:
+    """Constructs an XML element node from an XML file."""
     if isinstance(path_or_element_tree, ET.Element):
         root: ET.Element = path_or_element_tree
     else:
@@ -261,9 +301,24 @@ class XMLElementAttribFormatter(SequenceFormatter):
 class XMLStringFormatter(StringFormatter):
     is_partial = True
 
+    def escape(self, c: str) -> str:
+        """String escape.
+
+        This function is called once for each character in the string.
+
+        Returns:
+            str: The escaped version of `c`, or `c` itself if no escaping is required.
+
+        This is equivalent to::
+
+            html.escape(c)
+
+        """
+        return html.escape(c)
+
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c != '\n' or index < num_edits - 1:
-            printer.write(html.escape(c))
+            super().write_char(printer, c, index, num_edits, removed, inserted)
 
 
 class XMLFormatter(GraphtageFormatter):
@@ -314,7 +369,13 @@ class XMLFormatter(GraphtageFormatter):
 
 
 class XML(Filetype):
+    """The XML file type."""
     def __init__(self):
+        """Initializes the XML file type.
+
+        By default, XML associates itself with the "xml", "application/xml", and "text/xml" MIME types.
+
+        """
         super().__init__(
             'xml',
             'application/xml',
@@ -324,19 +385,24 @@ class XML(Filetype):
     def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
         return build_tree(path, allow_key_edits=allow_key_edits)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
         try:
             return self.build_tree(path=path, allow_key_edits=allow_key_edits)
         except ET.ParseError as pe:
-            sys.stderr.write(f'Error parsing {os.path.basename(path)}: {pe.msg}\n\n')
-            sys.exit(1)
+            return f'Error parsing {os.path.basename(path)}: {pe.msg}'
 
     def get_default_formatter(self) -> XMLFormatter:
         return XMLFormatter.DEFAULT_INSTANCE
 
 
 class HTML(XML):
+    """The HTML file type."""
     def __init__(self):
+        """Initializes the HTML file type.
+
+        By default, HTML associates itself with the "html", "text/html", and "application/xhtml+xml" MIME types.
+
+        """
         Filetype.__init__(
             self,
             'html',

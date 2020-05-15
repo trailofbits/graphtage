@@ -9,24 +9,60 @@ from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNo
 
 
 class AbstractEdit(Edit, ABC):
+    """Abstract base class for the :class:`Edit` protocol."""
+
     def __init__(self,
                  from_node: TreeNode,
                  to_node: TreeNode = None,
                  constant_cost: Optional[int] = 0,
                  cost_upper_bound: Optional[int] = None
     ):
+        """Constructs a new Edit.
+
+        Args:
+            from_node: The node that this edit transforms.
+            to_node: The node that this edit transforms :obj:`from_node` into.
+            constant_cost: A optional lower bound on the cost of this edit.
+            cost_upper_bound: An optional upper bound on the cost of this edit.
+
+        """
         self.from_node: TreeNode = from_node
+        """The node that this edit transforms."""
         self.to_node: TreeNode = to_node
+        """The node into which this edit transforms :attr:`AbstractEdit.from_node`."""
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
         self.initial_bounds = self.bounds()
+        """The initial bounds of this edit.
+         
+         This is automatically set by calling :meth:`self.bounds()<AbstractEdit.bounds>` during initialization.
+         
+         """
 
     def is_complete(self) -> bool:
+        """An edit is complete when no further calls to :meth:`Edit.tighten_bounds` will change the nature of the edit.
+
+        This implementation considers an edit complete if it is valid and its bounds are definitive::
+
+            return not self.valid or self.bounds().definitive()
+
+        If an edit is able to discern that it has a unique solution even if its final bounds are unknown, it should
+        reimplement this method to define that check.
+
+        For example, in the case of a :class:`CompoundEdit`, this method should only return :const:`True` if no future
+        calls to :meth:`Edit.tighten_bounds` will affect the result of :meth:`CompoundEdit.edits`.
+
+        Returns:
+            bool: :const:`True` if subsequent calls to :meth:`Edit.tighten_bounds` will only serve to tighten the bounds
+            of this edit and will not affect the semantics of the edit.
+
+        """
         return not self.valid or self.bounds().definitive()
 
     @property
     def valid(self) -> bool:
+        """Returns whether this edit is valid"""
         return self._valid
 
     @valid.setter
@@ -34,9 +70,21 @@ class AbstractEdit(Edit, ABC):
         self._valid = is_valid
 
     def __lt__(self, other):
+        """Tests whether the bounds of this edit are less than the bounds of :obj:`other`."""
         return self.bounds() < other.bounds()
 
     def bounds(self) -> Range:
+        """Returns the bounds of this edit.
+
+        This defaults to the bounds provided when this :class:`AbstractEdit` was constructed. If an upper bound was not
+        provided to the constructor, the upper bound defaults to::
+
+            self.from_node.total_size + self.to_node.total_size + 1
+
+        Returns:
+            Range: A range bounding the cost of this edit.
+
+        """
         lb = self._constant_cost
         if self._cost_upper_bound is None:
             if self.to_node is None:
@@ -49,12 +97,21 @@ class AbstractEdit(Edit, ABC):
 
 
 class ConstantCostEdit(AbstractEdit, ABC):
+    """An edit whose definitive cost is known at the time of construction."""
     def __init__(
             self,
             from_node: TreeNode,
             to_node: TreeNode = None,
             cost: int = 0
     ):
+        """Constructs a new edit.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node into which :obj:`from_node` is being transformed.
+            cost: The constant cost of the edit.
+
+        """
         super().__init__(
             from_node=from_node,
             to_node=to_node,
@@ -63,23 +120,50 @@ class ConstantCostEdit(AbstractEdit, ABC):
         )
 
     def tighten_bounds(self) -> bool:
+        """This always returns :const:`False`"""
         return False
 
 
 class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
+    """Abstract base class implementing the :class:`CompoundEdit` protocol."""
+
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
         raise NotImplementedError()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
+        """Edits can optionally implement a printing method
+
+        This function is called automatically from the formatter in the
+        :ref:`Printing Protocol` and should never be called directly unless you really know what you're doing!
+        Raising :exc:`NotImplementedError` will cause the formatter to fall back on its own printing implementations.
+
+        This implementation is equivalent to::
+
+            for edit in self.edits():
+                edit.print(formatter, printer)
+
+        """
         for edit in self.edits():
             edit.print(formatter, printer)
 
     def __iter__(self) -> Iterator[Edit]:
+        """Returns an iterator over this edit's sub-edits.
+
+        Returns:
+            Iterator[Edit]: The result of :meth:`AbstractCompoundEdit.edits`
+
+        """
         return self.edits()
 
 
 class PossibleEdits(AbstractCompoundEdit):
+    """A compound edit that chooses the best option among one or more competing alternatives.
+
+    The best option is chosen by performing :class:`graphtage.search.IterativeTighteningSearch` on the alternatives.
+
+    """
+
     def __init__(
             self,
             from_node: TreeNode,
@@ -87,6 +171,15 @@ class PossibleEdits(AbstractCompoundEdit):
             edits: Iterator[Edit] = (),
             initial_cost: Optional[Range] = None
     ):
+        """Constructs a new Possible Edits object.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node into which :obj:`from_node` is being transformed.
+            edits: One or more edits from which to choose.
+            initial_cost: Initial bounds on the cost of the best choice, if known.
+
+        """
         if initial_cost is not None:
             self.initial_bounds = initial_cost
         self._search: IterativeTighteningSearch[Edit] = IterativeTighteningSearch(
@@ -112,7 +205,8 @@ class PossibleEdits(AbstractCompoundEdit):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def best_possibility(self) -> Edit:
+    def best_possibility(self) -> Optional[Edit]:
+        """Returns the best possibility as of yet."""
         return self._search.best_match
 
     def edits(self) -> Iterator[Edit]:
@@ -131,6 +225,8 @@ class PossibleEdits(AbstractCompoundEdit):
 
 
 class Match(ConstantCostEdit):
+    """A constant cost edit specifying that one node should be matched to another."""
+
     def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
         super().__init__(
             from_node=match_from,
@@ -160,6 +256,8 @@ class Match(ConstantCostEdit):
 
 
 class Replace(ConstantCostEdit):
+    """A constant cost edit specifying that one node should be replaced with another."""
+
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
         cost = max(to_replace.total_size, replace_with.total_size) + 1
         super().__init__(
@@ -184,6 +282,11 @@ class Replace(ConstantCostEdit):
 
 
 class Remove(ConstantCostEdit):
+    """A constant cost edit specifying that a node should be removed from a container."""
+
+    REMOVE_STRING: str = '~~'
+    """The string used to denote a removal if ANSI color is disabled."""
+
     def __init__(self, to_remove: TreeNode, remove_from: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_remove,
@@ -200,9 +303,9 @@ class Remove(ConstantCostEdit):
             with printer.background(Back.RED):
                 with printer.color(Fore.WHITE):
                     if not printer.ansi_color:
-                        printer.write('~~~~')
+                        printer.write(self.REMOVE_STRING)
                         formatter.print(printer, self.from_node, False)
-                        printer.write('~~~~')
+                        printer.write(self.REMOVE_STRING)
                     else:
                         with printer.strike():
                             formatter.print(printer, self.from_node, False)
@@ -212,6 +315,11 @@ class Remove(ConstantCostEdit):
 
 
 class Insert(ConstantCostEdit):
+    """A constant cost edit specifying that a node should be added to a container."""
+
+    INSERT_STRING: str = '++'
+    """The string used to denote an insertion if ANSI color is disabled."""
+
     def __init__(self, to_insert: TreeNode, insert_into: TreeNode, penalty: int = 1):
         super().__init__(
             from_node=to_insert,
@@ -234,9 +342,9 @@ class Insert(ConstantCostEdit):
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         with printer.bright().background(Back.GREEN).color(Fore.WHITE):
             if not printer.ansi_color:
-                printer.write('++++')
+                printer.write(self.INSERT_STRING)
                 formatter.print(printer, self.to_insert, False)
-                printer.write('++++')
+                printer.write(self.INSERT_STRING)
             else:
                 with printer.under_plus():
                     formatter.print(printer, self.to_insert, False)
@@ -249,6 +357,8 @@ C = TypeVar('C', bound=Collection)
 
 
 class EditCollection(AbstractCompoundEdit, Generic[C]):
+    """An edit comprised of one or more sub-edits."""
+
     def __init__(
             self,
             from_node: TreeNode,
@@ -375,6 +485,8 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
 
 
 class EditSequence(EditCollection[List]):
+    """An :class:`EditCollection` using a :class:`list` as the underlying container."""
+
     def __init__(
             self,
             from_node: TreeNode,

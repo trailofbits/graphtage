@@ -1,6 +1,7 @@
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering YAML files."""
 import os
-import sys
 from io import StringIO
+from typing import Union
 
 from yaml import dump, load, YAMLError
 try:
@@ -17,6 +18,7 @@ from .tree import Edit, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
+    """Constructs a YAML tree from an YAML file."""
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
         return json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
@@ -146,12 +148,12 @@ class YAMLStringFormatter(StringFormatter):
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c == '\n':
             if removed or inserted:
-                printer.write('\u23CE')
+                super().write_char(printer, '\u23CE', index, num_edits, removed, inserted)
             if not removed and index < num_edits - 1:
                 # Do not print a trailing newline
                 printer.newline()
         else:
-            printer.write(c)
+            super().write_char(printer, c, index, num_edits, removed, inserted)
 
 
 class YAMLFormatter(GraphtageFormatter):
@@ -187,7 +189,14 @@ class YAMLFormatter(GraphtageFormatter):
 
 
 class YAML(Filetype):
+    """The YAML filetype."""
     def __init__(self):
+        """Initializes the YAML file type.
+
+        By default, YAML associates itself with the "yaml", "application/x-yaml", "application/yaml", "text/yaml",
+        "text/x-yaml", and "text/vnd.yaml" MIME types.
+
+        """
         super().__init__(
             'yaml',
             'application/x-yaml',
@@ -204,12 +213,11 @@ class YAML(Filetype):
                 node.quoted = False
         return tree
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
         try:
             return self.build_tree(path=path, allow_key_edits=allow_key_edits)
         except YAMLError as ye:
-            sys.stderr.write(f'Error parsing {os.path.basename(path)}: {ye})\n\n')
-            sys.exit(1)
+            return f'Error parsing {os.path.basename(path)}: {ye})'
 
     def get_default_formatter(self) -> YAMLFormatter:
         return YAMLFormatter.DEFAULT_INSTANCE
