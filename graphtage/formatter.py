@@ -104,7 +104,7 @@ Examples:
         >>> get_formatter(str)(Printer(), "foo")
         StringFormatter: foo
 
-    As you can see, ``self.print(printer, item.bar`` gives preference to locally defined implementations before doing
+    As you can see, ``self.print(printer, item.bar)`` gives preference to locally defined implementations before doing
     a global lookup for a formatter with a print function.
 
     We just got "lucky" with that last printout, though, because the ``print_str`` in ``BarFormatter`` has the
