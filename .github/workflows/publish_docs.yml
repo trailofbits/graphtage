@@ -49,9 +49,9 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          if [ "$GITHUB_REF" != "refs/heads/master" ]; then
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
             cd ..
-            # This is a tag; assume it is the latest and update accordingly
+            # This is not tag, so it is the latest:
             rm -f latest
             ln -s ${VERSION} latest
             git add latest
