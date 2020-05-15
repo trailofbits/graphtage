@@ -1,0 +1,60 @@
+graphtage.json
+==============
+
+.. automodule:: graphtage.json
+
+json classes
+------------
+
+JSON
+****
+
+.. autoclass:: JSON
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+JSONDictFormatter
+*****************
+
+.. autoclass:: JSONDictFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+JSONFormatter
+*************
+
+.. autoclass:: JSONFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+JSONListFormatter
+*****************
+
+.. autoclass:: JSONListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+JSONStringFormatter
+*******************
+
+.. autoclass:: JSONStringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+json functions
+--------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree

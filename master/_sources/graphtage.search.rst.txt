@@ -1,0 +1,16 @@
+graphtage.search
+================
+
+.. automodule:: graphtage.search
+
+search classes
+--------------
+
+IterativeTighteningSearch
+*************************
+
+.. autoclass:: IterativeTighteningSearch
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
