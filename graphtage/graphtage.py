@@ -686,7 +686,7 @@ class StringFormatter(GraphtageFormatter):
             with printer.color(Fore.YELLOW):
                 printer.write(escaped)
         else:
-            printer.write(c)
+            printer.write(escaped)
 
     def context(self, printer: Printer):
         if printer.context().fore is None:
