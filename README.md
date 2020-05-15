@@ -99,8 +99,7 @@ Graphtage is designed to be extensible; new filetypes can easily be defined, as 
 formatters, and printers. See [our documentation](https://trailofbits.github.io/graphtage/latest/extending.html) for
 more information.
 
-Complete API documentation is available
-[here]([our documentation](https://trailofbits.github.io/graphtage/latest/package.html)).
+Complete API documentation is available [here](https://trailofbits.github.io/graphtage/latest/package.html).
 
 ## License and Acknowledgements
 
