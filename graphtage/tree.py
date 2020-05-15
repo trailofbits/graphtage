@@ -44,7 +44,7 @@ class GraphtageFormatter(FormatterType):
             node: TreeNode = node_or_edit.from_node
         elif with_edits:
             if isinstance(node_or_edit, EditedTreeNode) and \
-                    node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0:
+                    node_or_edit.edit is not None and node_or_edit.edit.has_non_zero_cost():
                 edit: Optional[Edit] = node_or_edit.edit
                 node: TreeNode = node_or_edit
             else:
@@ -94,6 +94,17 @@ class Edit(Bounded, Protocol):
     """
     from_node: 'TreeNode'
     """The node that this edit transforms."""
+
+    def has_non_zero_cost(self) -> bool:
+        """Returns whether this edit has a non-zero cost.
+
+        This will tighten the edit's bounds until either its lower bound is greater than zero or its bounds are
+        definitive.
+
+        """
+        while not self.bounds().definitive() and self.bounds().lower_bound <= 0 and self.tighten_bounds():
+            pass
+        return self.bounds().lower_bound > 0
 
     @abstractmethod
     def bounds(self) -> Range:
