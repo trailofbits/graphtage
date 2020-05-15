@@ -1,8 +1,3 @@
-.. Graphtage documentation master file, created by
-   sphinx-quickstart on Fri May  8 09:42:09 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Graphtage Documentation
 =======================
 
@@ -19,8 +14,10 @@ formats. For instructions on using Graphtage as a utility, see the documentation
    :maxdepth: 4
    :caption: Contents:
 
+   library
+   extending
+   howitworks
    package
-   printing
 
 Indices and tables
 ==================
