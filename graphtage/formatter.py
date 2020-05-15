@@ -14,6 +14,8 @@ to compare files in that new format to both JSON and YAML files. However, what i
 be output as the new format? Or what if an input file in the new format is to be output as YAML? How does the
 preexisting YAML formatter know how to deal with the new node and edit types defined for the new format?
 
+.. _What the formatter module can do:
+
 What the formatter module can do
 ================================
 
@@ -149,6 +151,8 @@ Examples:
 
     The sequence of function resolution happens in the ``self.print`` call in ``print_Bar`` follows the
     "Formatting Protocol". It is described in the next section.
+
+    .. _Formatting Protocol:
 
     Formatting Protocol
     ===================

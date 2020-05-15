@@ -1,3 +1,5 @@
+.. _Printing Protocol:
+
 Printing Protocol
 =================
 
