@@ -148,12 +148,12 @@ class YAMLStringFormatter(StringFormatter):
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c == '\n':
             if removed or inserted:
-                printer.write('\u23CE')
+                super().write_char(printer, '\u23CE', index, num_edits, removed, inserted)
             if not removed and index < num_edits - 1:
                 # Do not print a trailing newline
                 printer.newline()
         else:
-            printer.write(c)
+            super().write_char(printer, c, index, num_edits, removed, inserted)
 
 
 class YAMLFormatter(GraphtageFormatter):

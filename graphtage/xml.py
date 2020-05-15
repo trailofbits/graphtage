@@ -301,9 +301,24 @@ class XMLElementAttribFormatter(SequenceFormatter):
 class XMLStringFormatter(StringFormatter):
     is_partial = True
 
+    def escape(self, c: str) -> str:
+        """String escape.
+
+        This function is called once for each character in the string.
+
+        Returns:
+            str: The escaped version of `c`, or `c` itself if no escaping is required.
+
+        This is equivalent to::
+
+            html.escape(c)
+
+        """
+        return html.escape(c)
+
     def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
         if c != '\n' or index < num_edits - 1:
-            printer.write(html.escape(c))
+            super().write_char(printer, c, index, num_edits, removed, inserted)
 
 
 class XMLFormatter(GraphtageFormatter):

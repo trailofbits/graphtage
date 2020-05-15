@@ -154,8 +154,13 @@ class JSONStringFormatter(StringFormatter):
     """A JSON formatter for strings."""
     is_partial = True
 
-    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
-        """Writes a character, escaping if necessary.
+    def escape(self, c: str) -> str:
+        """String escape.
+
+        This function is called once for each character in the string.
+
+        Returns:
+            str: The escaped version of `c`, or `c` itself if no escaping is required.
 
         This is equivalent to::
 
@@ -163,7 +168,7 @@ class JSONStringFormatter(StringFormatter):
 
         """
         # json.dumps will enclose the string in quotes, so remove them
-        printer.write(json.dumps(c)[1:-1])
+        return json.dumps(c)[1:-1]
 
 
 class JSONFormatter(GraphtageFormatter):
