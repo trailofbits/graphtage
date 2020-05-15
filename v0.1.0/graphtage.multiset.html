@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graphtage.multiset &mdash; Graphtage v0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.multiset.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphtage.printer" href="graphtage.printer.html" />
+    <link rel="prev" title="graphtage.matching" href="graphtage.matching.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Graphtage
+          
+
+          
+          </a>
+
+          
+
+          
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.1.0"><div class="version">v0.1.0</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.multiset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multiset-classes">multiset classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#multisetedit">MultiSetEdit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.yaml.html">graphtage.yaml</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="package.html">Graphtage API</a> &raquo;</li>
+        
+      <li>graphtage.multiset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/graphtage.multiset.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-graphtage.multiset">
+<span id="graphtage-multiset"></span><h1>graphtage.multiset<a class="headerlink" href="#module-graphtage.multiset" title="Permalink to this headline">¶</a></h1>
+<p>A module for representing an edit on a multiset.</p>
+<p>This is used by <a class="reference internal" href="graphtage.html#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MultiSetNode</span></code></a> and <a class="reference internal" href="graphtage.html#graphtage.DictNode" title="graphtage.DictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.DictNode</span></code></a>, since the latter is a multiset containg
+<a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.KeyValuePairNode</span></code></a> objects.</p>
+<div class="section" id="multiset-classes">
+<h2>multiset classes<a class="headerlink" href="#multiset-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="multisetedit">
+<h3>MultiSetEdit<a class="headerlink" href="#multisetedit" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.multiset.MultiSetEdit">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.multiset.</code><code class="sig-name descname">MultiSetEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">from_set</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter">graphtage.utils.HashableCounter</a><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_set</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter">graphtage.utils.HashableCounter</a><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceEdit</span></code></a></p>
+<p>An edit matching one unordered collection of items to another.</p>
+<p>It works by using a <a class="reference internal" href="graphtage.matching.html#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></code></a> to find the minimum cost matching from
+the elements of one collection to the elements of the other.</p>
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">from_set</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter">graphtage.utils.HashableCounter</a><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_set</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter">graphtage.utils.HashableCounter</a><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_node</strong> – Any sequence node from which to match.</p></li>
+<li><p><strong>to_node</strong> – Any sequence node to which to match.</p></li>
+<li><p><strong>from_set</strong> – The set of nodes from which to match. These should typically be children of <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code>, but
+this is neither checked nor enforced.</p></li>
+<li><p><strong>to_set</strong> – The set of nodes to which to match. These should typically be children of <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_node</span></code>, but this
+is neither checked nor enforced.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.__iter__">
+<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over this edit’s sub-edits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCompoundEdit.edits()</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Iterator[<a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.__lt__">
+<code class="sig-name descname">__lt__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.bounds">
+<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bounds of this edit.</p>
+<p>This defaults to the bounds provided when this <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEdit</span></code> was constructed. If an upper bound was not
+provided to the constructor, the upper bound defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">from_node</span><span class="o">.</span><span class="n">total_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_node</span><span class="o">.</span><span class="n">total_size</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A range bounding the cost of this edit.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">Range</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.edits">
+<code class="sig-name descname">edits</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.edits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over this edit’s sub-edits</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.has_non_zero_cost">
+<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether this edit has a non-zero cost.</p>
+<p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
+definitive.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.is_complete">
+<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.is_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="#graphtage.multiset.MultiSetEdit" title="graphtage.multiset.MultiSetEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSetEdit</span></code></a> is complete after the first call to <a class="reference internal" href="#graphtage.multiset.MultiSetEdit.tighten_bounds" title="graphtage.multiset.MultiSetEdit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MultiSetEdit.tighten_bounds()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.on_diff">
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.on_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>A callback for when an edit is assigned to an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code> in <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code>.</p>
+<p>This default implementation adds the edit to the node, and recursively calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.on_diff()</span></code> on all of
+the sub-edits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
+<span class="n">from_node</span><span class="o">.</span><span class="n">edit_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edits</span><span class="p">():</span>
+    <span class="n">edit</span><span class="o">.</span><span class="n">on_diff</span><span class="p">(</span><span class="n">edit</span><span class="o">.</span><span class="n">from_node</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>from_node</strong> – The edited node that was added to the diff</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">formatter</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter">graphtage.GraphtageFormatter</a></span></em>, <em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints this edit.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatter</span><span class="o">.</span><span class="n">get_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.sequence">
+<em class="property">property </em><code class="sig-name descname">sequence</code><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sequence being edited.</p>
+<p>This is a convenience function solely to aid in automated type checking. It is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">SequenceNode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_node</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.tighten_bounds">
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WeightedBipartiteMatcher.tighten_bounds()</span></code>.</p>
+<p>The matching is complete after the first call to this function, so it also sets
+<a class="reference internal" href="#graphtage.multiset.MultiSetEdit.is_complete" title="graphtage.multiset.MultiSetEdit.is_complete"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.is_complete</span></code></a> to <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.multiset.MultiSetEdit.to_insert">
+<code class="sig-name descname">to_insert</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.to_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of nodes in <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_set</span></code> that do not exist in <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_set</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.multiset.MultiSetEdit.to_remove">
+<code class="sig-name descname">to_remove</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.to_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>The set of nodes in <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_set</span></code> that do not exist in <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_set</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.multiset.MultiSetEdit.valid">
+<em class="property">property </em><code class="sig-name descname">valid</code><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether this edit is valid</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="graphtage.printer.html" class="btn btn-neutral float-right" title="graphtage.printer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="graphtage.matching.html" class="btn btn-neutral float-left" title="graphtage.matching" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Trail of Bits
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.1.0
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

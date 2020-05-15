@@ -1,0 +1,34 @@
+graphtage.sequences
+===================
+
+.. automodule:: graphtage.sequences
+
+sequences classes
+-----------------
+
+SequenceEdit
+************
+
+.. autoclass:: SequenceEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+SequenceFormatter
+*****************
+
+.. autoclass:: SequenceFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+SequenceNode
+************
+
+.. autoclass:: SequenceNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
