@@ -1,3 +1,4 @@
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering YAML files."""
 import os
 from io import StringIO
 from typing import Union
@@ -17,6 +18,7 @@ from .tree import Edit, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
+    """Constructs a YAML tree from an YAML file."""
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
         return json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
@@ -187,7 +189,14 @@ class YAMLFormatter(GraphtageFormatter):
 
 
 class YAML(Filetype):
+    """The YAML filetype."""
     def __init__(self):
+        """Initializes the YAML file type.
+
+        By default, YAML associates itself with the "yaml", "application/x-yaml", "application/yaml", "text/yaml",
+        "text/x-yaml", and "text/vnd.yaml" MIME types.
+
+        """
         super().__init__(
             'yaml',
             'application/x-yaml',
