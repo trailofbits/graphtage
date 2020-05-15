@@ -25,7 +25,8 @@ Example:
 .. [Karp78] `Richard M. Karp <https://en.wikipedia.org/wiki/Richard_M._Karp>`_. |karp78title|_. 1978. It is partially
     implemented in :class:`WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION`.
 .. _karp78title: https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
-.. |karp78title| replace:: *An Algorithm to Solve the 𝑚×𝑛 Assignment Problem in Expected Time 𝑂(𝑚𝑛 log 𝑛)*
+.. |karp78title| replace:: *An Algorithm to Solve the* :math:`m \\times n` *Assignment Problem in Expected Time*
+    :math:`O(mn \\log n)`
 .. _scipy_linear_sum_assignment:
     https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.optimize.linear_sum_assignment.html
 .. |scipy_linear_sum_assignment| replace:: scipy's implementation
@@ -321,7 +322,7 @@ QueueType = FibonacciHeap[QueueElement, int]
 
 
 class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
-    """Partial implementation of *An Algorithm to Solve the 𝑚⨉𝑛 Assignment Problem in Expected Time 𝑂(𝑚𝑛 log 𝑛)* [Karp78]_.
+    r"""Partial implementation of *An Algorithm to Solve the* :math:`m \times n` *Assignment Problem in Expected Time* :math:`O(mn \log n)` [Karp78]_.
 
     The implementation is partial because I realized partway through that, even though this implementation has better
     asymptotic bounds, :func:`scipy.optimize.linear_sum_assignment` will almost always be much faster since it is
