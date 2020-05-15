@@ -30,7 +30,7 @@ jobs:
           pip install .[dev]
       - name: Build documentation
         run: |
-          cd docs
+          cd graphtage/docs
           make html
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
