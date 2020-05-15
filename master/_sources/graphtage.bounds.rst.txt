@@ -1,0 +1,70 @@
+graphtage.bounds
+================
+
+.. automodule:: graphtage.bounds
+
+bounds classes
+--------------
+
+Bounded
+*******
+
+.. autoclass:: Bounded
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+BoundedComparator
+*****************
+
+.. autoclass:: BoundedComparator
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ConstantBound
+*************
+
+.. autoclass:: ConstantBound
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Infinity
+********
+
+.. autoclass:: Infinity
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Range
+*****
+
+.. autoclass:: Range
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+bounds functions
+----------------
+
+make_distinct
+*************
+
+.. autofunction:: make_distinct
+
+min_bounded
+***********
+
+.. autofunction:: min_bounded
+
+sort
+****
+
+.. autofunction:: sort
