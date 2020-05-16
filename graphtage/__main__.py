@@ -73,7 +73,7 @@ class MatchUnless(ConditionalMatcher):
         return None
 
 
-def main(argv=None):
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
     )
@@ -278,10 +278,12 @@ def main(argv=None):
                             MatchIf.apply(node, match_if)
                         if match_unless is not None:
                             MatchUnless.apply(node, match_unless)
+                had_edits = False
                 if args.only_edits:
                     for edit in from_tree.get_all_edits(to_tree):
                         printer.write(str(edit))
                         printer.newline()
+                        had_edits = had_edits or edit.has_non_zero_cost()
                 else:
                     diff = from_tree.diff(to_tree)
                     if args.format is not None:
@@ -289,9 +291,14 @@ def main(argv=None):
                     else:
                         formatter = from_format.get_default_formatter()
                     formatter.print(printer, diff)
+                    had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
         printer.write('\n')
     printer.close()
+    if had_edits:
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
