@@ -36,12 +36,12 @@ def build_tree(
         ValueError: If the object is of an unsupported type.
 
     """
-    if isinstance(python_obj, int):
+    if isinstance(python_obj, bool):
+        return BoolNode(python_obj)
+    elif isinstance(python_obj, int):
         return IntegerNode(python_obj)
     elif isinstance(python_obj, float):
         return FloatNode(python_obj)
-    elif isinstance(python_obj, bool):
-        return BoolNode(python_obj)
     elif isinstance(python_obj, str):
         return StringNode(python_obj)
     elif isinstance(python_obj, bytes):
