@@ -1,0 +1,96 @@
+graphtage.printer
+=================
+
+.. automodule:: graphtage.printer
+
+printer classes
+---------------
+
+ANSIContext
+***********
+
+.. autoclass:: ANSIContext
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CombiningMarkContext
+********************
+
+.. autoclass:: CombiningMarkContext
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CombiningMarkWriter
+*******************
+
+.. autoclass:: CombiningMarkWriter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+HTMLANSIContext
+***************
+
+.. autoclass:: HTMLANSIContext
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+HTMLPrinter
+***********
+
+.. autoclass:: HTMLPrinter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+NullANSIContext
+***************
+
+.. autoclass:: NullANSIContext
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Printer
+*******
+
+.. autoclass:: Printer
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+RawWriter
+*********
+
+.. autoclass:: RawWriter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Writer
+******
+
+.. autoclass:: Writer
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+printer functions
+-----------------
+
+only_ansi
+*********
+
+.. autofunction:: only_ansi
