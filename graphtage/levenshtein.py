@@ -268,7 +268,7 @@ class EditDistance(SequenceEdit):
 
                 with DEFAULT_PRINTER.tqdm(
                         total=fringe_total,
-                        initial=fringe_total,
+                        initial=0,
                         desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col}",
                         disable=fringe_total <= 0,
                         leave=False
