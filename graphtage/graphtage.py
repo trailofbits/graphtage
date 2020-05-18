@@ -10,7 +10,7 @@ from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
-from .sequences import SequenceEdit, SequenceNode
+from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
@@ -299,10 +299,10 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
             if len(self._children) == len(node._children) == 0:
                 return Match(self, node, 0)
             elif len(self._children) == len(node._children) == 1:
-                return EditSequence(from_node=self, to_node=node, edits=iter((
-                    Match(self, node, 0),
-                    self._children[0].edits(node._children[0])
-                )))
+                return FixedLengthSequenceEdit(
+                    from_node=self,
+                    to_node=node
+                )
             elif self._children == node._children:
                 return Match(self, node, 0)
             else:

@@ -91,6 +91,13 @@ class TestGraphtage(TestCase):
             else:
                 self.assertIsInstance(edit, graphtage.Match)
 
+    def test_single_element_list(self):
+        diff = graphtage.json.build_tree([1]).diff(graphtage.json.build_tree([2]))
+        self.assertIsInstance(diff, graphtage.ListNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
+        self.assertEqual(1, len(diff.edit_list))
+        self.assertIsInstance(diff.edit_list[0], graphtage.FixedLengthSequenceEdit)
+
     def test_empty_list(self):
         diff = graphtage.ListNode(()).diff(graphtage.ListNode(()))
         self.assertEqual(1, len(diff.edit_list))
