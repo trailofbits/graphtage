@@ -69,67 +69,30 @@ class FixedLengthSequenceEdit(SequenceEdit):
         if len(from_node) != len(to_node):
             raise ValueError("Both sequence nodes must have the same number of elements!")
 
-        self._pair_iter: Optional[Iterator[Tuple[TreeNode, TreeNode]]] = zip(from_node, to_node)
-
-        self._sub_edits: List[Edit] = []
-
-        self._pair_sizes: List[int] = [f.total_size + t.total_size + 1 for f, t in zip(from_node, to_node)]
+        self._sub_edits: List[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
 
         super().__init__(from_node=from_node, to_node=to_node)
 
     def edits(self) -> Iterator[Edit]:
-        yield from self._sub_edits
-        while True:
-            edit = self._expand_next_pair()
-            if edit is None:
-                break
-            else:
-                yield edit
-
-    def _expand_next_pair(self) -> Optional[Edit]:
-        if self._pair_iter is None:
-            return None
-        try:
-            next_from, next_to = next(self._pair_iter)
-            edit = next_from.edits(next_to)
-            self._sub_edits.append(edit)
-            return edit
-        except StopIteration:
-            self._pair_iter = None
-            return None
+        return iter(self._sub_edits)
 
     def is_complete(self) -> bool:
-        return self._pair_iter is None and all(edit.is_complete() for edit in self._sub_edits)
+        return all(edit.is_complete() for edit in self._sub_edits)
 
     @repeat_until_tightened
     def tighten_bounds(self) -> bool:
-        while self._pair_iter is not None:
-            next_edit = self._expand_next_pair()
-            if next_edit is not None and next_edit.tighten_bounds():
-                return True
         for edit in self._sub_edits:
             if edit.tighten_bounds():
                 return True
         return False
 
     def bounds(self) -> Range:
-        if len(self._sub_edits) == len(self.sequence):
-            lb = 0
-            ub = 0
-            for edit in self._sub_edits:
-                b = edit.bounds()
-                lb += b.lower_bound
-                ub += b.upper_bound
-            return Range(lb, ub)
-
         lb = 0
-        ub = self.from_node.total_size + self.to_node.total_size + 1
-        for original_ub, edit in zip(self._pair_sizes, self._sub_edits):
+        ub = 0
+        for edit in self._sub_edits:
             b = edit.bounds()
-            if b.upper_bound > original_ub:
-                raise ValueError(f"Upper bound of edit {edit} is greater than the cost of a Replace")
             lb += b.lower_bound
-            ub -= original_ub - b.upper_bound
+            ub += b.upper_bound
         return Range(lb, ub)
 
 
