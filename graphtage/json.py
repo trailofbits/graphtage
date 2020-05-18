@@ -49,7 +49,11 @@ def build_tree(
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n, options=options) for n in python_obj])
+        return ListNode(
+            [build_tree(n, options=options) for n in python_obj],
+            allow_list_edits=options.allow_list_edits,
+            allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+        )
     elif isinstance(python_obj, dict):
         dict_items = {
             build_tree(k, options=options, force_leaf_node=True):

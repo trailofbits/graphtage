@@ -5,7 +5,7 @@ from abc import ABC, ABCMeta, abstractmethod
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
-from .edits import AbstractEdit, EditCollection, EditSequence
+from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
@@ -278,8 +278,22 @@ T = TypeVar('T', bound=TreeNode)
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     """A node containing an ordered sequence of nodes."""
 
-    def __init__(self, nodes: Iterable[T]):
+    def __init__(
+            self, nodes: Iterable[T],
+            allow_list_edits: bool = True,
+            allow_list_edits_when_same_length: bool = True
+    ):
+        """Initializes a List node.
+
+        Args:
+            nodes: The set of nodes in this list.
+            allow_list_edits: Whether to consider removal and insertion when editing this list.
+            allow_list_edits_when_same_length: Whether to consider removal and insertion when comparing this list to
+                another list of the same length.
+        """
         super().__init__(tuple(nodes))
+        self.allow_list_edits: bool = allow_list_edits
+        self.allow_list_edits_when_same_length: bool = allow_list_edits_when_same_length
 
     def to_obj(self):
         return [n.to_obj() for n in self]
@@ -296,15 +310,15 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            if len(self._children) == len(node._children) == 0:
+            if self._children == node._children:
                 return Match(self, node, 0)
-            elif len(self._children) == len(node._children) == 1:
+            elif not self.allow_list_edits or (len(self._children) == len(node._children) and (
+                not self.allow_list_edits_when_same_length or len(self._children) == 1
+            )):
                 return FixedLengthSequenceEdit(
                     from_node=self,
                     to_node=node
                 )
-            elif self._children == node._children:
-                return Match(self, node, 0)
             else:
                 if self.all_children_are_leaves() and node.all_children_are_leaves():
                     insert_remove_penalty = 0
