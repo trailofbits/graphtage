@@ -14,7 +14,7 @@ from typing import Collection, Dict, Optional, Iterator, Sequence, Union
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .graphtage import ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
+from .graphtage import BuildOptions, ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
     ListNode, StringFormatter, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter
@@ -235,7 +235,10 @@ class XMLElement(ContainerNode):
         return XMLFormatter.DEFAULT_INSTANCE.print(printer, self)
 
 
-def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], allow_key_edits=True) -> XMLElement:
+def build_tree(
+        path_or_element_tree: Union[str, ET.Element, ET.ElementTree],
+        options: Optional[BuildOptions] = None
+) -> XMLElement:
     """Constructs an XML element node from an XML file."""
     if isinstance(path_or_element_tree, ET.Element):
         root: ET.Element = path_or_element_tree
@@ -255,8 +258,8 @@ def build_tree(path_or_element_tree: Union[str, ET.Element, ET.ElementTree], all
             StringNode(k): StringNode(v) for k, v in root.attrib.items()
         },
         text=text,
-        children=[build_tree(child, allow_key_edits=allow_key_edits) for child in root],
-        allow_key_edits=allow_key_edits
+        children=[build_tree(child, options) for child in root],
+        allow_key_edits=options is None or options.allow_key_edits
     )
 
 
@@ -382,12 +385,12 @@ class XML(Filetype):
             'text/xml'
         )
 
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
-        return build_tree(path, allow_key_edits=allow_key_edits)
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+        return build_tree(path, options)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         try:
-            return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+            return self.build_tree(path=path, options=options)
         except ET.ParseError as pe:
             return f'Error parsing {os.path.basename(path)}: {pe.msg}'
 

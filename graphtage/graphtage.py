@@ -861,6 +861,34 @@ class FiletypeWatcher(ABCMeta):
         super().__init__(name, bases, clsdict)
 
 
+class BuildOptions:
+    """A class for passing options to tree building functions in :class:`Filetype`"""
+
+    def __init__(self, *,
+                 allow_key_edits=True,
+                 allow_list_edits=True,
+                 allow_list_edits_when_same_length=True,
+                 **kwargs
+                 ):
+        """Initializes the options. All keyword values will be set as attributes of this class.
+
+        Options not specified will default to :const:`False`.
+
+        """
+        self.allow_key_edits = allow_key_edits
+        """Whether to consider editing keys when matching :class:`KeyValuePairNode` objects"""
+        self.allow_list_edits = allow_list_edits
+        """Whether to consider insert and remove edits to lists"""
+        self.allow_list_edits_when_same_length = allow_list_edits_when_same_length
+        """Whether to consider insert and remove edits on lists that are the same length"""
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
+
+    def __getattr__(self, item):
+        """Default all undefined options to :const:`False`"""
+        return False
+
+
 class Filetype(metaclass=FiletypeWatcher):
     """Abstract base class from which all Graphtage file formats should extend.
 
@@ -898,12 +926,12 @@ class Filetype(metaclass=FiletypeWatcher):
         FILETYPES_BY_TYPENAME[self.name] = self
 
     @abstractmethod
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
         """Builds an intermediate representation tree from a file of this :class:`Filetype`.
 
         Args:
             path: Path to the file to parse
-            allow_key_edits: Whether to allow dictionary keys to be editable
+            options: An optional set of options for building the tree
 
         Returns:
             TreeNode: The root tree node of the provided file
@@ -912,14 +940,14 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
     @abstractmethod
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         """Same as :meth:`Filetype.build_tree`, but it should return a human-readable error string on failure.
 
         This function should never throw an exception.
 
         Args:
             path: Path to the file to parse
-            allow_key_edits: Whether to allow dictionary keys to be editable
+            options: An optional set of options for building the tree
 
         Returns:
             Union[str, TreeNode]: On success, the root tree node, or a string containing the error message on failure.
