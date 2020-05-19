@@ -262,17 +262,22 @@ class EditDistance(SequenceEdit):
                 if DEFAULT_PRINTER.quiet:
                     fringe_ranges = {}
                     fringe_total = 0
+                    num_diagonals = 0
                 else:
                     fringe_ranges = {
-                        (row, col): self.edit_matrix[row][col].bounds().upper_bound - self.edit_matrix[row][col].bounds().lower_bound
+                        (row, col): (
+                            self.edit_matrix[row][col].bounds().upper_bound
+                            - self.edit_matrix[row][col].bounds().lower_bound
+                        )
                         for row, col in self._fringe_diagonal()
                     }
                     fringe_total = sum(fringe_ranges.values())
+                    num_diagonals = len(self.from_seq) + len(self.to_seq)
 
                 with DEFAULT_PRINTER.tqdm(
                         total=fringe_total,
                         initial=0,
-                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col}",
+                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
                         disable=fringe_total <= 0,
                         leave=False
                 ) as t:
