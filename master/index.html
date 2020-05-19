@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Graphtage Documentation &mdash; Graphtage 0.2.0-git documentation</title>
+  <title>Graphtage Documentation &mdash; Graphtage v0.2.0 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -205,6 +205,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#abstractcompoundedit">AbstractCompoundEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#abstractedit">AbstractEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#boolnode">BoolNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#buildoptions">BuildOptions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#compoundedit">CompoundEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#constantcostedit">ConstantCostEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#containernode">ContainerNode</a></li>
@@ -257,6 +258,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 <li class="toctree-l3"><a class="reference internal" href="graphtage.bounds.html#bounds-functions">bounds functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#make-distinct">make_distinct</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#min-bounded">min_bounded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#repeat-until-tightened">repeat_until_tightened</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#sort">sort</a></li>
 </ul>
 </li>
@@ -429,6 +431,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 </li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="graphtage.sequences.html#sequences-classes">sequences classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#fixedlengthsequenceedit">FixedLengthSequenceEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequenceedit">SequenceEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequenceformatter">SequenceFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequencenode">SequenceNode</a></li>
@@ -447,6 +450,8 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 </li>
 <li class="toctree-l3"><a class="reference internal" href="graphtage.utils.html#utils-functions">utils functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#getsizeof">getsizeof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#largest">largest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#smallest">smallest</a></li>
 </ul>
 </li>
 </ul>
@@ -556,7 +561,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.0-git
+        v0.2.0
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">

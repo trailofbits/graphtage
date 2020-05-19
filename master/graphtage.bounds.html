@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.bounds &mdash; Graphtage 0.2.0-git documentation</title>
+  <title>graphtage.bounds &mdash; Graphtage v0.2.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#bounds-functions">bounds functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#make-distinct">make_distinct</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#min-bounded">min_bounded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#repeat-until-tightened">repeat_until_tightened</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sort">sort</a></li>
 </ul>
 </li>
@@ -468,6 +469,16 @@ either definitive or non-overlapping with any of the other arguments.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="repeat-until-tightened">
+<h3>repeat_until_tightened<a class="headerlink" href="#repeat-until-tightened" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="graphtage.bounds.repeat_until_tightened">
+<code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">repeat_until_tightened</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.repeat_until_tightened" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator that will repeatedly call the function until its class’s bounds are tightened.</p>
+<p>Intended for <a class="reference internal" href="#graphtage.bounds.Bounded.tighten_bounds" title="graphtage.bounds.Bounded.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Bounded.tighten_bounds()</span></code></a>. The value returned by the decorated function is ignored.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="sort">
 <h3>sort<a class="headerlink" href="#sort" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
@@ -550,7 +561,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.0-git
+        v0.2.0
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">

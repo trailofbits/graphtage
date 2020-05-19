@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.csv &mdash; Graphtage 0.2.0-git documentation</title>
+  <title>graphtage.csv &mdash; Graphtage v0.2.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -209,20 +209,20 @@
 
 <dl class="py method">
 <dt id="graphtage.csv.CSV.build_tree">
-<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Equivalent to <a class="reference internal" href="#graphtage.csv.build_tree" title="graphtage.csv.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_tree()</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSV.build_tree_handling_errors">
-<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – Path to the file to parse</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether to allow dictionary keys to be editable</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -342,17 +342,21 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>CSVNode<a class="headerlink" href="#csvnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a></p>
 <p>A node representing zero or more CSV rows.</p>
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes a sequence node.</p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a List node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>children</strong> – A sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNodes</span></code>.
-This is assigned to the protected member <code class="xref py py-attr docutils literal notranslate"><span class="pre">SequenceNode._children</span></code>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> – The set of nodes in this list.</p></li>
+<li><p><strong>allow_list_edits</strong> – Whether to consider removal and insertion when editing this list.</p></li>
+<li><p><strong>allow_list_edits_when_same_length</strong> – Whether to consider removal and insertion when comparing this list to
+another list of the same length.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -407,7 +411,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.csv.CSVNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -620,17 +624,21 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>CSVRow<a class="headerlink" href="#csvrow" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVRow">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a></p>
 <p>A node representing a row of a CSV file.</p>
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes a sequence node.</p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a List node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>children</strong> – A sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNodes</span></code>.
-This is assigned to the protected member <code class="xref py py-attr docutils literal notranslate"><span class="pre">SequenceNode._children</span></code>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> – The set of nodes in this list.</p></li>
+<li><p><strong>allow_list_edits</strong> – Whether to consider removal and insertion when editing this list.</p></li>
+<li><p><strong>allow_list_edits_when_same_length</strong> – Whether to consider removal and insertion when comparing this list to
+another list of the same length.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -685,7 +693,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.csv.CSVRow.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1210,18 +1218,18 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>build_tree<a class="headerlink" href="#build-tree" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.csv.build_tree">
-<code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode">graphtage.csv.CSVNode</a><a class="headerlink" href="#graphtage.csv.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode">graphtage.csv.CSVNode</a><a class="headerlink" href="#graphtage.csv.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVNode</span></code></a> from a CSV file.</p>
 <p>The file is parsed using Python’s <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.reader" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv.reader()</span></code></a>. The elements in each row are constructed by delegating to
 <a class="reference internal" href="graphtage.json.html#graphtage.json.build_tree" title="graphtage.json.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.json.build_tree()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CSVRow</span><span class="p">([</span><span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">allow_key_edits</span><span class="o">=</span><span class="n">allow_key_edits</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CSVRow</span><span class="p">([</span><span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – The path to the file to be parsed.</p></li>
-<li><p><strong>allow_key_edits</strong> – This is effectively ignored since CSV files cannot contain mappings.</p></li>
+<li><p><strong>options</strong> – Optional build options to pass on to <a class="reference internal" href="graphtage.json.html#graphtage.json.build_tree" title="graphtage.json.build_tree"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.json.build_tree()</span></code></a>.</p></li>
 <li><p><strong>*args</strong> – Any extra positional arguments are passed on to <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.reader" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv.reader()</span></code></a>.</p></li>
 <li><p><strong>**kwargs</strong> – Any extra keyword arguments are passed on to <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.reader" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv.reader()</span></code></a>.</p></li>
 </ul>
@@ -1290,7 +1298,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.0-git
+        v0.2.0
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">

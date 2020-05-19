@@ -58,3 +58,13 @@ getsizeof
 *********
 
 .. autofunction:: getsizeof
+
+largest
+*******
+
+.. autofunction:: largest
+
+smallest
+********
+
+.. autofunction:: smallest

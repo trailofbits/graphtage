@@ -64,6 +64,11 @@ min_bounded
 
 .. autofunction:: min_bounded
 
+repeat_until_tightened
+**********************
+
+.. autofunction:: repeat_until_tightened
+
 sort
 ****
 

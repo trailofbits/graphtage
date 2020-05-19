@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.json &mdash; Graphtage 0.2.0-git documentation</title>
+  <title>graphtage.json &mdash; Graphtage v0.2.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -209,13 +209,13 @@
 
 <dl class="py method">
 <dt id="graphtage.json.JSON.build_tree">
-<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.json.JSON.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.json.JSON.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds an intermediate representation tree from a file of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – Path to the file to parse</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether to allow dictionary keys to be editable</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -229,14 +229,14 @@
 
 <dl class="py method">
 <dt id="graphtage.json.JSON.build_tree_handling_errors">
-<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.json.JSON.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.json.JSON.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – Path to the file to parse</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether to allow dictionary keys to be editable</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -850,13 +850,13 @@ already automatically been configured to format them prior to the call to
 <h3>build_tree<a class="headerlink" href="#build-tree" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.json.build_tree">
-<code class="sig-prename descclassname">graphtage.json.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">python_obj</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)">bytes</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">force_leaf_node</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.json.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.json.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">python_obj</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.8)">bytes</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">force_leaf_node</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.json.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds a Graphtage tree from an arbitrary Python object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>python_obj</strong> – The object from which to build the tree.</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether or not to try and match key/value pairs in dicts if their keys differ.</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree.</p></li>
 <li><p><strong>force_leaf_node</strong> – If <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>, assume that <code class="xref py py-obj docutils literal notranslate"><span class="pre">python_obj</span></code> is <em>not</em> a <code class="xref py py-func docutils literal notranslate"><span class="pre">list()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">dict()</span></code>.</p></li>
 </ul>
 </dd>
@@ -931,7 +931,7 @@ already automatically been configured to format them prior to the call to
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.0-git
+        v0.2.0
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">

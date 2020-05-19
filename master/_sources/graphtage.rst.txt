@@ -33,6 +33,15 @@ BoolNode
    :inherited-members:
    :show-inheritance:
 
+BuildOptions
+************
+
+.. autoclass:: BuildOptions
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 CompoundEdit
 ************
 

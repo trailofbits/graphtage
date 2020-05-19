@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage &mdash; Graphtage 0.2.0-git documentation</title>
+  <title>graphtage &mdash; Graphtage v0.2.0 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -92,6 +92,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#abstractcompoundedit">AbstractCompoundEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#abstractedit">AbstractEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#boolnode">BoolNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#buildoptions">BuildOptions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#compoundedit">CompoundEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#constantcostedit">ConstantCostEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#containernode">ContainerNode</a></li>
@@ -756,6 +757,29 @@ and thereby mutable.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="buildoptions">
+<h3>BuildOptions<a class="headerlink" href="#buildoptions" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.BuildOptions">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">BuildOptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A class for passing options to tree building functions in <a class="reference internal" href="#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a></p>
+<dl class="py method">
+<dt id="graphtage.BuildOptions.__getattr__">
+<code class="sig-name descname">__getattr__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions.__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default all undefined options to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.BuildOptions.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the options. All keyword values will be set as attributes of this class.</p>
+<p>Options not specified will default to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="compoundedit">
 <h3>CompoundEdit<a class="headerlink" href="#compoundedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
@@ -1333,7 +1357,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.DictNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.DictNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.DictNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -2088,13 +2112,13 @@ via command line arguments.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.Filetype.build_tree">
-<em class="property">abstract </em><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.Filetype.build_tree" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.Filetype.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds an intermediate representation tree from a file of this <a class="reference internal" href="#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – Path to the file to parse</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether to allow dictionary keys to be editable</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2108,14 +2132,14 @@ via command line arguments.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.Filetype.build_tree_handling_errors">
-<em class="property">abstract </em><code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.Filetype.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.Filetype.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <a class="reference internal" href="#graphtage.Filetype.build_tree" title="graphtage.Filetype.build_tree"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code></a>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – Path to the file to parse</p></li>
-<li><p><strong>allow_key_edits</strong> – Whether to allow dictionary keys to be editable</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2262,7 +2286,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.FixedKeyDictNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.FixedKeyDictNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.FixedKeyDictNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -4086,17 +4110,21 @@ and thereby mutable.</p>
 <h3>ListNode<a class="headerlink" href="#listnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.ListNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ListNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ListNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A node containing an ordered sequence of nodes.</p>
 <dl class="py method">
 <dt id="graphtage.ListNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes a sequence node.</p>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a List node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>children</strong> – A sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNodes</span></code>.
-This is assigned to the protected member <code class="xref py py-attr docutils literal notranslate"><span class="pre">SequenceNode._children</span></code>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> – The set of nodes in this list.</p></li>
+<li><p><strong>allow_list_edits</strong> – Whether to consider removal and insertion when editing this list.</p></li>
+<li><p><strong>allow_list_edits_when_same_length</strong> – Whether to consider removal and insertion when comparing this list to
+another list of the same length.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -4151,7 +4179,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.ListNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.ListNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.ListNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -4845,7 +4873,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py method">
 <dt id="graphtage.MultiSetNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.MultiSetNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.MultiSetNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -6365,7 +6393,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.0-git
+        v0.2.0
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">

@@ -6,6 +6,15 @@ graphtage.sequences
 sequences classes
 -----------------
 
+FixedLengthSequenceEdit
+***********************
+
+.. autoclass:: FixedLengthSequenceEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 SequenceEdit
 ************
 
