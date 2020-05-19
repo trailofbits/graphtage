@@ -502,6 +502,8 @@ class TreeNode(metaclass=ABCMeta):
             while edit.valid and not edit.is_complete() and edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                if prev_range < new_range:
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
                 t.update(prev_range - new_range)
                 prev_range = new_range
         edit.on_diff(ret)

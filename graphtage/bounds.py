@@ -22,6 +22,7 @@ Attributes:
 
 """
 
+import logging
 from functools import wraps
 from typing import Iterable, Iterator, Optional, TypeVar, Union
 from typing_extensions import Protocol
@@ -29,6 +30,9 @@ from typing_extensions import Protocol
 from intervaltree import Interval, IntervalTree
 
 from .fibonacci import FibonacciHeap
+
+
+log = logging.getLogger(__name__)
 
 
 class Infinity:
@@ -247,7 +251,10 @@ def repeat_until_tightened(func):
             if not func(self, *args, **kwargs):
                 return False
             new_bounds = self.bounds()
-            if new_bounds.definitive() or new_bounds.lower_bound > starting_bounds.lower_bound \
+            if new_bounds.lower_bound < starting_bounds.lower_bound \
+                    or new_bounds.upper_bound > starting_bounds.upper_bound:
+                log.warning(f"The most recent call to {func} on {self} returned bounds {new_bounds} when the previous bounds were {starting_bounds}")
+            elif new_bounds.definitive() or new_bounds.lower_bound > starting_bounds.lower_bound \
                     or new_bounds.upper_bound < starting_bounds.upper_bound:
                 return True
 

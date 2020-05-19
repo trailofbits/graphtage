@@ -1,5 +1,6 @@
 """Abstract base classes for representing sequences in Graphtage's intermediate representation."""
 
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Tuple, \
     Type, TypeVar
@@ -8,6 +9,9 @@ from .bounds import Range, repeat_until_tightened
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .printer import Printer
 from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
+
+
+log = logging.getLogger(__name__)
 
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
@@ -82,7 +86,11 @@ class FixedLengthSequenceEdit(SequenceEdit):
     @repeat_until_tightened
     def tighten_bounds(self) -> bool:
         for edit in self._sub_edits:
+            prev_bounds = edit.bounds()
             if edit.tighten_bounds():
+                new_bounds = edit.bounds()
+                if prev_bounds.lower_bound > new_bounds.lower_bound or prev_bounds.upper_bound < new_bounds.upper_bound:
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
                 return True
         return False
 
