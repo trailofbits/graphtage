@@ -213,7 +213,7 @@ class KeyValuePairNode(ContainerNode):
         self.value.print(printer)
 
     def calculate_total_size(self):
-        return self.key.total_size + self.value.total_size
+        return self.key.total_size + self.value.total_size + 2
 
     def __lt__(self, other):
         """ Compares this key/value pair to another.
@@ -362,7 +362,7 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             return Replace(self, node)
 
     def calculate_total_size(self):
-        return sum(c.total_size * count for c, count in self._children.items())
+        return sum((c.total_size + 1) * count for c, count in self._children.items())
 
     def __len__(self):
         return sum(self._children.values())
