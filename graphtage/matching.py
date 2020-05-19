@@ -43,9 +43,10 @@ from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, make_distinct, Range
+from .bounds import Bounded, make_distinct, Range, repeat_until_tightened
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
+from .utils import smallest, largest
 
 
 T = TypeVar('T')
@@ -614,7 +615,6 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             self._edges = [
                 [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
             ]
-            self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
@@ -622,18 +622,15 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             if not self.from_nodes or not self.to_nodes:
                 lb = ub = 0
             elif self._match is None:
-                if self._edges is None:
-                    if (self.from_nodes and hasattr(self.from_nodes[0], 'total_size')) or \
-                            (self.to_nodes and hasattr(self.to_nodes[0], 'total_size')):
-                        lb = 0
-                        ub = sum(n.total_size + 1 for n in self.from_nodes) + \
-                            sum(n.total_size + 1 for n in self.to_nodes)
-                    else:
-                        _ = self.edges
-                        return self.bounds()
-                else:
-                    lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
-                    ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
+                num_matches = min(len(self.from_nodes), len(self.to_nodes))
+                lb = sum(smallest(
+                    (min(edge.bounds().lower_bound for edge in row) for row in self.edges),
+                    n=num_matches
+                ))
+                ub = sum(largest(
+                    (max(edge.bounds().upper_bound for edge in row) for row in self.edges),
+                    n=num_matches
+                ))
             else:
                 lb = 0
                 ub = 0
@@ -652,7 +649,7 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             return False
         else:
             make_distinct(*itertools.chain(*self.edges))
-            self._bounds = None
+            self._edges_are_distinct = True
             return True
 
     @property
@@ -688,9 +685,13 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 self.from_nodes[from_node]: (self.to_nodes[to_node], self.edges[from_node][to_node])
                 for from_node, (to_node, _) in mwbp.items()
             }
-            self._bounds = None
         return self._match
 
+    def is_complete(self) -> bool:
+        """Whether the matching has been completed, regardless of whether the bounds have been fully tightened."""
+        return self._match is not None
+
+    @repeat_until_tightened
     def tighten_bounds(self) -> bool:
         """Tightens the bounds on the minimum weight matching.
 
@@ -698,21 +699,11 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
 
         """
         if self._match is None:
-            initial_bounds = self.bounds()
             if self._make_edges_distinct():
-                new_bounds = self.bounds()
-                if new_bounds.lower_bound > initial_bounds.lower_bound or \
-                        new_bounds.upper_bound < initial_bounds.upper_bound:
-                    self._bounds = None
-                    return True
-            _ = self.matching     # This computes the minimum weight matching
-            new_bounds = self.bounds()
-            if new_bounds.lower_bound > initial_bounds.lower_bound or \
-                    new_bounds.upper_bound < initial_bounds.upper_bound:
-                self._bounds = None
                 return True
+            _ = self.matching     # This computes the minimum weight matching
+            return True
         for (_, (_, edge)) in self.matching.items():
             if edge.tighten_bounds():
-                self._bounds = None
                 return True
         return False
