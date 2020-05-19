@@ -62,7 +62,10 @@ Finally, use `--condensed` or `-j` to apply both of these options:
 ### Matching Options
 By default, Graphtage tries to match all possible pairs of elements in a dictionary. While computationally tractable,
 this can sometimes be onerous for input files with huge dictionaries. The `--no-key-edits` or `-k` option will instead
-only attempt to match dictionary items that share the same key, drastically reducing computation.
+only attempt to match dictionary items that share the same key, drastically reducing computation. Likewise, the
+`--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists. The
+`--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for lists
+that are of different lengths, but behave like `-l` for lists that are of the same length.
 
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like
