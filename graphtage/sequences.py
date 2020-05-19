@@ -60,25 +60,32 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
 
 
 class FixedLengthSequenceEdit(SequenceEdit):
-    """An edit for sequences that are the same length.
-
-    This does not consider insertion or removal from the list.
-
-    """
+    """An edit for sequences that does not consider interleaving."""
     def __init__(
             self,
             from_node: 'SequenceNode',
             to_node: 'SequenceNode'
     ):
-        if len(from_node) != len(to_node):
-            raise ValueError("Both sequence nodes must have the same number of elements!")
-
         self._sub_edits: List[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
+
+        if len(from_node) > len(to_node):
+            self.to_remove: Sequence[TreeNode] = from_node.children()[-len(from_node) - len(to_node):]
+            self.to_insert: Sequence[TreeNode] = ()
+        elif len(to_node) > len(from_node):
+            self.to_insert = to_node.children()[-len(to_node) - len(from_node):]
+            self.to_remove = ()
+        else:
+            self.to_remove = ()
+            self.to_insert = ()
 
         super().__init__(from_node=from_node, to_node=to_node)
 
     def edits(self) -> Iterator[Edit]:
-        return iter(self._sub_edits)
+        yield from self._sub_edits
+        for r in self.to_remove:
+            yield Remove(to_remove=r, remove_from=self.from_node)
+        for i in self.to_insert:
+            yield Insert(to_insert=i, insert_into=self.from_node)
 
     def is_complete(self) -> bool:
         return all(edit.is_complete() for edit in self._sub_edits)
@@ -97,7 +104,7 @@ class FixedLengthSequenceEdit(SequenceEdit):
     def bounds(self) -> Range:
         lb = 0
         ub = 0
-        for edit in self._sub_edits:
+        for edit in self.edits():
             b = edit.bounds()
             lb += b.lower_bound
             ub += b.upper_bound
@@ -119,6 +126,12 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
+
+    def children(self) -> T:
+        if isinstance(self._children, list) or isinstance(self._children, tuple):
+            return self._children
+        else:
+            return super().children()
 
     def __len__(self) -> int:
         """The number of children of this sequence.
