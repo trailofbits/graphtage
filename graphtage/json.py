@@ -36,6 +36,8 @@ def build_tree(
         ValueError: If the object is of an unsupported type.
 
     """
+    if options is None:
+        options = BuildOptions()
     if isinstance(python_obj, bool):
         return BoolNode(python_obj)
     elif isinstance(python_obj, int):
