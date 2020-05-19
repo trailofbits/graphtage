@@ -12,7 +12,7 @@ from .edits import Insert, Match, Remove
 from .matching import WeightedBipartiteMatcher
 from .sequences import SequenceEdit, SequenceNode
 from .tree import Edit, TreeNode
-from .utils import HashableCounter
+from .utils import HashableCounter, largest
 
 
 class MultiSetEdit(SequenceEdit):
@@ -51,16 +51,13 @@ class MultiSetEdit(SequenceEdit):
             to_nodes=self.to_insert.elements(),
             get_edge=lambda f, t: f.edits(t)
         )
-        self._is_tightened = False
         super().__init__(
             from_node=from_node,
             to_node=to_node
         )
 
     def is_complete(self) -> bool:
-        """A :class:`MultiSetEdit` is complete after the first call to :meth:`MultiSetEdit.tighten_bounds`."""
-        # The edits are ready after the first call to self.tighten_bounds()
-        return self._is_tightened
+        return self._matcher.is_complete()
 
     def edits(self) -> Iterator[Edit]:
         yield from self._edits
@@ -76,14 +73,23 @@ class MultiSetEdit(SequenceEdit):
             yield Insert(to_insert=ins, insert_into=self.from_node)
 
     def tighten_bounds(self) -> bool:
-        """Delegates to :meth:`WeightedBipartiteMatcher.tighten_bounds`.
-
-         The matching is complete after the first call to this function, so it also sets
-         :meth:`self.is_complete<MultiSetEdit.is_complete>` to :const:`True`.
-
-         """
-        self._is_tightened = True
+        """Delegates to :meth:`WeightedBipartiteMatcher.tighten_bounds`."""
         return self._matcher.tighten_bounds()
 
     def bounds(self) -> Range:
-        return self._matcher.bounds()
+        b = self._matcher.bounds()
+        if len(self.to_remove) > len(self.to_insert):
+            for edit in largest(
+                    *(Remove(to_remove=r, remove_from=self.from_node) for r in self.to_remove),
+                    n=len(self.to_remove) - len(self.to_insert),
+                    key=lambda e: e.bounds()
+            ):
+                b = b + edit.bounds()
+        elif len(self.to_remove) < len(self.to_insert):
+            for edit in largest(
+                    *(Insert(to_insert=i, insert_into=self.from_node) for i in self.to_insert),
+                    n=len(self.to_insert) - len(self.to_remove),
+                    key=lambda e: e.bounds()
+            ):
+                b = b + edit.bounds()
+        return b
