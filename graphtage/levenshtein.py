@@ -137,8 +137,11 @@ class EditDistance(SequenceEdit):
             for node in larger:
                 sizes.push(node)
             for _ in range(len(larger) - len(smaller)):
-                constant_cost += sizes.pop().total_size
-        cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
+                constant_cost += sizes.pop().total_size + self.penalty
+        cost_upper_bound = (
+            sum(node.total_size + self.penalty for node in from_seq) +
+            sum(node.total_size + self.penalty for node in to_seq)
+        )
         self.edit_matrix: List[List[Optional[Edit]]] = [
             [None] * (len(self.from_seq) + 1) for _ in range(len(self.to_seq) + 1)
         ]
@@ -259,17 +262,22 @@ class EditDistance(SequenceEdit):
                 if DEFAULT_PRINTER.quiet:
                     fringe_ranges = {}
                     fringe_total = 0
+                    num_diagonals = 0
                 else:
                     fringe_ranges = {
-                        (row, col): self.edit_matrix[row][col].bounds().upper_bound - self.edit_matrix[row][col].bounds().lower_bound
+                        (row, col): (
+                            self.edit_matrix[row][col].bounds().upper_bound
+                            - self.edit_matrix[row][col].bounds().lower_bound
+                        )
                         for row, col in self._fringe_diagonal()
                     }
                     fringe_total = sum(fringe_ranges.values())
+                    num_diagonals = len(self.from_seq) + len(self.to_seq)
 
                 with DEFAULT_PRINTER.tqdm(
                         total=fringe_total,
-                        initial=fringe_total,
-                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col}",
+                        initial=0,
+                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
                         disable=fringe_total <= 0,
                         leave=False
                 ) as t:
@@ -301,11 +309,14 @@ class EditDistance(SequenceEdit):
             Range: The bounds on the cost of this edit.
 
         """
+        base_bounds: Range = super().bounds()
         if self.is_complete():
+            if self.__edits is None:
+                # We need to construct the edits to finalize the cost matrix:
+                _ = self.edits()
             cost = int(self.costs[len(self.to_seq)][len(self.from_seq)])
             return Range(cost, cost)
         else:
-            base_bounds: Range = super().bounds()
             if self._fringe_row <= 0:
                 return base_bounds
             return Range(

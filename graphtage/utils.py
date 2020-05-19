@@ -4,9 +4,14 @@ import os
 import sys
 import tempfile as tf
 from collections import Counter, OrderedDict
-from typing import Callable, Dict, Generic, Optional, IO, Iterator, Mapping, MutableMapping, Tuple, TypeVar, Union
+from collections.abc import Iterable
+from collections.abc import Sized as AbstractSized
+from typing import Any, Callable, Dict, Generic, Optional, IO, Iterator, Mapping, MutableMapping, Tuple, TypeVar, Union
+from typing import Iterable as IterableType
 from typing_extensions import Protocol
 import typing
+
+from .fibonacci import FibonacciHeap, MaxFibonacciHeap
 
 T = TypeVar('T')
 
@@ -382,3 +387,41 @@ class Tempfile:
         if self._temp is not None:
             os.unlink(self._temp.name)
             self._temp = None
+
+
+def smallest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Callable[[T], Any]] = None) -> Iterator[T]:
+    if len(sequence) == 1 and isinstance(sequence, Iterable):
+        sequence = sequence[0]
+
+    if isinstance(sequence, AbstractSized) and len(sequence) <= n:
+        yield from sequence
+        return
+
+    heap: FibonacciHeap[T, T] = FibonacciHeap(key=key)
+
+    for s in sequence:
+        heap.push(s)
+
+    for _ in range(n):
+        if not heap:
+            break
+        yield heap.pop()
+
+
+def largest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Callable[[T], Any]] = None) -> Iterator[T]:
+    if len(sequence) == 1 and isinstance(sequence, Iterable):
+        sequence = sequence[0]
+
+    if isinstance(sequence, AbstractSized) and len(sequence) <= n:
+        yield from sequence
+        return
+
+    heap: MaxFibonacciHeap[T, Any] = MaxFibonacciHeap(key=key)
+
+    for s in sequence:
+        heap.push(s)
+
+    for _ in range(n):
+        if not heap:
+            break
+        yield heap.pop()

@@ -22,12 +22,17 @@ Attributes:
 
 """
 
+import logging
+from functools import wraps
 from typing import Iterable, Iterator, Optional, TypeVar, Union
 from typing_extensions import Protocol
 
 from intervaltree import Interval, IntervalTree
 
 from .fibonacci import FibonacciHeap
+
+
+log = logging.getLogger(__name__)
 
 
 class Infinity:
@@ -228,6 +233,30 @@ class Bounded(Protocol):
     def bounds(self) -> Range:
         """Returns the bounds of this object."""
         raise NotImplementedError(f"Class {self.__class__.__name__} must implement bounds")
+
+
+def repeat_until_tightened(func):
+    """A decorator that will repeatedly call the function until its class's bounds are tightened.
+
+    Intended for :meth:`Bounded.tighten_bounds`. The value returned by the decorated function is ignored.
+
+    """
+    @wraps(func)
+    def wrapper(self: Bounded, *args, **kwargs):
+        starting_bounds = self.bounds()
+        if starting_bounds.definitive():
+            return False
+        while True:
+            func(self, *args, **kwargs)
+            new_bounds = self.bounds()
+            if new_bounds.lower_bound < starting_bounds.lower_bound \
+                    or new_bounds.upper_bound > starting_bounds.upper_bound:
+                log.warning(f"The most recent call to {func} on {self} returned bounds {new_bounds} when the previous bounds were {starting_bounds}")
+            elif new_bounds.definitive() or new_bounds.lower_bound > starting_bounds.lower_bound \
+                    or new_bounds.upper_bound < starting_bounds.upper_bound:
+                return True
+
+    return wrapper
 
 
 class ConstantBound(Bounded):

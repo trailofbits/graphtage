@@ -5,12 +5,12 @@ from abc import ABC, ABCMeta, abstractmethod
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
-from .edits import AbstractEdit, EditCollection, EditSequence
+from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
-from .sequences import SequenceEdit, SequenceNode
+from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
@@ -213,7 +213,7 @@ class KeyValuePairNode(ContainerNode):
         self.value.print(printer)
 
     def calculate_total_size(self):
-        return self.key.total_size + self.value.total_size
+        return self.key.total_size + self.value.total_size + 2
 
     def __lt__(self, other):
         """ Compares this key/value pair to another.
@@ -278,8 +278,22 @@ T = TypeVar('T', bound=TreeNode)
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     """A node containing an ordered sequence of nodes."""
 
-    def __init__(self, nodes: Iterable[T]):
+    def __init__(
+            self, nodes: Iterable[T],
+            allow_list_edits: bool = True,
+            allow_list_edits_when_same_length: bool = True
+    ):
+        """Initializes a List node.
+
+        Args:
+            nodes: The set of nodes in this list.
+            allow_list_edits: Whether to consider removal and insertion when editing this list.
+            allow_list_edits_when_same_length: Whether to consider removal and insertion when comparing this list to
+                another list of the same length.
+        """
         super().__init__(tuple(nodes))
+        self.allow_list_edits: bool = allow_list_edits
+        self.allow_list_edits_when_same_length: bool = allow_list_edits_when_same_length
 
     def to_obj(self):
         return [n.to_obj() for n in self]
@@ -296,15 +310,15 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, ListNode):
-            if len(self._children) == len(node._children) == 0:
+            if self._children == node._children:
                 return Match(self, node, 0)
-            elif len(self._children) == len(node._children) == 1:
-                return EditSequence(from_node=self, to_node=node, edits=iter((
-                    Match(self, node, 0),
-                    self._children[0].edits(node._children[0])
-                )))
-            elif self._children == node._children:
-                return Match(self, node, 0)
+            elif not self.allow_list_edits or (len(self._children) == len(node._children) and (
+                not self.allow_list_edits_when_same_length or len(self._children) == 1
+            )):
+                return FixedLengthSequenceEdit(
+                    from_node=self,
+                    to_node=node
+                )
             else:
                 if self.all_children_are_leaves() and node.all_children_are_leaves():
                     insert_remove_penalty = 0
@@ -348,7 +362,7 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             return Replace(self, node)
 
     def calculate_total_size(self):
-        return sum(c.total_size * count for c, count in self._children.items())
+        return sum((c.total_size + 1) * count for c, count in self._children.items())
 
     def __len__(self):
         return sum(self._children.values())
@@ -861,6 +875,34 @@ class FiletypeWatcher(ABCMeta):
         super().__init__(name, bases, clsdict)
 
 
+class BuildOptions:
+    """A class for passing options to tree building functions in :class:`Filetype`"""
+
+    def __init__(self, *,
+                 allow_key_edits=True,
+                 allow_list_edits=True,
+                 allow_list_edits_when_same_length=True,
+                 **kwargs
+                 ):
+        """Initializes the options. All keyword values will be set as attributes of this class.
+
+        Options not specified will default to :const:`False`.
+
+        """
+        self.allow_key_edits = allow_key_edits
+        """Whether to consider editing keys when matching :class:`KeyValuePairNode` objects"""
+        self.allow_list_edits = allow_list_edits
+        """Whether to consider insert and remove edits to lists"""
+        self.allow_list_edits_when_same_length = allow_list_edits_when_same_length
+        """Whether to consider insert and remove edits on lists that are the same length"""
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
+
+    def __getattr__(self, item):
+        """Default all undefined options to :const:`False`"""
+        return False
+
+
 class Filetype(metaclass=FiletypeWatcher):
     """Abstract base class from which all Graphtage file formats should extend.
 
@@ -898,12 +940,12 @@ class Filetype(metaclass=FiletypeWatcher):
         FILETYPES_BY_TYPENAME[self.name] = self
 
     @abstractmethod
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
         """Builds an intermediate representation tree from a file of this :class:`Filetype`.
 
         Args:
             path: Path to the file to parse
-            allow_key_edits: Whether to allow dictionary keys to be editable
+            options: An optional set of options for building the tree
 
         Returns:
             TreeNode: The root tree node of the provided file
@@ -912,14 +954,14 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
     @abstractmethod
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         """Same as :meth:`Filetype.build_tree`, but it should return a human-readable error string on failure.
 
         This function should never throw an exception.
 
         Args:
             path: Path to the file to parse
-            allow_key_edits: Whether to allow dictionary keys to be editable
+            options: An optional set of options for building the tree
 
         Returns:
             Union[str, TreeNode]: On success, the root tree node, or a string containing the error message on failure.

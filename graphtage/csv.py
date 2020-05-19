@@ -7,6 +7,7 @@
 
 import csv
 from io import StringIO
+from typing import Optional
 
 from . import graphtage, json
 from .json import JSONFormatter
@@ -30,17 +31,17 @@ class CSVNode(graphtage.ListNode[CSVRow]):
         return self._children == other._children or (not self and not other)
 
 
-def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> CSVNode:
+def build_tree(path: str, options: Optional[graphtage.BuildOptions] = None, *args, **kwargs) -> CSVNode:
     """Constructs a :class:`CSVNode` from a CSV file.
 
     The file is parsed using Python's :func:`csv.reader`. The elements in each row are constructed by delegating to
     :func:`graphtage.json.build_tree`::
 
-        CSVRow([json.build_tree(i, allow_key_edits=allow_key_edits) for i in row])
+        CSVRow([json.build_tree(i, options=options) for i in row])
 
     Args:
         path: The path to the file to be parsed.
-        allow_key_edits: This is effectively ignored since CSV files cannot contain mappings.
+        options: Optional build options to pass on to :meth:`graphtage.json.build_tree`.
         *args: Any extra positional arguments are passed on to :func:`csv.reader`.
         **kwargs: Any extra keyword arguments are passed on to :func:`csv.reader`.
 
@@ -51,7 +52,7 @@ def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> CSVNode:
     csv_data = []
     with open(path) as f:
         for row in csv.reader(f, *args, **kwargs):
-            rowdata = [json.build_tree(i, allow_key_edits=allow_key_edits) for i in row]
+            rowdata = [json.build_tree(i, options=options) for i in row]
             for col in rowdata:
                 if isinstance(col, graphtage.StringNode):
                     col.quoted = False
@@ -164,12 +165,12 @@ class CSV(graphtage.Filetype):
             'text/csv'
         )
 
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
         """Equivalent to :func:`build_tree`"""
-        return build_tree(path, allow_key_edits=allow_key_edits)
+        return build_tree(path, options=options)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> TreeNode:
-        return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+    def build_tree_handling_errors(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
+        return self.build_tree(path=path, options=options)
 
     def get_default_formatter(self) -> CSVFormatter:
         return CSVFormatter.DEFAULT_INSTANCE

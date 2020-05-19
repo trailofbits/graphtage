@@ -7,9 +7,9 @@
 
 import json
 import os
-from typing import Union
+from typing import Optional, Union
 
-from .graphtage import BoolNode, DictNode, Filetype, FixedKeyDictNode, \
+from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
     FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
@@ -18,13 +18,13 @@ from .tree import GraphtageFormatter, TreeNode
 
 def build_tree(
         python_obj: Union[int, float, bool, str, bytes, list, dict],
-        allow_key_edits: bool = True,
+        options: Optional[BuildOptions] = None,
         force_leaf_node: bool = False) -> TreeNode:
     """Builds a Graphtage tree from an arbitrary Python object.
 
     Args:
         python_obj: The object from which to build the tree.
-        allow_key_edits: Whether or not to try and match key/value pairs in dicts if their keys differ.
+        options: An optional set of options for building the tree.
         force_leaf_node: If :const:`True`, assume that :obj:`python_obj` is *not* a :func:`list` or :func:`dict`.
 
     Returns:
@@ -36,6 +36,8 @@ def build_tree(
         ValueError: If the object is of an unsupported type.
 
     """
+    if options is None:
+        options = BuildOptions()
     if isinstance(python_obj, bool):
         return BoolNode(python_obj)
     elif isinstance(python_obj, int):
@@ -49,13 +51,17 @@ def build_tree(
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
-        return ListNode([build_tree(n, allow_key_edits=allow_key_edits) for n in python_obj])
+        return ListNode(
+            [build_tree(n, options=options) for n in python_obj],
+            allow_list_edits=options.allow_list_edits,
+            allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+        )
     elif isinstance(python_obj, dict):
         dict_items = {
-            build_tree(k, allow_key_edits=allow_key_edits, force_leaf_node=True):
-                build_tree(v, allow_key_edits=allow_key_edits) for k, v in python_obj.items()
+            build_tree(k, options=options, force_leaf_node=True):
+                build_tree(v, options=options) for k, v in python_obj.items()
         }
-        if allow_key_edits:
+        if options is None or options.allow_key_edits:
             return DictNode.from_dict(dict_items)
         else:
             return FixedKeyDictNode.from_dict(dict_items)
@@ -216,13 +222,13 @@ class JSON(Filetype):
             'text/x-json'
         )
 
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
         with open(path) as f:
-            return build_tree(json.load(f), allow_key_edits=allow_key_edits)
+            return build_tree(json.load(f), options)
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         try:
-            return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+            return self.build_tree(path=path, options=options)
         except json.decoder.JSONDecodeError as de:
             return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})'
 

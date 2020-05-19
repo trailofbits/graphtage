@@ -1,11 +1,17 @@
 """Abstract base classes for representing sequences in Graphtage's intermediate representation."""
 
+import logging
 from abc import ABC, abstractmethod
-from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, Optional, Sequence, Type, TypeVar
+from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Tuple, \
+    Type, TypeVar
 
+from .bounds import Range, repeat_until_tightened
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .printer import Printer
 from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
+
+
+log = logging.getLogger(__name__)
 
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
@@ -53,6 +59,58 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
         formatter.get_formatter(self.sequence)(printer, self.sequence)
 
 
+class FixedLengthSequenceEdit(SequenceEdit):
+    """An edit for sequences that does not consider interleaving."""
+    def __init__(
+            self,
+            from_node: 'SequenceNode',
+            to_node: 'SequenceNode'
+    ):
+        self._sub_edits: List[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
+
+        if len(from_node) > len(to_node):
+            self.to_remove: Sequence[TreeNode] = from_node.children()[-len(from_node) - len(to_node):]
+            self.to_insert: Sequence[TreeNode] = ()
+        elif len(to_node) > len(from_node):
+            self.to_insert = to_node.children()[-len(to_node) - len(from_node):]
+            self.to_remove = ()
+        else:
+            self.to_remove = ()
+            self.to_insert = ()
+
+        super().__init__(from_node=from_node, to_node=to_node)
+
+    def edits(self) -> Iterator[Edit]:
+        yield from self._sub_edits
+        for r in self.to_remove:
+            yield Remove(to_remove=r, remove_from=self.from_node)
+        for i in self.to_insert:
+            yield Insert(to_insert=i, insert_into=self.from_node)
+
+    def is_complete(self) -> bool:
+        return all(edit.is_complete() for edit in self._sub_edits)
+
+    @repeat_until_tightened
+    def tighten_bounds(self) -> bool:
+        for edit in self._sub_edits:
+            prev_bounds = edit.bounds()
+            if edit.tighten_bounds():
+                new_bounds = edit.bounds()
+                if prev_bounds.lower_bound > new_bounds.lower_bound or prev_bounds.upper_bound < new_bounds.upper_bound:
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
+                return True
+        return False
+
+    def bounds(self) -> Range:
+        lb = 0
+        ub = 0
+        for edit in self.edits():
+            b = edit.bounds()
+            lb += b.lower_bound
+            ub += b.upper_bound
+        return Range(lb, ub)
+
+
 T = TypeVar('T', bound=Sequence[TreeNode])
 
 
@@ -68,6 +126,12 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
+
+    def children(self) -> T:
+        if isinstance(self._children, list) or isinstance(self._children, tuple):
+            return self._children
+        else:
+            return super().children()
 
     def __len__(self) -> int:
         """The number of children of this sequence.
@@ -103,7 +167,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
             return sum(c.total_size for c in self)
 
         """
-        return sum(c.total_size for c in self)
+        return sum(c.total_size + 1 for c in self)
 
     def __eq__(self, other):
         return isinstance(other, SequenceNode) and self._children == other._children

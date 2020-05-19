@@ -13,7 +13,6 @@ from . import printer as printermodule
 from . import version
 from .printer import HTMLPrinter, Printer
 from .utils import Tempfile
-from .yaml import YAMLFormatter
 
 
 log = logging.getLogger('graphtage')
@@ -145,6 +144,19 @@ def main(argv=None) -> int:
         action='store_true',
         help='only match dictionary entries if they share the same key. This drastically reduces computation.'
     )
+    list_edit_group = parser.add_mutually_exclusive_group()
+    list_edit_group.add_argument(
+        '--no-list-edits',
+        '-l',
+        action='store_true',
+        help='do not consider removal and insertion when comparing lists'
+    )
+    list_edit_group.add_argument(
+        '--no-list-edits-when-same-length',
+        '-ll',
+        action='store_true',
+        help='do not consider removal and insertion when comparing lists that are the same length'
+    )
     parser.add_argument(
         '--no-status',
         action='store_true',
@@ -257,17 +269,23 @@ def main(argv=None) -> int:
     else:
         match_unless = None
 
+    options = graphtage.BuildOptions(
+        allow_key_edits=not args.no_key_edits,
+        allow_list_edits=not args.no_list_edits,
+        allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
+    )
+
     with printer:
         with PathOrStdin(args.FROM_PATH) as from_path:
             with PathOrStdin(args.TO_PATH) as to_path:
                 from_format = graphtage.get_filetype(from_path, from_mime)
                 to_format = graphtage.get_filetype(to_path, to_mime)
-                from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
+                from_tree = from_format.build_tree_handling_errors(from_path, options)
                 if isinstance(from_tree, str):
                     sys.stderr.write(from_tree)
                     sys.stderr.write('\n\n')
                     sys.exit(1)
-                to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
+                to_tree = to_format.build_tree_handling_errors(to_path, options)
                 if isinstance(to_tree, str):
                     sys.stderr.write(to_tree)
                     sys.stderr.write('\n\n')

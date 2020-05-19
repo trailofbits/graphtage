@@ -1,7 +1,7 @@
 """A :class:`graphtage.Filetype` for parsing, diffing, and rendering YAML files."""
 import os
 from io import StringIO
-from typing import Union
+from typing import Optional, Union
 
 from yaml import dump, load, YAMLError
 try:
@@ -11,17 +11,18 @@ except ImportError:
 
 from . import json
 from .edits import Insert, Match
-from .graphtage import Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, StringFormatter
+from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, \
+    StringFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import Edit, GraphtageFormatter, TreeNode
 
 
-def build_tree(path: str, allow_key_edits=True, *args, **kwargs) -> TreeNode:
+def build_tree(path: str, options: Optional[BuildOptions] = None, *args, **kwargs) -> TreeNode:
     """Constructs a YAML tree from an YAML file."""
     with open(path, 'rb') as stream:
         data = load(stream, Loader=Loader)
-        return json.build_tree(data, allow_key_edits=allow_key_edits, *args, **kwargs)
+        return json.build_tree(data, options=options, *args, **kwargs)
 
 
 class YAMLListFormatter(SequenceFormatter):
@@ -206,16 +207,16 @@ class YAML(Filetype):
             'text/vnd.yaml'
         )
 
-    def build_tree(self, path: str, allow_key_edits: bool = True) -> TreeNode:
-        tree = build_tree(path=path, allow_key_edits=allow_key_edits)
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+        tree = build_tree(path=path, options=options)
         for node in tree.dfs():
             if isinstance(node, StringNode):
                 node.quoted = False
         return tree
 
-    def build_tree_handling_errors(self, path: str, allow_key_edits: bool = True) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         try:
-            return self.build_tree(path=path, allow_key_edits=allow_key_edits)
+            return self.build_tree(path=path, options=options)
         except YAMLError as ye:
             return f'Error parsing {os.path.basename(path)}: {ye})'
 
