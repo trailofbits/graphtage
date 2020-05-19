@@ -54,10 +54,12 @@ Likewise, use the `--join-dict-items` or `-jd` option to suppress linebreaks aft
     3
 ], "bar":  "baz"}
 ```
-Finally, use `--condensed` or `-j` to apply both of these options:
+Use `--condensed` or `-j` to apply both of these options:
 ```json
 {"foo": [1, 2, 3], "bar": "baz"}
 ```
+
+The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
 
 ### Matching Options
 By default, Graphtage tries to match all possible pairs of elements in a dictionary. While computationally tractable,
