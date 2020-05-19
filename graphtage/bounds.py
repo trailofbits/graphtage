@@ -236,20 +236,18 @@ class Bounded(Protocol):
 
 
 def repeat_until_tightened(func):
-    """A decorator that will repeatedly call the function until its bounds are tightened.
+    """A decorator that will repeatedly call the function until its class's bounds are tightened.
 
-    Intended for :meth:`Bounded.tighten_bounds`. The decorated function is expected to return a :class:`bool` to
-    indicate success.
+    Intended for :meth:`Bounded.tighten_bounds`. The value returned by the decorated function is ignored.
 
     """
     @wraps(func)
     def wrapper(self: Bounded, *args, **kwargs):
         starting_bounds = self.bounds()
         if starting_bounds.definitive():
-            return func(self, *args, **kwargs)
+            return False
         while True:
-            if not func(self, *args, **kwargs):
-                return False
+            func(self, *args, **kwargs)
             new_bounds = self.bounds()
             if new_bounds.lower_bound < starting_bounds.lower_bound \
                     or new_bounds.upper_bound > starting_bounds.upper_bound:
