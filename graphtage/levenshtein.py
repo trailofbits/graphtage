@@ -137,8 +137,11 @@ class EditDistance(SequenceEdit):
             for node in larger:
                 sizes.push(node)
             for _ in range(len(larger) - len(smaller)):
-                constant_cost += sizes.pop().total_size
-        cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
+                constant_cost += sizes.pop().total_size + self.penalty
+        cost_upper_bound = (
+            sum(node.total_size + self.penalty for node in from_seq) +
+            sum(node.total_size + self.penalty for node in to_seq)
+        )
         self.edit_matrix: List[List[Optional[Edit]]] = [
             [None] * (len(self.from_seq) + 1) for _ in range(len(self.to_seq) + 1)
         ]
@@ -301,11 +304,14 @@ class EditDistance(SequenceEdit):
             Range: The bounds on the cost of this edit.
 
         """
+        base_bounds: Range = super().bounds()
         if self.is_complete():
+            if self.__edits is None:
+                # We need to construct the edits to finalize the cost matrix:
+                _ = self.edits()
             cost = int(self.costs[len(self.to_seq)][len(self.from_seq)])
             return Range(cost, cost)
         else:
-            base_bounds: Range = super().bounds()
             if self._fringe_row <= 0:
                 return base_bounds
             return Range(
