@@ -1,0 +1,24 @@
+Graphtage API
+-------------
+
+.. toctree::
+   :maxdepth: 4
+
+   graphtage
+   graphtage.bounds
+   graphtage.csv
+   graphtage.expressions
+   graphtage.fibonacci
+   graphtage.formatter
+   graphtage.json
+   graphtage.levenshtein
+   graphtage.matching
+   graphtage.multiset
+   graphtage.printer
+   graphtage.progress
+   graphtage.search
+   graphtage.sequences
+   graphtage.utils
+   graphtage.version
+   graphtage.xml
+   graphtage.yaml

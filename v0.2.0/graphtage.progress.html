@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graphtage.progress &mdash; Graphtage v0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.progress.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphtage.search" href="graphtage.search.html" />
+    <link rel="prev" title="graphtage.printer" href="graphtage.printer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Graphtage
+          
+
+          
+          </a>
+
+          
+
+          
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.progress</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#progress-classes">progress classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#statuswriter">StatusWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.yaml.html">graphtage.yaml</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="package.html">Graphtage API</a> &raquo;</li>
+        
+      <li>graphtage.progress</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/graphtage.progress.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-graphtage.progress">
+<span id="graphtage-progress"></span><h1>graphtage.progress<a class="headerlink" href="#module-graphtage.progress" title="Permalink to this headline">¶</a></h1>
+<p>A module for printing status messages and progress bars to the command line.</p>
+<div class="section" id="progress-classes">
+<h2>progress classes<a class="headerlink" href="#progress-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="statuswriter">
+<h3>StatusWriter<a class="headerlink" href="#statuswriter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.progress.StatusWriter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.progress.</code><code class="sig-name descname">StatusWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_stream</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>TextIO<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.progress.StatusWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.IO</span></code></a></p>
+<p>A writer compatible with the <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Writer</span></code></a> protocol that can print status.</p>
+<p>See <a class="reference internal" href="#graphtage.progress.StatusWriter.tqdm" title="graphtage.progress.StatusWriter.tqdm"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StatusWriter.tqdm()</span></code></a> and <a class="reference internal" href="#graphtage.progress.StatusWriter.trange" title="graphtage.progress.StatusWriter.trange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StatusWriter.trange()</span></code></a>. If <a class="reference internal" href="#graphtage.progress.StatusWriter.status_stream" title="graphtage.progress.StatusWriter.status_stream"><code class="xref py py-attr docutils literal notranslate"><span class="pre">StatusWriter.status_stream</span></code></a> is either
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code> or <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stderr</span></code>, then bytes printed to this writer will be buffered. For each full line
+buffered, a call to <code class="xref py py-func docutils literal notranslate"><span class="pre">tqdm.write()</span></code> will be made.</p>
+<p>A status writer whose lifetime is not controlled by instantiation in a <code class="docutils literal notranslate"><span class="pre">with</span></code> block must be manually flushed
+with <a class="reference internal" href="#graphtage.progress.StatusWriter.flush" title="graphtage.progress.StatusWriter.flush"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StatusWriter.flush(final=True)</span></code></a> after its final write, or else the last line
+written may be lost.</p>
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_stream</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>TextIO<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.progress.StatusWriter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a status writer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>out_stream</strong> – An optional stream to which to write. If omitted this defaults to <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>.</p></li>
+<li><p><strong>quiet</strong> – Whether or not <code class="xref py py-mod docutils literal notranslate"><span class="pre">tqdm</span></code> status messages and progress should be suppressed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="headerlink" href="#graphtage.progress.StatusWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.closed">
+<em class="property">property </em><code class="sig-name descname">closed</code><a class="headerlink" href="#graphtage.progress.StatusWriter.closed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.fileno">
+<code class="sig-name descname">fileno</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.progress.StatusWriter.fileno" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">final</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.progress.StatusWriter.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flushes this writer.</p>
+<p>If <code class="xref py py-obj docutils literal notranslate"><span class="pre">final</span></code> is <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>, any extra bytes will be flushed along with a final newline.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.isatty">
+<code class="sig-name descname">isatty</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.progress.StatusWriter.isatty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.mode">
+<em class="property">property </em><code class="sig-name descname">mode</code><a class="headerlink" href="#graphtage.progress.StatusWriter.mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#graphtage.progress.StatusWriter.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.progress.StatusWriter.quiet">
+<code class="sig-name descname">quiet</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.quiet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not <code class="xref py py-mod docutils literal notranslate"><span class="pre">tqdm</span></code> status messages and progress should be suppressed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.read">
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">Ellipsis</span></em><span class="sig-paren">)</span> &#x2192; AnyStr<a class="headerlink" href="#graphtage.progress.StatusWriter.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.readable">
+<code class="sig-name descname">readable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.progress.StatusWriter.readable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.readline">
+<code class="sig-name descname">readline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">limit</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">Ellipsis</span></em><span class="sig-paren">)</span> &#x2192; AnyStr<a class="headerlink" href="#graphtage.progress.StatusWriter.readline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.readlines">
+<code class="sig-name descname">readlines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hint</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">Ellipsis</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>AnyStr<span class="p">]</span><a class="headerlink" href="#graphtage.progress.StatusWriter.readlines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.seek">
+<code class="sig-name descname">seek</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">whence</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">Ellipsis</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.progress.StatusWriter.seek" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.seekable">
+<code class="sig-name descname">seekable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.progress.StatusWriter.seekable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.progress.StatusWriter.status_stream">
+<code class="sig-name descname">status_stream</code><em class="property">: TextIO</em><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.status_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>The status stream to which to print.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.tell">
+<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.progress.StatusWriter.tell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.tqdm">
+<code class="sig-name descname">tqdm</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; tqdm.std.tqdm<a class="headerlink" href="#graphtage.progress.StatusWriter.tqdm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm.tqdm</span></code> object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.trange">
+<code class="sig-name descname">trange</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; tqdm.std.trange<a class="headerlink" href="#graphtage.progress.StatusWriter.trange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm.trange</span></code> object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.truncate">
+<code class="sig-name descname">truncate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Ellipsis</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.progress.StatusWriter.truncate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.writable">
+<code class="sig-name descname">writable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.progress.StatusWriter.writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.progress.StatusWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.progress.StatusWriter.write_raw">
+<code class="sig-name descname">write_raw</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.write_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>, this writer <em>will not</em> buffer output and use <code class="xref py py-func docutils literal notranslate"><span class="pre">tqdm.write()</span></code>.</p>
+<p>This defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">write_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quiet</span> <span class="ow">or</span> <span class="p">(</span>
+    <span class="n">out_stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span> <span class="o">!=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span> <span class="ow">and</span> <span class="n">out_stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span> <span class="o">!=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.progress.StatusWriter.writelines">
+<code class="sig-name descname">writelines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lines</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>AnyStr<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a><a class="headerlink" href="#graphtage.progress.StatusWriter.writelines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="graphtage.search.html" class="btn btn-neutral float-right" title="graphtage.search" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="graphtage.printer.html" class="btn btn-neutral float-left" title="graphtage.printer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Trail of Bits
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.2.0
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

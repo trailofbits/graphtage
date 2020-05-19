@@ -1,0 +1,96 @@
+graphtage.xml
+=============
+
+.. automodule:: graphtage.xml
+
+xml classes
+-----------
+
+HTML
+****
+
+.. autoclass:: HTML
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XML
+***
+
+.. autoclass:: XML
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLChildFormatter
+*****************
+
+.. autoclass:: XMLChildFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLElement
+**********
+
+.. autoclass:: XMLElement
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLElementAttribFormatter
+*************************
+
+.. autoclass:: XMLElementAttribFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLElementEdit
+**************
+
+.. autoclass:: XMLElementEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLElementObj
+*************
+
+.. autoclass:: XMLElementObj
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLFormatter
+************
+
+.. autoclass:: XMLFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+XMLStringFormatter
+******************
+
+.. autoclass:: XMLStringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+xml functions
+-------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree
