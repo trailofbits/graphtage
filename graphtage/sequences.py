@@ -154,7 +154,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
             return sum(c.total_size for c in self)
 
         """
-        return sum(c.total_size for c in self)
+        return sum(c.total_size + 1 for c in self)
 
     def __eq__(self, other):
         return isinstance(other, SequenceNode) and self._children == other._children
