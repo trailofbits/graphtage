@@ -160,6 +160,18 @@ class JSONStringFormatter(StringFormatter):
     """A JSON formatter for strings."""
     is_partial = True
 
+    def write_start_quote(self, printer: Printer, _):
+        """Prints a starting quote for the string"""
+        # JSON strings are always quoted
+        self.is_quoted = True
+        printer.write('"')
+
+    def write_end_quote(self, printer: Printer, _):
+        """Prints an ending quote for the string"""
+        # JSON strings are always quoted
+        self.is_quoted = True
+        printer.write('"')
+
     def escape(self, c: str) -> str:
         """String escape.
 
