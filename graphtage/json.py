@@ -13,7 +13,7 @@ from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictN
     FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
-from .tree import GraphtageFormatter, TreeNode
+from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
 
 def build_tree(
@@ -202,6 +202,16 @@ class JSONFormatter(GraphtageFormatter):
         with printer.bright():
             printer.write(": ")
         self.print(printer, node.value)
+
+    def print_ContainerNode(self, printer: Printer, node: ContainerNode):
+        """Prints a :class:`graphtage.ContainerNode`.
+
+        This is a fallback to permit the printing of custom containers, like :class:`graphtage.xml.XMLElement`.
+
+        """
+        # Treat the container like a list
+        list_node = ListNode(node.children())
+        self.print(printer, list_node)
 
 
 class JSON(Filetype):
