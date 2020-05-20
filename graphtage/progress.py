@@ -1,3 +1,5 @@
+"""A module for printing status messages and progress bars to the command line."""
+
 import io
 import sys
 from types import TracebackType
@@ -7,21 +9,52 @@ from tqdm import tqdm, trange
 
 
 class StatusWriter(IO[str]):
+    """A writer compatible with the :class:`graphtage.printer.Writer` protocol that can print status.
+
+    See :meth:`StatusWriter.tqdm` and :meth:`StatusWriter.trange`. If :attr:`StatusWriter.status_stream` is either
+    :attr:`sys.stdout` or :attr:`sys.stderr`, then bytes printed to this writer will be buffered. For each full line
+    buffered, a call to :func:`tqdm.write` will be made.
+
+    A status writer whose lifetime is not controlled by instantiation in a ``with`` block must be manually flushed
+    with :meth:`StatusWriter.flush(final=True)<StatusWriter.flush>` after its final write, or else the last line
+    written may be lost.
+
+    """
     def __init__(self, out_stream: Optional[TextIO] = None, quiet: bool = False):
+        """Initializes a status writer.
+
+        Args:
+            out_stream: An optional stream to which to write. If omitted this defaults to :attr:`sys.stdout`.
+            quiet: Whether or not :mod:`tqdm` status messages and progress should be suppressed.
+
+        """
         self.quiet = quiet
+        """Whether or not :mod:`tqdm` status messages and progress should be suppressed."""
         self.forked_process = False
+        self._reentries: int = 0
         if out_stream is None:
             out_stream = sys.stdout
         self.status_stream: TextIO = out_stream
+        """The status stream to which to print."""
         self._buffer: List[str] = []
         try:
             self.write_raw = self.quiet or (
                     out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
             )
-        except io.UnsupportedOperation:
-            self.write_raw = False
+            """If :const:`True`, this writer *will not* buffer output and use :func:`tqdm.write`.
+            
+            This defaults to::
+            
+                self.write_raw = self.quiet or (
+                    out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
+                )
+            
+            """
+        except io.UnsupportedOperation as e:
+            self.write_raw = True
 
     def tqdm(self, *args, **kwargs) -> tqdm:
+        """Returns a :class:`tqdm.tqdm` object."""
         if self.quiet:
             class FakeTQDM:
                 def __enter__(self):
@@ -41,11 +74,17 @@ class StatusWriter(IO[str]):
         return tqdm(*args, **kwargs)
 
     def trange(self, *args, **kwargs) -> trange:
+        """Returns a :class:`tqdm.trange` object."""
         if self.quiet:
             kwargs['disable'] = True
         return trange(*args, **kwargs)
 
     def flush(self, final=False):
+        """Flushes this writer.
+
+        If :obj:`final` is :const:`True`, any extra bytes will be flushed along with a final newline.
+
+        """
         if final and self._buffer and not self._buffer[-1].endswith('\n'):
             self._buffer.append('\n')
         while self._buffer:
@@ -133,11 +172,14 @@ class StatusWriter(IO[str]):
         return iter(self.status_stream)
 
     def __enter__(self) -> IO[AnyStr]:
+        self._reentries += 1
         return self
 
     def __exit__(self, t: Optional[Type[BaseException]], value: Optional[BaseException],
                  traceback: Optional[TracebackType]) -> Optional[bool]:
-        pass
+        self._reentries -= 1
+        if self._reentries == 0:
+            self.flush(final=True)
 
     def __delete__(self, instance):
         self.flush(final=True)

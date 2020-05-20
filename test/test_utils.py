@@ -1,15 +1,15 @@
 import sys
 from unittest import TestCase
 
-from graphtage.utils import SparseMatrix
+from graphtage.utils import largest, smallest, SparseMatrix
 
 
 class TestSparseMatrix(TestCase):
     def test_matrix_bounds(self):
         matrix: SparseMatrix[int] = SparseMatrix(num_rows=10, num_cols=10, default_value=None)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IndexError):
             _ = matrix[matrix.num_rows]
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IndexError):
             _ = matrix[0][matrix.num_cols]
 
     def test_matrix_default_value(self):
@@ -37,3 +37,15 @@ class TestSparseMatrix(TestCase):
         self.assertEqual((11, 21), matrix.shape())
         matrix = SparseMatrix(num_rows=10, num_cols=10)
         self.assertEqual((10, 10), matrix.shape())
+
+    def test_smallest(self):
+        for i in smallest(range(1000), n=10):
+            self.assertGreater(10, i)
+        for i in smallest(*list(range(1000)), n=10):
+            self.assertGreater(10, i)
+
+    def test_largest(self):
+        for i in largest(range(1000), n=10):
+            self.assertLess(1000 - 11, i)
+        for i in largest(*list(range(1000)), n=10):
+            self.assertLess(1000 - 11, i)

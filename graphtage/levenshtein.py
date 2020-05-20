@@ -1,3 +1,19 @@
+"""An “`online`_”, “`constructive`_” implementation of the `Levenshtein distance metric`_.
+
+The algorithm starts with an unbounded mapping and iteratively improves it until the bounds converge, at which point the
+optimal edit sequence is discovered.
+
+.. _online:
+    https://en.wikipedia.org/wiki/Online_algorithm
+
+.. _constructive:
+    https://en.wikipedia.org/wiki/Constructive_proof
+
+.. _Levenshtein distance metric:
+    https://en.wikipedia.org/wiki/Levenshtein_distance
+
+"""
+
 import itertools
 import logging
 from typing import Iterator, List, Optional, Sequence, Tuple
@@ -16,7 +32,16 @@ log = logging.getLogger(__name__)
 
 
 def levenshtein_distance(s: str, t: str) -> int:
-    """Canonical implementation of the Levenshtein distance metric"""
+    """Canonical implementation of the Levenshtein distance metric.
+
+    Args:
+        s: the string from which to match
+        t: the string to which to match
+
+    Returns:
+        int: The Levenshtein edit distance metric between the two strings.
+
+    """
     rows = len(s) + 1
     cols = len(t) + 1
     dist: List[List[int]] = [[0] * cols for _ in range(rows)]
@@ -42,6 +67,22 @@ def levenshtein_distance(s: str, t: str) -> int:
 
 
 class EditDistance(SequenceEdit):
+    """An edit that computes the minimum sequence of sub-edits necessary to transform one node to another.
+
+    The edits used to transform the source sequence to the target sequence are :class:`graphtage.Match`,
+    :class:`graphtage.Remove`, and :class:`graphtage.Insert`.
+
+    The algorithm works by iteratively constructing the Levenshtein matrix one diagonal at a time, starting from the
+    upper left cell and ending at the lower right cell. Each successive call to
+    :meth:`EditDistance.tighten_bounds` constructs a new diagonal of the matrix and fully tightens the bounds of its
+    edits. Once the lower right cell is expanded, the matrix is complete and the optimal sequence of edits can be
+    reconstructed.
+
+    Bounds of this edit are updated after each diagonal is added by observing that the final cost is bounded above
+    by the minimum cost of an edit in the last-expanded diagonal. This results in a monotonically decreasing upper
+    bound.
+
+    """
     def __init__(
             self,
             from_node: TreeNode,
@@ -50,6 +91,16 @@ class EditDistance(SequenceEdit):
             to_seq: Sequence[TreeNode],
             insert_remove_penalty: int = 1,
     ):
+        """Initializes the edit distance edit.
+
+        Args:
+            from_node: The node that will be transformed.
+            to_node: The node into which :obj:`from_node` will be transformed.
+            from_seq: A sequence of nodes that comprise :obj:`from_node`.
+            to_seq: A sequence of nodes that comprise :obj:`to_node`.
+            insert_remove_penalty: The penalty for inserting or removing a node (default is 1).
+
+        """
         self.penalty: int = insert_remove_penalty
         # Optimization: See if the sequences trivially share a common prefix or suffix.
         # If so, this will quadratically reduce the size of the Levenshtein matrix
@@ -86,8 +137,11 @@ class EditDistance(SequenceEdit):
             for node in larger:
                 sizes.push(node)
             for _ in range(len(larger) - len(smaller)):
-                constant_cost += sizes.pop().total_size
-        cost_upper_bound = sum(node.total_size for node in from_seq) + sum(node.total_size for node in to_seq)
+                constant_cost += sizes.pop().total_size + self.penalty
+        cost_upper_bound = (
+            sum(node.total_size + self.penalty for node in from_seq) +
+            sum(node.total_size + self.penalty for node in to_seq)
+        )
         self.edit_matrix: List[List[Optional[Edit]]] = [
             [None] * (len(self.from_seq) + 1) for _ in range(len(self.to_seq) + 1)
         ]
@@ -146,6 +200,7 @@ class EditDistance(SequenceEdit):
             return True
 
     def is_complete(self) -> bool:
+        """An edit distance edit is only complete once its Levenshtein edit matrix has been fully constructed."""
         return self.edit_matrix is None or self.edit_matrix[-1][-1] is not None
 
     def _best_match(self, row: int, col: int) -> Tuple[int, int, Edit]:
@@ -175,6 +230,11 @@ class EditDistance(SequenceEdit):
             return brow, bcol, edit
 
     def tighten_bounds(self) -> bool:
+        """Tightens the bounds of this edit, if possible.
+
+        If the Levenshtein matrix is not yet complete, construct and fully tighten the next diagonal of the matrix.
+
+        """
         if not self.from_seq and not self.to_seq:
             return False
         elif self.edit_matrix is None:
@@ -202,17 +262,22 @@ class EditDistance(SequenceEdit):
                 if DEFAULT_PRINTER.quiet:
                     fringe_ranges = {}
                     fringe_total = 0
+                    num_diagonals = 0
                 else:
                     fringe_ranges = {
-                        (row, col): self.edit_matrix[row][col].bounds().upper_bound - self.edit_matrix[row][col].bounds().lower_bound
+                        (row, col): (
+                            self.edit_matrix[row][col].bounds().upper_bound
+                            - self.edit_matrix[row][col].bounds().lower_bound
+                        )
                         for row, col in self._fringe_diagonal()
                     }
                     fringe_total = sum(fringe_ranges.values())
+                    num_diagonals = len(self.from_seq) + len(self.to_seq)
 
                 with DEFAULT_PRINTER.tqdm(
                         total=fringe_total,
-                        initial=fringe_total,
-                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col}",
+                        initial=0,
+                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
                         disable=fringe_total <= 0,
                         leave=False
                 ) as t:
@@ -232,11 +297,26 @@ class EditDistance(SequenceEdit):
                 return True
 
     def bounds(self) -> Range:
+        """Calculates bounds on the cost of this edit.
+
+        If the Levenshtein matrix has been fully constructed, return the cost of the lower right cell.
+
+        If the matrix is incomplete, then use
+        :meth:`super().bounds().lower_bound <graphtage.sequences.SequenceEdit.bounds>` as the lower bound and the
+        minimum cost in the last completed matrix diagonal as the upper bound.
+
+        Returns:
+            Range: The bounds on the cost of this edit.
+
+        """
+        base_bounds: Range = super().bounds()
         if self.is_complete():
+            if self.__edits is None:
+                # We need to construct the edits to finalize the cost matrix:
+                _ = self.edits()
             cost = int(self.costs[len(self.to_seq)][len(self.from_seq)])
             return Range(cost, cost)
         else:
-            base_bounds: Range = super().bounds()
             if self._fringe_row <= 0:
                 return base_bounds
             return Range(

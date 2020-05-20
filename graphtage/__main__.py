@@ -3,34 +3,20 @@ import logging
 import mimetypes
 import os
 import sys
-import tempfile as tf
+from abc import ABCMeta, abstractmethod
 from multiprocessing import cpu_count, Pool
+from typing import Optional
 
+from .edits import Edit
+from . import expressions
 from . import graphtage
 from . import printer as printermodule
 from . import version
 from .printer import HTMLPrinter, Printer
-from .yaml import YAMLFormatter
+from .utils import Tempfile
 
 
-class Tempfile:
-    def __init__(self, contents, prefix=None, suffix=None):
-        self._temp = None
-        self._data = contents
-        self._prefix = prefix
-        self._suffix = suffix
-
-    def __enter__(self):
-        self._temp = tf.NamedTemporaryFile(prefix=self._prefix, suffix=self._suffix, delete=False)
-        self._temp.write(self._data)
-        self._temp.flush()
-        self._temp.close()
-        return self._temp.name
-
-    def __exit__(self, type, value, traceback):
-        if self._temp is not None:
-            os.unlink(self._temp.name)
-            self._temp = None
+log = logging.getLogger('graphtage')
 
 
 class PathOrStdin:
@@ -52,7 +38,42 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
-def main(argv=None):
+class ConditionalMatcher(metaclass=ABCMeta):
+    def __init__(self, condition: expressions.Expression):
+        self.condition: expressions.Expression = condition
+
+    @abstractmethod
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        raise NotImplementedError()
+
+    @classmethod
+    def apply(cls, node: graphtage.TreeNode, condition: expressions.Expression):
+        if node.edit_modifiers is None:
+            node.edit_modifiers = []
+        node.edit_modifiers.append(cls(condition))
+
+
+class MatchIf(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        try:
+            if self.condition.eval(locals={'from': from_node, 'to': to_node}):
+                return None
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-if for nodes {from_node} and {to_node}")
+        return graphtage.Replace(from_node, to_node)
+
+
+class MatchUnless(ConditionalMatcher):
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+        try:
+            if self.condition.eval(locals={'from': from_node.to_obj(), 'to': to_node.to_obj()}):
+                return graphtage.Replace(from_node, to_node)
+        except Exception as e:
+            log.debug(f"{e!s} while evaluating --match-unless for nodes {from_node} and {to_node}")
+        return None
+
+
+def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
     )
@@ -96,6 +117,8 @@ def main(argv=None):
     default_thread_count = max(cpu_count() - 1, 1)
     parser.add_argument('--threads', '-t', type=int, default=default_thread_count,
         help=f'number of threads to use (default is #CPUs - 1 = {default_thread_count})')
+    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
     parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
@@ -124,6 +147,19 @@ def main(argv=None):
         '-k',
         action='store_true',
         help='only match dictionary entries if they share the same key. This drastically reduces computation.'
+    )
+    list_edit_group = parser.add_mutually_exclusive_group()
+    list_edit_group.add_argument(
+        '--no-list-edits',
+        '-l',
+        action='store_true',
+        help='do not consider removal and insertion when comparing lists'
+    )
+    list_edit_group.add_argument(
+        '--no-list-edits-when-same-length',
+        '-ll',
+        action='store_true',
+        help='do not consider removal and insertion when comparing lists that are the same length'
     )
     parser.add_argument(
         '--no-status',
@@ -241,30 +277,64 @@ def main(argv=None):
     else:
         thread_pool = Pool(processes=args.threads)
 
-    with PathOrStdin(args.FROM_PATH) as from_path:
-        with PathOrStdin(args.TO_PATH) as to_path:
-            from_format = graphtage.get_filetype(from_path, from_mime)
-            to_format = graphtage.get_filetype(to_path, to_mime)
-            from_tree = from_format.build_tree_handling_errors(from_path, allow_key_edits=not args.no_key_edits)
-            to_tree = to_format.build_tree_handling_errors(to_path, allow_key_edits=not args.no_key_edits)
-            if args.only_edits:
-                for edit in from_tree.get_all_edits(to_tree):
-                    printer.write(str(edit))
-                    printer.newline()
-            else:
-                with thread_pool as pool:
-                    diff = from_tree.diff(to_tree, pool=pool)
-                if args.format is not None:
-                    formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+    if args.match_if:
+        match_if = expressions.parse(args.match_if)
+    else:
+        match_if = None
+    if args.match_unless:
+        match_unless = expressions.parse(args.match_unless)
+    else:
+        match_unless = None
+
+    options = graphtage.BuildOptions(
+        allow_key_edits=not args.no_key_edits,
+        allow_list_edits=not args.no_list_edits,
+        allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
+    )
+
+    with printer:
+        with PathOrStdin(args.FROM_PATH) as from_path:
+            with PathOrStdin(args.TO_PATH) as to_path:
+                from_format = graphtage.get_filetype(from_path, from_mime)
+                to_format = graphtage.get_filetype(to_path, to_mime)
+                from_tree = from_format.build_tree_handling_errors(from_path, options)
+                if isinstance(from_tree, str):
+                    sys.stderr.write(from_tree)
+                    sys.stderr.write('\n\n')
+                    sys.exit(1)
+                to_tree = to_format.build_tree_handling_errors(to_path, options)
+                if isinstance(to_tree, str):
+                    sys.stderr.write(to_tree)
+                    sys.stderr.write('\n\n')
+                    sys.exit(1)
+                if match_if is not None or match_unless is not None:
+                    for node in from_tree.dfs():
+                        if match_if is not None:
+                            MatchIf.apply(node, match_if)
+                        if match_unless is not None:
+                            MatchUnless.apply(node, match_unless)
+                had_edits = False
+                if args.only_edits:
+                    for edit in from_tree.get_all_edits(to_tree):
+                        printer.write(str(edit))
+                        printer.newline()
+                        had_edits = had_edits or edit.has_non_zero_cost()
                 else:
-                    formatter = from_format.get_default_formatter()
-                if formatter.__class__ is YAMLFormatter and not args.html:
-                    # YAML only gets a two-space indent
-                    printer.indent_str = '  '
-                formatter.print(printer, diff)
-    printer.write('\n')
+                    with thread_pool as pool:
+                        diff = from_tree.diff(to_tree, pool=pool)
+                    if args.format is not None:
+                        formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                    else:
+                        formatter = from_format.get_default_formatter()
+                    formatter.print(printer, diff)
+                    had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
+        printer.write('\n')
     printer.close()
+    if had_edits:
+        return 1
+    else:
+        return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

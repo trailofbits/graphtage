@@ -1,3 +1,38 @@
+"""A module for solving variants of `the assignment problem`_.
+
+Much of the code in this module is a nearly complete (but partial) implementation of Karp's solution to the minimum
+weight bipartite matching problem [Karp78]_. This is the problem of finding an edge between all pairs of nodes such
+that the sum of their weights is minimized. It is only a partial implementation because, part way through developing it,
+it was discovered that |scipy_linear_sum_assignment|_—while asymptotically inferior—is, in
+practice, almost always superior because it is compiled and not implemented in pure Python.
+
+The two components of this module in which you will most likely be interested are :func:`min_weight_bipartite_matching`
+and a class that wraps it, :class:`WeightedBipartiteMatcher`.
+
+Example:
+
+    >>> from graphtage.matching import min_weight_bipartite_matching
+    >>> from_nodes = ['a', 'b', 'c', 'd', 'e']
+    >>> to_nodes = range(10)
+    >>> edge_weights = lambda c, n: ord(c) + n
+    >>> min_weight_bipartite_matching(from_nodes, to_nodes, edge_weights)
+    {0: (0, 97), 1: (1, 99), 2: (2, 101), 3: (3, 103), 4: (4, 105)}
+    # The output format here is: "from_nodes_index: (matched_to_nodes_index, matched_edge_weight)"
+    >>> min_weight_bipartite_matching(range(5), range(10, 20), lambda a, b: a + b)
+    {0: (0, 10), 1: (1, 12), 2: (2, 14), 3: (3, 16), 4: (4, 18)}
+
+.. _the assignment problem: https://en.wikipedia.org/wiki/Assignment_problem
+.. [Karp78] `Richard M. Karp <https://en.wikipedia.org/wiki/Richard_M._Karp>`_. |karp78title|_. 1978. It is partially
+    implemented in :class:`WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION`.
+.. _karp78title: https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
+.. |karp78title| replace:: *An Algorithm to Solve the* :math:`m \\times n` *Assignment Problem in Expected Time*
+    :math:`O(mn \\log n)`
+.. _scipy_linear_sum_assignment:
+    https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.optimize.linear_sum_assignment.html
+.. |scipy_linear_sum_assignment| replace:: scipy's implementation
+
+"""
+
 import itertools
 import sys
 from abc import ABCMeta, abstractmethod
@@ -9,15 +44,17 @@ from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, make_distinct, make_distinct_parallel, Range
+from .bounds import Bounded, make_distinct, make_distinct_parallel, Range, repeat_until_tightened
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
+from .utils import smallest, largest
 
 
 T = TypeVar('T')
 
 
 class Edge(Bounded, Generic[T]):
+    """Edge data structure used in the implementation of [Karp78]_."""
     def __init__(self, from_node: 'MatchingFromNode[T]', to_node: 'MatchingToNode[T]', weight: Bounded):
         self.from_node: MatchingFromNode[T] = from_node
         self.to_node: MatchingToNode[T] = to_node
@@ -54,6 +91,7 @@ class Edge(Bounded, Generic[T]):
 
 
 class MatchingNode(Generic[T], metaclass=ABCMeta):
+    """Node data structure used in the implementation of [Karp78]_."""
     def __init__(self, matcher: 'WeightedBipartiteMatcher[T]', node: T):
         self.node = node
         self.matcher = matcher
@@ -91,6 +129,7 @@ class MatchingNode(Generic[T], metaclass=ABCMeta):
 
 
 class SortedEdges(Generic[T]):
+    """A sorted collection of edges."""
     def __init__(self, edges: Iterable[Edge[T]]):
         self._edges = edges
         self._sorting_iter: Optional[Iterator[Edge]] = None
@@ -153,6 +192,7 @@ class MatchingFromNode(Generic[T], MatchingNode[T]):
 
 
 class MatchingToNode(Generic[T], MatchingNode[T]):
+    """A node type used in the implementation of [Karp78]_."""
     def construct_edges(self) -> Dict[MatchingNode[T], Edge[T]]:
         return {
             from_node: from_node[self] for from_node in self.matcher.from_nodes if self in from_node
@@ -170,6 +210,7 @@ else:
 
 
 class Matching(Generic[T], SetCollection, Bounded, SetType):
+    """An abstract base class used by the partial implementation of [Karp78]_."""
     def __init__(self):
         super().__init__()
         self._edges: Set[Edge[T]] = set()
@@ -221,7 +262,7 @@ class Matching(Generic[T], SetCollection, Bounded, SetType):
 
 
 class PathSet(Generic[T], Matching[T]):
-    """A version of a Matching with edge directions overridden, used for Karp's weighted bipartite matching algorithm"""
+    """A version of a Matching with edge directions overridden, used for [Karp78]_"""
     def __init__(self):
         super().__init__()
         self._flipped: Dict[MatchingToNode[T], Edge[T]] = {}
@@ -269,6 +310,7 @@ class PathSet(Generic[T], Matching[T]):
 
 
 class QueueElement:
+    """A helper datastructure used by :class:`WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION`"""
     def __init__(self, edge: Edge[T], cost: int, is_special: bool):
         self.edge = edge
         self.cost = cost
@@ -282,13 +324,14 @@ QueueType = FibonacciHeap[QueueElement, int]
 
 
 class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
-    """Partial implementation of AN ALGORITHM TO SOLVE THE mxn ASSIGNMENT PROBLEM IN EXPECTED TIME 0(mn log n)
-    by R. M. Karp, 1978
-    https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
+    r"""Partial implementation of *An Algorithm to Solve the* :math:`m \times n` *Assignment Problem in Expected Time* :math:`O(mn \log n)` [Karp78]_.
 
     The implementation is partial because I realized partway through that, even though this implementation has better
-    asymptotic bounds, `scipy.optimize.linear_sum_assignment(...)` will likely be much faster since it is implemented
-    in C++ and not pure Python.
+    asymptotic bounds, :func:`scipy.optimize.linear_sum_assignment` will almost always be much faster since it is
+    implemented in C++ and not pure Python.
+
+    It is retained here in the event that it is ever needed in the future.
+
     """
     def __init__(
             self,
@@ -417,7 +460,7 @@ INTEGER_DTYPE_INTERVALS: Tuple[Tuple[int, int, np.dtype], ...] = (
 
 
 def get_dtype(min_value: int, max_value: int) -> np.dtype:
-    """Returns the smallest numpy dtype capable of storing integers in the range [min_value, max_value]"""
+    """Returns the smallest numpy :class:`dtype <np.dtype>` capable of storing integers in the range [:obj:`min_value`, :obj:`max_value`]"""
     for min_range, max_range, dtype in INTEGER_DTYPE_INTERVALS:
         if min_range <= min_value and max_range > max_value:
             return dtype
@@ -429,6 +472,34 @@ def min_weight_bipartite_matching(
         to_nodes: Sequence[T],
         get_edges: Callable[[T, T], Optional[W]]
 ) -> Mapping[int, Tuple[int, EdgeType]]:
+    """Calculates the minimum weight bipartite matching between two sequences.
+
+    Args:
+        from_nodes: The nodes in the first bipartite set.
+        to_nodes: The nodes in the second bipartite set.
+        get_edges: A function mapping pairs of edges to the weight of the edge between them, or :const:`None` if there
+            is no edge between them.
+
+    Warning:
+        :obj:`get_edges` is expected to return all edge weights using the same type, either :class:`int`,
+        :class:`float`, or :class:`bool`.
+
+    Warning:
+        :obj:`get_edges` can only return :const:`None` for an edge weight if the rest of the edge weights are of type
+        either :class:`int` or :class:`float`. Graphs with :class:`bool` edge weights must be complete.
+
+    Warning:
+        This function uses native types for computational efficiency. Edge weights larger than 2**64 or less than
+        -2**63 will result in undefined behavior.
+
+    Returns:
+        A mapping from :obj:`from_node` indices to pairs (:obj:`matched_to_node_index`, :obj:`edge_weight`).
+
+    Raises:
+        ValueError: If not all of the edges are the same type.
+        ValueError: If a boolean edge weighted graph is not complete.
+
+    """
     # Assume that the bipartite graph is dense. If the edges are sparse, consider switching to `scipy.sparse.coo_matrix`
     weights: List[List[Optional[EdgeType]]] = [[None] * len(to_nodes) for _ in range(len(from_nodes))]
 
@@ -492,12 +563,30 @@ def min_weight_bipartite_matching(
 
 
 class WeightedBipartiteMatcher(Bounded, Generic[T]):
+    """A :class:`graphtage.TreeNode` matcher built atop :func:`min_weight_bipartite_matching`.
+
+    It works by iteratively and selectively tightening the bipartite graph's edges' bounds until they are all "distinct"
+    (*i.e.*, their bounded ranges are all either :meth:`graphtage.bounds.Range.definitive` or non-overlapping). It does
+    this using :func:`graphtage.bounds.make_distinct`.
+    Then :func:`min_weight_bipartite_matching` is used to solve the minimum weight matching problem.
+
+    This is used by :class:`graphtage.multiset.MultiSetEdit` to match :class:`graphtage.MultiSetNode`.
+
+    """
     def __init__(
             self,
             from_nodes: Iterable[T],
             to_nodes: Iterable[T],
             get_edge: Callable[[T, T], Optional[Bounded]]
     ):
+        """Initializes the weighted bipartite matcher.
+
+        Args:
+            from_nodes: The nodes from which to match.
+            to_nodes: The nodes to which to match.
+            get_edge: A function returning a bounded edge between two nodes (or :const:`None` if there is no edge). For
+                example, this could be a :class:`graphtage.Edge`.
+        """
         if not isinstance(from_nodes, list) and not isinstance(from_nodes, tuple):
             from_nodes = tuple(from_nodes)
         if not isinstance(to_nodes, list) and not isinstance(to_nodes, tuple):
@@ -518,11 +607,15 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
 
     @property
     def edges(self) -> List[List[Optional[Bounded]]]:
+        """Returns a dense matrix of the edges in the graph.
+
+        This property lazily constructs the edge matrix and memoizes the result.
+
+        """
         if self._edges is None:
             self._edges = [
                 [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
             ]
-            self._bounds = None
         return self._edges
 
     def bounds(self) -> Range:
@@ -530,18 +623,15 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             if not self.from_nodes or not self.to_nodes:
                 lb = ub = 0
             elif self._match is None:
-                if self._edges is None:
-                    if (self.from_nodes and hasattr(self.from_nodes[0], 'total_size')) or \
-                            (self.to_nodes and hasattr(self.to_nodes[0], 'total_size')):
-                        lb = 0
-                        ub = sum(n.total_size + 1 for n in self.from_nodes) + \
-                            sum(n.total_size + 1 for n in self.to_nodes)
-                    else:
-                        _ = self.edges
-                        return self.bounds()
-                else:
-                    lb = sum(min(edge.bounds().lower_bound for edge in row) for row in self.edges)
-                    ub = sum(max(edge.bounds().upper_bound for edge in row) for row in self.edges)
+                num_matches = min(len(self.from_nodes), len(self.to_nodes))
+                lb = sum(smallest(
+                    (min(edge.bounds().lower_bound for edge in row) for row in self.edges),
+                    n=num_matches
+                ))
+                ub = sum(largest(
+                    (max(edge.bounds().upper_bound for edge in row) for row in self.edges),
+                    n=num_matches
+                ))
             else:
                 lb = 0
                 ub = 0
@@ -564,11 +654,23 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             return True
         else:
             make_distinct(*itertools.chain(*self.edges))
-            self._bounds = None
+            self._edges_are_distinct = True
             return True
 
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
+        """Returns the minimum weight matching.
+
+        Returns:
+            Mapping[T, Tuple[T, Bounded]]: A mapping from :attr:`self.from_nodes <WeightedBipartiteMatcher.from_nodes>`
+                to a tuples with the matched node in :attr:`self.to_nodes <WeightedBipartiteMatcher.to_nodes>` and
+                the edge between them.
+
+        Note:
+            This function will perform any necessary computation to determine the mapping in the event that it has not
+            already been completed through prior calls to :meth:`WeightedBipartiteMatcher.tighten_bounds`.
+
+        """
         if self._match is None:
             if not self.from_nodes or not self.to_nodes:
                 self._match = {}
@@ -588,26 +690,25 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 self.from_nodes[from_node]: (self.to_nodes[to_node], self.edges[from_node][to_node])
                 for from_node, (to_node, _) in mwbp.items()
             }
-            self._bounds = None
         return self._match
 
+    def is_complete(self) -> bool:
+        """Whether the matching has been completed, regardless of whether the bounds have been fully tightened."""
+        return self._match is not None
+
+    @repeat_until_tightened
     def tighten_bounds(self, pool: Optional[Pool] = None) -> bool:
+        """Tightens the bounds on the minimum weight matching.
+
+        Returns: :const:`True` if the bounds were able to be tightened.
+
+        """
         if self._match is None:
-            initial_bounds = self.bounds()
-            if self._make_edges_distinct(pool):
-                new_bounds = self.bounds()
-                if new_bounds.lower_bound > initial_bounds.lower_bound or \
-                        new_bounds.upper_bound < initial_bounds.upper_bound:
-                    self._bounds = None
-                    return True
-            _ = self.matching     # This computes the minimum weight matching
-            new_bounds = self.bounds()
-            if new_bounds.lower_bound > initial_bounds.lower_bound or \
-                    new_bounds.upper_bound < initial_bounds.upper_bound:
-                self._bounds = None
+            if self._make_edges_distinct(pool=pool):
                 return True
+            _ = self.matching     # This computes the minimum weight matching
+            return True
         for (_, (_, edge)) in self.matching.items():
             if edge.tighten_bounds():
-                self._bounds = None
                 return True
         return False

@@ -1,3 +1,18 @@
+"""A module for solving a search problem in an iteratively revealed search space.
+
+**Given:** an iterator that yields an unknown but finite number of integer range objects, *e.g.*, ``[100, 200]``,
+``[50, 1000]``, ``[60, 500]``, …. Each integer range object has a member function that is guaranteed to tighten the
+bounds of the range, such that the range monotonically shrinks and converges toward a specific number (*i.e.*, it
+conforms to the :class:`graphtage.bounds.Bounded` protocol). For example, ``[100, 200].tighten()`` →
+``[150, 160].tighten()`` → ``[150, 155].tighten()`` → ``[153, 153]`` → ``153``. Each object might have a different
+tighten function; we cannot make any assumptions about the rate of convergence, other than that the bounds are
+guaranteed to shrink with each call to ``tighten()``.
+
+**Goal:** Create the most computationally efficient algorithm to determine the range object that converges to the
+smallest integer (*i.e.*, with the fewest possible tightenings).
+
+"""
+
 from typing import Generic, Iterator, Optional, TypeVar
 
 from .bounds import Bounded, NEGATIVE_INFINITY, POSITIVE_INFINITY, Range
@@ -6,10 +21,26 @@ from .fibonacci import FibonacciHeap, HeapNode
 B = TypeVar('B', bound=Bounded)
 
 
-class IterativeTighteningSearch(Generic[B]):
+class IterativeTighteningSearch(Bounded, Generic[B]):
+    """Implementation of iterative tightening search on a given sequence of :class:`graphtage.bounds.Bounded` objects.
+
+    The search class itself is :class:`graphtage.bounds.Bounded`, with bounds on the value of the optimal solution.
+    Each call to :meth:`IterativeTighteningSearch.tighten_bounds` will improve these bounds, if possible.
+
+    """
     def __init__(self,
                  possibilities: Iterator[B],
                  initial_bounds: Optional[Range] = None):
+        """Initializes the search.
+
+        Args:
+            possibilities: An iterator yielding :class:`graphtage.bounded.Bounded` objects over which to search.
+            initial_bounds: Bounds on the optimal solution, if known. Having good initial bounds can greatly speed up
+                the search. However, if the initial bounds are incorrect (*i.e.*, if the true optimal solution lies
+                outside of :obj:`initial_bounds`, then the resulting solution may be incorrect.
+
+        """
+
         def get_range(bounded: Bounded) -> Range:
             return bounded.bounds()
 
@@ -27,10 +58,18 @@ class IterativeTighteningSearch(Generic[B]):
             self.initial_bounds = initial_bounds
 
     def __bool__(self):
+        """Returns whether or not this search's bounds are :meth:`definitive<graphtage.bounds.Range.definitive>`."""
         return bool(self._unprocessed or ((self._untightened or self._tightened) and not self.bounds().definitive()))
 
     @property
-    def best_match(self) -> B:
+    def best_match(self) -> Optional[B]:
+        """Returns the best solution the search has thus found.
+
+         Returns:
+            Optional[B]: The best solution the search has thus found, or :const:`None` if it has not yet found a
+            feasible solution.
+
+        """
         if self._unprocessed is not None or not (self._untightened or self._tightened):
             return None
         elif self._tightened and self._untightened:
@@ -43,8 +82,25 @@ class IterativeTighteningSearch(Generic[B]):
         else:
             return self._untightened.peek()
 
-    def remove_best(self) -> B:
-        heap: Optional[FibonacciHeap[B, Range]] = None
+    def remove_best(self) -> Optional[B]:
+        """Removes and returns the current best solution found by the search, if one exists.
+
+        This enables one to iteratively sort the input sequence. However, this function is only guaranteed to return
+        the globally optimal item if :meth:`IterativeTighteningSearch.goal_test` returns :const:`True`. Therefore,
+        to generate a total ordering over the input sequence, you should tighten bounds until the goal is reached before
+        each call to this function::
+
+            while search.tighten_bounds():
+                while not search.goal_test() and search.tighten_bounds():
+                    pass
+                if search.goal_test():
+                    yield search.remove_best()
+            while search.goal_test():
+                yield search.remove_best()
+
+        However, if your goal is to produce a total ordering, :func:`graphtage.bounds.sort` is more efficient.
+
+        """
         if self._unprocessed is not None or not (self._untightened or self._tightened):
             return None
         elif self._tightened and self._untightened:
@@ -59,6 +115,15 @@ class IterativeTighteningSearch(Generic[B]):
         return heap.pop()
 
     def search(self) -> B:
+        """Finds and returns the smallest item, fully tightened.
+
+        This is equivalent to::
+
+            while self.tighten_bounds():
+                pass
+            return self.best_match
+
+        """
         while self.tighten_bounds():
             pass
         return self.best_match
@@ -108,6 +173,7 @@ class IterativeTighteningSearch(Generic[B]):
             self._untightened.push(node.item)
 
     def goal_test(self) -> bool:
+        """Returns whether :meth:`best_match<IterativeTighteningSearch.best_match>` is the optimal solution."""
         if self._unprocessed is not None:
             return False
         best = self.best_match

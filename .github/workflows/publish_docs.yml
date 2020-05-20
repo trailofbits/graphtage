@@ -1,0 +1,67 @@
+name: Publish documentation
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+jobs:
+  deploydocs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: graphtage
+      - name: Get the version
+        id: get_version
+        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/}"
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          cd graphtage
+          python -m pip install --upgrade pip
+          pip install setuptools
+          pip install .[dev]
+      - name: Build documentation
+        run: |
+          cd graphtage/docs
+          make html
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+      - name: Commit documentation changes
+        run: |
+          cd gh-pages
+          git pull
+          rm -rf ${VERSION}
+          mkdir ${VERSION}
+          cp -r ../graphtage/docs/_build/html/* ${VERSION}/
+          cd ${VERSION}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          if [ "$GITHUB_REF" == "refs/heads/master" ]; then
+            cd ..
+            # This is not tag, so it is the latest:
+            rm -f latest
+            ln -s ${VERSION} latest
+            git add latest
+          fi
+          git commit -m "Update documentation for ${GITHUB_REF}" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # the return code.
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

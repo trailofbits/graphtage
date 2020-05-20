@@ -1,4 +1,30 @@
+"""A module for representing bounded ranges.
+
+Examples:
+
+    >>> from graphtage import bounds
+    >>> p = bounds.Infinity(positive=True)
+    >>> str(p)
+    '∞'
+    >>> str(p + p)
+    '∞'
+    >>> bounds.Range(0, p)
+    Range(0, Infinity(positive=True))
+    >>> bounds.Range(0, 10) < bounds.Range(20, 30)
+    True
+
+This module provides a variety of data structures and algorithms for both representing bounds as well as operating on
+bounded ranges (*e.g.*, sorting).
+
+Attributes:
+    NEGATIVE_INFINITY (Infinity): Negative infinity.
+    POSITIVE_INFINITY (Infinity): Positive infinity.
+
+"""
+
+import logging
 import itertools
+from functools import wraps
 from multiprocessing import Pool
 from typing import Iterable, Iterator, Optional, Sequence, TypeVar, Union
 from typing_extensions import Protocol
@@ -9,12 +35,17 @@ from .fibonacci import FibonacciHeap
 from .printer import DEFAULT_PRINTER
 
 
+log = logging.getLogger(__name__)
+
+
 class Infinity:
+    """A class for representing infinite values. This is primarily used for unbounded ranges."""
     def __init__(self, positive=True):
         self._positive = positive
 
     @property
-    def positive(self):
+    def positive(self) -> bool:
+        """Returns whether or not this represents positive infinity."""
         return self._positive
 
     def __eq__(self, other):
@@ -84,11 +115,24 @@ RangeValue = Union[int, Infinity]
 
 
 class Range:
+    """An integer range."""
     def __init__(self, lower_bound: RangeValue = NEGATIVE_INFINITY, upper_bound: RangeValue = POSITIVE_INFINITY):
+        """Constructs a range.
+
+        Args:
+            lower_bound: The lower bound of the range (inclusive).
+            upper_bound: The upper bound of the range (inclusive).
+
+        Raises:
+            ValueError: If the upper bound is less than the lower bound.
+
+        """
         if upper_bound < lower_bound:
             raise ValueError(f"Upper bound ({upper_bound!s}) must be less than lower bound ({lower_bound!s})")
         self.lower_bound: RangeValue = lower_bound
+        """The lower bound of this range."""
         self.upper_bound: RangeValue = upper_bound
+        """The upper bound of this range."""
 
     def __eq__(self, other):
         return self.lower_bound == other.lower_bound and self.upper_bound == other.upper_bound
@@ -100,13 +144,28 @@ class Range:
     def __le__(self, other):
         return self < other or self == other
 
-    def to_inverval(self) -> Interval:
+    def to_interval(self) -> Interval:
+        """Converts this range to an :class:`intervaltree.Interval` for use with the `Interval Tree`_ package.
+
+        .. _Interval Tree:
+            https://github.com/chaimleib/intervaltree
+
+        """
         return Interval(self.lower_bound, self.upper_bound + 1, self)
 
     def dominates(self, other) -> bool:
+        """Checks whether this range dominates another.
+
+        One range dominates another if its upper bound is less than or equal to the lower bound of the other.
+
+        This is equivalent to::
+
+            return self.upper_bound <= other.lower_bound
+
+        """
         return self.upper_bound <= other.lower_bound
 
-    def hash(self):
+    def __hash__(self):
         return hash((self.lower_bound, self.upper_bound))
 
     def __add__(self, other):
@@ -126,12 +185,23 @@ class Range:
 
     @property
     def finite(self) -> bool:
+        """Returns whether this range is finite.
+
+        A range is finite if neither of its bounds is infinite.
+
+        """
         return not isinstance(self.lower_bound, Infinity) and not isinstance(self.upper_bound, Infinity)
 
     def definitive(self) -> bool:
+        """Checks whether this range is definitive.
+
+        A range is definitive if both of its bounds are finite and equal to each other.
+
+        """
         return self.lower_bound == self.upper_bound and not isinstance(self.lower_bound, Infinity)
 
-    def intersect(self, other):
+    def intersect(self, other) -> 'Range':
+        """Intersects this range with another."""
         if not self or not other or self < other or other < self:
             return Range()
         elif self.lower_bound < other.lower_bound:
@@ -152,29 +222,101 @@ class Range:
 
 
 class Bounded(Protocol):
+    """A protocol for objects that have bounds that can be tightened."""
+
     def tighten_bounds(self) -> bool:
+        """Attempts to shrink the bounds of this object.
+
+        Returns:
+            bool: :const:`True` if the bounds were tightened.
+
+        """
         raise NotImplementedError(f"Class {self.__class__.__name__} must implement tighten_bounds")
 
     def bounds(self) -> Range:
+        """Returns the bounds of this object."""
         raise NotImplementedError(f"Class {self.__class__.__name__} must implement bounds")
 
 
+def repeat_until_tightened(func):
+    """A decorator that will repeatedly call the function until its class's bounds are tightened.
+
+    Intended for :meth:`Bounded.tighten_bounds`. The value returned by the decorated function is ignored.
+
+    """
+    @wraps(func)
+    def wrapper(self: Bounded, *args, **kwargs):
+        starting_bounds = self.bounds()
+        if starting_bounds.definitive():
+            return False
+        while True:
+            func(self, *args, **kwargs)
+            new_bounds = self.bounds()
+            if new_bounds.lower_bound < starting_bounds.lower_bound \
+                    or new_bounds.upper_bound > starting_bounds.upper_bound:
+                log.warning(f"The most recent call to {func} on {self} returned bounds {new_bounds} when the previous bounds were {starting_bounds}")
+            elif new_bounds.definitive() or new_bounds.lower_bound > starting_bounds.lower_bound \
+                    or new_bounds.upper_bound < starting_bounds.upper_bound:
+                return True
+
+    return wrapper
+
+
 class ConstantBound(Bounded):
+    """An object with constant bounds."""
     def __init__(self, value: RangeValue):
+        """Initializes the constant bounded object.
+
+        Args:
+            value: The constant value of the object, which will constitute both its lower and upper bound.
+
+        """
         self._range = Range(value, value)
 
     def bounds(self) -> Range:
+        """Returns a :class:`Range` where both the lower and upper bounds are equal to this object's constant value."""
         return self._range
 
     def tighten_bounds(self) -> bool:
+        """Since the bounds are already definitive, this always returns :const:`False`."""
         return False
 
 
 class BoundedComparator:
+    """A comparator for :class:`Bounded` objects.
+
+    This comparator will automatically tighten the bounds of the :class:`Bounded` object it wraps until they are either
+    definitive or sufficiently distinct to differentiate them from another object to which it is being compared.
+
+    """
     def __init__(self, bounded: Bounded):
+        """Initializes this bounded comparator.
+
+        Args:
+            bounded: The object to wrap.
+
+        """
         self.bounded = bounded
+        """The wrapped bounded object."""
 
     def __lt__(self, other):
+        """Compares the wrapped object to :obj:`other`, auto-tightening their bounds if necessary.
+
+        The auto-tightening is equivalent to::
+
+            while not (
+                self.bounded.bounds().dominates(other.bounded.bounds())
+                or
+                other.bounded.bounds().dominates(self.bounded.bounds())
+            ) and (
+                self.bounded.tighten_bounds() or other.bounded.tighten_bounds()
+            ):
+                pass
+
+        In the event that :obj:`self.bounded` and :obj:`other` have identical bounds after fully tightening, the object
+        with the smaller :func:`id` is returned.
+
+        """
         while not (
                 self.bounded.bounds().dominates(other.bounded.bounds())
                 or
@@ -199,6 +341,24 @@ B = TypeVar('B', bound=Bounded)
 
 
 def sort(items: Iterable[B]) -> Iterator[B]:
+    """Sorts a sequence of bounded items.
+
+    Args:
+        items: Zero or more bounded objects.
+
+    Returns:
+        Iterator[B]: An iterator over the sorted sequence of items.
+
+    This is equivalent to::
+
+        heap: FibonacciHeap[B, BoundedComparator] = FibonacciHeap(key=BoundedComparator)
+        for item in items:
+            heap.push(item)
+        while heap:
+            yield heap.pop()
+
+
+    """
     heap: FibonacciHeap[B, BoundedComparator] = FibonacciHeap(key=BoundedComparator)
     for item in items:
         heap.push(item)
@@ -207,6 +367,11 @@ def sort(items: Iterable[B]) -> Iterator[B]:
 
 
 def min_bounded(bounds: Iterator[B]) -> B:
+    """Returns the smallest bounded object.
+
+    The objects are auto-tightened in the event that their ranges overlap and a definitive minimum does not exist.
+
+    """
     best_item: Optional[B] = None
     best: Optional[BoundedComparator] = None
     for b in map(BoundedComparator, bounds):
@@ -218,7 +383,7 @@ def min_bounded(bounds: Iterator[B]) -> B:
 
 def make_distinct(*bounded: Bounded):
     """Ensures that all of the provided bounded arguments are tightened until they are finite and
-    either definitive or non-overlapping with any of the other arguments"""
+    either definitive or non-overlapping with any of the other arguments."""
     tree: IntervalTree = IntervalTree()
     for b in bounded:
         if not b.bounds().finite:
