@@ -11,11 +11,11 @@ except ImportError:
 
 from . import json
 from .edits import Insert, Match
-from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, MappingNode, StringNode, StringEdit, \
-    StringFormatter
+from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, ListNode, MappingNode, StringNode, \
+    StringEdit, StringFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
-from .tree import Edit, GraphtageFormatter, TreeNode
+from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, options: Optional[BuildOptions] = None, *args, **kwargs) -> TreeNode:
@@ -187,6 +187,16 @@ class YAMLFormatter(GraphtageFormatter):
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         self.write_obj(printer, node.object)
+
+    def print_ContainerNode(self, printer: Printer, node: ContainerNode):
+        """Prints a :class:`graphtage.ContainerNode`.
+
+        This is a fallback to permit the printing of custom containers, like :class:`graphtage.xml.XMLElement`.
+
+        """
+        # Treat the container like a list
+        list_node = ListNode(node.children())
+        self.print(printer, list_node)
 
 
 class YAML(Filetype):
