@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.yaml &mdash; Graphtage v0.2.0 documentation</title>
+  <title>graphtage.yaml &mdash; Graphtage 0.3.0-git documentation</title>
   
 
   
@@ -61,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.0"><div class="version">v0.2.0</div></a>
+<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -493,6 +493,13 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
 See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.print_ContainerNode">
+<code class="sig-name descname">print_ContainerNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode">graphtage.ContainerNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.print_ContainerNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a>.</p>
+<p>This is a fallback to permit the printing of custom containers, like <a class="reference internal" href="graphtage.xml.html#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.xml.XMLElement</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1011,7 +1018,7 @@ already automatically been configured to format them prior to the call to
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.0
+        0.3.0-git
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
