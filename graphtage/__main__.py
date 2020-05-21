@@ -320,8 +320,7 @@ def main(argv=None) -> int:
                         printer.newline()
                         had_edits = had_edits or edit.has_non_zero_cost()
                 else:
-                    with thread_pool as pool:
-                        diff = from_tree.diff(to_tree, pool=pool)
+                    diff = from_tree.diff(to_tree)
                     if args.format is not None:
                         formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                     else:

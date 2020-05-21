@@ -80,10 +80,6 @@ class MultiSetEdit(SequenceEdit):
         """Delegates to :meth:`WeightedBipartiteMatcher.tighten_bounds`."""
         return self._matcher.tighten_bounds()
 
-    def tighten_bounds_parallel(self, pool) -> bool:
-        self._is_tightened = True
-        return self._matcher.tighten_bounds(pool)
-
     def bounds(self) -> Range:
         b = self._matcher.bounds()
         if len(self.to_remove) > len(self.to_insert):

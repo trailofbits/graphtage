@@ -3,8 +3,6 @@ import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from functools import partial
-from multiprocessing import Pool
 from typing import Any, cast, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
@@ -189,9 +187,6 @@ class Edit(Bounded, Protocol):
 
         from_node.edit = self
         from_node.edit_list.append(self)
-
-    def tighten_bounds_parallel(self, pool: Pool) -> bool:
-        return self.tighten_bounds()
 
 
 @runtime_checkable
@@ -514,7 +509,7 @@ class TreeNode(metaclass=ABCMeta):
                 if edit.bounds().lower_bound > 0:
                     yield edit
 
-    def diff(self: T, node: 'TreeNode', pool: Optional[Pool] = None) -> Union[EditedTreeNode, T]:
+    def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         """Performs a diff against the provided node.
 
         Args:
@@ -532,12 +527,8 @@ class TreeNode(metaclass=ABCMeta):
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
-        if pool is None:
-            tighten = edit.tighten_bounds
-        else:
-            tighten = partial(edit.tighten_bounds_parallel, pool=pool)
         with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
-            while edit.valid and not edit.is_complete() and tighten():
+            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 if prev_range < new_range:

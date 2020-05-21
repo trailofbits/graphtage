@@ -37,14 +37,14 @@ import itertools
 import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
-from multiprocessing import Pool
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
 from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, make_distinct, make_distinct_parallel, Range, repeat_until_tightened
+from . import concurrent
+from .bounds import Bounded, make_distinct, Range, repeat_until_tightened
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
 from .utils import smallest, largest
@@ -562,6 +562,13 @@ def min_weight_bipartite_matching(
     }
 
 
+def _expand_edges(
+        from_node: T,
+        to_nodes: Iterable[T],
+        get_edge: Callable[[T, T], Optional[Bounded]]) -> List[Optional[Bounded]]:
+    return [get_edge(from_node, to_node) for to_node in to_nodes]
+
+
 class WeightedBipartiteMatcher(Bounded, Generic[T]):
     """A :class:`graphtage.TreeNode` matcher built atop :func:`min_weight_bipartite_matching`.
 
@@ -613,9 +620,16 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
 
         """
         if self._edges is None:
-            self._edges = [
-                [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
-            ]
+            with concurrent.default_pool() as pool:
+                if pool.num_workers() < 2:
+                    self._edges = [
+                        [self.get_edge(from_node, to_node) for to_node in self.to_nodes]
+                        for from_node in self.from_nodes
+                    ]
+                else:
+                    self._edges = pool.starmap(_expand_edges, (
+                        (from_node, self.to_nodes, self.get_edge) for from_node in self.from_nodes
+                    ))
         return self._edges
 
     def bounds(self) -> Range:
@@ -645,17 +659,10 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 return ret
         return self._bounds
 
-    def _make_edges_distinct(self, pool: Optional[Pool] = None):
-        if self._edges_are_distinct:
-            return False
-        elif pool is not None:
-            make_distinct_parallel(pool, *itertools.chain(*self.edges))
-            self._bounds = None
-            return True
-        else:
-            make_distinct(*itertools.chain(*self.edges))
-            self._edges_are_distinct = True
-            return True
+    def _make_edges_distinct(self):
+        make_distinct(*itertools.chain(*self.edges))
+        self._edges_are_distinct = True
+        return True
 
     @property
     def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
@@ -697,14 +704,14 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
         return self._match is not None
 
     @repeat_until_tightened
-    def tighten_bounds(self, pool: Optional[Pool] = None) -> bool:
+    def tighten_bounds(self) -> bool:
         """Tightens the bounds on the minimum weight matching.
 
         Returns: :const:`True` if the bounds were able to be tightened.
 
         """
         if self._match is None:
-            if self._make_edges_distinct(pool=pool):
+            if self._make_edges_distinct():
                 return True
             _ = self.matching     # This computes the minimum weight matching
             return True
