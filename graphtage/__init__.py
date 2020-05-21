@@ -17,7 +17,8 @@ import inspect
 SUBMODULES_TO_SUBSUME = (graphtage, tree, edits)
 for module_to_subsume in SUBMODULES_TO_SUBSUME:
     for name, obj in inspect.getmembers(module_to_subsume):
-        if hasattr(obj, '__module__') and obj.__module__ == module_to_subsume.__name__:
+        if hasattr(obj, '__module__') and obj.__module__ == module_to_subsume.__name__ \
+                and hasattr(obj, '__name__') and not obj.__name__.startswith('_'):
             obj.__module__ = 'graphtage'
     del module_to_subsume
 
