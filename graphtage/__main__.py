@@ -8,6 +8,7 @@ from multiprocessing import cpu_count, Pool
 from typing import Optional
 
 from .edits import Edit
+from . import concurrent
 from . import expressions
 from . import graphtage
 from . import printer as printermodule
@@ -265,17 +266,7 @@ def main(argv=None) -> int:
         else:
             to_mime = None
 
-    if args.threads <= 1:
-        class SingleThreadPool:
-            def __enter__(self):
-                return None
-
-            def __exit__(self, exc_type, exc_val, exc_tb):
-                pass
-
-        thread_pool = SingleThreadPool()
-    else:
-        thread_pool = Pool(processes=args.threads)
+    concurrent.set_default_pool(concurrent.make_pool(args.threads))
 
     if args.match_if:
         match_if = expressions.parse(args.match_if)
@@ -314,19 +305,20 @@ def main(argv=None) -> int:
                         if match_unless is not None:
                             MatchUnless.apply(node, match_unless)
                 had_edits = False
-                if args.only_edits:
-                    for edit in from_tree.get_all_edits(to_tree):
-                        printer.write(str(edit))
-                        printer.newline()
-                        had_edits = had_edits or edit.has_non_zero_cost()
-                else:
-                    diff = from_tree.diff(to_tree)
-                    if args.format is not None:
-                        formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                with concurrent.default_pool():
+                    if args.only_edits:
+                        for edit in from_tree.get_all_edits(to_tree):
+                            printer.write(str(edit))
+                            printer.newline()
+                            had_edits = had_edits or edit.has_non_zero_cost()
                     else:
-                        formatter = from_format.get_default_formatter()
-                    formatter.print(printer, diff)
-                    had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
+                        diff = from_tree.diff(to_tree)
+                        if args.format is not None:
+                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                        else:
+                            formatter = from_format.get_default_formatter()
+                        formatter.print(printer, diff)
+                        had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
         printer.write('\n')
     printer.close()
     if had_edits:

@@ -1,3 +1,4 @@
+import sys
 from abc import ABC
 from collections.abc import Mapping as AbstractMapping
 from functools import partial, wraps
@@ -6,7 +7,19 @@ from multiprocessing import Pool as MPool
 from typing import Any, Dict, Optional, TypeVar
 from typing_extensions import Protocol
 
-import multiprocessing
+
+if sys.version_info[0] == 3 and sys.version_info[1] < 8:
+    from multiprocessing import current_process
+
+    def is_main_process() -> bool:
+        return current_process().name == 'MainProcess'
+
+else:
+    # Python 3.8 and newer
+    from multiprocessing import parent_process
+
+    def is_main_process():
+        return parent_process() is None
 
 
 class EmptyDict(AbstractMapping, Dict):
@@ -147,6 +160,9 @@ def make_pool(processes: int):
 
 
 def default_pool() -> Pool:
+    if not is_main_process():
+        return SameProcessPool()
+
     global _DEFAULT_POOL
 
     if _DEFAULT_POOL is None:
@@ -156,21 +172,27 @@ def default_pool() -> Pool:
     return _DEFAULT_POOL
 
 
+def set_default_pool(pool: Pool):
+    global _DEFAULT_POOL
+
+    _DEFAULT_POOL = pool
+
+
 def parallelize(func=None, *, parallel_func=None):
     if func is None:
         return partial(parallelize, parallel_func=parallel_func)
 
     @wraps(func)
     def wrapper(*args, pool: Optional[Pool] = None, **kwargs):
-        parent = multiprocessing.parent_process()
+        is_main = is_main_process()
 
-        if parent is not None and parallel_func is not None:
+        if not is_main and parallel_func is not None:
             return func(*args, **kwargs)
 
-        if pool is None and parent is None:
+        if pool is None and is_main:
             pool = default_pool()
 
-        if parent is not None or isinstance(pool, SameProcessPool):
+        if not is_main or isinstance(pool, SameProcessPool):
             if parallel_func is not None:
                 return func(*args, **kwargs)
             else:
