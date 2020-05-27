@@ -16,6 +16,7 @@ from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .graphtage import BuildOptions, ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
     ListNode, StringFormatter, StringNode
+from .json import JSONFormatter
 from .printer import Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
@@ -201,6 +202,9 @@ class XMLElement(ContainerNode):
 
     def __str__(self):
         return str(self.to_obj())
+
+    def __hash__(self):
+        return hash(self.children())
 
     def edits(self, node) -> Edit:
         if self == node:
@@ -412,3 +416,19 @@ class HTML(XML):
             'text/html',
             'application/xhtml+xml'
         )
+
+
+# Tell JSON how to format XML:
+def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
+    kvps = [
+        KeyValuePairNode(StringNode('tag'), node.tag),
+    ]
+    if len(node.attrib) > 0:
+        kvps.append(KeyValuePairNode(StringNode('attrs'), node.attrib))
+    if node.text is not None:
+        kvps.append(KeyValuePairNode(StringNode('text'), node.text))
+    kvps.append(KeyValuePairNode(StringNode('children'), node._children))
+    self.print(printer, DictNode(kvps))
+
+
+setattr(JSONFormatter, "print_XMLElement", _json_print_XMLElement)
