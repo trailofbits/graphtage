@@ -220,7 +220,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.FibonacciHeap.decrease_key">
-<code class="sig-name descname">decrease_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">graphtage.fibonacci.HeapNode[~ T, ~ Key][T, Key]</span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">Key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.decrease_key" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">decrease_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">Key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.decrease_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decreases the key value associated with the given node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -249,7 +249,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.FibonacciHeap.nodes">
-<code class="sig-name descname">nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[graphtage.fibonacci.HeapNode[~T, ~Key][T, Key]]<a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over all of the heap nodes in this heap.</p>
 </dd></dl>
 
@@ -275,7 +275,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.FibonacciHeap.push">
-<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; graphtage.fibonacci.HeapNode[~T, ~Key][T, Key]<a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.push" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.push" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new item to this heap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -289,7 +289,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.FibonacciHeap.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">graphtage.fibonacci.HeapNode[~ T, ~ Key][T, Key]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes the given node from this heap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -330,7 +330,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.HeapNode.__iter__">
-<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[graphtage.fibonacci.HeapNode[~T, ~Key][T, Key]]<a class="headerlink" href="#graphtage.fibonacci.HeapNode.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.fibonacci.HeapNode.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over all of this node’s descendants, including itself.</p>
 </dd></dl>
 
@@ -464,7 +464,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.MaxFibonacciHeap.decrease_key">
-<code class="sig-name descname">decrease_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">graphtage.fibonacci.HeapNode[~ T, ~ Key][T, Key]</span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">Key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.decrease_key" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">decrease_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">k</span><span class="p">:</span> <span class="n">Key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.decrease_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decreases the key value associated with the given node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -487,7 +487,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.MaxFibonacciHeap.nodes">
-<code class="sig-name descname">nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator[graphtage.fibonacci.HeapNode[~T, ~Key][T, Key]]<a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over all of the heap nodes in this heap.</p>
 </dd></dl>
 
@@ -513,7 +513,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.MaxFibonacciHeap.push">
-<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; graphtage.fibonacci.HeapNode[~T, ~Key][T, Key]<a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.push" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">push</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.push" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new item to this heap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -527,7 +527,7 @@ If omitted, it is equivalent to:</p>
 
 <dl class="py method">
 <dt id="graphtage.fibonacci.MaxFibonacciHeap.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">graphtage.fibonacci.HeapNode[~ T, ~ Key][T, Key]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.fibonacci.HeapNode" title="graphtage.fibonacci.HeapNode">graphtage.fibonacci.HeapNode</a><span class="p">[</span>T<span class="p">, </span>Key<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes the given node from this heap.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

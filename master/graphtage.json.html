@@ -291,7 +291,7 @@
 
 <dl class="py method">
 <dt id="graphtage.json.JSONDictFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; graphtage.formatter.Formatter[~T][T]<a class="headerlink" href="#graphtage.json.JSONDictFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.json.JSONDictFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -446,7 +446,7 @@ instances where a dict contains a list.</p>
 
 <dl class="py method">
 <dt id="graphtage.json.JSONFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; graphtage.formatter.Formatter[~T][T]<a class="headerlink" href="#graphtage.json.JSONFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.json.JSONFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -517,6 +517,11 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 </dd></dl>
 
 <dl class="py method">
+<dt id="graphtage.json.JSONFormatter.print_XMLElement">
+<code class="sig-name descname">print_XMLElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.xml.html#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">graphtage.xml.XMLElement</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.json.JSONFormatter.print_XMLElement" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="graphtage.json.JSONFormatter.root">
 <em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.json.JSONFormatter.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the root formatter.</p>
@@ -559,7 +564,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.json.JSONListFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; graphtage.formatter.Formatter[~T][T]<a class="headerlink" href="#graphtage.json.JSONListFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.json.JSONListFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -704,7 +709,7 @@ instances where a list contains a dict.</p>
 
 <dl class="py method">
 <dt id="graphtage.json.JSONStringFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; graphtage.formatter.Formatter[~T][T]<a class="headerlink" href="#graphtage.json.JSONStringFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.json.JSONStringFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
