@@ -239,6 +239,8 @@ def main(argv=None) -> int:
         mimetypes.suffix_map['.yml'] = '.yaml'
     elif '.yaml' not in mimetypes.types_map:
         mimetypes.suffix_map['.yaml'] = '.yml'
+    if '.json5' not in mimetypes.types_map:
+        mimetypes.add_type('application/json5', '.json5')
 
     if args.from_mime is not None:
         from_mime = args.from_mime
