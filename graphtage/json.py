@@ -6,6 +6,7 @@
 """
 
 import json
+import json5
 import os
 from typing import Optional, Union
 
@@ -253,6 +254,34 @@ class JSON(Filetype):
             return self.build_tree(path=path, options=options)
         except json.decoder.JSONDecodeError as de:
             return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})'
+
+    def get_default_formatter(self) -> JSONFormatter:
+        return JSONFormatter.DEFAULT_INSTANCE
+
+
+class JSON5(Filetype):
+    """The JSON5 file type."""
+    def __init__(self):
+        """Initializes the JSON5 file type.
+
+        By default, JSON5 associates itself with the "json5", "application/json5", and "text/x-json5" MIME types.
+
+        """
+        super().__init__(
+            'json5',
+            'application/json5',
+            'text/x-json5'
+        )
+
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+        with open(path) as f:
+            return build_tree(json5.load(f), options)
+
+    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+        try:
+            return self.build_tree(path=path, options=options)
+        except ValueError as ve:
+            return f'Error parsing {os.path.basename(path)}: {ve:!s}'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE
