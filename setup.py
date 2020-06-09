@@ -25,6 +25,7 @@ setup(
         'json5==0.9.5',
         'PyYAML',
         'scipy>=1.4.0',
+        'toml==0.10.0',
         'tqdm',
         'typing_extensions>=3.6.5'
     ],
