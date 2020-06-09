@@ -27,7 +27,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -188,7 +188,7 @@
 <h3>StatusWriter<a class="headerlink" href="#statuswriter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.progress.StatusWriter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.progress.</code><code class="sig-name descname">StatusWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_stream</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>TextIO<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.progress.StatusWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.progress.</code><code class="sig-name descname">StatusWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.progress.StatusWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.IO</span></code></a></p>
 <p>A writer compatible with the <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Writer</span></code></a> protocol that can print status.</p>
 <p>See <a class="reference internal" href="#graphtage.progress.StatusWriter.tqdm" title="graphtage.progress.StatusWriter.tqdm"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StatusWriter.tqdm()</span></code></a> and <a class="reference internal" href="#graphtage.progress.StatusWriter.trange" title="graphtage.progress.StatusWriter.trange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">StatusWriter.trange()</span></code></a>. If <a class="reference internal" href="#graphtage.progress.StatusWriter.status_stream" title="graphtage.progress.StatusWriter.status_stream"><code class="xref py py-attr docutils literal notranslate"><span class="pre">StatusWriter.status_stream</span></code></a> is either
@@ -250,7 +250,7 @@ written may be lost.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.progress.StatusWriter.quiet">
-<code class="sig-name descname">quiet</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.quiet" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quiet</code><a class="headerlink" href="#graphtage.progress.StatusWriter.quiet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether or not <code class="xref py py-mod docutils literal notranslate"><span class="pre">tqdm</span></code> status messages and progress should be suppressed.</p>
 </dd></dl>
 
@@ -286,7 +286,7 @@ written may be lost.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.progress.StatusWriter.status_stream">
-<code class="sig-name descname">status_stream</code><em class="property">: TextIO</em><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.status_stream" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">status_stream</code><em class="property">: TextIO</em><a class="headerlink" href="#graphtage.progress.StatusWriter.status_stream" title="Permalink to this definition">¶</a></dt>
 <dd><p>The status stream to which to print.</p>
 </dd></dl>
 
@@ -324,7 +324,7 @@ written may be lost.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.progress.StatusWriter.write_raw">
-<code class="sig-name descname">write_raw</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.progress.StatusWriter.write_raw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_raw</code><a class="headerlink" href="#graphtage.progress.StatusWriter.write_raw" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>, this writer <em>will not</em> buffer output and use <code class="xref py py-func docutils literal notranslate"><span class="pre">tqdm.write()</span></code>.</p>
 <p>This defaults to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">write_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">quiet</span> <span class="ow">or</span> <span class="p">(</span>

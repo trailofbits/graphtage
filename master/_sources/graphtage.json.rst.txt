@@ -15,6 +15,15 @@ JSON
    :inherited-members:
    :show-inheritance:
 
+JSON5
+*****
+
+.. autoclass:: JSON5
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 JSONDictFormatter
 *****************
 

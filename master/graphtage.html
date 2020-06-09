@@ -27,7 +27,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -226,7 +226,7 @@
 <h3>AbstractCompoundEdit<a class="headerlink" href="#abstractcompoundedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.AbstractCompoundEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">AbstractCompoundEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant_cost</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cost_upper_bound</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractCompoundEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">AbstractCompoundEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractCompoundEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractEdit" title="graphtage.AbstractEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractEdit</span></code></a>, <a class="reference internal" href="#graphtage.CompoundEdit" title="graphtage.CompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.CompoundEdit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Abstract base class implementing the <a class="reference internal" href="#graphtage.CompoundEdit" title="graphtage.CompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code></a> protocol.</p>
 <dl class="py method">
@@ -386,7 +386,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>AbstractEdit<a class="headerlink" href="#abstractedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.AbstractEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">AbstractEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant_cost</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">cost_upper_bound</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">AbstractEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Edit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>Abstract base class for the <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a> protocol.</p>
 <dl class="py method">
@@ -784,13 +784,14 @@ and thereby mutable.</p>
 <h3>CompoundEdit<a class="headerlink" href="#compoundedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.CompoundEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">CompoundEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.CompoundEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">CompoundEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.CompoundEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Edit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Iterable</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for edits that are composed of sub-edits</p>
 <dl class="py method">
 <dt id="graphtage.CompoundEdit.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.CompoundEdit.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.CompoundEdit.bounds">
@@ -892,7 +893,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>ConstantCostEdit<a class="headerlink" href="#constantcostedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.ConstantCostEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ConstantCostEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ConstantCostEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractEdit" title="graphtage.AbstractEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractEdit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>An edit whose definitive cost is known at the time of construction.</p>
 <dl class="py method">
@@ -1012,7 +1013,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>ContainerNode<a class="headerlink" href="#containernode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.ContainerNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ContainerNode</code><a class="headerlink" href="#graphtage.ContainerNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ContainerNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ContainerNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Iterable</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sized" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Sized</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>A tree node that has children.</p>
 <dl class="py method">
@@ -1254,7 +1255,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>DictNode<a class="headerlink" href="#dictnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.DictNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">DictNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.DictNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">DictNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.DictNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, <a class="reference internal" href="#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MultiSetNode</span></code></a></p>
 <p>A dictionary node implemented as a multiset of key/value pairs.</p>
 <p>This is the default dictionary type used by Graphtage. Unlike its more efficient alternative,
@@ -1592,36 +1593,27 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>Edit<a class="headerlink" href="#edit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.Edit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Edit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for defining an edit.</p>
 <dl class="py attribute">
 <dt id="graphtage.Edit.initial_bounds">
-<code class="sig-name descname">initial_bounds</code><a class="headerlink" href="#graphtage.Edit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">initial_bounds</code><em class="property">: Range</em><a class="headerlink" href="#graphtage.Edit.initial_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>The initial bounds of this edit. Classes implementing this protocol can, for example,
 set this by calling <a class="reference internal" href="#graphtage.Edit.bounds" title="graphtage.Edit.bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds()</span></code></a> during initialization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">Range</a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.Edit.from_node">
-<code class="sig-name descname">from_node</code><a class="headerlink" href="#graphtage.Edit.from_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_node</code><em class="property">: TreeNode</em><a class="headerlink" href="#graphtage.Edit.from_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>The node that this edit transforms.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Edit.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Edit.bounds">
@@ -1716,7 +1708,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>EditCollection<a class="headerlink" href="#editcollection" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.EditCollection">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">EditCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">collection</span><span class="p">:</span> <span class="n">Type<span class="p">[</span>C<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">add_to_collection</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>C<span class="p">, </span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">edits</span><span class="p">:</span> <span class="n">Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">explode_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditCollection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">EditCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditCollection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>An edit comprised of one or more sub-edits.</p>
 <dl class="py method">
@@ -1876,7 +1868,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>EditSequence<a class="headerlink" href="#editsequence" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.EditSequence">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">EditSequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">edits</span><span class="p">:</span> <span class="n">Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">explode_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditSequence" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">EditSequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.EditCollection" title="graphtage.EditCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditCollection</span></code></a></p>
 <p>An <a class="reference internal" href="#graphtage.EditCollection" title="graphtage.EditCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditCollection</span></code></a> using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> as the underlying container.</p>
 <dl class="py method">
@@ -2164,7 +2156,7 @@ via command line arguments.</p></li>
 <h3>FiletypeWatcher<a class="headerlink" href="#filetypewatcher" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.FiletypeWatcher">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FiletypeWatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">clsdict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FiletypeWatcher" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FiletypeWatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">namespace</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FiletypeWatcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 <p>Abstract metaclass for the <a class="reference internal" href="#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a> class.</p>
 <p>This registers any subclasses of <a class="reference internal" href="#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a>, automatically adding them to the <cite>graphtage</cite> command line
@@ -2225,7 +2217,7 @@ arguments and mimetype lookup in <a class="reference internal" href="#graphtage.
 <h3>FixedKeyDictNode<a class="headerlink" href="#fixedkeydictnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.FixedKeyDictNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FixedKeyDictNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FixedKeyDictNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FixedKeyDictNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FixedKeyDictNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a></p>
 <p>A dictionary that only attempts to match two <a class="reference internal" href="#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyValuePairNode</span></code></a> objects if they share the same key.</p>
 <p>This is the most efficient dictionary matching node type, and is what is used with the
@@ -2538,7 +2530,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>FixedKeyDictNodeEdit<a class="headerlink" href="#fixedkeydictnodeedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.FixedKeyDictNodeEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FixedKeyDictNodeEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.FixedKeyDictNode" title="graphtage.FixedKeyDictNode">graphtage.FixedKeyDictNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">edits</span><span class="p">:</span> <span class="n">Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">FixedKeyDictNodeEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceEdit</span></code></a>, <a class="reference internal" href="#graphtage.EditCollection" title="graphtage.EditCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditCollection</span></code></a></p>
 <p>The edit type returned by <a class="reference internal" href="#graphtage.FixedKeyDictNode" title="graphtage.FixedKeyDictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedKeyDictNode</span></code></a>.</p>
 <dl class="py method">
@@ -2947,7 +2939,7 @@ and thereby mutable.</p>
 <h3>GraphtageFormatter<a class="headerlink" href="#graphtageformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.GraphtageFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">GraphtageFormatter</code><a class="headerlink" href="#graphtage.GraphtageFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">GraphtageFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.GraphtageFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a></p>
 <p>A base class for defining formatters that operate on <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code></a> and <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a>.</p>
 <dl class="py attribute">
@@ -2981,7 +2973,7 @@ and thereby mutable.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.GraphtageFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#graphtage.GraphtageFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.GraphtageFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -3032,12 +3024,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>Insert<a class="headerlink" href="#insert" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.Insert">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_insert</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">insert_into</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">penalty</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Insert" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ConstantCostEdit" title="graphtage.ConstantCostEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ConstantCostEdit</span></code></a></p>
 <p>A constant cost edit specifying that a node should be added to a container.</p>
 <dl class="py attribute">
 <dt id="graphtage.Insert.INSERT_STRING">
-<code class="sig-name descname">INSERT_STRING</code><em class="property">: str</em><em class="property"> = '++'</em><a class="headerlink" href="#graphtage.Insert.INSERT_STRING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">INSERT_STRING</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = '++'</em><a class="headerlink" href="#graphtage.Insert.INSERT_STRING" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3408,7 +3400,7 @@ and thereby mutable.</p>
 <h3>KeyValuePairEdit<a class="headerlink" href="#keyvaluepairedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.KeyValuePairEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">KeyValuePairEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_kvp</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode">graphtage.KeyValuePairNode</a></span></em>, <em class="sig-param"><span class="n">to_kvp</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode">graphtage.KeyValuePairNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">KeyValuePairEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a></p>
 <p>An edit type for two key/value pairs</p>
 <dl class="py method">
@@ -3569,7 +3561,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>KeyValuePairNode<a class="headerlink" href="#keyvaluepairnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.KeyValuePairNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">KeyValuePairNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.LeafNode" title="graphtage.LeafNode">graphtage.LeafNode</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">KeyValuePairNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a></p>
 <p>A node containing a key/value pair.</p>
 <p>This is used by nodes subclassing <a class="reference internal" href="#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MappingNode</span></code></a>.</p>
@@ -4110,7 +4102,7 @@ and thereby mutable.</p>
 <h3>ListNode<a class="headerlink" href="#listnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.ListNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ListNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">ListNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ListNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A node containing an ordered sequence of nodes.</p>
 <dl class="py method">
@@ -4392,7 +4384,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>MappingNode<a class="headerlink" href="#mappingnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.MappingNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">MappingNode</code><a class="headerlink" href="#graphtage.MappingNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">MappingNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.MappingNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>An abstract base class for nodes that represent mappings.</p>
 <dl class="py method">
@@ -4708,7 +4700,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>Match<a class="headerlink" href="#match" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.Match">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Match</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">match_from</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">match_to</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Match" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Match</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ConstantCostEdit" title="graphtage.ConstantCostEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ConstantCostEdit</span></code></a></p>
 <p>A constant cost edit specifying that one node should be matched to another.</p>
 <dl class="py method">
@@ -4828,7 +4820,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>MultiSetNode<a class="headerlink" href="#multisetnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.MultiSetNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">MultiSetNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">items</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.MultiSetNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">MultiSetNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.MultiSetNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A node representing a set that can contain duplicate items.</p>
 <dl class="py method">
@@ -5079,7 +5071,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>PossibleEdits<a class="headerlink" href="#possibleedits" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.PossibleEdits">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">PossibleEdits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">edits</span><span class="p">:</span> <span class="n">Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">initial_cost</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.PossibleEdits" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">PossibleEdits</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.PossibleEdits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a></p>
 <p>A compound edit that chooses the best option among one or more competing alternatives.</p>
 <p>The best option is chosen by performing <a class="reference internal" href="graphtage.search.html#graphtage.search.IterativeTighteningSearch" title="graphtage.search.IterativeTighteningSearch"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.search.IterativeTighteningSearch</span></code></a> on the alternatives.</p>
@@ -5246,12 +5238,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>Remove<a class="headerlink" href="#remove" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.Remove">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_remove</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">remove_from</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">penalty</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Remove" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ConstantCostEdit" title="graphtage.ConstantCostEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ConstantCostEdit</span></code></a></p>
 <p>A constant cost edit specifying that a node should be removed from a container.</p>
 <dl class="py attribute">
 <dt id="graphtage.Remove.REMOVE_STRING">
-<code class="sig-name descname">REMOVE_STRING</code><em class="property">: str</em><em class="property"> = '~~'</em><a class="headerlink" href="#graphtage.Remove.REMOVE_STRING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">REMOVE_STRING</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = '~~'</em><a class="headerlink" href="#graphtage.Remove.REMOVE_STRING" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5371,7 +5363,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>Replace<a class="headerlink" href="#replace" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.Replace">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Replace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_replace</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">replace_with</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">Replace</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.ConstantCostEdit" title="graphtage.ConstantCostEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ConstantCostEdit</span></code></a></p>
 <p>A constant cost edit specifying that one node should be replaced with another.</p>
 <dl class="py method">
@@ -5491,7 +5483,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>StringEdit<a class="headerlink" href="#stringedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.StringEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">StringEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">StringEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractEdit" title="graphtage.AbstractEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractEdit</span></code></a></p>
 <p>An edit returned from a <a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringNode</span></code></a></p>
 <dl class="py method">
@@ -5624,7 +5616,7 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 <h3>StringFormatter<a class="headerlink" href="#stringformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.StringFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">StringFormatter</code><a class="headerlink" href="#graphtage.StringFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.</code><code class="sig-name descname">StringFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter</span></code></a></p>
 <p>A default string formatter</p>
 <dl class="py attribute">
@@ -5683,7 +5675,7 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.is_quoted">
-<code class="sig-name descname">is_quoted</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#graphtage.StringFormatter.is_quoted" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_quoted</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.StringFormatter.is_quoted" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

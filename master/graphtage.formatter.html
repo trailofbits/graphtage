@@ -27,7 +27,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -362,7 +362,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <h3>BasicFormatter<a class="headerlink" href="#basicformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.formatter.BasicFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">BasicFormatter</code><a class="headerlink" href="#graphtage.formatter.BasicFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">BasicFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.BasicFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a></p>
 <p>A basic formatter that falls back on an item’s natural string representation if no formatter is found.</p>
 <dl class="py attribute">
@@ -396,7 +396,7 @@ yet been tested, and repeat this process given each one.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.formatter.BasicFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.BasicFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.BasicFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -441,7 +441,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <h3>Formatter<a class="headerlink" href="#formatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.formatter.Formatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">Formatter</code><a class="headerlink" href="#graphtage.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">Formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.formatter.Formatter.DEFAULT_INSTANCE">
@@ -475,7 +475,7 @@ yet been tested, and repeat this process given each one.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.formatter.Formatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: bool</em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.Formatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.Formatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -519,7 +519,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <h3>FormatterChecker<a class="headerlink" href="#formatterchecker" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.formatter.FormatterChecker">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">FormatterChecker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">clsdict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.FormatterChecker" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">FormatterChecker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">namespace</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.FormatterChecker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 <p>The metaclass for <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a>.</p>
 <p>For every class that subclasses <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a>, if <a class="reference internal" href="#graphtage.formatter.Formatter.is_partial" title="graphtage.formatter.Formatter.is_partial"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.is_partial</span></code></a> is <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code> (the default)

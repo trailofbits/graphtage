@@ -27,7 +27,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -191,7 +191,7 @@
 <h3>FixedLengthSequenceEdit<a class="headerlink" href="#fixedlengthsequenceedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.FixedLengthSequenceEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">FixedLengthSequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">FixedLengthSequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceEdit</span></code></a></p>
 <p>An edit for sequences that does not consider interleaving.</p>
 <dl class="py method">
@@ -329,7 +329,7 @@ the sub-edits:</p>
 
 <dl class="py method">
 <dt id="graphtage.sequences.FixedLengthSequenceEdit.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tightens the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.bounds()</span></code> on the cost of this edit, if possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -359,7 +359,7 @@ the sub-edits:</p>
 <h3>SequenceEdit<a class="headerlink" href="#sequenceedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.SequenceEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>An edit type for sequence nodes.</p>
 <dl class="py method">
@@ -527,7 +527,7 @@ the sub-edits:</p>
 <h3>SequenceFormatter<a class="headerlink" href="#sequenceformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.SequenceFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_symbol</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">end_symbol</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">delimiter</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">delimiter_callback</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter</span></code></a></p>
 <p>A formatter for sequence nodes and edits.</p>
 <p>This class will typically be subclassed so that its methods can be overridden to match the style of its parent
@@ -590,7 +590,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: bool</em><em class="property"> = True</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is a partial formatter; it will not be automatically used in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
 </dd></dl>
 
@@ -695,7 +695,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>SequenceNode<a class="headerlink" href="#sequencenode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.SequenceNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>A node representing a sequence, like a list, set, or dict.</p>
 <dl class="py method">
