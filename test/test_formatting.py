@@ -222,6 +222,11 @@ class TestFormatting(TestCase):
         # However, test_formatter_coverage will complain unless this function is here!
         pass
 
+    def test_json5_formatting(self):
+        # For now, JSON5 support is implemented using the regular JSON formatter, so we don't need a separate test.
+        # However, test_formatter_coverage will complain unless this function is here!
+        pass
+
     @filetype_test
     def test_yaml_formatting(self):
         orig_obj = TestFormatting.make_random_obj(
