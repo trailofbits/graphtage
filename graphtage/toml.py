@@ -105,6 +105,17 @@ class TOMLMapping:
             if not isinstance(kvp.value, MappingNode):
                 yield kvp
 
+    def __bool__(self):
+        try:
+            next(self.items())
+            return True
+        except StopIteration:
+            try:
+                next(self.children())
+                return False
+            except StopIteration:
+                return True
+
     def children(self) -> Iterator['TOMLMapping']:
         inserted = ()
         if self.mapping.edited and self.mapping.inserted:
@@ -139,23 +150,24 @@ class TOMLFormatter(GraphtageFormatter):
         mappings = [TOMLMapping(node)]
         while mappings:
             m: TOMLMapping = mappings.pop()
-            name = m.name_segments
-            if name:
-                printer.write('[')
-                first = True
-                for s in name:
-                    if first:
-                        first = False
-                    else:
-                        printer.write('.')
-                    if isinstance(s, StringNode):
-                        s.quoted = False
-                    self.print(printer, s)
-                printer.write(']')
+            if m:
+                name = m.name_segments
+                if name:
+                    printer.write('[')
+                    first = True
+                    for s in name:
+                        if first:
+                            first = False
+                        else:
+                            printer.write('.')
+                        if isinstance(s, StringNode):
+                            s.quoted = False
+                        self.print(printer, s)
+                    printer.write(']')
+                    printer.newline()
+                for kvp in m.items():
+                    self.print(printer, kvp)
                 printer.newline()
-            for kvp in m.items():
-                self.print(printer, kvp)
-            printer.newline()
             mappings.extend(m.children())
 
 
