@@ -192,7 +192,7 @@ class TOML(Filetype):
     def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         try:
             return self.build_tree(path=path, options=options)
-        except ValueError as e:
+        except (IndexError, TypeError, ValueError) as e:
             return f'Error parsing {os.path.basename(path)}: {e})'
 
     def get_default_formatter(self) -> json.JSONFormatter:

@@ -6,6 +6,7 @@ from io import StringIO
 from typing import FrozenSet, Optional, Tuple, Type, Union
 from unittest import TestCase
 
+import toml
 import yaml
 from tqdm import trange
 
@@ -46,7 +47,10 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
         for _ in trange(iterations):
             orig_obj, str_representation = test_func(self)
             with graphtage.utils.Tempfile(str_representation.encode('utf-8')) as t:
-                tree = filetype.build_tree(t)
+                tree = filetype.build_tree_handling_errors(t)
+                if isinstance(tree, str):
+                    self.fail(f"""{filetype_name.upper()} parse error {tree}: Original object:
+{orig_obj!r}""")
                 stream = StringIO()
                 printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
                 formatter.print(printer, tree)
@@ -100,11 +104,17 @@ class TestFormatting(TestCase):
         ])()
 
     @staticmethod
-    def _make_random_obj(obj_stack, force_container_type: Optional[Type[Union[dict, list]]] = None, *args, **kwargs):
+    def _make_random_obj(
+            obj_stack,
+            force_container_type: Optional[Type[Union[dict, list]]] = None,
+            allow_non_container: bool = True,
+            *args,
+            **kwargs
+    ):
         r = random.random()
-        NON_CONTAINER_PROB = 0.1
+        NON_CONTAINER_PROB = [0.0, 0.1][allow_non_container]
         CONTAINER_PROB = (1.0 - NON_CONTAINER_PROB) / 2.0
-        if r <= NON_CONTAINER_PROB:
+        if r <= NON_CONTAINER_PROB and allow_non_container:
             ret = TestFormatting.make_random_non_container(*args, **kwargs)
         elif r <= NON_CONTAINER_PROB + CONTAINER_PROB:
             if force_container_type is not None:
@@ -125,9 +135,18 @@ class TestFormatting(TestCase):
             force_string_keys: bool = False,
             allow_empty_containers: bool = True,
             alternate_containers: bool = False,
+            lists_can_contain_dicts: bool = True,
+            force_outer_container_type: Optional[Type[Union[dict, list]]] = None,
+            allow_lists: bool = True,
             *args, **kwargs):
         obj_stack = []
-        ret = TestFormatting._make_random_obj(obj_stack, *args, **kwargs)
+        ret = TestFormatting._make_random_obj(
+            obj_stack,
+            force_container_type=force_outer_container_type,
+            allow_non_container=force_outer_container_type is None,
+            *args,
+            **kwargs
+        )
 
         while obj_stack:
             expanding = obj_stack.pop()
@@ -141,7 +160,9 @@ class TestFormatting(TestCase):
                         expanding[TestFormatting.make_random_non_container(*args, **kwargs)] = \
                             TestFormatting.make_random_non_container(*args, **kwargs)
                 else:
-                    if alternate_containers:
+                    if not allow_lists:
+                        force_container_type = dict
+                    elif alternate_containers:
                         force_container_type = list
                     else:
                         force_container_type = None
@@ -160,7 +181,9 @@ class TestFormatting(TestCase):
                 if size == 0 and not allow_empty_containers:
                     expanding.append(TestFormatting.make_random_non_container(*args, **kwargs))
                 else:
-                    if alternate_containers:
+                    if not lists_can_contain_dicts and allow_lists:
+                        force_container_type = list
+                    elif alternate_containers:
                         force_container_type = dict
                     else:
                         force_container_type = None
@@ -193,6 +216,22 @@ class TestFormatting(TestCase):
         for row in orig_obj:
             writer.writerow(row)
         return orig_obj, s.getvalue()
+
+    @filetype_test(iterations=200)
+    def test_toml_formatting(self):
+        orig_obj = TestFormatting.make_random_obj(
+            force_string_keys=True,
+            exclude_bytes=frozenset('\t \\\'"\r:[]{}&\n()`|+%<>#*^%$@!~_+-=.,;?/'),
+            allow_empty_containers=False,
+            force_outer_container_type=dict,
+            lists_can_contain_dicts=False,
+            allow_lists=False,
+            allow_empty_strings=False
+        )
+        try:
+            return orig_obj, toml.dumps(orig_obj)
+        except (TypeError, ValueError, IndexError) as e:
+            self.fail(f"""Invalid random TOML object {orig_obj!r}: {e}""")
 
     @staticmethod
     def make_random_xml() -> xml.XMLElementObj:
