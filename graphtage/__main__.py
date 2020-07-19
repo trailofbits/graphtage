@@ -277,43 +277,47 @@ def main(argv=None) -> int:
         allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
     )
 
-    with printer:
-        with PathOrStdin(args.FROM_PATH) as from_path:
-            with PathOrStdin(args.TO_PATH) as to_path:
-                from_format = graphtage.get_filetype(from_path, from_mime)
-                to_format = graphtage.get_filetype(to_path, to_mime)
-                from_tree = from_format.build_tree_handling_errors(from_path, options)
-                if isinstance(from_tree, str):
-                    sys.stderr.write(from_tree)
-                    sys.stderr.write('\n\n')
-                    sys.exit(1)
-                to_tree = to_format.build_tree_handling_errors(to_path, options)
-                if isinstance(to_tree, str):
-                    sys.stderr.write(to_tree)
-                    sys.stderr.write('\n\n')
-                    sys.exit(1)
-                if match_if is not None or match_unless is not None:
-                    for node in from_tree.dfs():
-                        if match_if is not None:
-                            MatchIf.apply(node, match_if)
-                        if match_unless is not None:
-                            MatchUnless.apply(node, match_unless)
-                had_edits = False
-                if args.only_edits:
-                    for edit in from_tree.get_all_edits(to_tree):
-                        printer.write(str(edit))
-                        printer.newline()
-                        had_edits = had_edits or edit.has_non_zero_cost()
-                else:
-                    diff = from_tree.diff(to_tree)
-                    if args.format is not None:
-                        formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+    try:
+        with printer:
+            with PathOrStdin(args.FROM_PATH) as from_path:
+                with PathOrStdin(args.TO_PATH) as to_path:
+                    from_format = graphtage.get_filetype(from_path, from_mime)
+                    to_format = graphtage.get_filetype(to_path, to_mime)
+                    from_tree = from_format.build_tree_handling_errors(from_path, options)
+                    if isinstance(from_tree, str):
+                        sys.stderr.write(from_tree)
+                        sys.stderr.write('\n\n')
+                        sys.exit(1)
+                    to_tree = to_format.build_tree_handling_errors(to_path, options)
+                    if isinstance(to_tree, str):
+                        sys.stderr.write(to_tree)
+                        sys.stderr.write('\n\n')
+                        sys.exit(1)
+                    if match_if is not None or match_unless is not None:
+                        for node in from_tree.dfs():
+                            if match_if is not None:
+                                MatchIf.apply(node, match_if)
+                            if match_unless is not None:
+                                MatchUnless.apply(node, match_unless)
+                    had_edits = False
+                    if args.only_edits:
+                        for edit in from_tree.get_all_edits(to_tree):
+                            printer.write(str(edit))
+                            printer.newline()
+                            had_edits = had_edits or edit.has_non_zero_cost()
                     else:
-                        formatter = from_format.get_default_formatter()
-                    formatter.print(printer, diff)
-                    had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
-        printer.write('\n')
-    printer.close()
+                        diff = from_tree.diff(to_tree)
+                        if args.format is not None:
+                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                        else:
+                            formatter = from_format.get_default_formatter()
+                        formatter.print(printer, diff)
+                        had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
+            printer.write('\n')
+    except KeyboardInterrupt:
+        sys.exit(1)
+    finally:
+        printer.close()
     if had_edits:
         return 1
     else:
