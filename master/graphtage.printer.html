@@ -204,8 +204,13 @@ the command line).</p></li>
 </ol>
 <dl class="py attribute">
 <dt id="graphtage.printer.DEFAULT_PRINTER">
-<code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">DEFAULT_PRINTER</code><em class="property">: Printer</em><a class="headerlink" href="#graphtage.printer.DEFAULT_PRINTER" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">DEFAULT_PRINTER</code><a class="headerlink" href="#graphtage.printer.DEFAULT_PRINTER" title="Permalink to this definition">¶</a></dt>
 <dd><p>A default <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> instance printing to <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer">Printer</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="section" id="printer-classes">
@@ -561,13 +566,13 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.background">
-<code class="sig-name descname">background</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.background" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">background</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bg_color</span><span class="p">:</span> <span class="n">colorama.ansi.AnsiBack</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the given background color.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.bright">
-<code class="sig-name descname">bright</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.bright" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bright</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.bright" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the bright style enabled.</p>
 </dd></dl>
 
@@ -583,7 +588,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.color">
-<code class="sig-name descname">color</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.color" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">color</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">foreground_color</span><span class="p">:</span> <span class="n">colorama.ansi.AnsiFore</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the given foreground color.</p>
 </dd></dl>
 
@@ -595,7 +600,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.dim">
-<code class="sig-name descname">dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.dim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dim</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.HTMLPrinter.dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the dim style enabled.</p>
 </dd></dl>
 
@@ -710,7 +715,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.under_plus">
-<code class="sig-name descname">under_plus</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLPrinter.under_plus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">under_plus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLPrinter.under_plus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer where printed strings will have a plus underneath.</p>
 </dd></dl>
 
@@ -793,13 +798,13 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.background">
-<code class="sig-name descname">background</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.background" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">background</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bg_color</span><span class="p">:</span> <span class="n">colorama.ansi.AnsiBack</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the given background color.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.bright">
-<code class="sig-name descname">bright</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.bright" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bright</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.bright" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the bright style enabled.</p>
 </dd></dl>
 
@@ -815,7 +820,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.color">
-<code class="sig-name descname">color</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.color" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">color</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">foreground_color</span><span class="p">:</span> <span class="n">colorama.ansi.AnsiFore</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the given foreground color.</p>
 </dd></dl>
 
@@ -827,7 +832,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.dim">
-<code class="sig-name descname">dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.dim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dim</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><a class="headerlink" href="#graphtage.printer.Printer.dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer with the dim style enabled.</p>
 </dd></dl>
 
@@ -926,7 +931,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.strike">
-<code class="sig-name descname">strike</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.CombiningMarkContext" title="graphtage.printer.CombiningMarkContext">graphtage.printer.CombiningMarkContext</a><a class="headerlink" href="#graphtage.printer.Printer.strike" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">strike</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.printer.CombiningMarkContext" title="graphtage.printer.CombiningMarkContext">graphtage.printer.CombiningMarkContext</a><a class="headerlink" href="#graphtage.printer.Printer.strike" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer where printed strings will be striked out.</p>
 </dd></dl>
 
@@ -954,7 +959,7 @@ provide additional formatting options to functions that use this printer.</p></l
 
 <dl class="py method">
 <dt id="graphtage.printer.Printer.under_plus">
-<code class="sig-name descname">under_plus</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Printer.under_plus" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">under_plus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Printer.under_plus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new context for this printer where printed strings will have a plus underneath.</p>
 </dd></dl>
 

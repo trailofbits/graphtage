@@ -186,28 +186,43 @@
 automatically updates the version used in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and rendered in the documentation.</p>
 <dl class="py attribute">
 <dt id="graphtage.version.DEV_BUILD">
-<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">DEV_BUILD</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><a class="headerlink" href="#graphtage.version.DEV_BUILD" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">DEV_BUILD</code><a class="headerlink" href="#graphtage.version.DEV_BUILD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets whether this build is a development build.
 This should only be set to <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> to coincide with a release. It should <em>always</em> be <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> before
 deploying to PyPI.</p>
 <p>If <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, the git branch will be included in <a class="reference internal" href="#graphtage.version.__version__" title="graphtage.version.__version__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.version.__version__</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.version.__version__">
-<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">__version__</code><em class="property">: Tuple[Union[int, str], …]</em><a class="headerlink" href="#graphtage.version.__version__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">__version__</code><a class="headerlink" href="#graphtage.version.__version__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The version of Graphtage. This tuple can contain any sequence of ints and
 strings. Typically this will be three ints: major/minor/revision number. However, it can contain additional
 ints and strings. If <a class="reference internal" href="#graphtage.version.DEV_BUILD" title="graphtage.version.DEV_BUILD"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.version.DEV_BUILD</span></code></a>, then <cite>(“git”, git_branch())</cite> will be appended to the
 version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Tuple[Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>], ..]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.version.VERSION_STRING">
-<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">VERSION_STRING</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><a class="headerlink" href="#graphtage.version.VERSION_STRING" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.version.</code><code class="sig-name descname">VERSION_STRING</code><a class="headerlink" href="#graphtage.version.VERSION_STRING" title="Permalink to this definition">¶</a></dt>
 <dd><p>A rendered string containing the version of Graphtage. Each element of
 <a class="reference internal" href="#graphtage.version.__version__" title="graphtage.version.__version__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.version.__version__</span></code></a> is appended to the string, delimited by a “.” if the element is an <code class="docutils literal notranslate"><span class="pre">int</span></code>
 or a “-” if the element is a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="section" id="version-functions">
