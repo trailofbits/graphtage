@@ -574,8 +574,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             return Replace(self, node)
 
     def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
-        for k, v in self._children.items():
-            yield k.to_obj(), v.to_obj()
+        yield from iter(self._children.items())
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
