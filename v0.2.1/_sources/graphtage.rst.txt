@@ -1,0 +1,331 @@
+graphtage
+=========
+
+.. automodule:: graphtage
+
+graphtage classes
+-----------------
+
+AbstractCompoundEdit
+********************
+
+.. autoclass:: AbstractCompoundEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+AbstractEdit
+************
+
+.. autoclass:: AbstractEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+BoolNode
+********
+
+.. autoclass:: BoolNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+BuildOptions
+************
+
+.. autoclass:: BuildOptions
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CompoundEdit
+************
+
+.. autoclass:: CompoundEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ConstantCostEdit
+****************
+
+.. autoclass:: ConstantCostEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ContainerNode
+*************
+
+.. autoclass:: ContainerNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+DictNode
+********
+
+.. autoclass:: DictNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Edit
+****
+
+.. autoclass:: Edit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+EditCollection
+**************
+
+.. autoclass:: EditCollection
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+EditSequence
+************
+
+.. autoclass:: EditSequence
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+EditedTreeNode
+**************
+
+.. autoclass:: EditedTreeNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Filetype
+********
+
+.. autoclass:: Filetype
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FiletypeWatcher
+***************
+
+.. autoclass:: FiletypeWatcher
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FixedKeyDictNode
+****************
+
+.. autoclass:: FixedKeyDictNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FixedKeyDictNodeEdit
+********************
+
+.. autoclass:: FixedKeyDictNodeEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FloatNode
+*********
+
+.. autoclass:: FloatNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+GraphtageFormatter
+******************
+
+.. autoclass:: GraphtageFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Insert
+******
+
+.. autoclass:: Insert
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+IntegerNode
+***********
+
+.. autoclass:: IntegerNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+KeyValuePairEdit
+****************
+
+.. autoclass:: KeyValuePairEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+KeyValuePairNode
+****************
+
+.. autoclass:: KeyValuePairNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+LeafNode
+********
+
+.. autoclass:: LeafNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ListNode
+********
+
+.. autoclass:: ListNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MappingNode
+***********
+
+.. autoclass:: MappingNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Match
+*****
+
+.. autoclass:: Match
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MultiSetNode
+************
+
+.. autoclass:: MultiSetNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PossibleEdits
+*************
+
+.. autoclass:: PossibleEdits
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Remove
+******
+
+.. autoclass:: Remove
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Replace
+*******
+
+.. autoclass:: Replace
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+StringEdit
+**********
+
+.. autoclass:: StringEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+StringFormatter
+***************
+
+.. autoclass:: StringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+StringNode
+**********
+
+.. autoclass:: StringNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TreeNode
+********
+
+.. autoclass:: TreeNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+graphtage functions
+-------------------
+
+explode_edits
+*************
+
+.. autofunction:: explode_edits
+
+get_filetype
+************
+
+.. autofunction:: get_filetype
+
+string_edit_distance
+********************
+
+.. autofunction:: string_edit_distance
