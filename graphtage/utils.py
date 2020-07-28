@@ -418,11 +418,8 @@ def largest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Call
 
     heap: MaxFibonacciHeap[T, Any] = MaxFibonacciHeap(key=key)
 
-    try:
-        for s in sequence:
-            heap.push(s)
-    except TypeError:
-        breakpoint()
+    for s in sequence:
+        heap.push(s)
 
     for _ in range(n):
         if not heap:
