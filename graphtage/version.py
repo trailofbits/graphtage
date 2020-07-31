@@ -51,10 +51,10 @@ def git_branch() -> Optional[str]:
 DEV_BUILD = True
 """Sets whether this build is a development build.
 
-This should only be set to :const:`True` to coincide with a release. It should *always* be :const:`True` before
+This should only be set to :const:`False` to coincide with a release. It should *always* be :const:`False` before
 deploying to PyPI.
 
-If :const:`False`, the git branch will be included in the version string.
+If :const:`True`, the git branch will be included in the version string.
 
 """
 
