@@ -1,7 +1,10 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION_MODULE_PATH = os.path.join(os.path.realpath(os.path.dirname(__file__)), "graphtage", "version.py")
+HERE = os.path.realpath(os.path.dirname(__file__))
+
+VERSION_MODULE_PATH = os.path.join(HERE, "graphtage", "version.py")
+README_PATH = os.path.join(HERE, "README.md")
 
 
 def get_version_string():
@@ -11,9 +14,16 @@ def get_version_string():
     return version['VERSION_STRING']
 
 
+def get_readme():
+    with open(README_PATH) as f:
+        return f.read()
+
+
 setup(
     name='graphtage',
     description='A utility to diff tree-like files such as JSON and XML.',
+    long_description=open(README_PATH).read(),
+    long_description_content_type="text/markdown",
     url='https://github.com/trailofbits/graphtage',
     author='Trail of Bits',
     version=get_version_string(),
@@ -34,7 +44,7 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==0.4.3"]
+        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==0.4.3", "twine"]
     },
     classifiers=[
         'Development Status :: 4 - Beta',
