@@ -15,7 +15,7 @@ def get_version_string():
 
 
 def get_readme():
-    with open(README_PATH) as f:
+    with open(README_PATH, encoding='utf-8') as f:
         return f.read()
 
 
