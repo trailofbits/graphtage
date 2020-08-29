@@ -7,14 +7,14 @@
 Graphtage is a commandline utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
 for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, and CSS files. Its name is a
 portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
-that they grow as one. 
+that they grow as one.
 
 <p align="center">
-  <img src="docs/example.png?raw=true" title="Graphtage Example">
+  <img src="https://raw.githubusercontent.com/trailofbits/graphtage/master/docs/example.png" title="Graphtage Example">
 </p>
- 
+
 ## Installation
- 
+
 ```console
 $ pip3 install graphtage
 ```
