@@ -1,5 +1,7 @@
-graphtage.egg-info
 __pycache__
-*.pyc
-.python_history
 .cache
+.python_history
+*.pyc
+build/
+dist/
+graphtage.egg-info
