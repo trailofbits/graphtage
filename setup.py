@@ -22,9 +22,14 @@ def get_readme():
 setup(
     name='graphtage',
     description='A utility to diff tree-like files such as JSON and XML.',
-    long_description=open(README_PATH).read(),
+    long_description=get_readme(),
     long_description_content_type="text/markdown",
     url='https://github.com/trailofbits/graphtage',
+    project_urls={
+        'Documentation': 'https://trailofbits.github.io/graphtage',
+        'Source': 'https://github.com/trailofbits/graphtage',
+        'Tracker': 'https://github.com/trailofbits/graphtage/issues',
+    },
     author='Trail of Bits',
     version=get_version_string(),
     packages=find_packages(exclude=['test']),
