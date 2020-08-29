@@ -17,7 +17,7 @@ setup(
     url='https://github.com/trailofbits/graphtage',
     author='Trail of Bits',
     version=get_version_string(),
-    packages=find_packages(),
+    packages=find_packages(exclude=['test']),
     python_requires='>=3.6',
     install_requires=[
         'colorama',
@@ -43,5 +43,6 @@ setup(
         'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Utilities'
-    ]
+    ],
+    include_package_data=True
 )
