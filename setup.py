@@ -22,6 +22,7 @@ def get_readme():
 setup(
     name='graphtage',
     description='A utility to diff tree-like files such as JSON and XML.',
+    license="LGPL-3.0-or-later",
     long_description=get_readme(),
     long_description_content_type="text/markdown",
     url='https://github.com/trailofbits/graphtage',
