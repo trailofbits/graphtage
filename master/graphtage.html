@@ -237,7 +237,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> into.</p></li>
+<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.AbstractCompoundEdit.from_node" title="graphtage.AbstractCompoundEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
 <li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
 <li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
 </ul>
@@ -290,6 +290,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.AbstractCompoundEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.AbstractCompoundEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.AbstractCompoundEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.AbstractCompoundEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -297,6 +302,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.AbstractCompoundEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.AbstractCompoundEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.AbstractCompoundEdit.is_complete">
@@ -397,7 +407,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> into.</p></li>
+<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.AbstractEdit.from_node" title="graphtage.AbstractEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
 <li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
 <li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
 </ul>
@@ -430,6 +440,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.AbstractEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.AbstractEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.AbstractEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.AbstractEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -437,6 +452,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.AbstractEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.AbstractEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.AbstractEdit.is_complete">
@@ -463,7 +483,7 @@ of this edit and will not affect the semantics of the edit.</p>
 
 <dl class="py method">
 <dt id="graphtage.AbstractEdit.on_diff">
-<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>EditedTreeNode<span class="p">, </span>TreeNode<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit.on_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a> in <a class="reference internal" href="#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code></a>.</p>
 <p>This default implementation adds the edit to the node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
@@ -602,7 +622,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.BoolNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.BoolNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.BoolNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -814,6 +834,11 @@ and thereby mutable.</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.CompoundEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.CompoundEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.CompoundEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.CompoundEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -821,6 +846,11 @@ and thereby mutable.</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.CompoundEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.CompoundEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.CompoundEdit.is_complete">
@@ -904,7 +934,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.ConstantCostEdit.from_node" title="graphtage.ConstantCostEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
@@ -936,6 +966,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.ConstantCostEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.ConstantCostEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.ConstantCostEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.ConstantCostEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -943,6 +978,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.ConstantCostEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.ConstantCostEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.ConstantCostEdit.is_complete">
@@ -969,7 +1009,7 @@ of this edit and will not affect the semantics of the edit.</p>
 
 <dl class="py method">
 <dt id="graphtage.ConstantCostEdit.on_diff">
-<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>EditedTreeNode<span class="p">, </span>TreeNode<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit.on_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a> in <a class="reference internal" href="#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code></a>.</p>
 <p>This default implementation adds the edit to the node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
@@ -1100,7 +1140,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py attribute">
 <dt id="graphtage.ContainerNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.ContainerNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.ContainerNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1408,7 +1448,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py attribute">
 <dt id="graphtage.DictNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.DictNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.DictNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1640,6 +1680,11 @@ set this by calling <a class="reference internal" href="#graphtage.Edit.bounds" 
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="id0">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.Edit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.Edit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -1647,6 +1692,11 @@ set this by calling <a class="reference internal" href="#graphtage.Edit.bounds" 
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="id1">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Edit.is_complete">
@@ -1661,7 +1711,7 @@ regardless of whether our bounds have been fully tightened.</p>
 
 <dl class="py method">
 <dt id="graphtage.Edit.on_diff">
-<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>EditedTreeNode<span class="p">, </span>TreeNode<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit.on_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a> in <a class="reference internal" href="#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code></a>.</p>
 <p>This default implementation adds the edit to the node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
@@ -1729,7 +1779,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> into.</p></li>
+<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.EditCollection.from_node" title="graphtage.EditCollection.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
 <li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
 <li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
 </ul>
@@ -1782,6 +1832,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.EditCollection.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.EditCollection.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.EditCollection.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.EditCollection.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -1789,6 +1844,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.EditCollection.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.EditCollection.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.EditCollection.is_complete">
@@ -1889,7 +1949,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> into.</p></li>
+<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.EditSequence.from_node" title="graphtage.EditSequence.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
 <li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
 <li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
 </ul>
@@ -1942,6 +2002,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.EditSequence.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.EditSequence.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.EditSequence.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.EditSequence.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -1949,6 +2014,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.EditSequence.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.EditSequence.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.EditSequence.is_complete">
@@ -2345,7 +2415,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py attribute">
 <dt id="graphtage.FixedKeyDictNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.FixedKeyDictNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.FixedKeyDictNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2556,7 +2626,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code>.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <a class="reference internal" href="#graphtage.FixedKeyDictNodeEdit.from_node" title="graphtage.FixedKeyDictNodeEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is not an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2606,6 +2676,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.FixedKeyDictNodeEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.FixedKeyDictNodeEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -2613,6 +2688,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.FixedKeyDictNodeEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.FixedKeyDictNodeEdit.is_complete">
@@ -2790,7 +2870,7 @@ the sub-edits:</p>
 
 <dl class="py attribute">
 <dt id="graphtage.FloatNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.FloatNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.FloatNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2954,7 +3034,7 @@ and thereby mutable.</p>
 <p>A base class for defining formatters that operate on <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code></a> and <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a>.</p>
 <dl class="py attribute">
 <dt id="graphtage.GraphtageFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.GraphtageFormatter object&gt;</em><a class="headerlink" href="#graphtage.GraphtageFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.GraphtageFormatter object&gt;</em><a class="headerlink" href="#graphtage.GraphtageFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2988,12 +3068,12 @@ and thereby mutable.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.GraphtageFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.GraphtageFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.GraphtageFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.GraphtageFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.GraphtageFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.GraphtageFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3019,12 +3099,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.GraphtageFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.GraphtageFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.GraphtageFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.GraphtageFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.GraphtageFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.GraphtageFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3050,7 +3130,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.Insert.from_node" title="graphtage.Insert.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
@@ -3082,6 +3162,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.Insert.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.Insert.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.Insert.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.Insert.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -3089,6 +3174,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.Insert.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.Insert.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Insert.insert_into">
@@ -3251,7 +3341,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.IntegerNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.IntegerNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.IntegerNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3475,6 +3565,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.KeyValuePairEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.KeyValuePairEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.KeyValuePairEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.KeyValuePairEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -3482,6 +3577,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.KeyValuePairEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.KeyValuePairEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.KeyValuePairEdit.is_complete">
@@ -3715,7 +3815,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py attribute">
 <dt id="graphtage.KeyValuePairNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.KeyValuePairNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.KeyValuePairNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -3953,7 +4053,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.LeafNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.LeafNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.LeafNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -4238,7 +4338,7 @@ another list of the same length.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.ListNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.ListNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.ListNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -4543,7 +4643,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py attribute">
 <dt id="graphtage.MappingNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.MappingNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.MappingNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -4721,7 +4821,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.Match.from_node" title="graphtage.Match.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
@@ -4753,6 +4853,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.Match.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.Match.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.Match.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.Match.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -4760,6 +4865,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.Match.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.Match.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Match.is_complete">
@@ -4925,7 +5035,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py attribute">
 <dt id="graphtage.MultiSetNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.MultiSetNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.MultiSetNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5093,7 +5203,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.PossibleEdits.from_node" title="graphtage.PossibleEdits.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>edits</strong> – One or more edits from which to choose.</p></li>
 <li><p><strong>initial_cost</strong> – Initial bounds on the cost of the best choice, if known.</p></li>
 </ul>
@@ -5152,6 +5262,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.PossibleEdits.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.PossibleEdits.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.PossibleEdits.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.PossibleEdits.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -5159,6 +5274,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.PossibleEdits.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.PossibleEdits.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.PossibleEdits.is_complete">
@@ -5264,7 +5384,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.Remove.from_node" title="graphtage.Remove.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
@@ -5296,6 +5416,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.Remove.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.Remove.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.Remove.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.Remove.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -5303,6 +5428,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.Remove.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.Remove.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Remove.is_complete">
@@ -5384,7 +5514,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is being transformed.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.Replace.from_node" title="graphtage.Replace.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
 <li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
@@ -5416,6 +5546,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.Replace.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.Replace.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.Replace.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.Replace.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -5423,6 +5558,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.Replace.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.Replace.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.Replace.is_complete">
@@ -5449,7 +5589,7 @@ of this edit and will not affect the semantics of the edit.</p>
 
 <dl class="py method">
 <dt id="graphtage.Replace.on_diff">
-<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>EditedTreeNode<span class="p">, </span>TreeNode<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace.on_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a> in <a class="reference internal" href="#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code></a>.</p>
 <p>This default implementation adds the edit to the node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
@@ -5504,7 +5644,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> into.</p></li>
+<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.StringEdit.from_node" title="graphtage.StringEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
 <li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
 <li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
 </ul>
@@ -5537,6 +5677,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.StringEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.StringEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.StringEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.StringEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -5544,6 +5689,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.StringEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.StringEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.StringEdit.is_complete">
@@ -5570,7 +5720,7 @@ of this edit and will not affect the semantics of the edit.</p>
 
 <dl class="py method">
 <dt id="graphtage.StringEdit.on_diff">
-<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>EditedTreeNode<span class="p">, </span>TreeNode<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit.on_diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">on_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a> in <a class="reference internal" href="#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code></a>.</p>
 <p>This default implementation adds the edit to the node:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">from_node</span><span class="o">.</span><span class="n">edit</span> <span class="o">=</span> <span class="bp">self</span>
@@ -5631,7 +5781,7 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 <p>A default string formatter</p>
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property"> = &lt;graphtage.StringFormatter object&gt;</em><a class="headerlink" href="#graphtage.StringFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.StringFormatter object&gt;</em><a class="headerlink" href="#graphtage.StringFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5680,7 +5830,7 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property"> = False</em><a class="headerlink" href="#graphtage.StringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.StringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -5690,12 +5840,12 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.StringFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.StringFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.StringFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5731,12 +5881,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property"> = ()</em><a class="headerlink" href="#graphtage.StringFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.StringFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.StringFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property"> = []</em><a class="headerlink" href="#graphtage.StringFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.StringFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -5873,7 +6023,7 @@ already automatically been configured to format them prior to the call to
 
 <dl class="py attribute">
 <dt id="graphtage.StringNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.StringNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.StringNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -6099,7 +6249,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py attribute">
 <dt id="graphtage.TreeNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.TreeNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.TreeNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

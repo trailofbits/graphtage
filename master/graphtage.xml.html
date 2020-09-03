@@ -335,7 +335,7 @@ accepted by this module.</p>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceFormatter" title="graphtage.sequences.SequenceFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceFormatter</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLChildFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLChildFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLChildFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -421,7 +421,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLChildFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -484,12 +484,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLChildFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLChildFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -504,7 +504,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <p>“A node representing an XML element.</p>
 <dl class="py method">
 <dt id="graphtage.xml.XMLElement.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>XMLElement<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">XMLElement</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an XML element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -603,7 +603,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElement.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLElement.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLElement.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -774,7 +774,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceFormatter" title="graphtage.sequences.SequenceFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceFormatter</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementAttribFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLElementAttribFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLElementAttribFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -860,7 +860,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementAttribFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -933,12 +933,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementAttribFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementAttribFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -959,7 +959,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node being edited.</p></li>
-<li><p><strong>to_node</strong> – The node to which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> will be transformed.</p></li>
+<li><p><strong>to_node</strong> – The node to which <a class="reference internal" href="#graphtage.xml.XMLElementEdit.from_node" title="graphtage.xml.XMLElementEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> will be transformed.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1022,6 +1022,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.xml.XMLElementEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.xml.XMLElementEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -1029,6 +1034,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.xml.XMLElementEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.xml.XMLElementEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementEdit.is_complete">
@@ -1130,12 +1140,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>XMLElementObj<a class="headerlink" href="#xmlelementobj" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.xml.XMLElementObj">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementObj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span>XMLElementObj<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementObj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An object for interacting with <a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">XMLElement</span></code></a> from command line expressions.</p>
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementObj.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span>XMLElementObj<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an XML Element Object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1157,7 +1167,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementObj.children">
-<code class="sig-name descname">children</code><em class="property">: Optional[Sequence[‘XMLElementObj’]]</em><a class="headerlink" href="#graphtage.xml.XMLElementObj.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">children</code><em class="property">: Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this element.</p>
 </dd></dl>
 
@@ -1184,7 +1194,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1218,7 +1228,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1259,12 +1269,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.xml.XMLStringFormatter'&gt;, &lt;class 'graphtage.xml.XMLChildFormatter'&gt;, &lt;class 'graphtage.xml.XMLElementAttribFormatter'&gt;]</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.xml.XMLStringFormatter'&gt;, &lt;class 'graphtage.xml.XMLChildFormatter'&gt;, &lt;class 'graphtage.xml.XMLElementAttribFormatter'&gt;]</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1278,7 +1288,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.StringFormatter" title="graphtage.StringFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.StringFormatter</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property"> = &lt;graphtage.xml.XMLStringFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.xml.XMLStringFormatter object&gt;</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1331,7 +1341,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1341,7 +1351,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1382,12 +1392,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

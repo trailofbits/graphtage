@@ -295,7 +295,7 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.CloseBracket.name">
-<code class="sig-name descname">name</code><em class="property"> = 'brackets'</em><a class="headerlink" href="#graphtage.expressions.CloseBracket.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = 'brackets'</em><a class="headerlink" href="#graphtage.expressions.CloseBracket.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -336,7 +336,7 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.CloseParen.name">
-<code class="sig-name descname">name</code><em class="property"> = 'parenthesis'</em><a class="headerlink" href="#graphtage.expressions.CloseParen.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = 'parenthesis'</em><a class="headerlink" href="#graphtage.expressions.CloseParen.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -710,7 +710,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.OpenBracket.name">
-<code class="sig-name descname">name</code><em class="property"> = 'brackets'</em><a class="headerlink" href="#graphtage.expressions.OpenBracket.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = 'brackets'</em><a class="headerlink" href="#graphtage.expressions.OpenBracket.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -750,7 +750,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.OpenParen.name">
-<code class="sig-name descname">name</code><em class="property"> = 'parenthesis'</em><a class="headerlink" href="#graphtage.expressions.OpenParen.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = 'parenthesis'</em><a class="headerlink" href="#graphtage.expressions.OpenParen.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -916,7 +916,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py method">
 <dt id="graphtage.expressions.Operator.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">priority</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">execute</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">, </span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_left_associative</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">arity</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">include_in_global_operator_table</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">expand</span><span class="p">:</span> <span class="n">Optional[Tuple[bool, …]]</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Operator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">token</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">priority</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">execute</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>Any<span class="p">, </span>Any<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">is_left_associative</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">arity</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">include_in_global_operator_table</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">expand</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span><span class="p">…</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Operator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an operator enum.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -940,7 +940,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.Operator.expand">
-<code class="sig-name descname">expand</code><em class="property">: Tuple[bool, …]</em><a class="headerlink" href="#graphtage.expressions.Operator.expand" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">expand</code><em class="property">: Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span><span class="p">…</span><span class="p">]</span></em><a class="headerlink" href="#graphtage.expressions.Operator.expand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether each of the operator’s arguments should be auto-expanded before execution.</p>
 </dd></dl>
 
@@ -989,7 +989,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.OperatorToken.op">
-<code class="sig-name descname">op</code><em class="property">: Operator</em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">op</code><em class="property">: <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator">Operator</a></em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
 <dd><p>The operator associated with this token.</p>
 </dd></dl>
 
@@ -1018,7 +1018,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.PairedEndToken.name">
-<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.expressions.PairedEndToken.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.expressions.PairedEndToken.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1052,7 +1052,7 @@ like parenthesis).</p>
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.PairedStartToken.name">
-<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#graphtage.expressions.PairedStartToken.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.expressions.PairedStartToken.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1271,7 +1271,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.Tokenizer.prev_token">
-<code class="sig-name descname">prev_token</code><em class="property">: Optional<span class="p">[</span>Token<span class="p">]</span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prev_token</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token">Token</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>The previous token yielded by this tokenizer.</p>
 </dd></dl>
 

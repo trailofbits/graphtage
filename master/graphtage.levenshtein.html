@@ -215,8 +215,8 @@ bound.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – The node that will be transformed.</p></li>
-<li><p><strong>to_node</strong> – The node into which <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> will be transformed.</p></li>
-<li><p><strong>from_seq</strong> – A sequence of nodes that comprise <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code>.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.levenshtein.EditDistance.from_node" title="graphtage.levenshtein.EditDistance.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> will be transformed.</p></li>
+<li><p><strong>from_seq</strong> – A sequence of nodes that comprise <a class="reference internal" href="#graphtage.levenshtein.EditDistance.from_node" title="graphtage.levenshtein.EditDistance.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a>.</p></li>
 <li><p><strong>to_seq</strong> – A sequence of nodes that comprise <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_node</span></code>.</p></li>
 <li><p><strong>insert_remove_penalty</strong> – The penalty for inserting or removing a node (default is 1).</p></li>
 </ul>
@@ -268,6 +268,11 @@ minimum cost in the last completed matrix diagonal as the upper bound.</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.levenshtein.EditDistance.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -275,6 +280,11 @@ minimum cost in the last completed matrix diagonal as the upper bound.</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.levenshtein.EditDistance.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.is_complete">

@@ -204,7 +204,7 @@ the elements of one collection to the elements of the other.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – Any sequence node from which to match.</p></li>
 <li><p><strong>to_node</strong> – Any sequence node to which to match.</p></li>
-<li><p><strong>from_set</strong> – The set of nodes from which to match. These should typically be children of <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code>, but
+<li><p><strong>from_set</strong> – The set of nodes from which to match. These should typically be children of <a class="reference internal" href="#graphtage.multiset.MultiSetEdit.from_node" title="graphtage.multiset.MultiSetEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a>, but
 this is neither checked nor enforced.</p></li>
 <li><p><strong>to_set</strong> – The set of nodes to which to match. These should typically be children of <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_node</span></code>, but this
 is neither checked nor enforced.</p></li>
@@ -258,6 +258,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.multiset.MultiSetEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.multiset.MultiSetEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -265,6 +270,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.multiset.MultiSetEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.multiset.MultiSetEdit.is_complete">

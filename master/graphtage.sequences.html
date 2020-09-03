@@ -207,7 +207,7 @@
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is not an instance of <a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code></a>.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <a class="reference internal" href="#graphtage.sequences.FixedLengthSequenceEdit.from_node" title="graphtage.sequences.FixedLengthSequenceEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is not an instance of <a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -257,6 +257,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.sequences.FixedLengthSequenceEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.sequences.FixedLengthSequenceEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -264,6 +269,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.sequences.FixedLengthSequenceEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.sequences.FixedLengthSequenceEdit.is_complete">
@@ -375,7 +385,7 @@ the sub-edits:</p>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code> is not an instance of <a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code></a>.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If <a class="reference internal" href="#graphtage.sequences.SequenceEdit.from_node" title="graphtage.sequences.SequenceEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is not an instance of <a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code></a>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,6 +435,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.sequences.SequenceEdit.from_node">
+<code class="sig-name descname">from_node</code><em class="property">: <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></em><a class="headerlink" href="#graphtage.sequences.SequenceEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.sequences.SequenceEdit.has_non_zero_cost">
 <code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.sequences.SequenceEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
@@ -432,6 +447,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.sequences.SequenceEdit.initial_bounds">
+<code class="sig-name descname">initial_bounds</code><em class="property">: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a></em><a class="headerlink" href="#graphtage.sequences.SequenceEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.sequences.SequenceEdit.is_complete">
@@ -535,7 +555,7 @@ formatter. For an example, see the implementation of <a class="reference interna
 <a class="reference internal" href="graphtage.json.html#graphtage.json.JSONDictFormatter" title="graphtage.json.JSONDictFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.json.JSONDictFormatter</span></code></a>.</p>
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.GraphtageFormatter object&gt;</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.GraphtageFormatter object&gt;</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -622,7 +642,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.parent" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -680,12 +700,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -810,7 +830,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 
 <dl class="py attribute">
 <dt id="graphtage.sequences.SequenceNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.sequences.SequenceNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.sequences.SequenceNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
