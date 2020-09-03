@@ -1,7 +1,10 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION_MODULE_PATH = os.path.join(os.path.realpath(os.path.dirname(__file__)), "graphtage", "version.py")
+HERE = os.path.realpath(os.path.dirname(__file__))
+
+VERSION_MODULE_PATH = os.path.join(HERE, "graphtage", "version.py")
+README_PATH = os.path.join(HERE, "README.md")
 
 
 def get_version_string():
@@ -11,13 +14,26 @@ def get_version_string():
     return version['VERSION_STRING']
 
 
+def get_readme():
+    with open(README_PATH, encoding='utf-8') as f:
+        return f.read()
+
+
 setup(
     name='graphtage',
     description='A utility to diff tree-like files such as JSON and XML.',
+    license="LGPL-3.0-or-later",
+    long_description=get_readme(),
+    long_description_content_type="text/markdown",
     url='https://github.com/trailofbits/graphtage',
+    project_urls={
+        'Documentation': 'https://trailofbits.github.io/graphtage',
+        'Source': 'https://github.com/trailofbits/graphtage',
+        'Tracker': 'https://github.com/trailofbits/graphtage/issues',
+    },
     author='Trail of Bits',
     version=get_version_string(),
-    packages=find_packages(),
+    packages=find_packages(exclude=['test']),
     python_requires='>=3.6',
     install_requires=[
         'colorama',
@@ -34,7 +50,7 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==0.4.3"]
+        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==0.4.3", "twine"]
     },
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -43,5 +59,6 @@ setup(
         'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Utilities'
-    ]
+    ],
+    include_package_data=True
 )
