@@ -337,6 +337,11 @@ def main(argv=None) -> int:
                                     elif yn == '' or yn == 'y':
                                         diff = di.diff
                                         break
+                            else:
+                                # This is just a keyboard interrupt, and since we are not running in a TTY, exit
+                                # TODO: Add a command line option to print out the best solution on keyboard interrupt
+                                #       and handle it here.
+                                sys.exit(1)
                         if args.format is not None:
                             formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                         else:
