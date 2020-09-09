@@ -7,6 +7,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Optional
 
 from .edits import Edit
+from .tree import DiffInterrupt
 from . import expressions
 from . import graphtage
 from . import printer as printermodule
@@ -317,11 +318,25 @@ def main(argv=None) -> int:
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()
                     else:
-                        diff = from_tree.diff(
-                            to_tree,
-                            max_edit_distance=args.max_edit_distance,
-                            edit_distance_delta=args.edit_distance_delta
-                        )
+                        try:
+                            diff = from_tree.diff(
+                                to_tree,
+                                max_edit_distance=args.max_edit_distance,
+                                edit_distance_delta=args.edit_distance_delta
+                            )
+                        except DiffInterrupt as di:
+                            if printer.isatty():
+                                printer.status_stream.write("\nCaught keyboard interrupt.\n")
+                                while True:
+                                    printer.status_stream.write(
+                                        "Would you like to print the current best result? [Yn] ")
+                                    printer.status_stream.flush()
+                                    yn = input().lower()
+                                    if yn == 'n':
+                                        sys.exit(1)
+                                    elif yn == '' or yn == 'y':
+                                        diff = di.diff
+                                        break
                         if args.format is not None:
                             formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                         else:
