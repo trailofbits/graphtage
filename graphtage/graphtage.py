@@ -11,7 +11,7 @@ from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
-from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
+from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
 

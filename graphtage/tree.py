@@ -287,6 +287,13 @@ class EditedTreeNode:
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
 
+class DiffInterrupt(KeyboardInterrupt):
+    def __init__(self, diff: Union[EditedTreeNode, 'TreeNode'], edit: Edit):
+        super().__init__(f"Partial diff: {diff!s}")
+        self.diff = diff
+        self.edit = edit
+
+
 class TreeNode(metaclass=ABCMeta):
     """Abstract base class for nodes in Graphtage's intermediate representation.
 
@@ -497,6 +504,9 @@ class TreeNode(metaclass=ABCMeta):
             Union[EditedTreeNode, T]: An edited version of this node with all edits being
             :meth:`completed <Edit.is_complete>`.
 
+        Raises:
+            DiffInterrupt: When a KeyboardInterrupt is caught during the diff.
+
         """
         ret = self.make_edited()
         assert isinstance(ret, self.__class__)
@@ -505,25 +515,31 @@ class TreeNode(metaclass=ABCMeta):
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
+        di: Optional[DiffInterrupt] = None
         if prev_bounds.upper_bound <= max_edit_distance or \
                 (edit_distance_delta is not None and total_range <= edit_distance_delta):
             # we are already done
             edit.on_diff(ret)
             return ret
-        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
-            while edit.valid and not edit.is_complete() and edit.tighten_bounds():
-                new_bounds = edit.bounds()
-                if new_bounds.upper_bound <= max_edit_distance:
-                    break
-                new_range = new_bounds.upper_bound - new_bounds.lower_bound
-                if edit_distance_delta is not None and new_range <= edit_distance_delta:
-                    break
-                if prev_range < new_range:
-                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from "
-                                f"{prev_bounds} to {new_bounds}")
-                t.update(prev_range - new_range)
-                prev_range = new_range
+        try:
+            with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+                while edit.valid and not edit.is_complete() and edit.tighten_bounds():
+                    new_bounds = edit.bounds()
+                    if new_bounds.upper_bound <= max_edit_distance:
+                        break
+                    new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                    if edit_distance_delta is not None and new_range <= edit_distance_delta:
+                        break
+                    if prev_range < new_range:
+                        log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from "
+                                    f"{prev_bounds} to {new_bounds}")
+                    t.update(prev_range - new_range)
+                    prev_range = new_range
+        except KeyboardInterrupt:
+            di = DiffInterrupt(diff=ret, edit=edit)
         edit.on_diff(ret)
+        if di is not None:
+            raise di
         return ret
 
     @property
