@@ -480,11 +480,18 @@ class TreeNode(metaclass=ABCMeta):
                 if edit.bounds().lower_bound > 0:
                     yield edit
 
-    def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
+    def diff(
+            self: T,
+            node: 'TreeNode',
+            max_edit_distance: int = 0,
+            edit_distance_delta: Optional[int] = None
+    ) -> Union[EditedTreeNode, T]:
         """Performs a diff against the provided node.
 
         Args:
             node: The node against which to perform the diff.
+            max_edit_distance: An optional edit distance at which the search will stop (default is zero).
+            edit_distance_delta: An optional edit distance delta (distance from optimal) at which the search will stop.
 
         Returns:
             Union[EditedTreeNode, T]: An edited version of this node with all edits being
@@ -498,12 +505,22 @@ class TreeNode(metaclass=ABCMeta):
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
+        if prev_bounds.upper_bound <= max_edit_distance or \
+                (edit_distance_delta is not None and total_range <= edit_distance_delta):
+            # we are already done
+            edit.on_diff(ret)
+            return ret
         with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
             while edit.valid and not edit.is_complete() and edit.tighten_bounds():
                 new_bounds = edit.bounds()
+                if new_bounds.upper_bound <= max_edit_distance:
+                    break
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                if edit_distance_delta is not None and new_range <= edit_distance_delta:
+                    break
                 if prev_range < new_range:
-                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from "
+                                f"{prev_bounds} to {new_bounds}")
                 t.update(prev_range - new_range)
                 prev_range = new_range
         edit.on_diff(ret)

@@ -113,9 +113,20 @@ def main(argv=None) -> int:
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
-    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
-    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
+    parser.add_argument('--match-if', '-m', type=str, default=None,
+                        help='only attempt to match two dictionaries if the provided expression is satisfied. For '
+                             'example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary '
+                             'which has a "foo" key that has the same value as the other dictionary\'s "bar" key will '
+                             'be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None,
+                        help='similar to `--match-if`, but only attempt a match if the provided expression evaluates '
+                             'to `False`')
     parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
+    parser.add_argument('--max-edit-distance', type=int, default=0,
+                        help='the edit distance at which the optimization will stop (default = 0)')
+    parser.add_argument('--edit-distance-delta', type=int, default=None,
+                        help='an optional delta (distance from the optimal edit distance) at which the optimization'
+                             'will stop')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
                             help='output format for the diff (default is to use the format of FROM_PATH)')
@@ -306,7 +317,11 @@ def main(argv=None) -> int:
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()
                     else:
-                        diff = from_tree.diff(to_tree)
+                        diff = from_tree.diff(
+                            to_tree,
+                            max_edit_distance=args.max_edit_distance,
+                            edit_distance_delta=args.edit_distance_delta
+                        )
                         if args.format is not None:
                             formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                         else:
