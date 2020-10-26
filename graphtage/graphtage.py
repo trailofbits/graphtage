@@ -832,6 +832,37 @@ class BoolNode(LeafNode):
         super().__init__(bool_like)
 
 
+class NullNode(LeafNode):
+    """A node representing a null or :const:`None` type."""
+
+    def __init__(self):
+        super().__init__(None)
+
+    def calculate_total_size(self) -> int:
+        return 0
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, NullNode):
+            return Match(self, node, 0)
+        else:
+            return Replace(self, node)
+
+    def __lt__(self, other):
+        if isinstance(other, NullNode):
+            return False
+        else:
+            return True
+
+    def __eq__(self, other):
+        return isinstance(other, NullNode)
+
+    def __hash__(self):
+        return hash(self.object)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}()"
+
+
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     """A convenience function for computing the edit distance between two strings.
 
