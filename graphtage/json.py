@@ -11,7 +11,7 @@ import os
 from typing import Optional, Union
 
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -66,6 +66,8 @@ def build_tree(
             return DictNode.from_dict(dict_items)
         else:
             return FixedKeyDictNode.from_dict(dict_items)
+    elif python_obj is None:
+        return NullNode()
     else:
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 
