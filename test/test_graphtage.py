@@ -103,3 +103,10 @@ class TestGraphtage(TestCase):
         self.assertEqual(1, len(diff.edit_list))
         self.assertIsInstance(diff.edit_list[0], graphtage.Match)
         self.assertEqual(0, diff.edit_list[0].bounds().upper_bound)
+
+    def test_null_json(self):
+        diff = graphtage.json.build_tree([None]).diff(graphtage.json.build_tree([1]))
+        self.assertIsInstance(diff, graphtage.ListNode)
+        self.assertIsInstance(diff, graphtage.tree.EditedTreeNode)
+        self.assertEqual(1, len(diff.edit_list))
+        self.assertIsInstance(diff.edit_list[0], graphtage.FixedLengthSequenceEdit)
