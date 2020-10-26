@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.multiset &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.multiset &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -265,7 +265,7 @@ provided to the constructor, the upper bound defaults to:</p>
 
 <dl class="py method">
 <dt id="graphtage.multiset.MultiSetEdit.has_non_zero_cost">
-<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether this edit has a non-zero cost.</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
@@ -278,7 +278,7 @@ definitive.</p>
 
 <dl class="py method">
 <dt id="graphtage.multiset.MultiSetEdit.is_complete">
-<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.is_complete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.is_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>An edit is complete when no further calls to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code> will change the nature of the edit.</p>
 <p>This implementation considers an edit complete if it is valid and its bounds are definitive:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">definitive</span><span class="p">()</span>
@@ -294,7 +294,7 @@ calls to <code class="xref py py-meth docutils literal notranslate"><span class=
 of this edit and will not affect the semantics of the edit.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -340,7 +340,7 @@ the sub-edits:</p>
 
 <dl class="py method">
 <dt id="graphtage.multiset.MultiSetEdit.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delegates to <code class="xref py py-meth docutils literal notranslate"><span class="pre">WeightedBipartiteMatcher.tighten_bounds()</span></code>.</p>
 </dd></dl>
 
@@ -419,7 +419,7 @@ the sub-edits:</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -427,6 +427,7 @@ the sub-edits:</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>

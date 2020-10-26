@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.bounds &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.bounds &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -237,7 +237,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <dl class="py class">
 <dt id="graphtage.bounds.Bounded">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Bounded</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for objects that have bounds that can be tightened.</p>
 <dl class="py method">
 <dt id="graphtage.bounds.Bounded.__init__">
@@ -253,14 +253,14 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 
 <dl class="py method">
 <dt id="graphtage.bounds.Bounded.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.bounds.Bounded.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.bounds.Bounded.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,7 +273,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <dl class="py class">
 <dt id="graphtage.bounds.BoundedComparator">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">BoundedComparator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bounded</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.BoundedComparator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A comparator for <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a> objects.</p>
 <p>This comparator will automatically tighten the bounds of the <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a> object it wraps until they are either
 definitive or sufficiently distinct to differentiate them from another object to which it is being compared.</p>
@@ -304,7 +304,7 @@ definitive or sufficiently distinct to differentiate them from another object to
 </pre></div>
 </div>
 <p>In the event that <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.bounded</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code> have identical bounds after fully tightening, the object
-with the smaller <a class="reference external" href="https://docs.python.org/3/library/functions.html#id" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">id()</span></code></a> is returned.</p>
+with the smaller <a class="reference external" href="https://docs.python.org/3/library/functions.html#id" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">id()</span></code></a> is returned.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -325,7 +325,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 <p>An object with constant bounds.</p>
 <dl class="py method">
 <dt id="graphtage.bounds.ConstantBound.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the constant bounded object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -342,7 +342,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py method">
 <dt id="graphtage.bounds.ConstantBound.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.bounds.ConstantBound.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.bounds.ConstantBound.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Since the bounds are already definitive, this always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd></dl>
 
@@ -354,7 +354,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 <dl class="py class">
 <dt id="graphtage.bounds.Infinity">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Infinity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">positive</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Infinity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class for representing infinite values. This is primarily used for unbounded ranges.</p>
 <dl class="py method">
 <dt id="graphtage.bounds.Infinity.__init__">
@@ -375,12 +375,12 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 <h3>Range<a class="headerlink" href="#range" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.bounds.Range">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lower_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=False)</span></em>, <em class="sig-param"><span class="n">upper_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=True)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Range</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lower_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=False)</span></em>, <em class="sig-param"><span class="n">upper_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=True)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An integer range.</p>
 <dl class="py method">
 <dt id="graphtage.bounds.Range.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lower_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=False)</span></em>, <em class="sig-param"><span class="n">upper_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=True)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lower_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=False)</span></em>, <em class="sig-param"><span class="n">upper_bound</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">Infinity(positive=True)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -390,21 +390,21 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If the upper bound is less than the lower bound.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If the upper bound is less than the lower bound.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.bounds.Range.definitive">
-<code class="sig-name descname">definitive</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.bounds.Range.definitive" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">definitive</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.bounds.Range.definitive" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether this range is definitive.</p>
 <p>A range is definitive if both of its bounds are finite and equal to each other.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.bounds.Range.dominates">
-<code class="sig-name descname">dominates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.bounds.Range.dominates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dominates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.bounds.Range.dominates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether this range dominates another.</p>
 <p>One range dominates another if its upper bound is less than or equal to the lower bound of the other.</p>
 <p>This is equivalent to:</p>
@@ -562,7 +562,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -570,6 +570,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.levenshtein &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.levenshtein &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -209,7 +209,7 @@ by the minimum cost of an edit in the last-expanded diagonal. This results in a 
 bound.</p>
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">from_seq</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_seq</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">insert_remove_penalty</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em>, <em class="sig-param"><span class="n">from_seq</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_seq</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">insert_remove_penalty</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the edit distance edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -275,7 +275,7 @@ minimum cost in the last completed matrix diagonal as the upper bound.</p>
 
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.has_non_zero_cost">
-<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether this edit has a non-zero cost.</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
@@ -288,7 +288,7 @@ definitive.</p>
 
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.is_complete">
-<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.is_complete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.is_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>An edit distance edit is only complete once its Levenshtein edit matrix has been fully constructed.</p>
 </dd></dl>
 
@@ -333,7 +333,7 @@ the sub-edits:</p>
 
 <dl class="py method">
 <dt id="graphtage.levenshtein.EditDistance.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.levenshtein.EditDistance.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tightens the bounds of this edit, if possible.</p>
 <p>If the Levenshtein matrix is not yet complete, construct and fully tighten the next diagonal of the matrix.</p>
 </dd></dl>
@@ -354,7 +354,7 @@ the sub-edits:</p>
 <h3>levenshtein_distance<a class="headerlink" href="#levenshtein-distance" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.levenshtein.levenshtein_distance">
-<code class="sig-prename descclassname">graphtage.levenshtein.</code><code class="sig-name descname">levenshtein_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">t</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.levenshtein.levenshtein_distance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.levenshtein.</code><code class="sig-name descname">levenshtein_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">t</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.levenshtein.levenshtein_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Canonical implementation of the Levenshtein distance metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -367,7 +367,7 @@ the sub-edits:</p>
 <dd class="field-even"><p>The Levenshtein edit distance metric between the two strings.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -427,7 +427,7 @@ the sub-edits:</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -435,6 +435,7 @@ the sub-edits:</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>

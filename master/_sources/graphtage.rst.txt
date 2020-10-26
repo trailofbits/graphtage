@@ -249,6 +249,15 @@ MultiSetNode
    :inherited-members:
    :show-inheritance:
 
+NullNode
+********
+
+.. autoclass:: NullNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 PossibleEdits
 *************
 

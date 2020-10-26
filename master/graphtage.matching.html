@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.matching &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.matching &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -229,7 +229,7 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <dl class="py class">
 <dt id="graphtage.matching.Edge">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Edge</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>Edge data structure used in the implementation of <a class="reference internal" href="#karp78" id="id2"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Edge.__init__">
@@ -255,14 +255,14 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 
 <dl class="py method">
 <dt id="graphtage.matching.Edge.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.Edge.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.Edge.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,7 +275,7 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <dl class="py class">
 <dt id="graphtage.matching.Matching">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Matching</code><a class="headerlink" href="#graphtage.matching.Matching" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Set</span></code></a>, <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Set</span></code></a>, <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>An abstract base class used by the partial implementation of <a class="reference internal" href="#karp78" id="id3"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Matching.__init__">
@@ -411,14 +411,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.Matching.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.Matching.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -474,7 +474,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingNode">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>Node data structure used in the implementation of <a class="reference internal" href="#karp78" id="id4"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingNode.__init__">
@@ -559,7 +559,7 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">flip_direction</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">flip_direction</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an element to a set.</p>
 <p>This has no effect if the element is already present.</p>
 </dd></dl>
@@ -667,14 +667,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.PathSet.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.PathSet.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -699,12 +699,12 @@ Raises KeyError if the set is empty.</p>
 <h3>QueueElement<a class="headerlink" href="#queueelement" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.QueueElement">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">QueueElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">QueueElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A helper datastructure used by <a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</span></code></a></p>
 <dl class="py method">
 <dt id="graphtage.matching.QueueElement.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -716,7 +716,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.SortedEdges">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">SortedEdges</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A sorted collection of edges.</p>
 <dl class="py method">
 <dt id="graphtage.matching.SortedEdges.__init__">
@@ -742,7 +742,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcher">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> matcher built atop <a class="reference internal" href="#graphtage.matching.min_weight_bipartite_matching" title="graphtage.matching.min_weight_bipartite_matching"><code class="xref py py-func docutils literal notranslate"><span class="pre">min_weight_bipartite_matching()</span></code></a>.</p>
 <p>It works by iteratively and selectively tightening the bipartite graph’s edges’ bounds until they are all “distinct”
 (<em>i.e.</em>, their bounded ranges are all either <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.bounds.Range.definitive()</span></code></a> or non-overlapping). It does
@@ -780,7 +780,7 @@ example, this could be a <code class="xref py py-class docutils literal notransl
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.is_complete">
-<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.is_complete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.is_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the matching has been completed, regardless of whether the bounds have been fully tightened.</p>
 </dd></dl>
 
@@ -810,7 +810,7 @@ already been completed through prior calls to <a class="reference internal" href
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tightens the bounds on the minimum weight matching.</p>
 <p>Returns: <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were able to be tightened.</p>
 </dd></dl>
@@ -823,7 +823,7 @@ already been completed through prior calls to <a class="reference internal" href
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>Partial implementation of <em>An Algorithm to Solve the</em> <span class="math notranslate nohighlight">\(m \times n\)</span> <em>Assignment Problem in Expected Time</em> <span class="math notranslate nohighlight">\(O(mn \log n)\)</span> <a class="reference internal" href="#karp78" id="id7"><span>[Karp78]</span></a>.</p>
 <p>The implementation is partial because I realized partway through that, even though this implementation has better
 asymptotic bounds, <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.linear_sum_assignment()</span></code> will almost always be much faster since it is
@@ -853,14 +853,14 @@ implemented in C++ and not pure Python.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -875,7 +875,7 @@ implemented in C++ and not pure Python.</p>
 <h3>get_dtype<a class="headerlink" href="#get-dtype" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.matching.get_dtype">
-<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">get_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">max_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em><span class="sig-paren">)</span> &#x2192; numpy.dtype<a class="headerlink" href="#graphtage.matching.get_dtype" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">get_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">max_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span> &#x2192; numpy.dtype<a class="headerlink" href="#graphtage.matching.get_dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the smallest numpy <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code> capable of storing integers in the range [<code class="xref py py-obj docutils literal notranslate"><span class="pre">min_value</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">max_value</span></code>]</p>
 </dd></dl>
 
@@ -884,7 +884,7 @@ implemented in C++ and not pure Python.</p>
 <h3>min_weight_bipartite_matching<a class="headerlink" href="#min-weight-bipartite-matching" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.matching.min_weight_bipartite_matching">
-<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">min_weight_bipartite_matching</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edges</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span>W<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Mapping<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span>Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span>Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.min_weight_bipartite_matching" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">min_weight_bipartite_matching</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edges</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span>W<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Mapping<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.min_weight_bipartite_matching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the minimum weight bipartite matching between two sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -898,13 +898,13 @@ is no edge between them.</p></li>
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edges</span></code> is expected to return all edge weights using the same type, either <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>,
-<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>.</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edges</span></code> is expected to return all edge weights using the same type, either <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_edges</span></code> can only return <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> for an edge weight if the rest of the edge weights are of type
-either <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>. Graphs with <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> edge weights must be complete.</p>
+either <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>. Graphs with <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a> edge weights must be complete.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -917,8 +917,8 @@ either <a class="reference external" href="https://docs.python.org/3/library/fun
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If not all of the edges are the same type.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – If a boolean edge weighted graph is not complete.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If not all of the edges are the same type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – If a boolean edge weighted graph is not complete.</p></li>
 </ul>
 </dd>
 </dl>
@@ -979,7 +979,7 @@ either <a class="reference external" href="https://docs.python.org/3/library/fun
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -987,6 +987,7 @@ either <a class="reference external" href="https://docs.python.org/3/library/fun
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>

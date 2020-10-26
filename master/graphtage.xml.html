@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.xml &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.xml &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -195,7 +195,7 @@
 <span id="graphtage-xml"></span><h1>graphtage.xml<a class="headerlink" href="#module-graphtage.xml" title="Permalink to this headline">¶</a></h1>
 <p>A <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> for parsing, diffing, and rendering XML files.</p>
 <p>This class is also currently used for parsing HTML.</p>
-<p>The parser is implemented atop <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#module-xml.etree.ElementTree" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></a>. Any XML or HTML accepted by that module will also be
+<p>The parser is implemented atop <a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#module-xml.etree.ElementTree" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.etree.ElementTree</span></code></a>. Any XML or HTML accepted by that module will also be
 accepted by this module.</p>
 <div class="section" id="xml-classes">
 <h2>xml classes<a class="headerlink" href="#xml-classes" title="Permalink to this headline">¶</a></h2>
@@ -215,7 +215,7 @@ accepted by this module.</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.HTML.build_tree">
-<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.xml.HTML.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.xml.HTML.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds an intermediate representation tree from a file of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -235,7 +235,7 @@ accepted by this module.</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.HTML.build_tree_handling_errors">
-<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.xml.HTML.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.xml.HTML.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
@@ -249,7 +249,7 @@ accepted by this module.</p>
 <dd class="field-even"><p>On success, the root tree node, or a string containing the error message on failure.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>, <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a>]</p>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,7 +279,7 @@ accepted by this module.</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.XML.build_tree">
-<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.xml.XML.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.xml.XML.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds an intermediate representation tree from a file of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -299,7 +299,7 @@ accepted by this module.</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.XML.build_tree_handling_errors">
-<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.xml.XML.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.xml.XML.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
@@ -313,7 +313,7 @@ accepted by this module.</p>
 <dd class="field-even"><p>On success, the root tree node, or a string containing the error message on failure.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a>, <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a>]</p>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -390,12 +390,12 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLChildFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLChildFormatter.item_newline">
-<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called before each node is printed.</p>
 <p>This is also called one extra time after the last node, if there is at least one node printed.</p>
 <p>The default implementation is simply:</p>
@@ -426,7 +426,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLChildFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLChildFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -504,7 +504,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <p>“A node representing an XML element.</p>
 <dl class="py method">
 <dt id="graphtage.xml.XMLElement.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">XMLElement</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">XMLElement</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an XML element.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -521,7 +521,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElement.all_children_are_leaves">
-<code class="sig-name descname">all_children_are_leaves</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElement.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">all_children_are_leaves</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElement.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_leaf</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
@@ -532,7 +532,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if all children are leaves.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -545,7 +545,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElement.calculate_total_size">
-<code class="sig-name descname">calculate_total_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a><a class="headerlink" href="#graphtage.xml.XMLElement.calculate_total_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_total_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.xml.XMLElement.calculate_total_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the size of this node.
 This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.</p>
 <dl class="field-list simple">
@@ -553,7 +553,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 <dd class="field-odd"><p>An arbitrary integer representing the size of this node.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -608,7 +608,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElement.editable_dict">
-<code class="sig-name descname">editable_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#graphtage.xml.XMLElement.editable_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">editable_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#graphtage.xml.XMLElement.editable_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on any <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> objects therein.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
@@ -693,7 +693,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -739,8 +739,8 @@ and thereby mutable.</p>
 <dt id="graphtage.xml.XMLElement.to_obj">
 <code class="sig-name descname">to_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.to_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pure Python representation of this node.</p>
-<p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
-A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
+<p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
+A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
 Container nodes should recursively call <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.to_obj()</span></code> on all of their children.</p>
 <p>This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
 options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
@@ -758,7 +758,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <dd class="field-odd"><p>An arbitrary integer representing the size of this node.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -829,12 +829,12 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementAttribFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementAttribFormatter.item_newline">
-<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called before each node is printed.</p>
 <p>This is also called one extra time after the last node, if there is at least one node printed.</p>
 <p>The default implementation is simply:</p>
@@ -865,7 +865,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementAttribFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1029,7 +1029,7 @@ provided to the constructor, the upper bound defaults to:</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementEdit.has_non_zero_cost">
-<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">has_non_zero_cost</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.has_non_zero_cost" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether this edit has a non-zero cost.</p>
 <p>This will tighten the edit’s bounds until either its lower bound is greater than zero or its bounds are
 definitive.</p>
@@ -1042,7 +1042,7 @@ definitive.</p>
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementEdit.is_complete">
-<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.is_complete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.is_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>An edit is complete when no further calls to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code> will change the nature of the edit.</p>
 <p>This implementation considers an edit complete if it is valid and its bounds are definitive:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">definitive</span><span class="p">()</span>
@@ -1058,7 +1058,7 @@ calls to <code class="xref py py-meth docutils literal notranslate"><span class=
 of this edit and will not affect the semantics of the edit.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1088,7 +1088,7 @@ the sub-edits:</p>
 <dd><p>Edits can optionally implement a printing method</p>
 <p>This function is called automatically from the formatter in the
 <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> and should never be called directly unless you really know what you’re doing!
-Raising <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> will cause the formatter to fall back on its own printing implementations.</p>
+Raising <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> will cause the formatter to fall back on its own printing implementations.</p>
 <p>This implementation is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edits</span><span class="p">():</span>
     <span class="n">edit</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">printer</span><span class="p">)</span>
@@ -1110,14 +1110,14 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementEdit.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.xml.XMLElementEdit.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tightens the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.bounds()</span></code> on the cost of this edit, if possible.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds have been tightened.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -1140,12 +1140,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <h3>XMLElementObj<a class="headerlink" href="#xmlelementobj" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.xml.XMLElementObj">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementObj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementObj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An object for interacting with <a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">XMLElement</span></code></a> from command line expressions.</p>
 <dl class="py method">
 <dt id="graphtage.xml.XMLElementObj.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElementObj" title="graphtage.xml.XMLElementObj">XMLElementObj</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementObj.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an XML Element Object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1161,7 +1161,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementObj.attrib">
-<code class="sig-name descname">attrib</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.attrib" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">attrib</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.attrib" title="Permalink to this definition">¶</a></dt>
 <dd><p>The attributes of this element.</p>
 </dd></dl>
 
@@ -1173,13 +1173,13 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementObj.tag">
-<code class="sig-name descname">tag</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.tag" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tag</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tag of this element.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLElementObj.text">
-<code class="sig-name descname">text</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.text" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">text</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementObj.text" title="Permalink to this definition">¶</a></dt>
 <dd><p>The text of this element.</p>
 </dd></dl>
 
@@ -1223,7 +1223,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.xml.XMLFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1233,7 +1233,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1312,7 +1312,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLStringFormatter.escape">
-<code class="sig-name descname">escape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.escape" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">escape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.escape" title="Permalink to this definition">¶</a></dt>
 <dd><p>String escape.</p>
 <p>This function is called once for each character in the string.</p>
 <dl class="field-list simple">
@@ -1320,7 +1320,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd class="field-odd"><p>The escaped version of <cite>c</cite>, or <cite>c</cite> itself if no escaping is required.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </dd>
 </dl>
 <p>This is equivalent to:</p>
@@ -1341,12 +1341,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.xml.XMLStringFormatter.is_quoted">
-<code class="sig-name descname">is_quoted</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_quoted" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_quoted</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.is_quoted" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1356,7 +1356,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLStringFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1402,7 +1402,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.xml.XMLStringFormatter.write_char">
-<code class="sig-name descname">write_char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">num_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></span></em>, <em class="sig-param"><span class="n">removed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inserted</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.write_char" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">removed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inserted</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLStringFormatter.write_char" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a character to the printer.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1452,7 +1452,7 @@ already automatically been configured to format them prior to the call to
 <h3>build_tree<a class="headerlink" href="#build-tree" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.xml.build_tree">
-<code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_or_element_tree</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.8)">xml.etree.ElementTree.Element</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree" title="(in Python v3.8)">xml.etree.ElementTree.ElementTree</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">graphtage.xml.XMLElement</a><a class="headerlink" href="#graphtage.xml.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path_or_element_tree</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element" title="(in Python v3.9)">xml.etree.ElementTree.Element</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree" title="(in Python v3.9)">xml.etree.ElementTree.ElementTree</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">graphtage.xml.XMLElement</a><a class="headerlink" href="#graphtage.xml.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs an XML element node from an XML file.</p>
 </dd></dl>
 
@@ -1511,7 +1511,7 @@ already automatically been configured to format them prior to the call to
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1519,6 +1519,7 @@ already automatically been configured to format them prior to the call to
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>

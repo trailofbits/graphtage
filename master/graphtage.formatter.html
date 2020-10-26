@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.formatter &mdash; Graphtage 0.3.0-git documentation</title>
+  <title>graphtage.formatter &mdash; Graphtage v0.2.2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.3.0-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -342,7 +342,7 @@ implementation of <code class="docutils literal notranslate"><span class="pre">p
 <li><p>If a print function specifically associated with <code class="xref py py-obj docutils literal notranslate"><span class="pre">type.__name__</span></code> exists in <code class="docutils literal notranslate"><span class="pre">formatter</span></code>, then use
 that function.</p></li>
 <li><p>Else, repeat this process recursively for any formatters in <a class="reference internal" href="#graphtage.formatter.Formatter.sub_format_types" title="graphtage.formatter.Formatter.sub_format_types"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code></a>.</p></li>
-<li><p>If none of the subformatters is specialized in <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a>, see if this formatter is the subformatter of
+<li><p>If none of the subformatters is specialized in <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.9)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a>, see if this formatter is the subformatter of
 another parent formatter. If so, repeat this process for the parent.</p></li>
 </ul>
 </dd>
@@ -396,7 +396,7 @@ yet been tested, and repeat this process given each one.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.formatter.BasicFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.BasicFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.BasicFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -442,7 +442,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <dl class="py class">
 <dt id="graphtage.formatter.Formatter">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">Formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <dl class="py attribute">
 <dt id="graphtage.formatter.Formatter.DEFAULT_INSTANCE">
 <code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.formatter.Formatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
@@ -475,7 +475,7 @@ yet been tested, and repeat this process given each one.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.formatter.Formatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.Formatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.formatter.Formatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -520,7 +520,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <dl class="py class">
 <dt id="graphtage.formatter.FormatterChecker">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">FormatterChecker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">bases</span></em>, <em class="sig-param"><span class="n">namespace</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.FormatterChecker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABCMeta" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABCMeta</span></code></a></p>
 <p>The metaclass for <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a>.</p>
 <p>For every class that subclasses <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a>, if <a class="reference internal" href="#graphtage.formatter.Formatter.is_partial" title="graphtage.formatter.Formatter.is_partial"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.is_partial</span></code></a> is <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code> (the default)
 and if the class is not abstract, then an instance of that class is automatically constructed and added to the
@@ -533,7 +533,7 @@ global list of formatters. This same automatically constructed instance will be 
 <dd><p>Initializes the formatter checker.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><strong>TypeError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">cls</span></code> defines a method starting with “<code class="docutils literal notranslate"><span class="pre">print</span></code>” that has a keyword argument <code class="docutils literal notranslate"><span class="pre">printer</span></code>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">cls</span></code> defines a method starting with “<code class="docutils literal notranslate"><span class="pre">print</span></code>” that has a keyword argument <code class="docutils literal notranslate"><span class="pre">printer</span></code>
     with a type hint that is not a subclass of <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a>.</p>
 </dd>
 </dl>
@@ -662,7 +662,7 @@ resolution according to the <a class="reference internal" href="#formatting-prot
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.3.0-git
+        v0.2.2
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -670,6 +670,7 @@ resolution according to the <a class="reference internal" href="#formatting-prot
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
             <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
