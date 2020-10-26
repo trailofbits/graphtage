@@ -1,0 +1,12 @@
+graphtage.version
+=================
+
+.. automodule:: graphtage.version
+
+version functions
+-----------------
+
+git_branch
+**********
+
+.. autofunction:: git_branch
