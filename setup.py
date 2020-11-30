@@ -42,7 +42,7 @@ setup(
         'PyYAML',
         'scipy>=1.4.0',
         'tqdm',
-        'typing_extensions>=3.6.5'
+        'typing_extensions>=3.7.4.3'
     ],
     entry_points={
         'console_scripts': [
