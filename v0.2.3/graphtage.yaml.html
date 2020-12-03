@@ -1,0 +1,1049 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graphtage.yaml &mdash; Graphtage v0.2.3 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.yaml.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="graphtage.xml" href="graphtage.xml.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Graphtage
+          
+
+          
+          </a>
+
+          
+
+          
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.yaml</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-classes">yaml classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#yaml">YAML</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yamldictformatter">YAMLDictFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yamlformatter">YAMLFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yamlkeyvaluepairformatter">YAMLKeyValuePairFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yamllistformatter">YAMLListFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#yamlstringformatter">YAMLStringFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-functions">yaml functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="package.html">Graphtage API</a> &raquo;</li>
+        
+      <li>graphtage.yaml</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/graphtage.yaml.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-graphtage.yaml">
+<span id="graphtage-yaml"></span><h1>graphtage.yaml<a class="headerlink" href="#module-graphtage.yaml" title="Permalink to this headline">¶</a></h1>
+<p>A <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> for parsing, diffing, and rendering YAML files.</p>
+<div class="section" id="yaml-classes">
+<h2>yaml classes<a class="headerlink" href="#yaml-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="yaml">
+<h3>YAML<a class="headerlink" href="#yaml" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAML">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAML</code><a class="headerlink" href="#graphtage.yaml.YAML" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a></p>
+<p>The YAML filetype.</p>
+<dl class="py method">
+<dt id="graphtage.yaml.YAML.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAML.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the YAML file type.</p>
+<p>By default, YAML associates itself with the “yaml”, “application/x-yaml”, “application/yaml”, “text/yaml”,
+“text/x-yaml”, and “text/vnd.yaml” MIME types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAML.build_tree">
+<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.yaml.YAML.build_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds an intermediate representation tree from a file of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to the file to parse</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The root tree node of the provided file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAML.build_tree_handling_errors">
+<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAML.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
+<p>This function should never throw an exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to the file to parse</p></li>
+<li><p><strong>options</strong> – An optional set of options for building the tree</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>On success, the root tree node, or a string containing the error message on failure.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAML.get_default_formatter">
+<code class="sig-name descname">get_default_formatter</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.yaml.YAMLFormatter" title="graphtage.yaml.YAMLFormatter">graphtage.yaml.YAMLFormatter</a><a class="headerlink" href="#graphtage.yaml.YAML.get_default_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default formatter for printing files of this type.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="yamldictformatter">
+<h3>YAMLDictFormatter<a class="headerlink" href="#yamldictformatter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAMLDictFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAMLDictFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceFormatter" title="graphtage.sequences.SequenceFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceFormatter</span></code></a></p>
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLDictFormatter.DEFAULT_INSTANCE">
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.yaml.YAMLDictFormatter object&gt;</em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a sequence formatter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_symbol</strong> – The symbol to print at the start of the sequence.</p></li>
+<li><p><strong>end_symbol</strong> – The symbol to print at the end of the sequence.</p></li>
+<li><p><strong>delimiter</strong> – A delimiter to print between items.</p></li>
+<li><p><strong>delimiter_callback</strong> – <p>A callback for when a delimiter is to be printed. If omitted, this defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.edit_print">
+<code class="sig-name descname">edit_print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.edit_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the edit for an item is to be printed.</p>
+<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code> being printed either is not edited or has no edits, then the edit passed to this
+function will be a <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">Match(child,</span> <span class="pre">child,</span> <span class="pre">0)</span></code></a>.</p>
+<p>This implementation simply delegates the print to the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="n">edit</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.get_formatter">
+<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLDictFormatter.is_partial">
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.item_newline">
+<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called before each node is printed.</p>
+<p>This is also called one extra time after the last node, if there is at least one node printed.</p>
+<p>The default implementation is simply:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">printer</span><span class="o">.</span><span class="n">newline</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.items_indent">
+<code class="sig-name descname">items_indent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.items_indent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Printer context with an indentation.</p>
+<p>This is called as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">items_indent</span><span class="p">(</span><span class="n">printer</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>immediately after the <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code> is printed, but before any of the items have been printed.</p>
+<p>This default implementation is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">printer</span><span class="o">.</span><span class="n">indent</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLDictFormatter.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.print_MappingNode">
+<code class="sig-name descname">print_MappingNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.print_MappingNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.print_MultiSetNode">
+<code class="sig-name descname">print_MultiSetNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.print_MultiSetNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.print_SequenceNode">
+<code class="sig-name descname">print_SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a sequence node.</p>
+<p>The protocol for this function is as follows:</p>
+<ul class="simple">
+<li><p>Print <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code></p></li>
+<li><dl class="simple">
+<dt>With the printer returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.items_indent</span></code>:</dt><dd><ul>
+<li><dl class="simple">
+<dt>For each <code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code> in the sequence (or just a sequence of <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Match</span></code></a> for each child, if the node is not edited):</dt><dd><ul>
+<li><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.item_newline(printer,</span> <span class="pre">is_first=index</span> <span class="pre">==</span> <span class="pre">0)</span></code></p></li>
+<li><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.edit_print(printer,</span> <span class="pre">edit)</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>If at least one edit was printed, then call
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">self.item_newline(printer,</span> <span class="pre">is_last=True)</span></code></p></li>
+<li><p>Print <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLDictFormatter.root">
+<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLDictFormatter.sub_format_types">
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.yaml.YAMLKeyValuePairFormatter'&gt;]</em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLDictFormatter.sub_formatters">
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="yamlformatter">
+<h3>YAMLFormatter<a class="headerlink" href="#yamlformatter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAMLFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAMLFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter</span></code></a></p>
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLFormatter.DEFAULT_INSTANCE">
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.yaml.YAMLFormatter object&gt;</em><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.get_formatter">
+<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLFormatter.is_partial">
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLFormatter.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.print_ContainerNode">
+<code class="sig-name descname">print_ContainerNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode">graphtage.ContainerNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.print_ContainerNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a>.</p>
+<p>This is a fallback to permit the printing of custom containers, like <a class="reference internal" href="graphtage.xml.html#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.xml.XMLElement</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.print_LeafNode">
+<code class="sig-name descname">print_LeafNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.LeafNode" title="graphtage.LeafNode">graphtage.LeafNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.print_LeafNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.root">
+<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLFormatter.sub_format_types">
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.yaml.YAMLStringFormatter'&gt;, &lt;class 'graphtage.yaml.YAMLDictFormatter'&gt;, &lt;class 'graphtage.yaml.YAMLListFormatter'&gt;]</em><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLFormatter.sub_formatters">
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLFormatter.write_obj">
+<em class="property">static </em><code class="sig-name descname">write_obj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.write_obj" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="yamlkeyvaluepairformatter">
+<h3>YAMLKeyValuePairFormatter<a class="headerlink" href="#yamlkeyvaluepairformatter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAMLKeyValuePairFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter</span></code></a></p>
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.DEFAULT_INSTANCE">
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.yaml.YAMLKeyValuePairFormatter object&gt;</em><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.get_formatter">
+<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.is_partial">
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.print_KeyValuePairNode">
+<code class="sig-name descname">print_KeyValuePairNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode">graphtage.KeyValuePairNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.print_KeyValuePairNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.root">
+<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.sub_format_types">
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLKeyValuePairFormatter.sub_formatters">
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="yamllistformatter">
+<h3>YAMLListFormatter<a class="headerlink" href="#yamllistformatter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAMLListFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAMLListFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceFormatter" title="graphtage.sequences.SequenceFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceFormatter</span></code></a></p>
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLListFormatter.DEFAULT_INSTANCE">
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.yaml.YAMLListFormatter object&gt;</em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a sequence formatter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_symbol</strong> – The symbol to print at the start of the sequence.</p></li>
+<li><p><strong>end_symbol</strong> – The symbol to print at the end of the sequence.</p></li>
+<li><p><strong>delimiter</strong> – A delimiter to print between items.</p></li>
+<li><p><strong>delimiter_callback</strong> – <p>A callback for when a delimiter is to be printed. If omitted, this defaults to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+</pre></div>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.edit_print">
+<code class="sig-name descname">edit_print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.edit_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the edit for an item is to be printed.</p>
+<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code> being printed either is not edited or has no edits, then the edit passed to this
+function will be a <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">Match(child,</span> <span class="pre">child,</span> <span class="pre">0)</span></code></a>.</p>
+<p>This implementation simply delegates the print to the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="n">edit</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.get_formatter">
+<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLListFormatter.is_partial">
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.item_newline">
+<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called before each node is printed.</p>
+<p>This is also called one extra time after the last node, if there is at least one node printed.</p>
+<p>The default implementation is simply:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">printer</span><span class="o">.</span><span class="n">newline</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.items_indent">
+<code class="sig-name descname">items_indent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.items_indent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Printer context with an indentation.</p>
+<p>This is called as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">items_indent</span><span class="p">(</span><span class="n">printer</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>immediately after the <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code> is printed, but before any of the items have been printed.</p>
+<p>This default implementation is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">printer</span><span class="o">.</span><span class="n">indent</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLListFormatter.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.print_ListNode">
+<code class="sig-name descname">print_ListNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.print_ListNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.print_SequenceNode">
+<code class="sig-name descname">print_SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats a sequence node.</p>
+<p>The protocol for this function is as follows:</p>
+<ul class="simple">
+<li><p>Print <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code></p></li>
+<li><dl class="simple">
+<dt>With the printer returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.items_indent</span></code>:</dt><dd><ul>
+<li><dl class="simple">
+<dt>For each <code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code> in the sequence (or just a sequence of <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Match</span></code></a> for each child, if the node is not edited):</dt><dd><ul>
+<li><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.item_newline(printer,</span> <span class="pre">is_first=index</span> <span class="pre">==</span> <span class="pre">0)</span></code></p></li>
+<li><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.edit_print(printer,</span> <span class="pre">edit)</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>If at least one edit was printed, then call
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">self.item_newline(printer,</span> <span class="pre">is_last=True)</span></code></p></li>
+<li><p>Print <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start_symbol</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLListFormatter.root">
+<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLListFormatter.sub_format_types">
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLListFormatter.sub_formatters">
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="yamlstringformatter">
+<h3>YAMLStringFormatter<a class="headerlink" href="#yamlstringformatter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.yaml.YAMLStringFormatter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">YAMLStringFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.StringFormatter" title="graphtage.StringFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.StringFormatter</span></code></a></p>
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.DEFAULT_INSTANCE">
+<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.yaml.YAMLStringFormatter object&gt;</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.__new__">
+<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.context">
+<code class="sig-name descname">context</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.context" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.escape">
+<code class="sig-name descname">escape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.escape" title="Permalink to this definition">¶</a></dt>
+<dd><p>String escape.</p>
+<p>This function is called once for each character in the string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The escaped version of <cite>c</cite>, or <cite>c</cite> itself if no escaping is required.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.get_formatter">
+<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.has_newline">
+<code class="sig-name descname">has_newline</code><em class="property"> = False</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.has_newline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.is_partial">
+<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.is_quoted">
+<code class="sig-name descname">is_quoted</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.is_quoted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.parent">
+<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.print">
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>TreeNode<span class="p">, </span>Edit<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.print_StringEdit">
+<code class="sig-name descname">print_StringEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringEdit" title="graphtage.StringEdit">graphtage.StringEdit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.print_StringEdit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.print_StringNode">
+<code class="sig-name descname">print_StringNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.print_StringNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.root">
+<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.sub_format_types">
+<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.yaml.YAMLStringFormatter.sub_formatters">
+<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.write_char">
+<code class="sig-name descname">write_char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">c</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">index</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">removed</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inserted</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.write_char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a character to the printer.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function calls <a class="reference internal" href="graphtage.html#graphtage.StringFormatter.escape" title="graphtage.StringFormatter.escape"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.StringFormatter.escape()</span></code></a>; classes extending
+<a class="reference internal" href="graphtage.html#graphtage.StringFormatter" title="graphtage.StringFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.StringFormatter</span></code></a> should also call <a class="reference internal" href="graphtage.html#graphtage.StringFormatter.escape" title="graphtage.StringFormatter.escape"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.StringFormatter.escape()</span></code></a> when
+reimplementing this function.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is no need to specially format characters that have been removed or inserted; the printer will have
+already automatically been configured to format them prior to the call to
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">StringFormatter.write_char()</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write the character.</p></li>
+<li><p><strong>c</strong> – The character to write.</p></li>
+<li><p><strong>index</strong> – The index of the character in the string.</p></li>
+<li><p><strong>num_edits</strong> – The total number of characters that will be printed.</p></li>
+<li><p><strong>removed</strong> – Whether this character was removed from the source string.</p></li>
+<li><p><strong>inserted</strong> – Whether this character is inserted into the source string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.write_end_quote">
+<code class="sig-name descname">write_end_quote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringEdit" title="graphtage.StringEdit">graphtage.StringEdit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.write_end_quote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints an ending quote for the string, if necessary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.yaml.YAMLStringFormatter.write_start_quote">
+<code class="sig-name descname">write_start_quote</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringEdit" title="graphtage.StringEdit">graphtage.StringEdit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.write_start_quote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a starting quote for the string, if necessary</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="yaml-functions">
+<h2>yaml functions<a class="headerlink" href="#yaml-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="build-tree">
+<h3>build_tree<a class="headerlink" href="#build-tree" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="graphtage.yaml.build_tree">
+<code class="sig-prename descclassname">graphtage.yaml.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.yaml.build_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a YAML tree from an YAML file.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="graphtage.xml.html" class="btn btn-neutral float-left" title="graphtage.xml" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Trail of Bits
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.2.3
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

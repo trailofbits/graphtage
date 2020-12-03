@@ -1,0 +1,42 @@
+graphtage.formatter
+===================
+
+.. automodule:: graphtage.formatter
+
+formatter classes
+-----------------
+
+BasicFormatter
+**************
+
+.. autoclass:: BasicFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Formatter
+*********
+
+.. autoclass:: Formatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FormatterChecker
+****************
+
+.. autoclass:: FormatterChecker
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+formatter functions
+-------------------
+
+get_formatter
+*************
+
+.. autofunction:: get_formatter
