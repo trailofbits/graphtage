@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.bounds &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.bounds &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -236,7 +236,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <h3>Bounded<a class="headerlink" href="#bounded" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.bounds.Bounded">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Bounded</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Bounded</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for objects that have bounds that can be tightened.</p>
 <dl class="py method">
@@ -320,7 +320,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 <h3>ConstantBound<a class="headerlink" href="#constantbound" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.bounds.ConstantBound">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">ConstantBound</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">ConstantBound</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a></p>
 <p>An object with constant bounds.</p>
 <dl class="py method">
@@ -562,7 +562,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -570,6 +570,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

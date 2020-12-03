@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.csv &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.csv &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -342,7 +342,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>CSVNode<a class="headerlink" href="#csvnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a></p>
 <p>A node representing zero or more CSV rows.</p>
 <dl class="py method">
@@ -443,7 +443,7 @@ another list of the same length.</p></li>
 <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">node</span>
-    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">())</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -624,7 +624,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>CSVRow<a class="headerlink" href="#csvrow" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVRow">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a></p>
 <p>A node representing a row of a CSV file.</p>
 <dl class="py method">
@@ -725,7 +725,7 @@ another list of the same length.</p></li>
 <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">node</span>
-    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">())</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1298,7 +1298,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1306,6 +1306,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

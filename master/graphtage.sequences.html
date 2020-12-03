@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.sequences &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.sequences &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -191,7 +191,7 @@
 <h3>FixedLengthSequenceEdit<a class="headerlink" href="#fixedlengthsequenceedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.FixedLengthSequenceEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">FixedLengthSequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">FixedLengthSequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.FixedLengthSequenceEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceEdit</span></code></a></p>
 <p>An edit for sequences that does not consider interleaving.</p>
 <dl class="py method">
@@ -369,7 +369,7 @@ the sub-edits:</p>
 <h3>SequenceEdit<a class="headerlink" href="#sequenceedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.SequenceEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>An edit type for sequence nodes.</p>
 <dl class="py method">
@@ -715,7 +715,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>SequenceNode<a class="headerlink" href="#sequencenode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.sequences.SequenceNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.sequences.</code><code class="sig-name descname">SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
 <p>A node representing a sequence, like a list, set, or dict.</p>
 <dl class="py method">
@@ -805,7 +805,7 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">node</span>
-    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">())</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1036,7 +1036,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1044,6 +1044,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

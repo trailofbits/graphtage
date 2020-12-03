@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.fibonacci &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.fibonacci &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -193,7 +193,7 @@ Fibonacci Heap that has amortized constant time insertion.</p>
 <h3>FibonacciHeap<a class="headerlink" href="#fibonacciheap" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.fibonacci.FibonacciHeap">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">FibonacciHeap</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">FibonacciHeap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>T<span class="p">]</span><span class="p">, </span>Key<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.FibonacciHeap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A Fibonacci Heap.</p>
 <dl class="py method">
@@ -311,7 +311,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
 <h3>HeapNode<a class="headerlink" href="#heapnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.fibonacci.HeapNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">HeapNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.HeapNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">HeapNode</code><span class="sig-paren">(</span><em class="sig-param">item: T</em>, <em class="sig-param">key: Key = &lt;object object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.HeapNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A node in a <a class="reference internal" href="#graphtage.fibonacci.FibonacciHeap" title="graphtage.fibonacci.FibonacciHeap"><code class="xref py py-class docutils literal notranslate"><span class="pre">FibonacciHeap</span></code></a>.</p>
 <dl class="py method">
@@ -437,7 +437,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
 <h3>MaxFibonacciHeap<a class="headerlink" href="#maxfibonacciheap" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.fibonacci.MaxFibonacciHeap">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">MaxFibonacciHeap</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">MaxFibonacciHeap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>T<span class="p">]</span><span class="p">, </span>Key<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.MaxFibonacciHeap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.fibonacci.FibonacciHeap" title="graphtage.fibonacci.FibonacciHeap"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.fibonacci.FibonacciHeap</span></code></a></p>
 <p>A Fibonacci Heap that yields items in decreasing order, using a <a class="reference internal" href="#graphtage.fibonacci.ReversedComparator" title="graphtage.fibonacci.ReversedComparator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReversedComparator</span></code></a>.</p>
 <dl class="py method">
@@ -549,7 +549,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
 <h3>ReversedComparator<a class="headerlink" href="#reversedcomparator" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.fibonacci.ReversedComparator">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">ReversedComparator</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.ReversedComparator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.fibonacci.</code><code class="sig-name descname">ReversedComparator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">Key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.fibonacci.ReversedComparator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A wrapper that reverses the semantics of its comparison operators.</p>
 <dl class="py method">
@@ -615,7 +615,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -623,6 +623,7 @@ is incorrect, it will lead to undefined behavior and corruption of the heap.</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

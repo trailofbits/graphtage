@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.printer &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.printer &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -334,7 +334,7 @@ the command line).</p></li>
 <h3>CombiningMarkWriter<a class="headerlink" href="#combiningmarkwriter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.CombiningMarkWriter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">CombiningMarkWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.CombiningMarkWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">CombiningMarkWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.CombiningMarkWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.RawWriter</span></code></a></p>
 <p>A writer that automatically adds combining marks to the bytes that are written.</p>
 <dl class="py method">
@@ -537,7 +537,7 @@ will be appended to each character in <code class="xref py py-obj docutils liter
 <h3>HTMLPrinter<a class="headerlink" href="#htmlprinter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.HTMLPrinter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">HTMLPrinter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLPrinter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">HTMLPrinter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLPrinter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a></p>
 <p>A Printer that outputs in HTML.</p>
 <dl class="py method">
@@ -769,7 +769,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <h3>Printer<a class="headerlink" href="#printer" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.Printer">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Printer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Printer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Printer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_stream</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer">graphtage.printer.Writer</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ansi_color</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Printer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.progress.html#graphtage.progress.StatusWriter" title="graphtage.progress.StatusWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.progress.StatusWriter</span></code></a>, <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.RawWriter</span></code></a></p>
 <p>An ANSI color and status printer.</p>
 <dl class="py method">
@@ -997,7 +997,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <h3>RawWriter<a class="headerlink" href="#rawwriter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.RawWriter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">RawWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.RawWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">RawWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.RawWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Writer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A writer that provides a pass-through for printing bytes to the underlying stream without modification.</p>
 <dl class="py method">
@@ -1048,7 +1048,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <h3>Writer<a class="headerlink" href="#writer" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.Writer">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Writer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Writer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Writer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Writer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for basic IO writers that is a subset of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.IO</span></code></a>.</p>
 <dl class="py method">
@@ -1157,7 +1157,7 @@ then this decorator will have the method automatically return a <a class="refere
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1165,6 +1165,7 @@ then this decorator will have the method automatically return a <a class="refere
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

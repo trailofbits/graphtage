@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.xml &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.xml &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -499,7 +499,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>XMLElement<a class="headerlink" href="#xmlelement" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.xml.XMLElement">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tag</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a></span></em>, <em class="sig-param"><span class="n">attrib</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.StringNode" title="graphtage.StringNode">graphtage.StringNode</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">children</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">XMLElement</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">allow_key_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a></p>
 <p>“A node representing an XML element.</p>
 <dl class="py method">
@@ -578,7 +578,7 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
     <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
     <span class="k">yield</span> <span class="n">node</span>
-    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">())</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -948,7 +948,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>XMLElementEdit<a class="headerlink" href="#xmlelementedit" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.xml.XMLElementEdit">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementEdit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.xml.</code><code class="sig-name descname">XMLElementEdit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">graphtage.xml.XMLElement</a></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.xml.XMLElement" title="graphtage.xml.XMLElement">graphtage.xml.XMLElement</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementEdit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.AbstractCompoundEdit" title="graphtage.AbstractCompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit</span></code></a></p>
 <p>An edit on an XML element.</p>
 <dl class="py method">
@@ -1511,7 +1511,7 @@ already automatically been configured to format them prior to the call to
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1519,6 +1519,7 @@ already automatically been configured to format them prior to the call to
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>

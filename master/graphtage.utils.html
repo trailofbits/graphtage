@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.utils &mdash; Graphtage v0.2.2 documentation</title>
+  <title>graphtage.utils &mdash; Graphtage v0.2.3 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.2"><div class="version">v0.2.2</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.3"><div class="version">v0.2.3</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -198,7 +198,7 @@
 <h3>HashableCounter<a class="headerlink" href="#hashablecounter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.utils.HashableCounter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">HashableCounter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">HashableCounter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.Counter" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.Counter</span></code></a></p>
 <p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Counter</span></code> that supports being hashed even though it is mutable.</p>
 <dl class="py method">
@@ -737,7 +737,7 @@ allowed to contain zero and negative counts.</p>
 <h3>Sized<a class="headerlink" href="#sized" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.utils.Sized">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">Sized</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Sized" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">Sized</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Sized" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
 <p>A protocol for objects that have a <code class="docutils literal notranslate"><span class="pre">getsizeof</span></code> function.</p>
 <dl class="py method">
@@ -759,14 +759,14 @@ allowed to contain zero and negative counts.</p>
 <h3>SparseMatrix<a class="headerlink" href="#sparsematrix" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.utils.SparseMatrix">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">SparseMatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">SparseMatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.utils.Sized</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A sparse matrix that can store arbitrary Python objects.</p>
 <p>For sparse matrices storing homogeneous items and/or native types, it is more efficient to use an implementation
 like a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html">scipy sparse matrix</a>.</p>
 <dl class="py class">
 <dt id="graphtage.utils.SparseMatrix.SparseMatrixRow">
-<em class="property">class </em><code class="sig-name descname">SparseMatrixRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">SparseMatrixRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row_num</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.utils.Sized</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
 <p>A row of a sparse matrix.</p>
 <dl class="py method">
@@ -1197,7 +1197,7 @@ used:</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.2
+        v0.2.3
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1205,6 +1205,7 @@ used:</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
             <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
             <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
