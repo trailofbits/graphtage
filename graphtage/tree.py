@@ -350,14 +350,14 @@ class TreeNode(metaclass=ABCMeta):
             while stack:
                 node = stack.pop()
                 yield node
-                stack.extend(node.children())
+                stack.extend(reversed(node.children()))
 
         """
         stack = [self]
         while stack:
             node = stack.pop()
             yield node
-            stack.extend(node.children())
+            stack.extend(reversed(node.children()))
 
     @property
     def is_leaf(self) -> bool:
