@@ -48,7 +48,7 @@ def git_branch() -> Optional[str]:
         return None
 
 
-DEV_BUILD = False
+DEV_BUILD = True
 """Sets whether this build is a development build.
 
 This should only be set to :const:`False` to coincide with a release. It should *always* be :const:`False` before
@@ -59,7 +59,7 @@ If :const:`True`, the git branch will be included in the version string.
 """
 
 
-__version__: Tuple[Union[int, str], ...] = (0, 2, 3)
+__version__: Tuple[Union[int, str], ...] = (0, 2, 4)
 
 if DEV_BUILD:
     branch_name = git_branch()
