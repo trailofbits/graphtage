@@ -1,0 +1,1229 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>graphtage.utils &mdash; Graphtage v0.2.4 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.utils.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphtage.version" href="graphtage.version.html" />
+    <link rel="prev" title="graphtage.sequences" href="graphtage.sequences.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Graphtage
+          
+
+          
+          </a>
+
+          
+
+          
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.4"><div class="version">v0.2.4</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#utils-classes">utils classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hashablecounter">HashableCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orderedcounter">OrderedCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sized">Sized</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sparsematrix">SparseMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tempfile">Tempfile</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utils-functions">utils functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getsizeof">getsizeof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#largest">largest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#smallest">smallest</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.yaml.html">graphtage.yaml</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="package.html">Graphtage API</a> &raquo;</li>
+        
+      <li>graphtage.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/graphtage.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-graphtage.utils">
+<span id="graphtage-utils"></span><h1>graphtage.utils<a class="headerlink" href="#module-graphtage.utils" title="Permalink to this headline">¶</a></h1>
+<p>Generic utility functions and classes.</p>
+<div class="section" id="utils-classes">
+<h2>utils classes<a class="headerlink" href="#utils-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hashablecounter">
+<h3>HashableCounter<a class="headerlink" href="#hashablecounter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.utils.HashableCounter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">HashableCounter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.Counter" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.Counter</span></code></a></p>
+<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Counter</span></code> that supports being hashed even though it is mutable.</p>
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__add__">
+<code class="sig-name descname">__add__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add counts from two counters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__and__">
+<code class="sig-name descname">__and__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__and__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersection is the minimum of corresponding counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__delitem__">
+<code class="sig-name descname">__delitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.__delitem__() but does not raise KeyError for missing values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__iadd__">
+<code class="sig-name descname">__iadd__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace add from another counter, keeping only positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__iand__">
+<code class="sig-name descname">__iand__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__iand__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace intersection is the minimum of corresponding counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__ior__">
+<code class="sig-name descname">__ior__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__ior__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace union is the maximum of value from either counter.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__isub__">
+<code class="sig-name descname">__isub__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__isub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace subtract counter, but keep only results with positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__missing__">
+<code class="sig-name descname">__missing__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__missing__" title="Permalink to this definition">¶</a></dt>
+<dd><p>The count of elements not in the Counter is zero.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__neg__">
+<code class="sig-name descname">__neg__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__neg__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts from an empty counter.  Strips positive and zero counts,
+and flips the sign on negative counts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__or__">
+<code class="sig-name descname">__or__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__or__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Union is the maximum of value in either of the input counters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__pos__">
+<code class="sig-name descname">__pos__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__pos__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an empty counter, effectively stripping negative and zero counts</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.__sub__">
+<code class="sig-name descname">__sub__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtract count, but keep only results with positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter._keep_positive">
+<code class="sig-name descname">_keep_positive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter._keep_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to strip elements with a negative or zero count</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None.  Remove all items from D.<a class="headerlink" href="#graphtage.utils.HashableCounter.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a shallow copy.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.elements">
+<code class="sig-name descname">elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<a class="headerlink" href="#graphtage.utils.HashableCounter.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over elements repeating each as many times as its count.</p>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;ABCABC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span>
+<span class="go">[&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;C&#39;, &#39;C&#39;]</span>
+
+<span class="go"># Knuth&#39;s example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prime_factors</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">prime_factors</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>     <span class="c1"># loop over factors</span>
+<span class="gp">... </span>    <span class="n">product</span> <span class="o">*=</span> <span class="n">factor</span>                       <span class="c1"># and multiply them</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product</span>
+<span class="go">1836</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If an element’s count has been set to zero or is a negative number, elements() will ignore it.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.fromkeys">
+<em class="property">classmethod </em><code class="sig-name descname">fromkeys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.fromkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new dictionary with keys from iterable and values set to value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s items<a class="headerlink" href="#graphtage.utils.HashableCounter.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s keys<a class="headerlink" href="#graphtage.utils.HashableCounter.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.most_common">
+<code class="sig-name descname">most_common</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.most_common" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the n most common elements and their counts from the most
+common to the least.  If n is None, then list all element counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abracadabra&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[(&#39;a&#39;, 5), (&#39;b&#39;, 2), (&#39;r&#39;, 2)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; v, remove specified key and return the corresponding value.<a class="headerlink" href="#graphtage.utils.HashableCounter.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>If key is not found, d is returned if given, otherwise KeyError is raised</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.popitem">
+<code class="sig-name descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.popitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove and return a (key, value) pair as a 2-tuple.</p>
+<p>Pairs are returned in LIFO (last-in, first-out) order.
+Raises KeyError if the dict is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.setdefault">
+<code class="sig-name descname">setdefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.subtract">
+<code class="sig-name descname">subtract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.update() but subtracts counts instead of replacing them.
+Counts can be reduced below zero.  Both the inputs and outputs are
+allowed to contain zero and negative counts.</p>
+<p>Source can be an iterable, a dictionary, or another Counter instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="go">-1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.update() but add counts instead of replacing them.</p>
+<p>Source can be an iterable, a dictionary, or another Counter instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                 <span class="c1"># add elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                      <span class="c1"># four &#39;h&#39; in which, witch, and watch</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.HashableCounter.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D’s values<a class="headerlink" href="#graphtage.utils.HashableCounter.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="orderedcounter">
+<h3>OrderedCounter<a class="headerlink" href="#orderedcounter" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.utils.OrderedCounter">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">OrderedCounter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.Counter" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.Counter</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.OrderedDict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></a></p>
+<p>A counter that remembers the order elements are first encountered</p>
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__add__">
+<code class="sig-name descname">__add__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__add__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add counts from two counters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__and__">
+<code class="sig-name descname">__and__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__and__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersection is the minimum of corresponding counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__delitem__">
+<code class="sig-name descname">__delitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">elem</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__delitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.__delitem__() but does not raise KeyError for missing values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__iadd__">
+<code class="sig-name descname">__iadd__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__iadd__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace add from another counter, keeping only positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__iand__">
+<code class="sig-name descname">__iand__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__iand__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace intersection is the minimum of corresponding counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new, empty Counter object.  And if given, count elements
+from an input iterable.  Or, initialize the count from another mapping
+of elements to their counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>                           <span class="c1"># a new, empty counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;gallahad&#39;</span><span class="p">)</span>                 <span class="c1"># a new counter from an iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>           <span class="c1"># a new counter from a mapping</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>                   <span class="c1"># a new counter from keyword args</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__ior__">
+<code class="sig-name descname">__ior__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__ior__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace union is the maximum of value from either counter.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__isub__">
+<code class="sig-name descname">__isub__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__isub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace subtract counter, but keep only results with positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
+<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__missing__">
+<code class="sig-name descname">__missing__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__missing__" title="Permalink to this definition">¶</a></dt>
+<dd><p>The count of elements not in the Counter is zero.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__neg__">
+<code class="sig-name descname">__neg__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__neg__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts from an empty counter.  Strips positive and zero counts,
+and flips the sign on negative counts.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__or__">
+<code class="sig-name descname">__or__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__or__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Union is the maximum of value in either of the input counters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__pos__">
+<code class="sig-name descname">__pos__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__pos__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an empty counter, effectively stripping negative and zero counts</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.__sub__">
+<code class="sig-name descname">__sub__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__sub__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtract count, but keep only results with positive counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter._keep_positive">
+<code class="sig-name descname">_keep_positive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter._keep_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal method to strip elements with a negative or zero count</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None.  Remove all items from od.<a class="headerlink" href="#graphtage.utils.OrderedCounter.clear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a shallow copy.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.elements">
+<code class="sig-name descname">elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<a class="headerlink" href="#graphtage.utils.OrderedCounter.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator over elements repeating each as many times as its count.</p>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;ABCABC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span>
+<span class="go">[&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;C&#39;, &#39;C&#39;]</span>
+
+<span class="go"># Knuth&#39;s example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prime_factors</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">prime_factors</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>     <span class="c1"># loop over factors</span>
+<span class="gp">... </span>    <span class="n">product</span> <span class="o">*=</span> <span class="n">factor</span>                       <span class="c1"># and multiply them</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">product</span>
+<span class="go">1836</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If an element’s count has been set to zero or is a negative number, elements() will ignore it.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.fromkeys">
+<em class="property">classmethod </em><code class="sig-name descname">fromkeys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.fromkeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new ordered dictionary with keys from iterable and values set to value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s items<a class="headerlink" href="#graphtage.utils.OrderedCounter.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s keys<a class="headerlink" href="#graphtage.utils.OrderedCounter.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.most_common">
+<code class="sig-name descname">most_common</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.most_common" title="Permalink to this definition">¶</a></dt>
+<dd><p>List the n most common elements and their counts from the most
+common to the least.  If n is None, then list all element counts.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abracadabra&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[(&#39;a&#39;, 5), (&#39;b&#39;, 2), (&#39;r&#39;, 2)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.move_to_end">
+<code class="sig-name descname">move_to_end</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">last</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.move_to_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move an existing element to the end (or beginning if last is false).</p>
+<p>Raise KeyError if the element does not exist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; v, remove specified key and return the corresponding<a class="headerlink" href="#graphtage.utils.OrderedCounter.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>value.  If key is not found, d is returned if given, otherwise KeyError
+is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.popitem">
+<code class="sig-name descname">popitem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">last</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.popitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove and return a (key, value) pair from the dictionary.</p>
+<p>Pairs are returned in LIFO order if last is true or FIFO order if false.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.setdefault">
+<code class="sig-name descname">setdefault</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">default</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.subtract">
+<code class="sig-name descname">subtract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.update() but subtracts counts instead of replacing them.
+Counts can be reduced below zero.  Both the inputs and outputs are
+allowed to contain zero and negative counts.</p>
+<p>Source can be an iterable, a dictionary, or another Counter instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="go">-1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwds</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like dict.update() but add counts instead of replacing them.</p>
+<p>Source can be an iterable, a dictionary, or another Counter instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                 <span class="c1"># add elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                      <span class="c1"># four &#39;h&#39; in which, witch, and watch</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.OrderedCounter.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D’s values<a class="headerlink" href="#graphtage.utils.OrderedCounter.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="sized">
+<h3>Sized<a class="headerlink" href="#sized" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.utils.Sized">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">Sized</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Sized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<p>A protocol for objects that have a <code class="docutils literal notranslate"><span class="pre">getsizeof</span></code> function.</p>
+<dl class="py method">
+<dt id="graphtage.utils.Sized.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Sized.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.Sized.getsizeof">
+<code class="sig-name descname">getsizeof</code><em class="property">: Callable<span class="p">[</span><span class="p">]</span><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.Sized.getsizeof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of this object.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="sparsematrix">
+<h3>SparseMatrix<a class="headerlink" href="#sparsematrix" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.utils.SparseMatrix">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">SparseMatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.utils.Sized</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Mapping" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<p>A sparse matrix that can store arbitrary Python objects.</p>
+<p>For sparse matrices storing homogeneous items and/or native types, it is more efficient to use an implementation
+like a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html">scipy sparse matrix</a>.</p>
+<dl class="py class">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow">
+<em class="property">class </em><code class="sig-name descname">SparseMatrixRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row_num</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.utils.Sized</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableMapping" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.MutableMapping</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<p>A row of a sparse matrix.</p>
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.__getitem__">
+<code class="sig-name descname">__getitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">col</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the given column of this row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>col</strong> – The index of the column to get.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value of the column, or the default value if it has not yet been set.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[T]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.num_cols</span></code> is not <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">col</span></code> is
+    greater than or equal to it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row_num</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a sparse matrix row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row_num</strong> – The index of this row.</p></li>
+<li><p><strong>num_cols</strong> – An optional number of columns in this row. If omitted, this row will be unbounded and allow
+insertion and access at any column index.</p></li>
+<li><p><strong>default_value</strong> – An optional default value to use if a column is accessed before it is assigned.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.__iter__">
+<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over the indexes of columns that have been set in this row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.__len__">
+<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of cells defined this row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the contents of this row.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.default_value">
+<code class="sig-name descname">default_value</code><em class="property">: Optional<span class="p">[</span>T<span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default value for this row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.getsizeof">
+<code class="sig-name descname">getsizeof</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.getsizeof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an approximation of the number of bytes used by this row in memory.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">getsizeof</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s items<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s keys<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.num_cols">
+<code class="sig-name descname">num_cols</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.num_cols" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of columns in this row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.pop">
+<code class="sig-name descname">pop</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; v, remove specified key and return the corresponding value.<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>If key is not found, d is returned if given, otherwise KeyError is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.popitem">
+<code class="sig-name descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; (k, v), remove and return some (key, value) pair<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.popitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>as a 2-tuple; but raise KeyError if D is empty.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.row">
+<code class="sig-name descname">row</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Optional<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data structure holding the contents of this row.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.row_num">
+<code class="sig-name descname">row_num</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.row_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index of this row.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.setdefault">
+<code class="sig-name descname">setdefault</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D.get(k,d), also set D[k]=d if k not in D<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.shape">
+<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of columns in this row.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_cols</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param">E</em>, <span class="optional">]</span><em class="sig-param">**F</em><span class="sig-paren">)</span> &#x2192; None.  Update D from mapping/iterable E and F.<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>If E present and has a .keys() method, does:     for k in E: D[k] = E[k]
+If E present and lacks .keys() method, does:     for (k, v) in E: D[k] = v
+In either case, this is followed by: for k, v in F.items(): D[k] = v</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.SparseMatrixRow.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D’s values<a class="headerlink" href="#graphtage.utils.SparseMatrix.SparseMatrixRow.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.__getitem__">
+<code class="sig-name descname">__getitem__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span> &#x2192; MutableMapping<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Optional<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the value of the given row of this matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>row</strong> – The index of the row to get.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The contents of the row.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>MutableMapping[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, Optional[T]]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IndexError" title="(in Python v3.9)"><strong>IndexError</strong></a> – If <a class="reference internal" href="#graphtage.utils.SparseMatrix.num_rows" title="graphtage.utils.SparseMatrix.num_rows"><code class="xref py py-attr docutils literal notranslate"><span class="pre">self.num_rows</span></code></a> is not <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">row</span></code> is
+    greater than or equal to it.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_value</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>T<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a sparse matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_rows</strong> – An optional bound on the number of rows.</p></li>
+<li><p><strong>num_cols</strong> – An optional bound on the number of columns.</p></li>
+<li><p><strong>default_value</strong> – An optional default value to return if cells are accessed before they are set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.__len__">
+<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of rows in this matrix.</p>
+<p>If <a class="reference internal" href="#graphtage.utils.SparseMatrix.num_rows" title="graphtage.utils.SparseMatrix.num_rows"><code class="xref py py-attr docutils literal notranslate"><span class="pre">self.num_rows</span></code></a> is <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code>, this will return the maximum row index of a
+cell that has been set, plus one.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.clear">
+<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clears the contents of this matrix.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.default_value">
+<code class="sig-name descname">default_value</code><em class="property">: Optional<span class="p">[</span>T<span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default value to return if cells are accessed before they are set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">k</em><span class="optional">[</span>, <em class="sig-param">d</em><span class="optional">]</span><span class="sig-paren">)</span> &#x2192; D[k] if k in D, else d.  d defaults to None.<a class="headerlink" href="#graphtage.utils.SparseMatrix.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.getsizeof">
+<code class="sig-name descname">getsizeof</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.getsizeof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the approximate memory footprint of this matrix in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s items<a class="headerlink" href="#graphtage.utils.SparseMatrix.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; a set-like object providing a view on D’s keys<a class="headerlink" href="#graphtage.utils.SparseMatrix.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.num_cols">
+<code class="sig-name descname">num_cols</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.num_cols" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of columns in this matrox, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if there is no bound.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.num_filled_elements">
+<code class="sig-name descname">num_filled_elements</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.SparseMatrix.num_filled_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the number of elements in this matrix that have been explicitly set.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.num_rows">
+<code class="sig-name descname">num_rows</code><em class="property">: Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.num_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of rows in this matrix, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if there is no bound.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="graphtage.utils.SparseMatrix.rows">
+<code class="sig-name descname">rows</code><em class="property">: Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.utils.SparseMatrix.SparseMatrixRow" title="graphtage.utils.SparseMatrix.SparseMatrixRow">SparseMatrix.SparseMatrixRow</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.utils.SparseMatrix.rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>The rows of this matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.shape">
+<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">]</span><a class="headerlink" href="#graphtage.utils.SparseMatrix.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the (number of rows, number of columns) of this matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.SparseMatrix.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; an object providing a view on D’s values<a class="headerlink" href="#graphtage.utils.SparseMatrix.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="tempfile">
+<h3>Tempfile<a class="headerlink" href="#tempfile" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="graphtage.utils.Tempfile">
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">Tempfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contents</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)">bytes</a></span></em>, <em class="sig-param"><span class="n">prefix</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Tempfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Creates a temporary file containing a given byte sequence.</p>
+<p>The file will automatically be cleaned up after its use. This is useful for interacting with functions and
+libraries that only accept a path and not a stream object.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage.utils</span> <span class="kn">import</span> <span class="n">Tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="go">/var/folders/bs/hrvzrctx6tg2_j17gb6wckph0000gn/T/tmpkza5fvr_</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="go">foo</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="graphtage.utils.Tempfile.__enter__">
+<code class="sig-name descname">__enter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="headerlink" href="#graphtage.utils.Tempfile.__enter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a tempfile, returning the path to the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.Tempfile.__exit__">
+<code class="sig-name descname">__exit__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">traceback</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Tempfile.__exit__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically cleans up the tempfile.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="graphtage.utils.Tempfile.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contents</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.9)">bytes</a></span></em>, <em class="sig-param"><span class="n">prefix</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.Tempfile.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a Tempfile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>contents</strong> – The contents to be populated in the file.</p></li>
+<li><p><strong>prefix</strong> – An optional prefix for the filename.</p></li>
+<li><p><strong>suffix</strong> – An optional suffix for the filename.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="utils-functions">
+<h2>utils functions<a class="headerlink" href="#utils-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="getsizeof">
+<h3>getsizeof<a class="headerlink" href="#getsizeof" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="graphtage.utils.getsizeof">
+<code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">getsizeof</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.utils.getsizeof" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function to calculate the memory footprint of an object.</p>
+<p>If the object implements the <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sized</span></code></a> protocol (<em>i.e.</em>, if it implements a <code class="docutils literal notranslate"><span class="pre">getsizeof</span></code> method), then this is
+used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;getsizeof&#39;</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If the object is a list or tuple, then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If the object is a dict, then:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="n">getsizeof</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Otherwise:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – The object to measure.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An approximation of the memory footprint of the object, in bytes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="largest">
+<h3>largest<a class="headerlink" href="#largest" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="graphtage.utils.largest">
+<code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">largest</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">sequence</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>T<span class="p">, </span>Iterable<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.utils.largest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="smallest">
+<h3>smallest<a class="headerlink" href="#smallest" title="Permalink to this headline">¶</a></h3>
+<dl class="py function">
+<dt id="graphtage.utils.smallest">
+<code class="sig-prename descclassname">graphtage.utils.</code><code class="sig-name descname">smallest</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">sequence</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>T<span class="p">, </span>Iterable<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.utils.smallest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="graphtage.version.html" class="btn btn-neutral float-right" title="graphtage.version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="graphtage.sequences.html" class="btn btn-neutral float-left" title="graphtage.sequences" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Trail of Bits
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.2.4
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>
