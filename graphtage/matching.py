@@ -260,7 +260,7 @@ class Matching(Generic[T], SetCollection, Bounded, SetType):
         return f'{self.__class__.__name__}<{matchings}>'
 
 
-class PathSet(Generic[T], Matching[T]):
+class PathSet(Matching[T], Generic[T]):
     """A version of a Matching with edge directions overridden, used for [Karp78]_"""
     def __init__(self):
         super().__init__()

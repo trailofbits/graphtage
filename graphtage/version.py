@@ -48,7 +48,7 @@ def git_branch() -> Optional[str]:
         return None
 
 
-DEV_BUILD = True
+DEV_BUILD = False
 """Sets whether this build is a development build.
 
 This should only be set to :const:`False` to coincide with a release. It should *always* be :const:`False` before
