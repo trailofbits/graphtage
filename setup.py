@@ -39,6 +39,7 @@ setup(
         'colorama',
         'intervaltree',
         'json5==0.9.5',
+        'numpy>=1.19.4',
         'PyYAML',
         'scipy>=1.4.0',
         'tqdm',
