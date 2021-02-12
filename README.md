@@ -5,7 +5,7 @@
 [![Slack Status](https://empireslacking.herokuapp.com/badge.svg)](https://empireslacking.herokuapp.com)
 
 Graphtage is a commandline utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
-for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, and CSS files. Its name is a
+for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, plist, and CSS files. Its name is a
 portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
 that they grow as one.
 

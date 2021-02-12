@@ -1,4 +1,4 @@
-"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering YAML files."""
+"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering Apple plist files."""
 import os
 from xml.parsers.expat import ExpatError
 from typing import Optional, Tuple, Union
