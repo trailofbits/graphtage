@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.expressions &mdash; Graphtage 0.2.5-git documentation</title>
+  <title>graphtage.expressions &mdash; Graphtage v0.2.5 documentation</title>
   
 
   
@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -62,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.5-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -132,6 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
@@ -307,7 +307,7 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 <dl class="py attribute">
 <dt id="graphtage.expressions.CloseBracket.start_token_type">
 <code class="sig-name descname">start_token_type</code><a class="headerlink" href="#graphtage.expressions.CloseBracket.start_token_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenBracket" title="graphtage.expressions.OpenBracket"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenBracket</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenBracket" title="graphtage.expressions.OpenBracket"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OpenBracket</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -348,7 +348,7 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 <dl class="py attribute">
 <dt id="graphtage.expressions.CloseParen.start_token_type">
 <code class="sig-name descname">start_token_type</code><a class="headerlink" href="#graphtage.expressions.CloseParen.start_token_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenParen" title="graphtage.expressions.OpenParen"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenParen</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenParen" title="graphtage.expressions.OpenParen"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OpenParen</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -516,7 +516,7 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 <dl class="py class">
 <dt id="graphtage.expressions.FloatToken">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.expressions.</code><code class="sig-name descname">FloatToken</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">raw_str</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">N</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FloatToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
 <p>A numeric token for floats.</p>
 <dl class="py method">
 <dt id="graphtage.expressions.FloatToken.__init__">
@@ -614,7 +614,7 @@ function call.</p>
 <dl class="py class">
 <dt id="graphtage.expressions.IntegerToken">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.expressions.</code><code class="sig-name descname">IntegerToken</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">raw_str</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">N</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IntegerToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</p>
 <p>A numeric token for integers.</p>
 <dl class="py method">
 <dt id="graphtage.expressions.IntegerToken.__init__">
@@ -644,7 +644,7 @@ function call.</p>
 <dl class="py class">
 <dt id="graphtage.expressions.NumericToken">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.expressions.</code><code class="sig-name descname">NumericToken</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">raw_str</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">N</span></em>, <em class="sig-param"><span class="n">offset</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.NumericToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.expressions.N</span></code>]</p>
 <p>An abstract base class for numeric tokens.</p>
 <dl class="py method">
 <dt id="graphtage.expressions.NumericToken.__init__">
@@ -989,7 +989,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.OperatorToken.op">
-<code class="sig-name descname">op</code><em class="property">: <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator">Operator</a></em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">op</code><em class="property">: <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator">graphtage.expressions.Operator</a></em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
 <dd><p>The operator associated with this token.</p>
 </dd></dl>
 
@@ -1271,7 +1271,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 
 <dl class="py attribute">
 <dt id="graphtage.expressions.Tokenizer.prev_token">
-<code class="sig-name descname">prev_token</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token">Token</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prev_token</code><em class="property">: Optional<span class="p">[</span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token">graphtage.expressions.Token</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>The previous token yielded by this tokenizer.</p>
 </dd></dl>
 
@@ -1416,7 +1416,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.5-git
+        v0.2.5
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1424,6 +1424,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
             <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>

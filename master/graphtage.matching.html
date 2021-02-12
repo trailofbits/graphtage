@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.matching &mdash; Graphtage 0.2.5-git documentation</title>
+  <title>graphtage.matching &mdash; Graphtage v0.2.5 documentation</title>
   
 
   
@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -62,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.5-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -117,6 +116,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
@@ -229,7 +229,7 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <dl class="py class">
 <dt id="graphtage.matching.Edge">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Edge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode">graphtage.matching.MatchingFromNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode">graphtage.matching.MatchingToNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">weight</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Edge data structure used in the implementation of <a class="reference internal" href="#karp78" id="id2"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Edge.__init__">
@@ -275,7 +275,7 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <dl class="py class">
 <dt id="graphtage.matching.Matching">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Matching</code><a class="headerlink" href="#graphtage.matching.Matching" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Set</span></code></a>, <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Set</span></code></a>, <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.Edge</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]]</p>
 <p>An abstract base class used by the partial implementation of <a class="reference internal" href="#karp78" id="id3"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Matching.__init__">
@@ -444,7 +444,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingFromNode">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingFromNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingFromNode.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.__init__" title="Permalink to this definition">¶</a></dt>
@@ -474,7 +474,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingNode">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Node data structure used in the implementation of <a class="reference internal" href="#karp78" id="id4"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingNode.__init__">
@@ -500,7 +500,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingToNode">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingToNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingToNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A node type used in the implementation of <a class="reference internal" href="#karp78" id="id5"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingToNode.__init__">
@@ -526,7 +526,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.PathSet">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">PathSet</code><a class="headerlink" href="#graphtage.matching.PathSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.Matching</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.Matching</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A version of a Matching with edge directions overridden, used for <a class="reference internal" href="#karp78" id="id6"><span>[Karp78]</span></a></p>
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.__init__">
@@ -716,7 +716,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.SortedEdges">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">SortedEdges</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edges</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A sorted collection of edges.</p>
 <dl class="py method">
 <dt id="graphtage.matching.SortedEdges.__init__">
@@ -742,7 +742,7 @@ Raises KeyError if the set is empty.</p>
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcher">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> matcher built atop <a class="reference internal" href="#graphtage.matching.min_weight_bipartite_matching" title="graphtage.matching.min_weight_bipartite_matching"><code class="xref py py-func docutils literal notranslate"><span class="pre">min_weight_bipartite_matching()</span></code></a>.</p>
 <p>It works by iteratively and selectively tightening the bipartite graph’s edges’ bounds until they are all “distinct”
 (<em>i.e.</em>, their bounded ranges are all either <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.bounds.Range.definitive()</span></code></a> or non-overlapping). It does
@@ -823,7 +823,7 @@ already been completed through prior calls to <a class="reference internal" href
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Partial implementation of <em>An Algorithm to Solve the</em> <span class="math notranslate nohighlight">\(m \times n\)</span> <em>Assignment Problem in Expected Time</em> <span class="math notranslate nohighlight">\(O(mn \log n)\)</span> <a class="reference internal" href="#karp78" id="id7"><span>[Karp78]</span></a>.</p>
 <p>The implementation is partial because I realized partway through that, even though this implementation has better
 asymptotic bounds, <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.linear_sum_assignment()</span></code> will almost always be much faster since it is
@@ -979,7 +979,7 @@ either <a class="reference external" href="https://docs.python.org/3/library/fun
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.5-git
+        v0.2.5
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -987,6 +987,7 @@ either <a class="reference external" href="https://docs.python.org/3/library/fun
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
             <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>

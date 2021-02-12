@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.bounds &mdash; Graphtage 0.2.5-git documentation</title>
+  <title>graphtage.bounds &mdash; Graphtage v0.2.5 documentation</title>
   
 
   
@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -62,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.5-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -114,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
@@ -237,7 +237,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <dl class="py class">
 <dt id="graphtage.bounds.Bounded">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.bounds.</code><code class="sig-name descname">Bounded</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
 <p>A protocol for objects that have bounds that can be tightened.</p>
 <dl class="py method">
 <dt id="graphtage.bounds.Bounded.__init__">
@@ -428,7 +428,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py attribute">
 <dt id="graphtage.bounds.Range.lower_bound">
-<code class="sig-name descname">lower_bound</code><em class="property">: RangeValue</em><a class="headerlink" href="#graphtage.bounds.Range.lower_bound" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">lower_bound</code><em class="property">: Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.bounds.Range.lower_bound" title="Permalink to this definition">¶</a></dt>
 <dd><p>The lower bound of this range.</p>
 </dd></dl>
 
@@ -440,7 +440,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py attribute">
 <dt id="graphtage.bounds.Range.upper_bound">
-<code class="sig-name descname">upper_bound</code><em class="property">: RangeValue</em><a class="headerlink" href="#graphtage.bounds.Range.upper_bound" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">upper_bound</code><em class="property">: Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">graphtage.bounds.Infinity</a><span class="p">]</span></em><a class="headerlink" href="#graphtage.bounds.Range.upper_bound" title="Permalink to this definition">¶</a></dt>
 <dd><p>The upper bound of this range.</p>
 </dd></dl>
 
@@ -562,7 +562,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.5-git
+        v0.2.5
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -570,6 +570,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
             <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>

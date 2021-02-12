@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.printer &mdash; Graphtage 0.2.5-git documentation</title>
+  <title>graphtage.printer &mdash; Graphtage v0.2.5 documentation</title>
   
 
   
@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -39,7 +38,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="graphtage.progress" href="graphtage.progress.html" />
-    <link rel="prev" title="graphtage.multiset" href="graphtage.multiset.html" /> 
+    <link rel="prev" title="graphtage.plist" href="graphtage.plist.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.5-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -97,6 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.printer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#printer-classes">printer classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ansicontext">ANSIContext</a></li>
@@ -219,12 +219,12 @@ the command line).</p></li>
 <h3>ANSIContext<a class="headerlink" href="#ansicontext" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.ANSIContext">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">ANSIContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.ANSIContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">ANSIContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.ANSIContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A context for printing to the terminal with ANSI color escapes.</p>
 <dl class="py method">
 <dt id="graphtage.printer.ANSIContext.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.ANSIContext.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.ANSIContext.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -392,7 +392,7 @@ the command line).</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.printer.CombiningMarkWriter.parent">
-<code class="sig-name descname">parent</code><em class="property">: <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">RawWriter</a></em><a class="headerlink" href="#graphtage.printer.CombiningMarkWriter.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parent</code><em class="property">: <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a></em><a class="headerlink" href="#graphtage.printer.CombiningMarkWriter.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>This writer’s parent.</p>
 </dd></dl>
 
@@ -434,12 +434,12 @@ will be appended to each character in <code class="xref py py-obj docutils liter
 <h3>HTMLANSIContext<a class="headerlink" href="#htmlansicontext" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.printer.HTMLANSIContext">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">HTMLANSIContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLANSIContext" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">HTMLANSIContext</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLANSIContext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.ANSIContext</span></code></a></p>
 <p>A context that sets HTML colors instead of ANSI terminal escapes.</p>
 <dl class="py method">
 <dt id="graphtage.printer.HTMLANSIContext.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a><span class="p">, </span><a class="reference internal" href="#graphtage.printer.ANSIContext" title="graphtage.printer.ANSIContext">graphtage.printer.ANSIContext</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fore</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiFore<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">back</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiBack<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">style</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>colorama.ansi.AnsiStyle<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a context.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -506,6 +506,12 @@ will be appended to each character in <code class="xref py py-obj docutils liter
 <em class="property">static </em><code class="sig-name descname">get_fore</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">color</span><span class="p">:</span> <span class="n">colorama.ansi.AnsiFore</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.get_fore" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.printer.HTMLANSIContext.is_applied">
+<code class="sig-name descname">is_applied</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.is_applied" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keeps track of whether this context’s options have already been applied to the underlying stream.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.printer.HTMLANSIContext.parent">
 <em class="property">property </em><code class="sig-name descname">parent</code><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.parent" title="Permalink to this definition">¶</a></dt>
@@ -524,6 +530,11 @@ will be appended to each character in <code class="xref py py-obj docutils liter
 <dd><p>Returns the ANSI start code for this context.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="graphtage.printer.HTMLANSIContext.stream">
+<code class="sig-name descname">stream</code><em class="property">: <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter">graphtage.printer.RawWriter</a></em><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.stream" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt id="graphtage.printer.HTMLANSIContext.style">
 <em class="property">property </em><code class="sig-name descname">style</code><a class="headerlink" href="#graphtage.printer.HTMLANSIContext.style" title="Permalink to this definition">¶</a></dt>
@@ -538,7 +549,7 @@ will be appended to each character in <code class="xref py py-obj docutils liter
 <dl class="py class">
 <dt id="graphtage.printer.HTMLPrinter">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">HTMLPrinter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.HTMLPrinter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IO</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
 <p>A Printer that outputs in HTML.</p>
 <dl class="py method">
 <dt id="graphtage.printer.HTMLPrinter.__init__">
@@ -770,7 +781,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <dl class="py class">
 <dt id="graphtage.printer.Printer">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Printer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_stream</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer">graphtage.printer.Writer</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ansi_color</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">quiet</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Printer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.progress.html#graphtage.progress.StatusWriter" title="graphtage.progress.StatusWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.progress.StatusWriter</span></code></a>, <a class="reference internal" href="#graphtage.printer.RawWriter" title="graphtage.printer.RawWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.RawWriter</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IO</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
 <p>An ANSI color and status printer.</p>
 <dl class="py method">
 <dt id="graphtage.printer.Printer.__init__">
@@ -998,7 +1009,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <dl class="py class">
 <dt id="graphtage.printer.RawWriter">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">RawWriter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.RawWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Writer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Writer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
 <p>A writer that provides a pass-through for printing bytes to the underlying stream without modification.</p>
 <dl class="py method">
 <dt id="graphtage.printer.RawWriter.__init__">
@@ -1049,7 +1060,7 @@ provide additional formatting options to functions that use this printer.</p></l
 <dl class="py class">
 <dt id="graphtage.printer.Writer">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.printer.</code><code class="sig-name descname">Writer</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.Writer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Protocol</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
 <p>A protocol for basic IO writers that is a subset of <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.IO</span></code></a>.</p>
 <dl class="py method">
 <dt id="graphtage.printer.Writer.__init__">
@@ -1117,7 +1128,7 @@ then this decorator will have the method automatically return a <a class="refere
         <a href="graphtage.progress.html" class="btn btn-neutral float-right" title="graphtage.progress" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="graphtage.multiset.html" class="btn btn-neutral float-left" title="graphtage.multiset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="graphtage.plist.html" class="btn btn-neutral float-left" title="graphtage.plist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1157,7 +1168,7 @@ then this decorator will have the method automatically return a <a class="refere
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.5-git
+        v0.2.5
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1165,6 +1176,7 @@ then this decorator will have the method automatically return a <a class="refere
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
             <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>

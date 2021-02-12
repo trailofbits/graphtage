@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.formatter &mdash; Graphtage 0.2.5-git documentation</title>
+  <title>graphtage.formatter &mdash; Graphtage v0.2.5 documentation</title>
   
 
   
@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -62,7 +61,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/"><div class="version">0.2.5-git</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -112,6 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
@@ -363,7 +363,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <dl class="py class">
 <dt id="graphtage.formatter.BasicFormatter">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">BasicFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.BasicFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.formatter.T</span></code>], <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.formatter.T</span></code>]</p>
 <p>A basic formatter that falls back on an item’s natural string representation if no formatter is found.</p>
 <dl class="py attribute">
 <dt id="graphtage.formatter.BasicFormatter.DEFAULT_INSTANCE">
@@ -442,7 +442,7 @@ yet been tested, and repeat this process given each one.</p></li>
 <dl class="py class">
 <dt id="graphtage.formatter.Formatter">
 <em class="property">class </em><code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">Formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.formatter.Formatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">typing.Generic</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.formatter.T</span></code>]</p>
 <dl class="py attribute">
 <dt id="graphtage.formatter.Formatter.DEFAULT_INSTANCE">
 <code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: <a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.formatter.Formatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
@@ -592,7 +592,7 @@ global list of formatters. This same automatically constructed instance will be 
 <h3>get_formatter<a class="headerlink" href="#get-formatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.formatter.get_formatter">
-<code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_type</span><span class="p">:</span> <span class="n">Type<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">base_formatter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">Formatter</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.formatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">graphtage.formatter.</code><code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_type</span><span class="p">:</span> <span class="n">Type<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">base_formatter</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.formatter.get_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the <a class="reference internal" href="#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a> to determine the correct formatter for a given type.</p>
 <p>See <a class="reference internal" href="#what-the-formatter-module-can-do"><span class="std std-ref">this section</span></a> for a number of examples.</p>
 <dl class="field-list simple">
@@ -662,7 +662,7 @@ resolution according to the <a class="reference internal" href="#formatting-prot
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        0.2.5-git
+        v0.2.5
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -670,6 +670,7 @@ resolution according to the <a class="reference internal" href="#formatting-prot
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
             <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
             <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
