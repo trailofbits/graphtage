@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How Graphtage Works &mdash; Graphtage v0.2.5 documentation</title>
+  
+
+  
+  
+  
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/howitworks.html"/>
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphtage API" href="package.html" />
+    <link rel="prev" title="Printing Protocol" href="printing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Graphtage
+          
+
+          
+          </a>
+
+          
+
+          
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.5"><div class="version">v0.2.5</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How Graphtage Works</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-mapping-trees-is-complex">Why Mapping Trees is Complex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matching-ordered-sequences">Matching Ordered Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matching-unordered-collections">Matching Unordered Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#footnotes">Footnotes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>How Graphtage Works</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/howitworks.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-graphtage-works">
+<h1>How Graphtage Works<a class="headerlink" href="#how-graphtage-works" title="Permalink to this headline">¶</a></h1>
+<p>In general, optimally mapping one graph to another
+cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id9" id="id1">1</a>, and is therefore not
+tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id16" id="id2">*</a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id10" id="id3">2</a>.
+However, trees and forests are a special case that <em>can</em> be mapped in polynomial time, with reasonable constraints on
+the types of edits possible. Graphtage exploits this.</p>
+<div class="section" id="why-mapping-trees-is-complex">
+<h2>Why Mapping Trees is Complex<a class="headerlink" href="#why-mapping-trees-is-complex" title="Permalink to this headline">¶</a></h2>
+<p>Ordered nodes in the tree (<em>e.g.</em>, JSON lists) and, in particular, mappings (<em>e.g.</em>, JSON dicts) are challenging. Most
+extant diffing algorithms and utilities assume that the structures are ordered. Take this JSON as an example:</p>
+<table class="align-center docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Original JSON</p></td>
+<td><p>Modified JSON</p></td>
+</tr>
+<tr class="row-even"><td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+    <span class="nt">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;testing&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</td>
+<td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+    <span class="nt">&quot;zab&quot;</span><span class="p">:</span> <span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;woo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;foobar&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Existing tools effectively canonicalize the JSON (<em>e.g.</em>, sort dictionary elements by key and format lists with one
+item per line), and then perform a traditional diff:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat original.json <span class="p">|</span> jq -M --sort-keys &gt; original.canonical.json
+<span class="gp">$ </span>cat modified.json <span class="p">|</span> jq -M --sort-keys &gt; modified.canonical.json
+<span class="gp">$ </span>diff -u original.canonical.json modified.canonical.json
+</pre></div>
+</div>
+<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
+<span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span>
+   &quot;foo&quot;: [
+<span class="gd">-    1,</span>
+     2,
+     3,
+<span class="gd">-    4</span>
+<span class="gd">-  ]</span>
+<span class="gi">+    4,</span>
+<span class="gi">+    5</span>
+<span class="gi">+  ],</span>
+<span class="gi">+  &quot;woo&quot;: [</span>
+<span class="gi">+    &quot;foobar&quot;</span>
+<span class="gi">+  ],</span>
+<span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span>
+}
+</pre></div>
+</td></tr></table></div>
+<p>Not entirely useful, particularly if the input files are large. The problem is that changing dict keys breaks the diff:
+Since “bar” was changed to “zab”, the canonical representation changes and they are considered separate edits (lines 2
+and 15 of the diff).</p>
+</div>
+<div class="section" id="matching-ordered-sequences">
+<h2>Matching Ordered Sequences<a class="headerlink" href="#matching-ordered-sequences" title="Permalink to this headline">¶</a></h2>
+<p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id11" id="id4">3</a>, “constructive” <a class="footnote-reference brackets" href="#id12" id="id5">4</a> implementation of the
+Levenshtein distance metric <a class="footnote-reference brackets" href="#id13" id="id6">5</a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id14" id="id7">6</a>. The algorithm starts with an
+unbounded mapping and iteratively improves it until the bounds converge, at which point the optimal edit sequence is
+discovered. This is implemented in the <a class="reference internal" href="graphtage.levenshtein.html#module-graphtage.levenshtein" title="graphtage.levenshtein"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.levenshtein</span></code></a> module.</p>
+</div>
+<div class="section" id="matching-unordered-collections">
+<h2>Matching Unordered Collections<a class="headerlink" href="#matching-unordered-collections" title="Permalink to this headline">¶</a></h2>
+<p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id15" id="id8">7</a> on the complete bipartite graph from key/value
+pairs in the source dict to key/value pairs in the destination dict. This is implemented in the
+<a class="reference internal" href="graphtage.matching.html#module-graphtage.matching" title="graphtage.matching"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.matching</span></code></a> module.</p>
+</div>
+<div class="section" id="footnotes">
+<h2>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h2>
+<dl class="footnote brackets">
+<dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Graph_isomorphism_problem">https://en.wikipedia.org/wiki/Graph_isomorphism_problem</a></p>
+</dd>
+<dt class="label" id="id10"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">https://en.wikipedia.org/wiki/Directed_acyclic_graph</a></p>
+</dd>
+<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id4">3</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Online_algorithm">https://en.wikipedia.org/wiki/Online_algorithm</a></p>
+</dd>
+<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id5">4</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Constructive_proof">https://en.wikipedia.org/wiki/Constructive_proof</a></p>
+</dd>
+<dt class="label" id="id13"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Levenshtein_distance">https://en.wikipedia.org/wiki/Levenshtein_distance</a></p>
+</dd>
+<dt class="label" id="id14"><span class="brackets"><a class="fn-backref" href="#id7">6</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm">https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm</a></p>
+</dd>
+<dt class="label" id="id15"><span class="brackets"><a class="fn-backref" href="#id8">7</a></span></dt>
+<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Assignment_problem">https://en.wikipedia.org/wiki/Assignment_problem</a></p>
+</dd>
+<dt class="label" id="id16"><span class="brackets"><a class="fn-backref" href="#id2">*</a></span></dt>
+<dd><p>Unless <a class="reference external" href="https://en.wikipedia.org/wiki/P_versus_NP_problem"><span class="math notranslate nohighlight">\(P = NP\)</span></a>.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="package.html" class="btn btn-neutral float-right" title="Graphtage API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="printing.html" class="btn btn-neutral float-left" title="Printing Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Trail of Bits
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+  
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.2.5
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
+            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>
