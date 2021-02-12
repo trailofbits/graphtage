@@ -124,7 +124,7 @@ class PLISTFormatter(GraphtageFormatter):
         printer.write(f"<integer>{node.object}</integer>")
 
     def print_FloatNode(self, printer: Printer, node: FloatNode):
-        printer.write(f"<real>{node.object}</integer>")
+        printer.write(f"<real>{node.object}</real>")
 
     def print_BoolNode(self, printer, node: BoolNode):
         if node.object:
