@@ -26,7 +26,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -197,25 +196,25 @@
 <h3>CSV<a class="headerlink" href="#csv" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSV">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSV</code><a class="headerlink" href="#graphtage.csv.CSV" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSV</span></code><a class="headerlink" href="#graphtage.csv.CSV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a></p>
 <p>The CSV filetype.</p>
 <dl class="py method">
 <dt id="graphtage.csv.CSV.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSV.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSV.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the CSV filetype.</p>
 <p>CSV identifies itself with the MIME types <cite>csv</cite> and <cite>text/csv</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSV.build_tree">
-<code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">build_tree</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">graphtage.BuildOptions</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><a class="headerlink" href="#graphtage.csv.CSV.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Equivalent to <a class="reference internal" href="#graphtage.csv.build_tree" title="graphtage.csv.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_tree()</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSV.build_tree_handling_errors">
-<code class="sig-name descname">build_tree_handling_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><a class="headerlink" href="#graphtage.csv.CSV.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">build_tree_handling_errors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">graphtage.BuildOptions</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><a class="headerlink" href="#graphtage.csv.CSV.build_tree_handling_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
@@ -236,7 +235,7 @@
 
 <dl class="py method">
 <dt id="graphtage.csv.CSV.get_default_formatter">
-<code class="sig-name descname">get_default_formatter</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVFormatter" title="graphtage.csv.CSVFormatter">graphtage.csv.CSVFormatter</a><a class="headerlink" href="#graphtage.csv.CSV.get_default_formatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_default_formatter</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVFormatter" title="graphtage.csv.CSVFormatter"><span class="pre">graphtage.csv.CSVFormatter</span></a><a class="headerlink" href="#graphtage.csv.CSV.get_default_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the default formatter for printing files of this type.</p>
 </dd></dl>
 
@@ -247,23 +246,24 @@
 <h3>CSVFormatter<a class="headerlink" href="#csvformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSVFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code>]]</p>
 <p>Top-level formatter for CSV files.</p>
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.csv.CSVFormatter object&gt;</em><a class="headerlink" href="#graphtage.csv.CSVFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">DEFAULT_INSTANCE</span></code><em class="property"><span class="pre">:</span> <span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">&lt;graphtage.csv.CSVFormatter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.csv.CSVFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>A default instance of this formatter, automatically instantiated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">FormatterChecker</span></code> metaclass.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">__new__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">graphtage.formatter.Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -271,7 +271,7 @@
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.get_formatter">
-<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_formatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -281,17 +281,19 @@
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = False</em><a class="headerlink" href="#graphtage.csv.CSVFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">is_partial</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">False</span></em><a class="headerlink" href="#graphtage.csv.CSVFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.csv.CSVFormatter.parent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">parent</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent formatter for this formatter instance.</p>
+<p>This is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_or_edit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -311,7 +313,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.print_LeafNode">
-<code class="sig-name descname">print_LeafNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.LeafNode" title="graphtage.LeafNode">graphtage.LeafNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.print_LeafNode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print_LeafNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.LeafNode" title="graphtage.LeafNode"><span class="pre">graphtage.LeafNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVFormatter.print_LeafNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a leaf node, which should always be a column in a CSV row.</p>
 <p>The node is escaped by first writing it to <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.writer" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv.writer()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">node</span><span class="o">.</span><span class="n">object</span><span class="p">])</span>
@@ -321,19 +323,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVFormatter.root">
-<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.csv.CSVFormatter.root" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#graphtage.csv.CSVFormatter.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the root formatter.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.csv.CSVRows'&gt;, &lt;class 'graphtage.json.JSONFormatter'&gt;]</em><a class="headerlink" href="#graphtage.csv.CSVFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_format_types</span></code><em class="property"><span class="pre">:</span> <span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">[&lt;class</span> <span class="pre">'graphtage.csv.CSVRows'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'graphtage.json.JSONFormatter'&gt;]</span></em><a class="headerlink" href="#graphtage.csv.CSVFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of formatter types that should be used as sub-formatters in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.csv.CSVFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_formatters</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#graphtage.csv.CSVFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
+<p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -342,12 +347,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>CSVNode<a class="headerlink" href="#csvnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSVNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>[<a class="reference internal" href="#graphtage.csv.CSVRow" title="graphtage.csv.CSVRow"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.csv.CSVRow</span></code></a>]</p>
 <p>A node representing zero or more CSV rows.</p>
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a List node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -363,7 +368,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.__iter__">
-<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__iter__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over this sequence’s child nodes.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
@@ -373,7 +378,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.__len__">
-<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.csv.CSVNode.__len__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__len__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="headerlink" href="#graphtage.csv.CSVNode.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of children of this sequence.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
@@ -383,7 +388,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.all_children_are_leaves">
-<code class="sig-name descname">all_children_are_leaves</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.csv.CSVNode.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">all_children_are_leaves</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.csv.CSVNode.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_leaf</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
@@ -401,7 +406,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.calculate_total_size">
-<code class="sig-name descname">calculate_total_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.calculate_total_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">calculate_total_size</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.calculate_total_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the total size of this sequence.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">total_size</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
@@ -411,7 +416,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.csv.CSVNode.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">children</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">T</span><a class="headerlink" href="#graphtage.csv.CSVNode.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -421,7 +426,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.container_type">
-<em class="property">property </em><code class="sig-name descname">container_type</code><a class="headerlink" href="#graphtage.csv.CSVNode.container_type" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">container_type</span></code><a class="headerlink" href="#graphtage.csv.CSVNode.container_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The container type required by <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -435,7 +440,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.dfs">
-<code class="sig-name descname">dfs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.dfs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">dfs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.dfs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a depth-first traversal over all of this node’s descendants.</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self</span></code> is always included and yielded first.</p>
 <p>This implementation is equivalent to:</p>
@@ -450,7 +455,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.diff">
-<code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">diff</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a diff against the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -468,12 +473,12 @@ another list of the same length.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVNode.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.csv.CSVNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edit_modifiers</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">TreeNode</span><span class="p"><span class="pre">,</span> </span><span class="pre">TreeNode</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVNode.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.editable_dict">
-<code class="sig-name descname">editable_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.editable_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">editable_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.editable_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on all children.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
@@ -486,14 +491,14 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.edited">
-<em class="property">property </em><code class="sig-name descname">edited</code><a class="headerlink" href="#graphtage.csv.CSVNode.edited" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">edited</span></code><a class="headerlink" href="#graphtage.csv.CSVNode.edited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether this node has been edited.</p>
 <p>The default implementation returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, whereas <code class="xref py py-meth docutils literal notranslate"><span class="pre">EditedTreeNode.edited()</span></code> returns <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.edited_type">
-<em class="property">classmethod </em><code class="sig-name descname">edited_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Type<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.edited_type" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">edited_type</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.edited_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically constructs a new class that is <em>both</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>and</em> an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
 <p>The edited type’s member variables are populated by the result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> it wraps:</p>
@@ -513,7 +518,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.edits">
-<code class="sig-name descname">edits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><a class="headerlink" href="#graphtage.csv.CSVNode.edits" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><a class="headerlink" href="#graphtage.csv.CSVNode.edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the best edit to transform this node into the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -530,7 +535,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.get_all_edits">
-<code class="sig-name descname">get_all_edits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.get_all_edits" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_all_edits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.get_all_edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator over all edits that will transform this node into the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -548,7 +553,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.is_leaf">
-<em class="property">property </em><code class="sig-name descname">is_leaf</code><a class="headerlink" href="#graphtage.csv.CSVNode.is_leaf" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_leaf</span></code><a class="headerlink" href="#graphtage.csv.CSVNode.is_leaf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container nodes are never leaves, even if they have no children.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -562,7 +567,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.make_edited">
-<code class="sig-name descname">make_edited</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVNode.make_edited" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">make_edited</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVNode.make_edited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new, copied instance of this node that is also an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
@@ -581,7 +586,7 @@ and thereby mutable.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a sequence node.</p>
 <p>By default, sequence nodes are printed like lists:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -591,7 +596,7 @@ and thereby mutable.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.to_obj">
-<code class="sig-name descname">to_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.to_obj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">to_obj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.to_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pure Python representation of this node.</p>
 <p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
 A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
@@ -602,7 +607,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVNode.total_size">
-<em class="property">property </em><code class="sig-name descname">total_size</code><a class="headerlink" href="#graphtage.csv.CSVNode.total_size" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">total_size</span></code><a class="headerlink" href="#graphtage.csv.CSVNode.total_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of this node.</p>
 <p>This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.</p>
 <p>The first time this property is called, its value will be set and memoized by calling
@@ -624,12 +629,12 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>CSVRow<a class="headerlink" href="#csvrow" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVRow">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSVRow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>[<a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a>]</p>
 <p>A node representing a row of a CSV file.</p>
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">allow_list_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">allow_list_edits_when_same_length</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a List node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -645,7 +650,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.__iter__">
-<code class="sig-name descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.__iter__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__iter__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over this sequence’s child nodes.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
@@ -655,7 +660,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.__len__">
-<code class="sig-name descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><a class="headerlink" href="#graphtage.csv.CSVRow.__len__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__len__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="headerlink" href="#graphtage.csv.CSVRow.__len__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of children of this sequence.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
@@ -665,7 +670,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.all_children_are_leaves">
-<code class="sig-name descname">all_children_are_leaves</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.csv.CSVRow.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">all_children_are_leaves</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.csv.CSVRow.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_leaf</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
@@ -683,7 +688,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.calculate_total_size">
-<code class="sig-name descname">calculate_total_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.calculate_total_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">calculate_total_size</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.calculate_total_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the total size of this sequence.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">total_size</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
@@ -693,7 +698,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.children">
-<code class="sig-name descname">children</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; T<a class="headerlink" href="#graphtage.csv.CSVRow.children" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">children</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">T</span><a class="headerlink" href="#graphtage.csv.CSVRow.children" title="Permalink to this definition">¶</a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -703,7 +708,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.container_type">
-<em class="property">property </em><code class="sig-name descname">container_type</code><a class="headerlink" href="#graphtage.csv.CSVRow.container_type" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">container_type</span></code><a class="headerlink" href="#graphtage.csv.CSVRow.container_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The container type required by <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -717,7 +722,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.dfs">
-<code class="sig-name descname">dfs</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.dfs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">dfs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.dfs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a depth-first traversal over all of this node’s descendants.</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self</span></code> is always included and yielded first.</p>
 <p>This implementation is equivalent to:</p>
@@ -732,7 +737,7 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.diff">
-<code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.diff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">diff</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a diff against the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -750,12 +755,12 @@ another list of the same length.</p></li>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRow.edit_modifiers">
-<code class="sig-name descname">edit_modifiers</code><em class="property">: Optional<span class="p">[</span>List<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span>TreeNode<span class="p">, </span>TreeNode<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.csv.CSVRow.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edit_modifiers</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">TreeNode</span><span class="p"><span class="pre">,</span> </span><span class="pre">TreeNode</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVRow.edit_modifiers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.editable_dict">
-<code class="sig-name descname">editable_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a><span class="p">, </span>Any<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.editable_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">editable_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.editable_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on all children.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
@@ -768,14 +773,14 @@ another list of the same length.</p></li>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.edited">
-<em class="property">property </em><code class="sig-name descname">edited</code><a class="headerlink" href="#graphtage.csv.CSVRow.edited" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">edited</span></code><a class="headerlink" href="#graphtage.csv.CSVRow.edited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether this node has been edited.</p>
 <p>The default implementation returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, whereas <code class="xref py py-meth docutils literal notranslate"><span class="pre">EditedTreeNode.edited()</span></code> returns <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.edited_type">
-<em class="property">classmethod </em><code class="sig-name descname">edited_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Type<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.edited_type" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">edited_type</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.edited_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dynamically constructs a new class that is <em>both</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>and</em> an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
 <p>The edited type’s member variables are populated by the result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> of the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> it wraps:</p>
@@ -795,7 +800,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.edits">
-<code class="sig-name descname">edits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><a class="headerlink" href="#graphtage.csv.CSVRow.edits" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><a class="headerlink" href="#graphtage.csv.CSVRow.edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the best edit to transform this node into the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -812,7 +817,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.get_all_edits">
-<code class="sig-name descname">get_all_edits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a></span></em><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.get_all_edits" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_all_edits</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.get_all_edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator over all edits that will transform this node into the provided node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -830,7 +835,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.is_leaf">
-<em class="property">property </em><code class="sig-name descname">is_leaf</code><a class="headerlink" href="#graphtage.csv.CSVRow.is_leaf" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_leaf</span></code><a class="headerlink" href="#graphtage.csv.CSVRow.is_leaf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Container nodes are never leaves, even if they have no children.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -844,7 +849,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.make_edited">
-<code class="sig-name descname">make_edited</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">graphtage.EditedTreeNode</a><span class="p">, </span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRow.make_edited" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">make_edited</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRow.make_edited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new, copied instance of this node that is also an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
@@ -863,7 +868,7 @@ and thereby mutable.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a sequence node.</p>
 <p>By default, sequence nodes are printed like lists:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -873,7 +878,7 @@ and thereby mutable.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.to_obj">
-<code class="sig-name descname">to_obj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.to_obj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">to_obj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.to_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pure Python representation of this node.</p>
 <p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
 A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
@@ -884,7 +889,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRow.total_size">
-<em class="property">property </em><code class="sig-name descname">total_size</code><a class="headerlink" href="#graphtage.csv.CSVRow.total_size" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">total_size</span></code><a class="headerlink" href="#graphtage.csv.CSVRow.total_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>The size of this node.</p>
 <p>This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.</p>
 <p>The first time this property is called, its value will be set and memoized by calling
@@ -906,17 +911,18 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <h3>CSVRowFormatter<a class="headerlink" href="#csvrowformatter" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVRowFormatter">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRowFormatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSVRowFormatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code>]]</p>
 <p>A formatter for CSV rows.</p>
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRowFormatter.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.csv.CSVRowFormatter object&gt;</em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">DEFAULT_INSTANCE</span></code><em class="property"><span class="pre">:</span> <span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">&lt;graphtage.csv.CSVRowFormatter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>A default instance of this formatter, automatically instantiated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">FormatterChecker</span></code> metaclass.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the formatter.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
@@ -926,7 +932,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">__new__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">graphtage.formatter.Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -934,7 +940,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.edit_print">
-<code class="sig-name descname">edit_print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.edit_print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edit_print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">edit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.edit_print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called when the edit for an item is to be printed.</p>
 <p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code> being printed either is not edited or has no edits, then the edit passed to this
 function will be a <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">Match(child,</span> <span class="pre">child,</span> <span class="pre">0)</span></code></a>.</p>
@@ -946,7 +952,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.get_formatter">
-<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_formatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.get_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -956,18 +962,19 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRowFormatter.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">is_partial</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a partial formatter; it will not be automatically used in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.item_newline">
-<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">item_newline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_last</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.item_newline" title="Permalink to this definition">¶</a></dt>
 <dd><p>An empty implementation, since each row should be printed as a single line.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.items_indent">
-<code class="sig-name descname">items_indent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.items_indent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">items_indent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.items_indent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a Printer context with an indentation.</p>
 <p>This is called as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">items_indent</span><span class="p">(</span><span class="n">printer</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
@@ -982,12 +989,14 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRowFormatter.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.parent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">parent</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent formatter for this formatter instance.</p>
+<p>This is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_or_edit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1007,7 +1016,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.print_CSVRow">
-<code class="sig-name descname">print_CSVRow</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print_CSVRow" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print_CSVRow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print_CSVRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a CSV row.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">print_SequenceNode</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1017,7 +1026,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.print_SequenceNode">
-<code class="sig-name descname">print_SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print_SequenceNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats a sequence node.</p>
 <p>The protocol for this function is as follows:</p>
 <ul class="simple">
@@ -1044,19 +1053,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRowFormatter.root">
-<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.root" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the root formatter.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRowFormatter.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = ()</em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_format_types</span></code><em class="property"><span class="pre">:</span> <span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">()</span></em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of formatter types that should be used as sub-formatters in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRowFormatter.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_formatters</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
+<p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1065,17 +1077,18 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>CSVRows<a class="headerlink" href="#csvrows" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.csv.CSVRows">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">CSVRows</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">CSVRows</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code>]]</p>
 <p>A sub formatter for printing the sequence of rows in a CSV file.</p>
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRows.DEFAULT_INSTANCE">
-<code class="sig-name descname">DEFAULT_INSTANCE</code><em class="property">: Formatter<span class="p">[</span>T<span class="p">]</span></em><em class="property"> = &lt;graphtage.csv.CSVRows object&gt;</em><a class="headerlink" href="#graphtage.csv.CSVRows.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">DEFAULT_INSTANCE</span></code><em class="property"><span class="pre">:</span> <span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">&lt;graphtage.csv.CSVRows</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.csv.CSVRows.DEFAULT_INSTANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>A default instance of this formatter, automatically instantiated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">FormatterChecker</span></code> metaclass.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the formatter.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -1085,7 +1098,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.__new__">
-<em class="property">static </em><code class="sig-name descname">__new__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cls</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter">graphtage.formatter.Formatter</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRows.__new__" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">__new__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">graphtage.formatter.Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRows.__new__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates a new formatter.</p>
 <p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
@@ -1093,7 +1106,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.edit_print">
-<code class="sig-name descname">edit_print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">edit</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.edit_print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edit_print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">edit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.edit_print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called when the edit for an item is to be printed.</p>
 <p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code> being printed either is not edited or has no edits, then the edit passed to this
 function will be a <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">Match(child,</span> <span class="pre">child,</span> <span class="pre">0)</span></code></a>.</p>
@@ -1105,7 +1118,7 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.get_formatter">
-<code class="sig-name descname">get_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span> &#x2192; Optional<span class="p">[</span>Callable<span class="p">[</span><span class="p">[</span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a><span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.csv.CSVRows.get_formatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_formatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.csv.CSVRows.get_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -1115,29 +1128,32 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRows.is_partial">
-<code class="sig-name descname">is_partial</code><em class="property">: <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></em><em class="property"> = True</em><a class="headerlink" href="#graphtage.csv.CSVRows.is_partial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">is_partial</span></code><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></em><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#graphtage.csv.CSVRows.is_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a partial formatter; it will not be automatically used in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.item_newline">
-<code class="sig-name descname">item_newline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">is_first</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">is_last</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.item_newline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">item_newline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_last</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.item_newline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a newline on all but the first and last items.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.items_indent">
-<code class="sig-name descname">items_indent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.items_indent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">items_indent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.items_indent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">printer</span></code> because CSV rows do not need to be indented.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRows.parent">
-<code class="sig-name descname">parent</code><em class="property">: Optional<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = None</em><a class="headerlink" href="#graphtage.csv.CSVRows.parent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">parent</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVRows.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent formatter for this formatter instance.</p>
+<p>This is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node_or_edit</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode">graphtage.TreeNode</a><span class="p">, </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">graphtage.Edit</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">with_edits</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_or_edit</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_edits</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints the given node or edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1157,7 +1173,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.print_CSVNode">
-<code class="sig-name descname">print_CSVNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print_CSVNode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print_CSVNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print_CSVNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints a CSV node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">print_SequenceNode</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1167,7 +1183,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.print_SequenceNode">
-<code class="sig-name descname">print_SequenceNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">printer</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer">graphtage.printer.Printer</a></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode">graphtage.sequences.SequenceNode</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">print_SequenceNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.print_SequenceNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Formats a sequence node.</p>
 <p>The protocol for this function is as follows:</p>
 <ul class="simple">
@@ -1194,19 +1210,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py method">
 <dt id="graphtage.csv.CSVRows.root">
-<em class="property">property </em><code class="sig-name descname">root</code><a class="headerlink" href="#graphtage.csv.CSVRows.root" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#graphtage.csv.CSVRows.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the root formatter.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRows.sub_format_types">
-<code class="sig-name descname">sub_format_types</code><em class="property">: Sequence<span class="p">[</span>Type<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span><span class="p">]</span></em><em class="property"> = [&lt;class 'graphtage.csv.CSVRowFormatter'&gt;]</em><a class="headerlink" href="#graphtage.csv.CSVRows.sub_format_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_format_types</span></code><em class="property"><span class="pre">:</span> <span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">[&lt;class</span> <span class="pre">'graphtage.csv.CSVRowFormatter'&gt;]</span></em><a class="headerlink" href="#graphtage.csv.CSVRows.sub_format_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of formatter types that should be used as sub-formatters in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="graphtage.csv.CSVRows.sub_formatters">
-<code class="sig-name descname">sub_formatters</code><em class="property">: List<span class="p">[</span>Formatter<span class="p">[</span>T<span class="p">]</span><span class="p">]</span></em><em class="property"> = []</em><a class="headerlink" href="#graphtage.csv.CSVRows.sub_formatters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname"><span class="pre">sub_formatters</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Formatter</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#graphtage.csv.CSVRows.sub_formatters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
+<p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1218,7 +1237,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <h3>build_tree<a class="headerlink" href="#build-tree" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.csv.build_tree">
-<code class="sig-prename descclassname">graphtage.csv.</code><code class="sig-name descname">build_tree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></span></em>, <em class="sig-param"><span class="n">options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions">graphtage.BuildOptions</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode">graphtage.csv.CSVNode</a><a class="headerlink" href="#graphtage.csv.build_tree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">graphtage.csv.</span></code><code class="sig-name descname"><span class="pre">build_tree</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">graphtage.BuildOptions</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode"><span class="pre">graphtage.csv.CSVNode</span></a><a class="headerlink" href="#graphtage.csv.build_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a <a class="reference internal" href="#graphtage.csv.CSVNode" title="graphtage.csv.CSVNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">CSVNode</span></code></a> from a CSV file.</p>
 <p>The file is parsed using Python’s <a class="reference external" href="https://docs.python.org/3/library/csv.html#csv.reader" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">csv.reader()</span></code></a>. The elements in each row are constructed by delegating to
 <a class="reference internal" href="graphtage.json.html#graphtage.json.build_tree" title="graphtage.json.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.json.build_tree()</span></code></a>:</p>

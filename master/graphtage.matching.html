@@ -228,34 +228,34 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <h3>Edge<a class="headerlink" href="#edge" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.Edge">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Edge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode">graphtage.matching.MatchingFromNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode">graphtage.matching.MatchingToNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">weight</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">Edge</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode"><span class="pre">graphtage.matching.MatchingFromNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode"><span class="pre">graphtage.matching.MatchingToNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Edge data structure used in the implementation of <a class="reference internal" href="#karp78" id="id2"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Edge.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode">graphtage.matching.MatchingFromNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode">graphtage.matching.MatchingToNode</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">weight</span><span class="p">:</span> <span class="n"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode"><span class="pre">graphtage.matching.MatchingFromNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode"><span class="pre">graphtage.matching.MatchingToNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Edge.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Edge.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.matching.Edge.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><a class="headerlink" href="#graphtage.matching.Edge.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Edge.cost_bar">
-<em class="property">property </em><code class="sig-name descname">cost_bar</code><a class="headerlink" href="#graphtage.matching.Edge.cost_bar" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cost_bar</span></code><a class="headerlink" href="#graphtage.matching.Edge.cost_bar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Edge.cost_star">
-<em class="property">property </em><code class="sig-name descname">cost_star</code><a class="headerlink" href="#graphtage.matching.Edge.cost_star" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">cost_star</span></code><a class="headerlink" href="#graphtage.matching.Edge.cost_star" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Edge.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.Edge.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tighten_bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.Edge.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -274,18 +274,18 @@ implemented in <a class="reference internal" href="#graphtage.matching.WeightedB
 <h3>Matching<a class="headerlink" href="#matching" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.Matching">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">Matching</code><a class="headerlink" href="#graphtage.matching.Matching" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">Matching</span></code><a class="headerlink" href="#graphtage.matching.Matching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Set</span></code></a>, <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.Edge</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]]</p>
 <p>An abstract base class used by the partial implementation of <a class="reference internal" href="#karp78" id="id3"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.Matching.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching._from_iterable">
-<em class="property">classmethod </em><code class="sig-name descname">_from_iterable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">it</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching._from_iterable" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">_from_iterable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">it</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching._from_iterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an instance of the class from any iterable input.</p>
 <p>Must override this method if the class constructor signature
 does not accept an iterable for an input.</p>
@@ -293,7 +293,7 @@ does not accept an iterable for an input.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching._hash">
-<code class="sig-name descname">_hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching._hash" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_hash</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching._hash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the hash value of a set.</p>
 <p>Note that we don’t define __hash__: not all sets are hashable.
 But if you define a hashable set type, its __hash__ should
@@ -308,110 +308,110 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">add</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an element to a set.</p>
 <p>This has no effect if the element is already present.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.matching.Matching.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><a class="headerlink" href="#graphtage.matching.Matching.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.clear">
-<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.clear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">clear</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all elements from this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a shallow copy of a set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.difference">
-<code class="sig-name descname">difference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">difference</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the difference of two or more sets as a new set.</p>
 <p>(i.e. all elements that are in this set but not the others.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.difference_update">
-<code class="sig-name descname">difference_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">difference_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all elements of another set from this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.discard">
-<code class="sig-name descname">discard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.discard" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">discard</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.discard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an element from a set if it is a member.</p>
 <p>If the element is not a member, do nothing.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.intersection">
-<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">intersection</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intersection of two sets as a new set.</p>
 <p>(i.e. all elements that are in both sets.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.intersection_update">
-<code class="sig-name descname">intersection_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">intersection_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the intersection of itself and another.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.isdisjoint">
-<code class="sig-name descname">isdisjoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.isdisjoint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">isdisjoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.isdisjoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if two sets have a null intersection.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.issubset">
-<code class="sig-name descname">issubset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issubset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">issubset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issubset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Report whether another set contains this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.issuperset">
-<code class="sig-name descname">issuperset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issuperset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">issuperset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issuperset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Report whether this set contains another set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.pop">
-<code class="sig-name descname">pop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.pop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove and return an arbitrary set element.
 Raises KeyError if the set is empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">remove</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an element from a set; it must be a member.</p>
 <p>If the element is not a member, raise a KeyError.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.symmetric_difference">
-<code class="sig-name descname">symmetric_difference</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matching</span><span class="p">:</span> <span class="n">Set<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching">graphtage.matching.Matching</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">symmetric_difference</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matching</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><span class="pre">graphtage.matching.Matching</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the symmetric difference of two sets as a new set.</p>
 <p>(i.e. all elements that are in exactly one of the sets.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.symmetric_difference_update">
-<code class="sig-name descname">symmetric_difference_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">symmetric_difference_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the symmetric difference of itself and another.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.Matching.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tighten_bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.Matching.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -425,14 +425,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.union">
-<code class="sig-name descname">union</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.union" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">union</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.union" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the union of sets as a new set.</p>
 <p>(i.e. all elements that are in either set.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.Matching.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the union of itself and others.</p>
 </dd></dl>
 
@@ -443,27 +443,27 @@ Raises KeyError if the set is empty.</p>
 <h3>MatchingFromNode<a class="headerlink" href="#matchingfromnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingFromNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingFromNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">MatchingFromNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingFromNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingFromNode.construct_edges">
-<code class="sig-name descname">construct_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode">graphtage.matching.MatchingNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">, </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.construct_edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">construct_edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><span class="pre">graphtage.matching.MatchingNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.construct_edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingFromNode.edges">
-<code class="sig-name descname">edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingFromNode.edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingFromNode.sorted_neighbors">
-<em class="property">property </em><code class="sig-name descname">sorted_neighbors</code><a class="headerlink" href="#graphtage.matching.MatchingFromNode.sorted_neighbors" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sorted_neighbors</span></code><a class="headerlink" href="#graphtage.matching.MatchingFromNode.sorted_neighbors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -473,23 +473,23 @@ Raises KeyError if the set is empty.</p>
 <h3>MatchingNode<a class="headerlink" href="#matchingnode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">MatchingNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Node data structure used in the implementation of <a class="reference internal" href="#karp78" id="id4"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingNode.construct_edges">
-<em class="property">abstract </em><code class="sig-name descname">construct_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode">graphtage.matching.MatchingNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">, </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingNode.construct_edges" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">construct_edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><span class="pre">graphtage.matching.MatchingNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingNode.construct_edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingNode.edges">
-<code class="sig-name descname">edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingNode.edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingNode.edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -499,23 +499,23 @@ Raises KeyError if the set is empty.</p>
 <h3>MatchingToNode<a class="headerlink" href="#matchingtonode" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.MatchingToNode">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">MatchingToNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingToNode" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">MatchingToNode</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingToNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.MatchingNode</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A node type used in the implementation of <a class="reference internal" href="#karp78" id="id5"><span>[Karp78]</span></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.MatchingToNode.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matcher</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher">graphtage.matching.WeightedBipartiteMatcher</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n">T</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingToNode.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matcher</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.MatchingToNode.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingToNode.construct_edges">
-<code class="sig-name descname">construct_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Dict<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode">graphtage.matching.MatchingNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">, </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingToNode.construct_edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">construct_edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingNode" title="graphtage.matching.MatchingNode"><span class="pre">graphtage.matching.MatchingNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingToNode.construct_edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.MatchingToNode.edges">
-<code class="sig-name descname">edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.MatchingToNode.edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">edges</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.MatchingToNode.edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -525,18 +525,18 @@ Raises KeyError if the set is empty.</p>
 <h3>PathSet<a class="headerlink" href="#pathset" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.PathSet">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">PathSet</code><a class="headerlink" href="#graphtage.matching.PathSet" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">PathSet</span></code><a class="headerlink" href="#graphtage.matching.PathSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.Matching</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A version of a Matching with edge directions overridden, used for <a class="reference internal" href="#karp78" id="id6"><span>[Karp78]</span></a></p>
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet._from_iterable">
-<em class="property">classmethod </em><code class="sig-name descname">_from_iterable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">it</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet._from_iterable" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">_from_iterable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">it</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet._from_iterable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an instance of the class from any iterable input.</p>
 <p>Must override this method if the class constructor signature
 does not accept an iterable for an input.</p>
@@ -544,7 +544,7 @@ does not accept an iterable for an input.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet._hash">
-<code class="sig-name descname">_hash</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet._hash" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_hash</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet._hash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the hash value of a set.</p>
 <p>Note that we don’t define __hash__: not all sets are hashable.
 But if you define a hashable set type, its __hash__ should
@@ -559,115 +559,115 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">flip_direction</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">add</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_direction</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an element to a set.</p>
 <p>This has no effect if the element is already present.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.matching.PathSet.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><a class="headerlink" href="#graphtage.matching.PathSet.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.clear">
-<code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.clear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">clear</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.clear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all elements from this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.copy">
-<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.copy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a shallow copy of a set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.difference">
-<code class="sig-name descname">difference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">difference</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the difference of two or more sets as a new set.</p>
 <p>(i.e. all elements that are in this set but not the others.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.difference_update">
-<code class="sig-name descname">difference_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">difference_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove all elements of another set from this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.discard">
-<code class="sig-name descname">discard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.discard" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">discard</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.discard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an element from a set if it is a member.</p>
 <p>If the element is not a member, do nothing.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.intersection">
-<code class="sig-name descname">intersection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">intersection</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the intersection of two sets as a new set.</p>
 <p>(i.e. all elements that are in both sets.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.intersection_update">
-<code class="sig-name descname">intersection_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">intersection_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the intersection of itself and another.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.isdisjoint">
-<code class="sig-name descname">isdisjoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.isdisjoint" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">isdisjoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.isdisjoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return True if two sets have a null intersection.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.issubset">
-<code class="sig-name descname">issubset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issubset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">issubset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issubset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Report whether another set contains this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.issuperset">
-<code class="sig-name descname">issuperset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issuperset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">issuperset</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issuperset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Report whether this set contains another set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.path_to">
-<code class="sig-name descname">path_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_any_of</span><span class="p">:</span> <span class="n">Set<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode">graphtage.matching.MatchingFromNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode">graphtage.matching.MatchingToNode</a><span class="p">[</span>T<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Set<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.PathSet.path_to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">path_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_any_of</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode"><span class="pre">graphtage.matching.MatchingFromNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode"><span class="pre">graphtage.matching.MatchingToNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.PathSet.path_to" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.pop">
-<code class="sig-name descname">pop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.pop" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove and return an arbitrary set element.
 Raises KeyError if the set is empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">remove</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an element from a set; it must be a member.</p>
 <p>If the element is not a member, raise a KeyError.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.symmetric_difference">
-<code class="sig-name descname">symmetric_difference</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matching</span><span class="p">:</span> <span class="n">Set<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching">graphtage.matching.Matching</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">symmetric_difference</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matching</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><span class="pre">graphtage.matching.Matching</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the symmetric difference of two sets as a new set.</p>
 <p>(i.e. all elements that are in exactly one of the sets.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.symmetric_difference_update">
-<code class="sig-name descname">symmetric_difference_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">symmetric_difference_update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the symmetric difference of itself and another.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.PathSet.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tighten_bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.PathSet.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -681,14 +681,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.union">
-<code class="sig-name descname">union</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.union" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">union</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.union" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the union of sets as a new set.</p>
 <p>(i.e. all elements that are in either set.)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.PathSet.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update a set with the union of itself and others.</p>
 </dd></dl>
 
@@ -699,12 +699,12 @@ Raises KeyError if the set is empty.</p>
 <h3>QueueElement<a class="headerlink" href="#queueelement" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.QueueElement">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">QueueElement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">QueueElement</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_special</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A helper datastructure used by <a class="reference internal" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</span></code></a></p>
 <dl class="py method">
 <dt id="graphtage.matching.QueueElement.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">cost</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">is_special</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_special</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.QueueElement.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -715,23 +715,23 @@ Raises KeyError if the set is empty.</p>
 <h3>SortedEdges<a class="headerlink" href="#sortededges" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.SortedEdges">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">SortedEdges</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edges</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">SortedEdges</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A sorted collection of edges.</p>
 <dl class="py method">
 <dt id="graphtage.matching.SortedEdges.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edges</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.SortedEdges.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.SortedEdges.head">
-<code class="sig-name descname">head</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.matching.SortedEdges.head" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">head</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.SortedEdges.head" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.SortedEdges.tail">
-<code class="sig-name descname">tail</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge">graphtage.matching.Edge</a><span class="p">[</span>T<span class="p">]</span><a class="headerlink" href="#graphtage.matching.SortedEdges.tail" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tail</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">graphtage.matching.Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.SortedEdges.tail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -741,7 +741,7 @@ Raises KeyError if the set is empty.</p>
 <h3>WeightedBipartiteMatcher<a class="headerlink" href="#weightedbipartitematcher" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcher">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">WeightedBipartiteMatcher</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>A <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> matcher built atop <a class="reference internal" href="#graphtage.matching.min_weight_bipartite_matching" title="graphtage.matching.min_weight_bipartite_matching"><code class="xref py py-func docutils literal notranslate"><span class="pre">min_weight_bipartite_matching()</span></code></a>.</p>
 <p>It works by iteratively and selectively tightening the bipartite graph’s edges’ bounds until they are all “distinct”
@@ -751,7 +751,7 @@ Then <a class="reference internal" href="#graphtage.matching.min_weight_bipartit
 <p>This is used by <a class="reference internal" href="graphtage.multiset.html#graphtage.multiset.MultiSetEdit" title="graphtage.multiset.MultiSetEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.multiset.MultiSetEdit</span></code></a> to match <a class="reference internal" href="graphtage.html#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MultiSetNode</span></code></a>.</p>
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the weighted bipartite matcher.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -767,26 +767,26 @@ example, this could be a <code class="xref py py-class docutils literal notransl
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.edges">
-<em class="property">property </em><code class="sig-name descname">edges</code><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.edges" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">edges</span></code><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a dense matrix of the edges in the graph.</p>
 <p>This property lazily constructs the edge matrix and memoizes the result.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.is_complete">
-<code class="sig-name descname">is_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.is_complete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">is_complete</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.is_complete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether the matching has been completed, regardless of whether the bounds have been fully tightened.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.matching">
-<em class="property">property </em><code class="sig-name descname">matching</code><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.matching" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">matching</span></code><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.matching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the minimum weight matching.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -810,7 +810,7 @@ already been completed through prior calls to <a class="reference internal" href
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcher.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tighten_bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tightens the bounds on the minimum weight matching.</p>
 <p>Returns: <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were able to be tightened.</p>
 </dd></dl>
@@ -822,7 +822,7 @@ already been completed through prior calls to <a class="reference internal" href
 <h3>WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION<a class="headerlink" href="#weightedbipartitematcherpartial-implementation" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION">
-<em class="property">class </em><code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.matching.T</span></code>]</p>
 <p>Partial implementation of <em>An Algorithm to Solve the</em> <span class="math notranslate nohighlight">\(m \times n\)</span> <em>Assignment Problem in Expected Time</em> <span class="math notranslate nohighlight">\(O(mn \log n)\)</span> <a class="reference internal" href="#karp78" id="id7"><span>[Karp78]</span></a>.</p>
 <p>The implementation is partial because I realized partway through that, even though this implementation has better
@@ -831,29 +831,29 @@ implemented in C++ and not pure Python.</p>
 <p>It is retained here in the event that it is ever needed in the future.</p>
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edge</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded">graphtage.bounds.Bounded</a><span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_edge</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">graphtage.bounds.Range</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_destinations">
-<code class="sig-name descname">free_destinations</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode">graphtage.matching.MatchingToNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_destinations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">free_destinations</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingToNode" title="graphtage.matching.MatchingToNode"><span class="pre">graphtage.matching.MatchingToNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_destinations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_sources">
-<code class="sig-name descname">free_sources</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; Iterator<span class="p">[</span><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode">graphtage.matching.MatchingFromNode</a><span class="p">[</span>T<span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_sources" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">free_sources</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.MatchingFromNode" title="graphtage.matching.MatchingFromNode"><span class="pre">graphtage.matching.MatchingFromNode</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.free_sources" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt id="graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds">
-<code class="sig-name descname">tighten_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tighten_bounds</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -875,7 +875,7 @@ implemented in C++ and not pure Python.</p>
 <h3>get_dtype<a class="headerlink" href="#get-dtype" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.matching.get_dtype">
-<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">get_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em>, <em class="sig-param"><span class="n">max_value</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></span></em><span class="sig-paren">)</span> &#x2192; numpy.dtype<a class="headerlink" href="#graphtage.matching.get_dtype" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">get_dtype</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.dtype</span><a class="headerlink" href="#graphtage.matching.get_dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the smallest numpy <code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code> capable of storing integers in the range [<code class="xref py py-obj docutils literal notranslate"><span class="pre">min_value</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">max_value</span></code>]</p>
 </dd></dl>
 
@@ -884,7 +884,7 @@ implemented in C++ and not pure Python.</p>
 <h3>min_weight_bipartite_matching<a class="headerlink" href="#min-weight-bipartite-matching" title="Permalink to this headline">¶</a></h3>
 <dl class="py function">
 <dt id="graphtage.matching.min_weight_bipartite_matching">
-<code class="sig-prename descclassname">graphtage.matching.</code><code class="sig-name descname">min_weight_bipartite_matching</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">to_nodes</span><span class="p">:</span> <span class="n">Sequence<span class="p">[</span>T<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">get_edges</span><span class="p">:</span> <span class="n">Callable<span class="p">[</span><span class="p">[</span>T<span class="p">, </span>T<span class="p">]</span><span class="p">, </span>Optional<span class="p">[</span>W<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Mapping<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Tuple<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span>Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a><span class="p">]</span><span class="p">]</span><span class="p">]</span><a class="headerlink" href="#graphtage.matching.min_weight_bipartite_matching" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">graphtage.matching.</span></code><code class="sig-name descname"><span class="pre">min_weight_bipartite_matching</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_nodes</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">W</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#graphtage.matching.min_weight_bipartite_matching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the minimum weight bipartite matching between two sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
