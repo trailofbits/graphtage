@@ -90,7 +90,7 @@ via the `--log-level` option.
 Diffing tree-like structures with unordered elements is tough. Say you want to compare two JSON files.
 There are [limited tools available](https://github.com/zgrossbart/jdd), which are effectively equivalent to
 canonicalizing the JSON (_e.g._, sorting dictionary elements by key) and performing a standard diff. This is not always
-sufficient. For exmaple, if a key in a dictionary is changed but its value is not, a traditional diff
+sufficient. For example, if a key in a dictionary is changed but its value is not, a traditional diff
 will conclude that the entire key/value pair was replaced by the new one, even though the only change was the key
 itself. See [our documentation](https://trailofbits.github.io/graphtage/latest/howitworks.html) for more information.
 
