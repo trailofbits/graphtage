@@ -4,7 +4,7 @@
 [![Tests](https://github.com/trailofbits/graphtage/workflows/Python%20package/badge.svg)](https://github.com/trailofbits/graphtage/actions)
 [![Slack Status](https://empireslacking.herokuapp.com/badge.svg)](https://empireslacking.herokuapp.com)
 
-Graphtage is a commandline utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
+Graphtage is a command-line utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
 for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, plist, and CSS files. Its name is a
 portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
 that they grow as one.
@@ -22,11 +22,11 @@ $ pip3 install graphtage
 ## Command Line Usage
 
 ### Output Formatting
-Graphtage performs is analysis on an intermediate representation of the trees that is divorced from the filetypes of the
+Graphtage performs an analysis on an intermediate representation of the trees that is divorced from the filetypes of the
 input files. This means, for example, that you can diff a JSON file against a YAML file. Also, the output format can be
 different from the input format(s). By default, Graphtage will format the output diff in the same file format as the
 first input file. But one could, for example, diff two JSON files and format the output in YAML. There are several
-command line arguments to specify these transformations; please check the `--help` output for more information.
+command-line arguments to specify these transformations; please check the `--help` output for more information.
 
 By default, Graphtage pretty-prints its output with as many line breaks and indents as possible.
 ```json
@@ -67,7 +67,7 @@ this can sometimes be onerous for input files with huge dictionaries. The `--no-
 only attempt to match dictionary items that share the same key, drastically reducing computation. Likewise, the
 `--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists. The
 `--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for lists
-that are of different lengths, but behave like `-l` for lists that are of the same length.
+that are of different lengths but behave like `-l` for lists that are of the same length.
 
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like
@@ -82,7 +82,7 @@ $ graphtage --html original.json modified.json > diff.html
 
 ### Status and Logging
 By default, Graphtage prints status messages and a progress bar to STDERR. To suppress this, use the `--no-status`
-option. To additionally suppress all but critical log messages, use `--quiet`. Fine grained control of log messages is
+option. To additionally suppress all but critical log messages, use `--quiet`. Fine-grained control of log messages is
 via the `--log-level` option.
 
 ## Why does Graphtage exist?
@@ -100,7 +100,7 @@ See [our documentation](https://trailofbits.github.io/graphtage/latest/library.h
 
 ## Extending Graphtage
 
-Graphtage is designed to be extensible; new filetypes can easily be defined, as well as new node types, edit types,
+Graphtage is designed to be extensible: New filetypes can easily be defined, as well as new node types, edit types,
 formatters, and printers. See [our documentation](https://trailofbits.github.io/graphtage/latest/extending.html) for
 more information.
 
