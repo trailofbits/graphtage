@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>How Graphtage Works &mdash; Graphtage 0.2.6-git documentation</title>
@@ -23,10 +24,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -35,6 +37,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Graphtage API" href="package.html" />
@@ -80,7 +84,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
@@ -156,14 +160,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="how-graphtage-works">
+  <section id="how-graphtage-works">
 <h1>How Graphtage Works<a class="headerlink" href="#how-graphtage-works" title="Permalink to this headline">¶</a></h1>
 <p>In general, optimally mapping one graph to another
 cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id9" id="id1">1</a>, and is therefore not
 tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id16" id="id2">*</a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id10" id="id3">2</a>.
 However, trees and forests are a special case that <em>can</em> be mapped in polynomial time, with reasonable constraints on
 the types of edits possible. Graphtage exploits this.</p>
-<div class="section" id="why-mapping-trees-is-complex">
+<section id="why-mapping-trees-is-complex">
 <h2>Why Mapping Trees is Complex<a class="headerlink" href="#why-mapping-trees-is-complex" title="Permalink to this headline">¶</a></h2>
 <p>Ordered nodes in the tree (<em>e.g.</em>, JSON lists) and, in particular, mappings (<em>e.g.</em>, JSON dicts) are challenging. Most
 extant diffing algorithms and utilities assume that the structures are ordered. Take this JSON as an example:</p>
@@ -201,57 +205,42 @@ item per line), and then perform a traditional diff:</p>
 <span class="gp">$ </span>diff -u original.canonical.json modified.canonical.json
 </pre></div>
 </div>
-<div class="highlight-diff notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>{
-<span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span>
-   &quot;foo&quot;: [
-<span class="gd">-    1,</span>
-     2,
-     3,
-<span class="gd">-    4</span>
-<span class="gd">-  ]</span>
-<span class="gi">+    4,</span>
-<span class="gi">+    5</span>
-<span class="gi">+  ],</span>
-<span class="gi">+  &quot;woo&quot;: [</span>
-<span class="gi">+    &quot;foobar&quot;</span>
-<span class="gi">+  ],</span>
-<span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span>
-}
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>{
+<span class="linenos"> 2</span><span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span>
+<span class="linenos"> 3</span>   &quot;foo&quot;: [
+<span class="linenos"> 4</span><span class="gd">-    1,</span>
+<span class="linenos"> 5</span>     2,
+<span class="linenos"> 6</span>     3,
+<span class="linenos"> 7</span><span class="gd">-    4</span>
+<span class="linenos"> 8</span><span class="gd">-  ]</span>
+<span class="linenos"> 9</span><span class="gi">+    4,</span>
+<span class="linenos">10</span><span class="gi">+    5</span>
+<span class="linenos">11</span><span class="gi">+  ],</span>
+<span class="linenos">12</span><span class="gi">+  &quot;woo&quot;: [</span>
+<span class="linenos">13</span><span class="gi">+    &quot;foobar&quot;</span>
+<span class="linenos">14</span><span class="gi">+  ],</span>
+<span class="linenos">15</span><span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span>
+<span class="linenos">16</span>}
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Not entirely useful, particularly if the input files are large. The problem is that changing dict keys breaks the diff:
 Since “bar” was changed to “zab”, the canonical representation changes and they are considered separate edits (lines 2
 and 15 of the diff).</p>
-</div>
-<div class="section" id="matching-ordered-sequences">
+</section>
+<section id="matching-ordered-sequences">
 <h2>Matching Ordered Sequences<a class="headerlink" href="#matching-ordered-sequences" title="Permalink to this headline">¶</a></h2>
 <p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id11" id="id4">3</a>, “constructive” <a class="footnote-reference brackets" href="#id12" id="id5">4</a> implementation of the
 Levenshtein distance metric <a class="footnote-reference brackets" href="#id13" id="id6">5</a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id14" id="id7">6</a>. The algorithm starts with an
 unbounded mapping and iteratively improves it until the bounds converge, at which point the optimal edit sequence is
 discovered. This is implemented in the <a class="reference internal" href="graphtage.levenshtein.html#module-graphtage.levenshtein" title="graphtage.levenshtein"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.levenshtein</span></code></a> module.</p>
-</div>
-<div class="section" id="matching-unordered-collections">
+</section>
+<section id="matching-unordered-collections">
 <h2>Matching Unordered Collections<a class="headerlink" href="#matching-unordered-collections" title="Permalink to this headline">¶</a></h2>
 <p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id15" id="id8">7</a> on the complete bipartite graph from key/value
 pairs in the source dict to key/value pairs in the destination dict. This is implemented in the
 <a class="reference internal" href="graphtage.matching.html#module-graphtage.matching" title="graphtage.matching"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.matching</span></code></a> module.</p>
-</div>
-<div class="section" id="footnotes">
+</section>
+<section id="footnotes">
 <h2>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h2>
 <dl class="footnote brackets">
 <dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -279,8 +268,8 @@ pairs in the source dict to key/value pairs in the destination dict. This is imp
 <dd><p>Unless <a class="reference external" href="https://en.wikipedia.org/wiki/P_versus_NP_problem"><span class="math notranslate nohighlight">\(P = NP\)</span></a>.</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
