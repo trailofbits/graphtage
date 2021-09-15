@@ -312,6 +312,8 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
         if isinstance(node, ListNode):
             if self._children == node._children:
                 return Match(self, node, 0)
+            elif len(self._children) == 1 == len(node._children):
+                return self._children[0].edits(node._children[0])
             elif not self.allow_list_edits or (len(self._children) == len(node._children) and (
                 not self.allow_list_edits_when_same_length or len(self._children) == 1
             )):
