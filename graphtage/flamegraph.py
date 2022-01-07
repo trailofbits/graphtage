@@ -17,20 +17,24 @@ followed by a space and the integer number of times that stack trace was sampled
     https://www.brendangregg.com/flamegraphs.html
 """
 
-from typing import Iterable, List, Optional, Union
+from typing import Iterable, List, Optional, Union, Iterator
 
 from . import Printer
-from .edits import EditSequence
-from .graphtage import BuildOptions, Edit, Filetype, IntegerNode, ListNode, MultiSetNode, StringNode, TreeNode
-from .sequences import SequenceFormatter
+from .edits import AbstractCompoundEdit, Match, Range, Replace
+from .graphtage import (
+    BuildOptions, ContainerNode, Edit, Filetype, IntegerNode, ListNode, MultiSetNode, StringNode, TreeNode
+)
 from .tree import GraphtageFormatter
+from .sequences import SequenceFormatter
 
 
 class FlameGraphParseError(ValueError):
     pass
 
 
-class StackTrace(ListNode[StringNode]):
+class StackTrace(ContainerNode):
+    """A stack trace and sample count"""
+
     def __init__(
             self,
             functions: Iterable[StringNode],
@@ -38,23 +42,70 @@ class StackTrace(ListNode[StringNode]):
             allow_list_edits: bool = True,
             allow_list_edits_when_same_length: bool = True
     ):
-        super().__init__(functions, allow_list_edits, allow_list_edits_when_same_length)
+        """Initializes a stack trace.
+
+        Args:
+            functions: the functions in the stack trace, in order.
+            samples: the number of times this stack trace was sampled in the profiling run.
+        """
+        if samples.object < 0:
+            raise ValueError(f"Invalid number of samples: {samples.object}; the sample count must be non-negative")
+        self.functions: ListNode[StringNode] = ListNode(
+            functions, allow_list_edits, allow_list_edits_when_same_length
+        )
         self.samples: IntegerNode = samples
 
+    def calculate_total_size(self) -> int:
+        return self.functions.calculate_total_size() + self.samples.calculate_total_size()
+
+    def print(self, printer: Printer):
+        StackTraceFormatter.DEFAULT_INSTANCE.print(printer, self)
+
+    def __iter__(self):
+        yield self.functions
+        yield self.samples
+
+    def __len__(self) -> int:
+        return 2
+
     def to_obj(self):
-        return [n.to_obj() for n in self] + [self.samples]
+        return self.functions.to_obj() + [self.samples.to_obj()]
 
     def edits(self, node: TreeNode) -> Edit:
-        # first, match the functions:
-        edit = super().edits(node)
-        if not isinstance(node, StackTrace) or self.samples == node.samples:
-            return edit
-        # now match the samples:
-        return EditSequence(
-            from_node=self,
-            to_node=node,
-            edits=(edit, self.samples.edits(node.samples))
-        )
+        if self == node:
+            return Match(self, node, cost=0)
+        elif isinstance(node, StackTrace):
+            return StackTraceEdit(from_node=self, to_node=node)
+        else:
+            return Replace(self, node)
+
+    def __str__(self):
+        return f"{';'.join((str(f.object) for f in self.functions))} {self.samples.object!s}"
+
+
+class StackTraceEdit(AbstractCompoundEdit):
+    """An edit on a stack trace."""
+
+    def __init__(self, from_node: "StackTrace", to_node: "StackTrace"):
+        """Initializes a stack trace edit.
+
+        Args:
+            from_node: The node being edited.
+            to_node: The node to which :obj:`from_node` will be transformed.
+        """
+        self.functions_edit = from_node.functions.edits(to_node.functions)
+        self.samples_edit = from_node.samples.edits(to_node.samples)
+        super().__init__(from_node, to_node)
+
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        formatter.get_formatter(self.from_node)(printer, self.from_node)
+
+    def bounds(self) -> Range:
+        return self.functions_edit.bounds() + self.samples_edit.bounds()
+
+    def edits(self) -> Iterator[Edit]:
+        yield self.functions_edit
+        yield self.samples_edit
 
 
 class FlameGraph(MultiSetNode[StackTrace]):
@@ -76,7 +127,7 @@ class StackTraceFormatter(SequenceFormatter):
         super().print(printer, *args, **kwargs)
 
     def print_StackTrace(self, printer: Printer, node: StackTrace):
-        self.print_SequenceNode(printer, node)
+        self.print_SequenceNode(printer, node.functions)
         printer.write(" ")
         self.print(printer, node.samples)
 

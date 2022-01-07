@@ -237,27 +237,6 @@ class KeyValuePairNode(ContainerNode):
             return self.key < other
         return (self.key < other.key) or (self.key == other.key and self.value < other.value)
 
-    def __eq__(self, other):
-        """Tests whether this key/value pair equals another.
-
-        Equivalent to::
-
-            isinstance(other, KeyValuePair) and self.key == other.key and self.value == other.value
-
-        Args:
-            other: The object to test.
-
-        Returns:
-            bool: :const:`True` if this key/value pair is equal to :obj:`other`.
-
-        """
-        if not isinstance(other, KeyValuePairNode):
-            return False
-        return self.key == other.key and self.value == other.value
-
-    def __hash__(self):
-        return hash((self.key, self.value))
-
     def __len__(self):
         return 2
 
@@ -1031,6 +1010,14 @@ def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) ->
     elif mime_type is None:
         mime_type = mimetypes.guess_type(path)[0]
     if mime_type is None:
+        # do non-MIME based filetype tests here
+        try:
+            ft = FILETYPES_BY_TYPENAME["flamegraph"]
+            _ = ft.build_tree(path)
+            # this is a valid flamegraph!
+            return ft
+        except:
+            pass
         raise ValueError(f"Could not determine the filetype for {path}")
     elif mime_type not in FILETYPES_BY_MIME:
         raise ValueError(f"Unsupported MIME type {mime_type} for {path}")

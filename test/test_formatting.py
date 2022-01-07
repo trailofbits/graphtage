@@ -40,7 +40,8 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
             raise ValueError(f'@filetype_test {name} must end with "{FILETYPE_TEST_SUFFIX}"')
         filetype_name = name[len(FILETYPE_TEST_PREFIX):-len(FILETYPE_TEST_SUFFIX)]
         if filetype_name not in graphtage.FILETYPES_BY_TYPENAME:
-            raise ValueError(f'Filetype "{filetype_name}" for @filetype_test {name} not found in graphtage.FILETYPES_BY_TYPENAME')
+            raise ValueError(f'Filetype "{filetype_name}" for @filetype_test {name} not found in '
+                             'graphtage.FILETYPES_BY_TYPENAME')
         filetype = graphtage.FILETYPES_BY_TYPENAME[filetype_name]
         formatter = filetype.get_default_formatter()
 
@@ -279,7 +280,7 @@ class TestFormatting(TestCase):
             traces.append(f"{stack_trace} {num_samples}\n")
         return "".join(traces)
 
-    @filetype_test
+    @filetype_test(iterations=10)
     def test_flamegraph_formatting(self):
         orig_obj = TestFormatting.make_random_flamegraph()
         num_spaces = sum(1 for c in orig_obj if c == " ")
