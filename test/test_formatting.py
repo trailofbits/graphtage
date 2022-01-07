@@ -84,12 +84,16 @@ class TestFormatting(TestCase):
         return random.choice([True, False])
 
     @staticmethod
-    def make_random_str(exclude_bytes: FrozenSet[str] = frozenset(), allow_empty_strings: bool = True) -> str:
+    def make_random_str(
+            exclude_bytes: FrozenSet[str] = frozenset(),
+            allow_empty_strings: bool = True,
+            max_length: int = 128
+    ) -> str:
         if allow_empty_strings:
             min_length = 0
         else:
             min_length = 1
-        return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(min_length, 128)))
+        return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(min_length, max_length)))
 
     @staticmethod
     def make_random_non_container(exclude_bytes: FrozenSet[str] = frozenset(), allow_empty_strings: bool = True):
@@ -253,3 +257,32 @@ class TestFormatting(TestCase):
     def test_plist_formatting(self):
         orig_obj = TestFormatting.make_random_obj(force_string_keys=True, exclude_bytes=frozenset('<>/\n&?|@{}[]'))
         return orig_obj, plistlib.dumps(orig_obj)
+
+    @staticmethod
+    def make_random_flamegraph() -> str:
+        num_traces = random.randint(1, 500)
+        traces = []
+        for _ in range(num_traces):
+            num_functions = random.randint(1, 32)
+            functions = [
+                TestFormatting.make_random_str(
+                    max_length=32,
+                    exclude_bytes=frozenset({'\n', ' ', '\t', ';', '\r'}),
+                    allow_empty_strings=False
+                )
+                for _ in range(num_functions)
+            ]
+            stack_trace = ";".join(functions)
+            assert "\n" not in stack_trace
+            assert sum(1 for c in stack_trace if c == ";") == num_functions - 1
+            num_samples = random.randint(1, 10000)
+            traces.append(f"{stack_trace} {num_samples}\n")
+        return "".join(traces)
+
+    @filetype_test
+    def test_flamegraph_formatting(self):
+        orig_obj = TestFormatting.make_random_flamegraph()
+        num_spaces = sum(1 for c in orig_obj if c == " ")
+        num_newlines = sum(1 for c in orig_obj if c == "\n")
+        self.assertEqual(num_spaces, num_newlines)
+        return orig_obj, orig_obj
