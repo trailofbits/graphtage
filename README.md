@@ -5,9 +5,9 @@
 [![Slack Status](https://empireslacking.herokuapp.com/badge.svg)](https://empireslacking.herokuapp.com)
 
 Graphtage is a command-line utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
-for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, plist, and CSS files. Its name is a
-portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
-that they grow as one.
+for semantically comparing and merging tree-like structures, such as JSON, XML, HTML, YAML, plist, CSS files, and
+flame graphs. Its name is a portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining
+two trees together such that they grow as one.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/trailofbits/graphtage/master/docs/example.png" title="Graphtage Example">
@@ -84,6 +84,32 @@ $ graphtage --html original.json modified.json > diff.html
 By default, Graphtage prints status messages and a progress bar to STDERR. To suppress this, use the `--no-status`
 option. To additionally suppress all but critical log messages, use `--quiet`. Fine-grained control of log messages is
 via the `--log-level` option.
+
+### Specifying File Types
+
+By default, Graphtage makes a best-effort guess of the input file types based upon file extensions and, in some 
+cases, file contents. This is largely based off of the 
+[Python `mimetypes` library](https://docs.python.org/3/library/mimetypes.html#mimetypes.guess_type).
+
+The input files' mimetypes can be explicitly specified using the `--from-mime` and `--to-mime` arguments.
+
+#### Flame Graphs
+
+Graphtage has support for diffing
+[flame graphs](https://trailofbits.github.io/graphtage/latest/graphtage.flamegraph.html).
+This is useful to identify performance regressions between program refactors, _e.g._, when control flow is modified or 
+functions are added, removed, or renamed.
+
+There are many libraries in different languages to produce a flame graph from a profiling run.
+There unfortunately isn't a standardized textual file format to represent flame graphs.
+Graphtage uses this common format:
+```
+function1 #samples
+function1;function2 #samples
+function1;function2;function3 #samples
+```
+In other words, each line of the file is a stack trace represented by a ``;``-delimited list of function names
+followed by a space and the integer number of times that stack trace was sampled in the profiling run.
 
 ## Why does Graphtage exist?
 
