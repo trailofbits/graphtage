@@ -32,6 +32,27 @@ class FlameGraphParseError(ValueError):
     pass
 
 
+class Samples(IntegerNode):
+    def __init__(self, num_samples: int, total_samples: int):
+        if total_samples <= 0:
+            raise ValueError("total_samples must be a positive integer")
+        elif num_samples < 0:
+            raise ValueError("num_samples must be non-negative")
+        super().__init__(num_samples)
+        self.total_samples: int = total_samples
+
+    @property
+    def num_samples(self) -> int:
+        return self.object
+
+    @property
+    def percent(self) -> float:
+        return self.num_samples / self.total_samples
+
+    def calculate_total_size(self) -> int:
+        return int(self.percent * 100.0 + 0.5)
+
+
 class StackTrace(ContainerNode):
     """A stack trace and sample count"""
 
@@ -61,6 +82,13 @@ class StackTrace(ContainerNode):
     def print(self, printer: Printer):
         StackTraceFormatter.DEFAULT_INSTANCE.print(printer, self)
 
+    def __eq__(self, other):
+        """Two stack traces are the same if their functions exactly match (regardless of their sample count)"""
+        return isinstance(other, StackTrace) and self.functions == other.functions
+
+    def __hash__(self):
+        return hash(self.functions)
+
     def __iter__(self):
         yield self.functions
         yield self.samples
@@ -72,7 +100,7 @@ class StackTrace(ContainerNode):
         return self.functions.to_obj() + [self.samples.to_obj()]
 
     def edits(self, node: TreeNode) -> Edit:
-        if self == node:
+        if self == node and self.samples == node.samples:
             return Match(self, node, cost=0)
         elif isinstance(node, StackTrace):
             return StackTraceEdit(from_node=self, to_node=node)
@@ -81,6 +109,9 @@ class StackTrace(ContainerNode):
 
     def __str__(self):
         return f"{';'.join((str(f.object) for f in self.functions))} {self.samples.object!s}"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.functions!r}, {self.samples!r})"
 
 
 class StackTraceEdit(AbstractCompoundEdit):
@@ -172,13 +203,13 @@ class FlameGraphFile(Filetype):
                 while ord('0') <= ord(line[-1]) <= ord('9'):
                     final_int = f"{line[-1]}{final_int}"
                     line = line[:-1]
+                    if not line:
+                        break
                 if not final_int:
                     raise FlameGraphParseError(f"{path}:{n+1} expected the line to end with an integer number of "
                                                "samples")
                 samples = int(final_int)
                 functions = line.strip().split(";")
-                if not functions:
-                    raise FlameGraphParseError(f"{path}:{n+1} the line did not contain a stack trace")
                 traces.append(StackTrace(
                     functions=(StringNode(f, quoted=False) for f in functions),
                     samples=IntegerNode(samples),
