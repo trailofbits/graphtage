@@ -2,13 +2,14 @@ __docformat__ = "google"
 
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
-from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
+from collections import OrderedDict
+from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Set, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
 from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
-from .multiset import MultiSetEdit
+from .multiset import MultiSetEdit, SetEdit
 from .printer import Back, Fore, NullANSIContext, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
@@ -310,6 +311,58 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
                     node._children,
                     insert_remove_penalty=insert_remove_penalty
                 )
+        else:
+            return Replace(self, node)
+
+
+class SetNode(SequenceNode[List[T]], Generic[T]):
+    def __init__(self, nodes: Iterable[T] = ()):
+        if isinstance(nodes, set):
+            super().__init__(list(nodes))
+            self._node_set: Set[T] = nodes
+        else:
+            ordered_nodes = list(OrderedDict.fromkeys(nodes))
+            self._node_set = set(ordered_nodes)
+            super().__init__(ordered_nodes)
+
+    @property
+    def container_type(self) -> Type[List[T]]:
+        return list
+
+    def to_obj(self):
+        return list(self)
+
+    def add(self, node: T):
+        if node not in self._node_set:
+            self._node_set.add(node)
+            self._children.append(node)
+
+    def __xor__(self, other) -> "SetNode[T]":
+        if not isinstance(other, SetNode):
+            raise NotImplementedError()
+        return SetNode(self._node_set ^ other._node_set)
+
+    def __and__(self, other) -> "SetNode[T]":
+        if not isinstance(other, SetNode):
+            raise NotImplementedError()
+        return SetNode(self._node_set & other._node_set)
+
+    def __or__(self, other) -> "SetNode[T]":
+        if not isinstance(other, SetNode):
+            raise NotImplementedError()
+        return SetNode(self._node_set | other._node_set)
+
+    def __contains__(self, node: T):
+        return node in self._node_set
+
+    def edits(self, node: 'TreeNode') -> Edit:
+        if isinstance(node, SetNode):
+            if len(self._children) == len(node._children) == 0:
+                return Match(self, node, 0)
+            elif self._node_set == node._node_set:
+                return Match(self, node, 0)
+            else:
+                return SetEdit(self, node, self._node_set, node._node_set)
         else:
             return Replace(self, node)
 
