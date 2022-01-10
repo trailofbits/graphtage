@@ -623,6 +623,8 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
 
     def bounds(self) -> Range:
         if self._bounds is None:
+            # first calculate and cache the edges to do equality optimizations:
+            _ = self.edges
             if not self.from_nodes or not self.to_nodes:
                 lb = ub = 0
             elif self._match is None:
