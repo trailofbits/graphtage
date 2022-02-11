@@ -283,8 +283,12 @@ def main(argv=None) -> int:
         with printer:
             with PathOrStdin(args.FROM_PATH) as from_path:
                 with PathOrStdin(args.TO_PATH) as to_path:
-                    from_format = graphtage.get_filetype(from_path, from_mime)
-                    to_format = graphtage.get_filetype(to_path, to_mime)
+                    try:
+                        from_format = graphtage.get_filetype(from_path, from_mime)
+                        to_format = graphtage.get_filetype(to_path, to_mime)
+                    except ValueError as e:
+                        log.error(str(e))
+                        sys.exit(1)
                     from_tree = from_format.build_tree_handling_errors(from_path, options)
                     if isinstance(from_tree, str):
                         sys.stderr.write(from_tree)

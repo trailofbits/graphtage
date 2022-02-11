@@ -192,6 +192,15 @@ class CompoundEdit(Edit, Iterable, Protocol):
         """Returns an iterator over this edit's sub-edits"""
         raise NotImplementedError()
 
+    def is_complete(self) -> bool:
+        return all(e.is_complete() for e in self)
+
+    def tighten_bounds(self) -> bool:
+        for e in self:
+            if e.tighten_bounds():
+                return True
+        return False
+
     def on_diff(self, from_node: 'EditedTreeNode'):
         """A callback for when an edit is assigned to an :class:`EditedTreeNode` in :meth:`TreeNode.diff`.
 
@@ -545,6 +554,32 @@ class TreeNode(metaclass=ABCMeta):
 
 class ContainerNode(TreeNode, Iterable, Sized, ABC):
     """A tree node that has children."""
+
+    def __hash__(self):
+        """Hashes the contents of this container node.
+
+        Equivalent to::
+
+            hash(tuple(self))
+
+        """
+        return hash(tuple(self))
+
+    def __eq__(self, other):
+        """Tests whether this container node equals another.
+
+        Equivalent to::
+
+            isinstance(other, ContainerNode) and all(a == b for a, b in zip(self, other))
+
+        Args:
+            other: The object to test.
+
+        Returns:
+            bool: :const:`True` if this container node is equal to :obj:`other`.
+
+        """
+        return isinstance(other, ContainerNode) and all(a == b for a, b in zip(self, other))
 
     def children(self) -> List[TreeNode]:
         """The children of this node.

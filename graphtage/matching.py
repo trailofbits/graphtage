@@ -46,6 +46,7 @@ from scipy.optimize import linear_sum_assignment
 from .bounds import Bounded, make_distinct, Range, repeat_until_tightened
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
+from .printer import DEFAULT_PRINTER
 from .utils import smallest, largest
 
 
@@ -613,12 +614,17 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
         """
         if self._edges is None:
             self._edges = [
-                [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
+                [self.get_edge(from_node, to_node) for to_node in self.to_nodes]
+                for from_node in DEFAULT_PRINTER.tqdm(
+                    self.from_nodes, leave=False, unit=" rows", desc="Building Matching Graph"
+                )
             ]
         return self._edges
 
     def bounds(self) -> Range:
         if self._bounds is None:
+            # first calculate and cache the edges to do equality optimizations:
+            _ = self.edges
             if not self.from_nodes or not self.to_nodes:
                 lb = ub = 0
             elif self._match is None:

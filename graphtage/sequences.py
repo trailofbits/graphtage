@@ -143,6 +143,9 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         """
         return len(self._children)
 
+    def __getitem__(self, index) -> TreeNode:
+        return self._children[index]
+
     def __iter__(self) -> Iterator[TreeNode]:
         """Iterates over this sequence's child nodes.
 
