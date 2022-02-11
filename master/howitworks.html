@@ -180,18 +180,18 @@ extant diffing algorithms and utilities assume that the structures are ordered. 
 <tr class="row-odd"><td><p>Original JSON</p></td>
 <td><p>Modified JSON</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-    <span class="nt">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;testing&quot;</span>
-<span class="p">}</span>
+<tr class="row-even"><td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;bar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
-    <span class="nt">&quot;zab&quot;</span><span class="p">:</span> <span class="s2">&quot;testing&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;woo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;foobar&quot;</span><span class="p">]</span>
-<span class="p">}</span>
+<td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;zab&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;woo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;foobar&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </td>
@@ -205,22 +205,22 @@ item per line), and then perform a traditional diff:</p>
 <span class="gp">$ </span>diff -u original.canonical.json modified.canonical.json
 </pre></div>
 </div>
-<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>{
-<span class="linenos"> 2</span><span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span>
-<span class="linenos"> 3</span>   &quot;foo&quot;: [
-<span class="linenos"> 4</span><span class="gd">-    1,</span>
-<span class="linenos"> 5</span>     2,
-<span class="linenos"> 6</span>     3,
-<span class="linenos"> 7</span><span class="gd">-    4</span>
-<span class="linenos"> 8</span><span class="gd">-  ]</span>
-<span class="linenos"> 9</span><span class="gi">+    4,</span>
-<span class="linenos">10</span><span class="gi">+    5</span>
-<span class="linenos">11</span><span class="gi">+  ],</span>
-<span class="linenos">12</span><span class="gi">+  &quot;woo&quot;: [</span>
-<span class="linenos">13</span><span class="gi">+    &quot;foobar&quot;</span>
-<span class="linenos">14</span><span class="gi">+  ],</span>
-<span class="linenos">15</span><span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span>
-<span class="linenos">16</span>}
+<div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="w">{</span>
+<span class="linenos"> 2</span><span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span><span class="w"></span>
+<span class="linenos"> 3</span><span class="w"> </span>  &quot;foo&quot;: [<span class="w"></span>
+<span class="linenos"> 4</span><span class="gd">-    1,</span><span class="w"></span>
+<span class="linenos"> 5</span><span class="w"> </span>    2,<span class="w"></span>
+<span class="linenos"> 6</span><span class="w"> </span>    3,<span class="w"></span>
+<span class="linenos"> 7</span><span class="gd">-    4</span><span class="w"></span>
+<span class="linenos"> 8</span><span class="gd">-  ]</span><span class="w"></span>
+<span class="linenos"> 9</span><span class="gi">+    4,</span><span class="w"></span>
+<span class="linenos">10</span><span class="gi">+    5</span><span class="w"></span>
+<span class="linenos">11</span><span class="gi">+  ],</span><span class="w"></span>
+<span class="linenos">12</span><span class="gi">+  &quot;woo&quot;: [</span><span class="w"></span>
+<span class="linenos">13</span><span class="gi">+    &quot;foobar&quot;</span><span class="w"></span>
+<span class="linenos">14</span><span class="gi">+  ],</span><span class="w"></span>
+<span class="linenos">15</span><span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span><span class="w"></span>
+<span class="linenos">16</span><span class="w">}</span>
 </pre></div>
 </div>
 <p>Not entirely useful, particularly if the input files are large. The problem is that changing dict keys breaks the diff:
