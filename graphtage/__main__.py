@@ -139,7 +139,7 @@ def main(argv=None) -> int:
     formatting.add_argument('--condensed', '-j', action='store_true', help='equivalent to `-jl -jd`')
     formatting.add_argument('--html', action='store_true', help='output the diff in HTML')
     key_match_strategy = parser.add_mutually_exclusive_group()
-    key_match_strategy.add_argument("--dict-strategy", choices=("auto", "match", "none"),
+    key_match_strategy.add_argument("--dict-strategy", "-ds", choices=("auto", "match", "none"),
                                     help="sets the strategy for matching dictionary key/value pairs: `auto` (the "
                                          "default) will automatically match two key/value pairs if they share the "
                                          "same key, but consider key edits for all non-identical keys; `match` will "
