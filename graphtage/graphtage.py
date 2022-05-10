@@ -338,10 +338,11 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
     """A node representing a set that can contain duplicate items."""
 
-    def __init__(self, items: Iterable[T]):
+    def __init__(self, items: Iterable[T], auto_match_keys: bool = True):
         if not isinstance(items, HashableCounter):
             items = HashableCounter(items)
         super().__init__(items)
+        self.auto_match_keys: bool = auto_match_keys
 
     def to_obj(self):
         return HashableCounter(n.to_obj() for n in self)
@@ -357,7 +358,7 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             elif self._children == node._children:
                 return Match(self, node, 0)
             else:
-                return MultiSetEdit(self, node, self._children, node._children)
+                return MultiSetEdit(self, node, self._children, node._children, auto_match_keys=self.auto_match_keys)
         else:
             return Replace(self, node)
 
@@ -910,6 +911,7 @@ class BuildOptions:
 
     def __init__(self, *,
                  allow_key_edits=True,
+                 auto_match_keys=True,
                  allow_list_edits=True,
                  allow_list_edits_when_same_length=True,
                  **kwargs
@@ -925,6 +927,8 @@ class BuildOptions:
         """Whether to consider insert and remove edits to lists"""
         self.allow_list_edits_when_same_length = allow_list_edits_when_same_length
         """Whether to consider insert and remove edits on lists that are the same length"""
+        self.auto_match_keys = auto_match_keys
+        """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 
