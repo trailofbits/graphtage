@@ -94,12 +94,23 @@ Use `--condensed` or `-j` to apply both of these options:
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
 
 ### Matching Options
-By default, Graphtage tries to match all possible pairs of elements in a dictionary. While computationally tractable,
-this can sometimes be onerous for input files with huge dictionaries. The `--no-key-edits` or `-k` option will instead
-only attempt to match dictionary items that share the same key, drastically reducing computation. Likewise, the
-`--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists. The
-`--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for lists
-that are of different lengths but behave like `-l` for lists that are of the same length.
+By default, Graphtage tries to match all possible pairs of elements in a dictionary.
+
+Matching two dictionaries with each other is hard. Although computationally tractable, this can sometimes be onerous for 
+input files with huge dictionaries. Graphtage has three different strategies for matching dictionaries:
+1. `--dict-strategy match` (the most computationally expensive) tries to match all pairs of keys and values between the
+   two dictionaries, resulting in a match of minimum edit distance;
+2. `--dict-strategy none` (the least computationally expensive) will not attempt to match any key/value pairs unless
+   they have the exact same key; and
+3. `--dict-strategy auto` (the default) will automatically match the values of any key-value pairs that have identical
+   keys and then use the `match` strategy for the remainder of key/value pairs.
+
+See [Pull Request #51](https://github.com/trailofbits/graphtage/pull/51) for some examples of how these strategies
+affect output.
+
+The `--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists.
+The `--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for
+lists that are of different lengths but behave like `-l` for lists that are of the same length.
 
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like
