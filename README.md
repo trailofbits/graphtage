@@ -57,7 +57,8 @@ Graphtage performs an analysis on an intermediate representation of the trees th
 input files. This means, for example, that you can diff a JSON file against a YAML file. Also, the output format can be
 different from the input format(s). By default, Graphtage will format the output diff in the same file format as the
 first input file. But one could, for example, diff two JSON files and format the output in YAML. There are several
-command-line arguments to specify these transformations; please check the `--help` output for more information.
+command-line arguments to specify these transformations, such as `--format`; please check the `--help` output for more
+information.
 
 By default, Graphtage pretty-prints its output with as many line breaks and indents as possible.
 ```json
