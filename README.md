@@ -9,9 +9,40 @@ for semantically comparing and merging tree-like structures, such as JSON, XML, 
 portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
 that they grow as one.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/trailofbits/graphtage/master/docs/example.png" title="Graphtage Example">
-</p>
+```console
+$ echo Original: && cat original.json && echo Modified: && cat modified.json
+```
+```json
+Original:
+{
+    "foo": [1, 2, 3, 4],
+    "bar": "testing"
+}
+Modified:
+{
+    "foo": [2, 3, 4, 5],
+    "zab": "testing",
+    "woo": ["foobar"]
+}
+```
+```console
+$ graphtage original.json modified.json
+```
+```json
+{
+    "z̟b̶ab̟r̶": "testing",
+    "foo": [
+        1̶,̶
+        2,
+        3,
+        4,̟
+        5̟
+    ],̟
+    "̟w̟o̟o̟"̟:̟ ̟[̟
+        "̟f̟o̟o̟b̟a̟r̟"̟
+    ]̟
+}
+```
 
 ## Installation
 
