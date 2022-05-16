@@ -33,17 +33,12 @@ jobs:
         run: |
           make -C bindist
           cd bindist && echo "DIST_FILE=`make dist-name | tr -d '\n'`" >> $GITHUB_ENV
-      - name: publish
+      - name: Release binary artifacts
         if: |
           github.event.release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v0.1.14
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: bindist/${{ env.DIST_FILE }}
-          asset_name: ${{ env.DIST_FILE }}
-          asset_content_type: application/zip
+          file: bindist/${{ env.DIST_FILE }}
 
   deploy:
 
