@@ -10,7 +10,9 @@ on:
 jobs:
   deploydocs:
     runs-on: ubuntu-latest
-
+    permissions:
+      # NOTE: Needed to push to the repository.
+      contents: write
     steps:
       - uses: actions/checkout@v2
         with:
