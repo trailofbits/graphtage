@@ -30,11 +30,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools pyinstaller
-          pip install .
+          pip install -e .
       - name: Build the binary
         run: |
           make -C bindist
-          echo "DIST_FILE=`make -C bindist dist-name | tr -d '\n'`" >> $GITHUB_ENV
+          cd bindist && echo "DIST_FILE=`make dist-name | tr -d '\n'`" >> $GITHUB_ENV
       - name: publish
         run: |
           echo "The path is ${{ env.DIST_FILE }}"
