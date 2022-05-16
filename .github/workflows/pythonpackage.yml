@@ -34,7 +34,9 @@ jobs:
       - name: Build the binary
         run: |
           make -C bindist
-          echo "dist_file=bindist/`make -C bindist dist-name`" >> $GITHUB_ENV
+          echo 'dist_file<<EOF' >> $GITHUB_ENV
+          make -C bindist dist-name | tr -d '\n' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
       - name: publish
         run: |
           echo "The path is ${{ env.dist_file }}"
