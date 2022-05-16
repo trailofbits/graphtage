@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools pyinstaller
-          pip install -e
+          pip install .
       - name: Build the binary
         run: |
           make -C bindist
