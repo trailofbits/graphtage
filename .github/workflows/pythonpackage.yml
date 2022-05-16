@@ -32,11 +32,11 @@ jobs:
           pip install setuptools pyinstaller
           pip install .
       - name: Build the binary
-        run:
+        run: |
           make -C bindist
           echo "dist_file=bindist/`make -C bindist dist-name`" >> $GITHUB_ENV
       - name: publish
-        run:
+        run: |
           echo "The path is ${{ env.dist_file }}"
 #        if: |
 #          github.event.release && matrix.compiler.CC == 'clang'
