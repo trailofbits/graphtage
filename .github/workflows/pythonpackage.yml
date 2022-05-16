@@ -34,12 +34,10 @@ jobs:
       - name: Build the binary
         run: |
           make -C bindist
-          echo 'dist_file<<EOF' >> $GITHUB_ENV
-          make -C bindist dist-name | tr -d '\n' >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
+          echo "DIST_FILE=`make -C bindist dist-name | tr -d '\n'`" >> $GITHUB_ENV
       - name: publish
         run: |
-          echo "The path is ${{ env.dist_file }}"
+          echo "The path is ${{ env.DIST_FILE }}"
 #        if: |
 #          github.event.release && matrix.compiler.CC == 'clang'
 #        uses: actions/upload-release-asset@v1
