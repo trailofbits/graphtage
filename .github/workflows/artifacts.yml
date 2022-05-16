@@ -14,6 +14,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    permissions:
+      # NOTE: Needed to push to the repository.
+      contents: write
+
     steps:
       - uses: actions/checkout@v2
         with:
