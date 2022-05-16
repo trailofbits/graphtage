@@ -10,6 +10,46 @@ on:
     branches: [ master ]
 
 jobs:
+  binaries:
+
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools pyinstaller
+          pip install .
+      - name: Build the binary
+        run:
+          make -C bindist
+          echo "dist_file=bindist/`make -C bindist dist-name`" >> $GITHUB_ENV
+      - name: publish
+        run:
+          echo "The path is ${{ env.dist_file }}"
+#        if: |
+#          github.event.release && matrix.compiler.CC == 'clang'
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ github.event.release.upload_url }}
+#          asset_path: ${{ env.dist_file }}
+#          asset_name: ubuntu.${{ matrix.build-shared.repr }}.${{ matrix.build-type }}.zip
+#          asset_content_type: application/zip
+
+
   build:
 
     runs-on: ubuntu-latest
