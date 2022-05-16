@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     permissions:
-      # NOTE: Needed to push to the repository.
+      # NOTE: Needed to save artifacts the repository.
       contents: write
 
     steps:
@@ -38,4 +38,4 @@ jobs:
       - name: Release binary artifacts
         uses: softprops/action-gh-release@v0.1.14
         with:
-          file: bindist/${{ env.DIST_FILE }}
+          files: bindist/${{ env.DIST_FILE }}
