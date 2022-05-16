@@ -139,7 +139,8 @@ class XMLElement(ContainerNode):
             attrib: Optional[Dict[StringNode, StringNode]] = None,
             text: Optional[StringNode] = None,
             children: Sequence['XMLElement'] = (),
-            allow_key_edits: bool = True
+            allow_key_edits: bool = True,
+            auto_match_keys: bool = True
     ):
         """Initializes an XML element.
 
@@ -157,6 +158,7 @@ class XMLElement(ContainerNode):
             attrib = {}
         if allow_key_edits:
             self.attrib: DictNode = DictNode.from_dict(attrib)
+            self.attrib.auto_match_keys = auto_match_keys
             """The attributes of this element."""
         else:
             self.attrib = FixedKeyDictNode.from_dict(attrib)
@@ -263,7 +265,8 @@ def build_tree(
         },
         text=text,
         children=[build_tree(child, options) for child in root],
-        allow_key_edits=options is None or options.allow_key_edits
+        allow_key_edits=options is None or options.allow_key_edits,
+        auto_match_keys=options is None or options.auto_match_keys
     )
 
 

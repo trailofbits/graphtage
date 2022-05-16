@@ -7,6 +7,7 @@ This is used by :class:`graphtage.MultiSetNode` and :class:`graphtage.DictNode`,
 
 from typing import Iterator, List
 
+import graphtage
 from .bounds import Range
 from .edits import Insert, Match, Remove
 from .matching import WeightedBipartiteMatcher
@@ -27,7 +28,8 @@ class MultiSetEdit(SequenceEdit):
             from_node: SequenceNode,
             to_node: SequenceNode,
             from_set: HashableCounter[TreeNode],
-            to_set: HashableCounter[TreeNode]
+            to_set: HashableCounter[TreeNode],
+            auto_match_keys: bool = True
     ):
         """Initializes the edit.
 
@@ -38,8 +40,33 @@ class MultiSetEdit(SequenceEdit):
                 this is neither checked nor enforced.
             to_set: The set of nodes to which to match. These should typically be children of :obj:`to_node`, but this
                 is neither checked nor enforced.
+            auto_match_keys: If `True`, any :class:`graphtage.KeyValuePairNode`s in :obj:`from_set` that have keys
+                equal to :class:`graphtage.KeyValuePairNode`s in :obj:`to_set` will automatically be matched. Setting
+                this to `False` will require a significant amount more computation for larger dictionaries.
 
         """
+        self._matched_kvp_edits: List[Edit] = []
+        if auto_match_keys:
+            to_set = HashableCounter(to_set)
+            from_set = HashableCounter(from_set)
+            to_remove_from = []
+            for f in from_set.keys():
+                if not isinstance(f, graphtage.KeyValuePairNode):
+                    continue
+                for t in to_set.keys():
+                    if not isinstance(f, graphtage.KeyValuePairNode):
+                        continue
+                    if f.key == t.key:
+                        num_matched = min(from_set[f], to_set[t])
+                        for _ in range(num_matched):
+                            self._matched_kvp_edits.append(f.edits(t))
+                        to_remove_from.append((f, num_matched))
+                        break
+                else:
+                    continue
+                to_set[t] -= num_matched
+            for f, num_matched in to_remove_from:
+                from_set[f] -= num_matched
         self.to_insert = to_set - from_set
         """The set of nodes in :obj:`to_set` that do not exist in :obj:`from_set`."""
         self.to_remove = from_set - to_set
@@ -61,6 +88,7 @@ class MultiSetEdit(SequenceEdit):
 
     def edits(self) -> Iterator[Edit]:
         yield from self._edits
+        yield from self._matched_kvp_edits
         remove_matched: HashableCounter[TreeNode] = HashableCounter()
         insert_matched: HashableCounter[TreeNode] = HashableCounter()
         for (rem, (ins, edit)) in self._matcher.matching.items():
@@ -74,10 +102,15 @@ class MultiSetEdit(SequenceEdit):
 
     def tighten_bounds(self) -> bool:
         """Delegates to :meth:`WeightedBipartiteMatcher.tighten_bounds`."""
+        for kvp_edit in self._matched_kvp_edits:
+            if kvp_edit.tighten_bounds():
+                return True
         return self._matcher.tighten_bounds()
 
     def bounds(self) -> Range:
         b = self._matcher.bounds()
+        for kvp_edit in self._matched_kvp_edits:
+            b = b + kvp_edit.bounds()
         if len(self.to_remove) > len(self.to_insert):
             for edit in largest(
                     *(Remove(to_remove=r, remove_from=self.from_node) for r in self.to_remove),

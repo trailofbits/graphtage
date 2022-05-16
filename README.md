@@ -9,9 +9,40 @@ for semantically comparing and merging tree-like structures, such as JSON, XML, 
 portmanteau of “graph” and “graftage”—the latter being the horticultural practice of joining two trees together such
 that they grow as one.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/trailofbits/graphtage/master/docs/example.png" title="Graphtage Example">
-</p>
+```console
+$ echo Original: && cat original.json && echo Modified: && cat modified.json
+```
+```json
+Original:
+{
+    "foo": [1, 2, 3, 4],
+    "bar": "testing"
+}
+Modified:
+{
+    "foo": [2, 3, 4, 5],
+    "zab": "testing",
+    "woo": ["foobar"]
+}
+```
+```console
+$ graphtage original.json modified.json
+```
+```json
+{
+    "z̟b̶ab̟r̶": "testing",
+    "foo": [
+        1̶,̶
+        2,
+        3,
+        4,̟
+        5̟
+    ],̟
+    "̟w̟o̟o̟"̟:̟ ̟[̟
+        "̟f̟o̟o̟b̟a̟r̟"̟
+    ]̟
+}
+```
 
 ## Installation
 
@@ -26,7 +57,8 @@ Graphtage performs an analysis on an intermediate representation of the trees th
 input files. This means, for example, that you can diff a JSON file against a YAML file. Also, the output format can be
 different from the input format(s). By default, Graphtage will format the output diff in the same file format as the
 first input file. But one could, for example, diff two JSON files and format the output in YAML. There are several
-command-line arguments to specify these transformations; please check the `--help` output for more information.
+command-line arguments to specify these transformations, such as `--format`; please check the `--help` output for more
+information.
 
 By default, Graphtage pretty-prints its output with as many line breaks and indents as possible.
 ```json
@@ -62,12 +94,23 @@ Use `--condensed` or `-j` to apply both of these options:
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
 
 ### Matching Options
-By default, Graphtage tries to match all possible pairs of elements in a dictionary. While computationally tractable,
-this can sometimes be onerous for input files with huge dictionaries. The `--no-key-edits` or `-k` option will instead
-only attempt to match dictionary items that share the same key, drastically reducing computation. Likewise, the
-`--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists. The
-`--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for lists
-that are of different lengths but behave like `-l` for lists that are of the same length.
+By default, Graphtage tries to match all possible pairs of elements in a dictionary.
+
+Matching two dictionaries with each other is hard. Although computationally tractable, this can sometimes be onerous for 
+input files with huge dictionaries. Graphtage has three different strategies for matching dictionaries:
+1. `--dict-strategy match` (the most computationally expensive) tries to match all pairs of keys and values between the
+   two dictionaries, resulting in a match of minimum edit distance;
+2. `--dict-strategy none` (the least computationally expensive) will not attempt to match any key/value pairs unless
+   they have the exact same key; and
+3. `--dict-strategy auto` (the default) will automatically match the values of any key-value pairs that have identical
+   keys and then use the `match` strategy for the remainder of key/value pairs.
+
+See [Pull Request #51](https://github.com/trailofbits/graphtage/pull/51) for some examples of how these strategies
+affect output.
+
+The `--no-list-edits` or `-l` option will not consider interstitial insertions and removals when comparing two lists.
+The `--no-list-edits-when-same-length` or `-ll` option is a less drastic version of `-l` that will behave normally for
+lists that are of different lengths but behave like `-l` for lists that are of the same length.
 
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like

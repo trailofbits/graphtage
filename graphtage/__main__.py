@@ -135,14 +135,23 @@ def main(argv=None) -> int:
     formatting.add_argument('--join-lists', '-jl', action='store_true',
                             help='do not print a newline after each list entry')
     formatting.add_argument('--join-dict-items', '-jd', action='store_true',
-                        help='do not print a newline after each key/value pair in a dictionary')
+                            help='do not print a newline after each key/value pair in a dictionary')
     formatting.add_argument('--condensed', '-j', action='store_true', help='equivalent to `-jl -jd`')
     formatting.add_argument('--html', action='store_true', help='output the diff in HTML')
-    parser.add_argument(
+    key_match_strategy = parser.add_mutually_exclusive_group()
+    key_match_strategy.add_argument("--dict-strategy", "-ds", choices=("auto", "match", "none"),
+                                    help="sets the strategy for matching dictionary key/value pairs: `auto` (the "
+                                         "default) will automatically match two key/value pairs if they share the "
+                                         "same key, but consider key edits for all non-identical keys; `match` will "
+                                         "attempt to consider all possible key edits (the most computationally "
+                                         "expensive); and `none` will not consider any edits on dictionary keys (the "
+                                         "least computationally expensive)")
+    key_match_strategy.add_argument(
         '--no-key-edits',
         '-k',
         action='store_true',
-        help='only match dictionary entries if they share the same key. This drastically reduces computation.'
+        help='only match dictionary entries if they share the same key, drastically reducing computation; this is '
+             'equivalent to `--dict-strategy none`'
     )
     list_edit_group = parser.add_mutually_exclusive_group()
     list_edit_group.add_argument(
@@ -273,8 +282,22 @@ def main(argv=None) -> int:
     else:
         match_unless = None
 
+    if args.dict_strategy == "none":
+        allow_key_edits = False
+        auto_match_keys = False
+    elif args.dict_strategy == "auto":
+        allow_key_edits = True
+        auto_match_keys = True
+    elif args.dict_strategy == "match":
+        allow_key_edits = True
+        auto_match_keys = False
+    else:
+        allow_key_edits = not args.no_key_edits
+        auto_match_keys = allow_key_edits
+
     options = graphtage.BuildOptions(
-        allow_key_edits=not args.no_key_edits,
+        allow_key_edits=allow_key_edits,
+        auto_match_keys=auto_match_keys,
         allow_list_edits=not args.no_list_edits,
         allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
     )
