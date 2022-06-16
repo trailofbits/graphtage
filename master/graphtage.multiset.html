@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -183,27 +184,27 @@
            <div itemprop="articleBody">
             
   <section id="module-graphtage.multiset">
-<span id="graphtage-multiset"></span><h1>graphtage.multiset<a class="headerlink" href="#module-graphtage.multiset" title="Permalink to this headline">¶</a></h1>
+<span id="graphtage-multiset"></span><h1>graphtage.multiset<a class="headerlink" href="#module-graphtage.multiset" title="Permalink to this heading">¶</a></h1>
 <p>A module for representing an edit on a multiset.</p>
 <p>This is used by <a class="reference internal" href="graphtage.html#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MultiSetNode</span></code></a> and <a class="reference internal" href="graphtage.html#graphtage.DictNode" title="graphtage.DictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.DictNode</span></code></a>, since the latter is a multiset containg
 <a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.KeyValuePairNode</span></code></a> objects.</p>
 <section id="multiset-classes">
-<h2>multiset classes<a class="headerlink" href="#multiset-classes" title="Permalink to this headline">¶</a></h2>
+<h2>multiset classes<a class="headerlink" href="#multiset-classes" title="Permalink to this heading">¶</a></h2>
 <section id="multisetedit">
-<h3>MultiSetEdit<a class="headerlink" href="#multisetedit" title="Permalink to this headline">¶</a></h3>
+<h3>MultiSetEdit<a class="headerlink" href="#multisetedit" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.multiset.</span></span><span class="sig-name descname"><span class="pre">MultiSetEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">graphtage.utils.HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">graphtage.utils.HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceEdit</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.multiset.</span></span><span class="sig-name descname"><span class="pre">MultiSetEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceEdit" title="graphtage.sequences.SequenceEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceEdit</span></code></a></p>
 <p>An edit matching one unordered collection of items to another.</p>
 <p>It works by using a <a class="reference internal" href="graphtage.matching.html#graphtage.matching.WeightedBipartiteMatcher" title="graphtage.matching.WeightedBipartiteMatcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.matching.WeightedBipartiteMatcher</span></code></a> to find the minimum cost matching from
 the elements of one collection to the elements of the other.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">graphtage.utils.HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">graphtage.utils.HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">SequenceNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">HashableCounter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the edit.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>from_node</strong> – Any sequence node from which to match.</p></li>
 <li><p><strong>to_node</strong> – Any sequence node to which to match.</p></li>
@@ -221,13 +222,13 @@ this to <cite>False</cite> will require a significant amount more computation fo
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.__iter__">
-<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__iter__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator over this edit’s sub-edits.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">AbstractCompoundEdit.edits()</span></code></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Iterator[<a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
 </dd>
 </dl>
@@ -241,7 +242,7 @@ this to <cite>False</cite> will require a significant amount more computation fo
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.bounds">
-<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.bounds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this edit.</p>
 <p>This defaults to the bounds provided when this <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEdit</span></code> was constructed. If an upper bound was not
 provided to the constructor, the upper bound defaults to:</p>
@@ -249,10 +250,10 @@ provided to the constructor, the upper bound defaults to:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A range bounding the cost of this edit.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">Range</a></p>
 </dd>
 </dl>
@@ -260,13 +261,13 @@ provided to the constructor, the upper bound defaults to:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.edits">
-<span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">graphtage.Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.edits" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.from_node">
-<span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">graphtage.TreeNode</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.from_node" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.from_node" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -279,7 +280,7 @@ definitive.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.initial_bounds">
-<span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.initial_bounds" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -295,11 +296,11 @@ reimplement this method to define that check.</p>
 <p>For example, in the case of a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code>, this method should only return <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if no future
 calls to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code> will affect the result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">CompoundEdit.edits()</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if subsequent calls to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code> will only serve to tighten the bounds
 of this edit and will not affect the semantics of the edit.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
@@ -307,7 +308,7 @@ of this edit and will not affect the semantics of the edit.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.on_diff">
-<span class="sig-name descname"><span class="pre">on_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">graphtage.EditedTreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.on_diff" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">on_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.on_diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>A callback for when an edit is assigned to an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code> in <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.diff()</span></code>.</p>
 <p>This default implementation adds the edit to the node, and recursively calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.on_diff()</span></code> on all of
 the sub-edits:</p>
@@ -318,7 +319,7 @@ the sub-edits:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>from_node</strong> – The edited node that was added to the diff</p>
 </dd>
 </dl>
@@ -326,7 +327,7 @@ the sub-edits:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.print">
-<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><span class="pre">graphtage.GraphtageFormatter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">graphtage.printer.Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.print" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><span class="pre">GraphtageFormatter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints this edit.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatter</span><span class="o">.</span><span class="n">get_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
@@ -336,7 +337,7 @@ the sub-edits:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.multiset.MultiSetEdit.sequence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">graphtage.sequences.SequenceNode</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.sequence" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><span class="pre">SequenceNode</span></a></em><a class="headerlink" href="#graphtage.multiset.MultiSetEdit.sequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sequence being edited.</p>
 <p>This is a convenience function solely to aid in automated type checking. It is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">SequenceNode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_node</span><span class="p">)</span>

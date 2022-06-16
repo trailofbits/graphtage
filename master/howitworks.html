@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -161,21 +162,17 @@
            <div itemprop="articleBody">
             
   <section id="how-graphtage-works">
-<h1>How Graphtage Works<a class="headerlink" href="#how-graphtage-works" title="Permalink to this headline">¶</a></h1>
+<h1>How Graphtage Works<a class="headerlink" href="#how-graphtage-works" title="Permalink to this heading">¶</a></h1>
 <p>In general, optimally mapping one graph to another
-cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id9" id="id1">1</a>, and is therefore not
-tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id16" id="id2">*</a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id10" id="id3">2</a>.
+cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id9" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, and is therefore not
+tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id16" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>*<span class="fn-bracket">]</span></a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id10" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
 However, trees and forests are a special case that <em>can</em> be mapped in polynomial time, with reasonable constraints on
 the types of edits possible. Graphtage exploits this.</p>
 <section id="why-mapping-trees-is-complex">
-<h2>Why Mapping Trees is Complex<a class="headerlink" href="#why-mapping-trees-is-complex" title="Permalink to this headline">¶</a></h2>
+<h2>Why Mapping Trees is Complex<a class="headerlink" href="#why-mapping-trees-is-complex" title="Permalink to this heading">¶</a></h2>
 <p>Ordered nodes in the tree (<em>e.g.</em>, JSON lists) and, in particular, mappings (<em>e.g.</em>, JSON dicts) are challenging. Most
 extant diffing algorithms and utilities assume that the structures are ordered. Take this JSON as an example:</p>
 <table class="align-center docutils align-default">
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Original JSON</p></td>
 <td><p>Modified JSON</p></td>
@@ -228,46 +225,52 @@ Since “bar” was changed to “zab”, the canonical representation changes a
 and 15 of the diff).</p>
 </section>
 <section id="matching-ordered-sequences">
-<h2>Matching Ordered Sequences<a class="headerlink" href="#matching-ordered-sequences" title="Permalink to this headline">¶</a></h2>
-<p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id11" id="id4">3</a>, “constructive” <a class="footnote-reference brackets" href="#id12" id="id5">4</a> implementation of the
-Levenshtein distance metric <a class="footnote-reference brackets" href="#id13" id="id6">5</a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id14" id="id7">6</a>. The algorithm starts with an
+<h2>Matching Ordered Sequences<a class="headerlink" href="#matching-ordered-sequences" title="Permalink to this heading">¶</a></h2>
+<p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id11" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, “constructive” <a class="footnote-reference brackets" href="#id12" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> implementation of the
+Levenshtein distance metric <a class="footnote-reference brackets" href="#id13" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id14" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. The algorithm starts with an
 unbounded mapping and iteratively improves it until the bounds converge, at which point the optimal edit sequence is
 discovered. This is implemented in the <a class="reference internal" href="graphtage.levenshtein.html#module-graphtage.levenshtein" title="graphtage.levenshtein"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.levenshtein</span></code></a> module.</p>
 </section>
 <section id="matching-unordered-collections">
-<h2>Matching Unordered Collections<a class="headerlink" href="#matching-unordered-collections" title="Permalink to this headline">¶</a></h2>
-<p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id15" id="id8">7</a> on the complete bipartite graph from key/value
+<h2>Matching Unordered Collections<a class="headerlink" href="#matching-unordered-collections" title="Permalink to this heading">¶</a></h2>
+<p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id15" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> on the complete bipartite graph from key/value
 pairs in the source dict to key/value pairs in the destination dict. This is implemented in the
 <a class="reference internal" href="graphtage.matching.html#module-graphtage.matching" title="graphtage.matching"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.matching</span></code></a> module.</p>
 </section>
 <section id="footnotes">
-<h2>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this headline">¶</a></h2>
-<dl class="footnote brackets">
-<dt class="label" id="id9"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Graph_isomorphism_problem">https://en.wikipedia.org/wiki/Graph_isomorphism_problem</a></p>
-</dd>
-<dt class="label" id="id10"><span class="brackets"><a class="fn-backref" href="#id3">2</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">https://en.wikipedia.org/wiki/Directed_acyclic_graph</a></p>
-</dd>
-<dt class="label" id="id11"><span class="brackets"><a class="fn-backref" href="#id4">3</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Online_algorithm">https://en.wikipedia.org/wiki/Online_algorithm</a></p>
-</dd>
-<dt class="label" id="id12"><span class="brackets"><a class="fn-backref" href="#id5">4</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Constructive_proof">https://en.wikipedia.org/wiki/Constructive_proof</a></p>
-</dd>
-<dt class="label" id="id13"><span class="brackets"><a class="fn-backref" href="#id6">5</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Levenshtein_distance">https://en.wikipedia.org/wiki/Levenshtein_distance</a></p>
-</dd>
-<dt class="label" id="id14"><span class="brackets"><a class="fn-backref" href="#id7">6</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm">https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm</a></p>
-</dd>
-<dt class="label" id="id15"><span class="brackets"><a class="fn-backref" href="#id8">7</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Assignment_problem">https://en.wikipedia.org/wiki/Assignment_problem</a></p>
-</dd>
-<dt class="label" id="id16"><span class="brackets"><a class="fn-backref" href="#id2">*</a></span></dt>
-<dd><p>Unless <a class="reference external" href="https://en.wikipedia.org/wiki/P_versus_NP_problem"><span class="math notranslate nohighlight">\(P = NP\)</span></a>.</p>
-</dd>
-</dl>
+<h2>Footnotes<a class="headerlink" href="#footnotes" title="Permalink to this heading">¶</a></h2>
+<aside class="footnote brackets" id="id9" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Graph_isomorphism_problem">https://en.wikipedia.org/wiki/Graph_isomorphism_problem</a></p>
+</aside>
+<aside class="footnote brackets" id="id10" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">https://en.wikipedia.org/wiki/Directed_acyclic_graph</a></p>
+</aside>
+<aside class="footnote brackets" id="id11" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Online_algorithm">https://en.wikipedia.org/wiki/Online_algorithm</a></p>
+</aside>
+<aside class="footnote brackets" id="id12" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Constructive_proof">https://en.wikipedia.org/wiki/Constructive_proof</a></p>
+</aside>
+<aside class="footnote brackets" id="id13" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Levenshtein_distance">https://en.wikipedia.org/wiki/Levenshtein_distance</a></p>
+</aside>
+<aside class="footnote brackets" id="id14" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">6</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm">https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm</a></p>
+</aside>
+<aside class="footnote brackets" id="id15" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">7</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Assignment_problem">https://en.wikipedia.org/wiki/Assignment_problem</a></p>
+</aside>
+<aside class="footnote brackets" id="id16" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">*</a><span class="fn-bracket">]</span></span>
+<p>Unless <a class="reference external" href="https://en.wikipedia.org/wiki/P_versus_NP_problem"><span class="math notranslate nohighlight">\(P = NP\)</span></a>.</p>
+</aside>
 </section>
 </section>
 

@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -194,7 +195,7 @@
            <div itemprop="articleBody">
             
   <section id="module-graphtage.bounds">
-<span id="graphtage-bounds"></span><h1>graphtage.bounds<a class="headerlink" href="#module-graphtage.bounds" title="Permalink to this headline">¶</a></h1>
+<span id="graphtage-bounds"></span><h1>graphtage.bounds<a class="headerlink" href="#module-graphtage.bounds" title="Permalink to this heading">¶</a></h1>
 <p>A module for representing bounded ranges.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">bounds</span>
@@ -216,7 +217,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">NEGATIVE_INFINITY</span></span><a class="headerlink" href="#graphtage.bounds.NEGATIVE_INFINITY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Negative infinity.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">Infinity</a></p>
 </dd>
 </dl>
@@ -227,16 +228,16 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">POSITIVE_INFINITY</span></span><a class="headerlink" href="#graphtage.bounds.POSITIVE_INFINITY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positive infinity.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity">Infinity</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <section id="bounds-classes">
-<h2>bounds classes<a class="headerlink" href="#bounds-classes" title="Permalink to this headline">¶</a></h2>
+<h2>bounds classes<a class="headerlink" href="#bounds-classes" title="Permalink to this heading">¶</a></h2>
 <section id="bounded">
-<h3>Bounded<a class="headerlink" href="#bounded" title="Permalink to this headline">¶</a></h3>
+<h3>Bounded<a class="headerlink" href="#bounded" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.Bounded">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">Bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Permalink to this definition">¶</a></dt>
@@ -249,7 +250,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.Bounded.bounds">
-<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.Bounded.bounds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.Bounded.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
@@ -258,10 +259,10 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.bounds.Bounded.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>
@@ -271,20 +272,20 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 
 </section>
 <section id="boundedcomparator">
-<h3>BoundedComparator<a class="headerlink" href="#boundedcomparator" title="Permalink to this headline">¶</a></h3>
+<h3>BoundedComparator<a class="headerlink" href="#boundedcomparator" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.BoundedComparator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">BoundedComparator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.BoundedComparator" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">BoundedComparator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.BoundedComparator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A comparator for <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a> objects.</p>
 <p>This comparator will automatically tighten the bounds of the <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a> object it wraps until they are either
 definitive or sufficiently distinct to differentiate them from another object to which it is being compared.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.BoundedComparator.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.BoundedComparator.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.BoundedComparator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes this bounded comparator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bounded</strong> – The object to wrap.</p>
 </dd>
 </dl>
@@ -319,18 +320,18 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 </section>
 <section id="constantbound">
-<h3>ConstantBound<a class="headerlink" href="#constantbound" title="Permalink to this headline">¶</a></h3>
+<h3>ConstantBound<a class="headerlink" href="#constantbound" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.ConstantBound">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">ConstantBound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">ConstantBound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a></p>
 <p>An object with constant bounds.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.ConstantBound.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.ConstantBound.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the constant bounded object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – The constant value of the object, which will constitute both its lower and upper bound.</p>
 </dd>
 </dl>
@@ -338,7 +339,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.ConstantBound.bounds">
-<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.ConstantBound.bounds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.ConstantBound.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a <a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><code class="xref py py-class docutils literal notranslate"><span class="pre">Range</span></code></a> where both the lower and upper bounds are equal to this object’s constant value.</p>
 </dd></dl>
 
@@ -352,7 +353,7 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 </section>
 <section id="infinity">
-<h3>Infinity<a class="headerlink" href="#infinity" title="Permalink to this headline">¶</a></h3>
+<h3>Infinity<a class="headerlink" href="#infinity" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.Infinity">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">Infinity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Infinity" title="Permalink to this definition">¶</a></dt>
@@ -373,24 +374,24 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 </section>
 <section id="range">
-<h3>Range<a class="headerlink" href="#range" title="Permalink to this headline">¶</a></h3>
+<h3>Range<a class="headerlink" href="#range" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.Range">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=False)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=True)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=False)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=True)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An integer range.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.Range.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=False)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=True)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=False)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Infinity(positive=True)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Range.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a range.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lower_bound</strong> – The lower bound of the range (inclusive).</p></li>
 <li><p><strong>upper_bound</strong> – The upper bound of the range (inclusive).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If the upper bound is less than the lower bound.</p>
 </dd>
 </dl>
@@ -423,25 +424,25 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.Range.intersect">
-<span class="sig-name descname"><span class="pre">intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.Range.intersect" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.bounds.Range.intersect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intersects this range with another.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.bounds.Range.lower_bound">
-<span class="sig-name descname"><span class="pre">lower_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.bounds.Range.lower_bound" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">lower_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.bounds.Range.lower_bound" title="Permalink to this definition">¶</a></dt>
 <dd><p>The lower bound of this range.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.Range.to_interval">
-<span class="sig-name descname"><span class="pre">to_interval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">intervaltree.interval.Interval</span></span></span><a class="headerlink" href="#graphtage.bounds.Range.to_interval" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_interval</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Interval</span></span></span><a class="headerlink" href="#graphtage.bounds.Range.to_interval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts this range to an <code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.Interval</span></code> for use with the <a class="reference external" href="https://github.com/chaimleib/intervaltree">Interval Tree</a> package.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.bounds.Range.upper_bound">
-<span class="sig-name descname"><span class="pre">upper_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">graphtage.bounds.Infinity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.bounds.Range.upper_bound" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">upper_bound</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.bounds.Infinity" title="graphtage.bounds.Infinity"><span class="pre">Infinity</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.bounds.Range.upper_bound" title="Permalink to this definition">¶</a></dt>
 <dd><p>The upper bound of this range.</p>
 </dd></dl>
 
@@ -450,29 +451,29 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/l
 </section>
 </section>
 <section id="bounds-functions">
-<h2>bounds functions<a class="headerlink" href="#bounds-functions" title="Permalink to this headline">¶</a></h2>
+<h2>bounds functions<a class="headerlink" href="#bounds-functions" title="Permalink to this heading">¶</a></h2>
 <section id="make-distinct">
-<h3>make_distinct<a class="headerlink" href="#make-distinct" title="Permalink to this headline">¶</a></h3>
+<h3>make_distinct<a class="headerlink" href="#make-distinct" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.make_distinct">
-<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">make_distinct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">graphtage.bounds.Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.make_distinct" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">make_distinct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">bounded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><span class="pre">Bounded</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.make_distinct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ensures that all of the provided bounded arguments are tightened until they are finite and
 either definitive or non-overlapping with any of the other arguments.</p>
 </dd></dl>
 
 </section>
 <section id="min-bounded">
-<h3>min_bounded<a class="headerlink" href="#min-bounded" title="Permalink to this headline">¶</a></h3>
+<h3>min_bounded<a class="headerlink" href="#min-bounded" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.min_bounded">
-<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">min_bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.bounds.B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">graphtage.bounds.B</span></span></span><a class="headerlink" href="#graphtage.bounds.min_bounded" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">min_bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">B</span></span></span><a class="headerlink" href="#graphtage.bounds.min_bounded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the smallest bounded object.</p>
 <p>The objects are auto-tightened in the event that their ranges overlap and a definitive minimum does not exist.</p>
 </dd></dl>
 
 </section>
 <section id="repeat-until-tightened">
-<h3>repeat_until_tightened<a class="headerlink" href="#repeat-until-tightened" title="Permalink to this headline">¶</a></h3>
+<h3>repeat_until_tightened<a class="headerlink" href="#repeat-until-tightened" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.repeat_until_tightened">
 <span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">repeat_until_tightened</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.repeat_until_tightened" title="Permalink to this definition">¶</a></dt>
@@ -482,19 +483,19 @@ either definitive or non-overlapping with any of the other arguments.</p>
 
 </section>
 <section id="sort">
-<h3>sort<a class="headerlink" href="#sort" title="Permalink to this headline">¶</a></h3>
+<h3>sort<a class="headerlink" href="#sort" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.sort">
-<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.bounds.B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.bounds.B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.bounds.sort" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.bounds.sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sorts a sequence of bounded items.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>items</strong> – Zero or more bounded objects.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An iterator over the sorted sequence of items.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Iterator[B]</p>
 </dd>
 </dl>

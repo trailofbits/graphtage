@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -212,7 +213,7 @@
            <div itemprop="articleBody">
             
   <section id="module-graphtage.expressions">
-<span id="graphtage-expressions"></span><h1>graphtage.expressions<a class="headerlink" href="#module-graphtage.expressions" title="Permalink to this headline">¶</a></h1>
+<span id="graphtage-expressions"></span><h1>graphtage.expressions<a class="headerlink" href="#module-graphtage.expressions" title="Permalink to this heading">¶</a></h1>
 <p>A safer-than-Python-eval expression evaluation module.</p>
 <p>It is extensible, supporting infix operators with adjustable precedence.
 It supports function calls, member lookup (<code class="xref py py-func docutils literal notranslate"><span class="pre">getitem()</span></code>), and provides a modicum of safety by only allowing access to
@@ -244,7 +245,7 @@ and types:</p>
 <div><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#abs" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">abs()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#all" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">all()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#any" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">any()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#ascii" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ascii()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bin" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">bin()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytearray</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#chr" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">chr()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#enumerate" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">enumerate()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#filter" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">filter()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#frozenset" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">frozenset</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#hash" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hash()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#hex" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hex()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#id" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">id()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#iter" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">iter()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#len" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">len()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#map" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">map()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#max" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#min" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">min()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#oct" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">oct()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#ord" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">ord()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#round" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">round()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#sorted" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#sum" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sum()</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#zip" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">zip()</span></code></a></p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>, Any]</p>
 </dd>
 </dl>
@@ -255,7 +256,7 @@ and types:</p>
 <span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">OPERATORS_BY_NAME</span></span><a class="headerlink" href="#graphtage.expressions.OPERATORS_BY_NAME" title="Permalink to this definition">¶</a></dt>
 <dd><p>A mapping of operator names to <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a> objects, used in parsing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Dict[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>, <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator">Operator</a>]</p>
 </dd>
 </dl>
@@ -267,27 +268,27 @@ and types:</p>
 <dd><p>The set of valid bytes that can be used in a <a class="reference internal" href="#graphtage.expressions.IdentifierToken" title="graphtage.expressions.IdentifierToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentifierToken</span></code></a> string. This is
 currently the set of all letters and numbers plus “_” and “-“.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Set[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <section id="expressions-classes">
-<h2>expressions classes<a class="headerlink" href="#expressions-classes" title="Permalink to this headline">¶</a></h2>
+<h2>expressions classes<a class="headerlink" href="#expressions-classes" title="Permalink to this heading">¶</a></h2>
 <section id="closebracket">
-<h3>CloseBracket<a class="headerlink" href="#closebracket" title="Permalink to this headline">¶</a></h3>
+<h3>CloseBracket<a class="headerlink" href="#closebracket" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseBracket">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">CloseBracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.CloseBracket" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedEndToken" title="graphtage.expressions.PairedEndToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedEndToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedEndToken" title="graphtage.expressions.PairedEndToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedEndToken</span></code></a></p>
 <p>A closing bracket token.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseBracket.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.CloseBracket.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -317,25 +318,25 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseBracket.start_token_type">
 <span class="sig-name descname"><span class="pre">start_token_type</span></span><a class="headerlink" href="#graphtage.expressions.CloseBracket.start_token_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenBracket" title="graphtage.expressions.OpenBracket"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OpenBracket</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenBracket" title="graphtage.expressions.OpenBracket"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenBracket</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="closeparen">
-<h3>CloseParen<a class="headerlink" href="#closeparen" title="Permalink to this headline">¶</a></h3>
+<h3>CloseParen<a class="headerlink" href="#closeparen" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseParen">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">CloseParen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.CloseParen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Parenthesis" title="graphtage.expressions.Parenthesis"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Parenthesis</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedEndToken" title="graphtage.expressions.PairedEndToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedEndToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Parenthesis" title="graphtage.expressions.Parenthesis"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parenthesis</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedEndToken" title="graphtage.expressions.PairedEndToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedEndToken</span></code></a></p>
 <p>An closing parenthesis token.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseParen.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.CloseParen.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -365,14 +366,14 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.CloseParen.start_token_type">
 <span class="sig-name descname"><span class="pre">start_token_type</span></span><a class="headerlink" href="#graphtage.expressions.CloseParen.start_token_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenParen" title="graphtage.expressions.OpenParen"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OpenParen</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#graphtage.expressions.OpenParen" title="graphtage.expressions.OpenParen"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpenParen</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="collectioninfo">
-<h3>CollectionInfo<a class="headerlink" href="#collectioninfo" title="Permalink to this headline">¶</a></h3>
+<h3>CollectionInfo<a class="headerlink" href="#collectioninfo" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.CollectionInfo">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">CollectionInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><span class="pre">tuple</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.CollectionInfo" title="Permalink to this definition">¶</a></dt>
@@ -387,18 +388,18 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 
 </section>
 <section id="comma">
-<h3>Comma<a class="headerlink" href="#comma" title="Permalink to this headline">¶</a></h3>
+<h3>Comma<a class="headerlink" href="#comma" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Comma">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Comma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Comma" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>A comma token.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Comma.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Comma.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -423,15 +424,15 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 
 </section>
 <section id="expression">
-<h3>Expression<a class="headerlink" href="#expression" title="Permalink to this headline">¶</a></h3>
+<h3>Expression<a class="headerlink" href="#expression" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Expression">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rpn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rpn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>An expression is a sequence of tuples in <a class="reference external" href="https://en.wikipedia.org/wiki/Reverse_Polish_notation">Reverse Polish Notation</a> that can be evaluated.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Expression.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rpn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rpn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -439,7 +440,7 @@ currently the set of all letters and numbers plus “_” and “-“.</p>
 <span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression.eval" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates this expression given the provided state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>locals</strong> – An optional mapping of local variables, by name. If omitted, it will be equivalent to an empty
 dict.</p></li>
@@ -447,10 +448,10 @@ dict.</p></li>
 <a class="reference internal" href="#graphtage.expressions.DEFAULT_GLOBALS" title="graphtage.expressions.DEFAULT_GLOBALS"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.expressions.DEFAULT_GLOBALS</span></code></a>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The result of evaluating the expression.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
@@ -458,29 +459,29 @@ dict.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Expression.get_value">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression.get_value" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Expression.get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines the value of a token given the provided state.</p>
 <p>Literal tokens like <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumericToken</span></code></a> and <a class="reference internal" href="#graphtage.expressions.StringToken" title="graphtage.expressions.StringToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringToken</span></code></a> will return their values, and identifiers
 will be resolved using <a class="reference external" href="https://docs.python.org/3/library/functions.html#locals" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locals</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#globals" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">globals</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>token</strong> – The token to resolve.</p></li>
 <li><p><strong>locals</strong> – A mapping of local variables, by name.</p></li>
 <li><p><strong>globals</strong> – A mapping of global variables, by name.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#KeyError" title="(in Python v3.10)"><strong>KeyError</strong></a> – If <a class="reference external" href="https://docs.python.org/3/library/token.html#module-token" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">token</span></code></a> is an <a class="reference internal" href="#graphtage.expressions.IdentifierToken" title="graphtage.expressions.IdentifierToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentifierToken</span></code></a> and its name was not found in either <a class="reference external" href="https://docs.python.org/3/library/functions.html#locals" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">locals</span></code></a>
     or <a class="reference external" href="https://docs.python.org/3/library/functions.html#globals" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">globals</span></code></a>.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If the token is not numeric, a string, or an identifier.</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The resolved value of the token.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Any</p>
 </dd>
 </dl>
@@ -490,11 +491,11 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 
 </section>
 <section id="fixedsizecollection">
-<h3>FixedSizeCollection<a class="headerlink" href="#fixedsizecollection" title="Permalink to this headline">¶</a></h3>
+<h3>FixedSizeCollection<a class="headerlink" href="#fixedsizecollection" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.FixedSizeCollection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">FixedSizeCollection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Collection" title="(in Python v3.10)"><span class="pre">Collection</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FixedSizeCollection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>A meta-token injected by the tokenizer specifying a fixed-size collection of items on the stack.</p>
 <p>This is used for parsing and evaluating argument lists of functions of unknown arity.</p>
 <dl class="py method">
@@ -502,7 +503,7 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">container_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Collection" title="(in Python v3.10)"><span class="pre">Collection</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FixedSizeCollection.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -513,7 +514,7 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.FixedSizeCollection.container_type">
-<span class="sig-name descname"><span class="pre">container_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><span class="pre">Collection</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.FixedSizeCollection.container_type" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">container_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Collection" title="(in Python v3.10)"><span class="pre">Collection</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.FixedSizeCollection.container_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>The type of collection in which to store the items.</p>
 </dd></dl>
 
@@ -539,18 +540,18 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 
 </section>
 <section id="floattoken">
-<h3>FloatToken<a class="headerlink" href="#floattoken" title="Permalink to this headline">¶</a></h3>
+<h3>FloatToken<a class="headerlink" href="#floattoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.FloatToken">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">FloatToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FloatToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">FloatToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FloatToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
 <p>A numeric token for floats.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.FloatToken.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FloatToken.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FloatToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -573,7 +574,7 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.FloatToken.value">
-<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">graphtage.expressions.N</span></em><a class="headerlink" href="#graphtage.expressions.FloatToken.value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">N</span></em><a class="headerlink" href="#graphtage.expressions.FloatToken.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The numeric value of this token.</p>
 </dd></dl>
 
@@ -581,11 +582,11 @@ will be resolved using <a class="reference external" href="https://docs.python.o
 
 </section>
 <section id="functioncall">
-<h3>FunctionCall<a class="headerlink" href="#functioncall" title="Permalink to this headline">¶</a></h3>
+<h3>FunctionCall<a class="headerlink" href="#functioncall" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.FunctionCall">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">FunctionCall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FunctionCall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.OperatorToken" title="graphtage.expressions.OperatorToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OperatorToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.OperatorToken" title="graphtage.expressions.OperatorToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorToken</span></code></a></p>
 <p>A meta-token for when parenthesis are being used to indicate a function call.</p>
 <p>This is automatically inserted by the tokenizer in contexts where parenthesis are being used to represent a
 function call.</p>
@@ -594,7 +595,7 @@ function call.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.FunctionCall.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -611,7 +612,7 @@ function call.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.FunctionCall.op">
-<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">graphtage.expressions.Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.FunctionCall.op" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.FunctionCall.op" title="Permalink to this definition">¶</a></dt>
 <dd><p>The operator associated with this token.</p>
 </dd></dl>
 
@@ -625,18 +626,18 @@ function call.</p>
 
 </section>
 <section id="identifiertoken">
-<h3>IdentifierToken<a class="headerlink" href="#identifiertoken" title="Permalink to this headline">¶</a></h3>
+<h3>IdentifierToken<a class="headerlink" href="#identifiertoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.IdentifierToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">IdentifierToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IdentifierToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>An identifier, such as a variable name or attribute name.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.IdentifierToken.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IdentifierToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -667,18 +668,18 @@ function call.</p>
 
 </section>
 <section id="integertoken">
-<h3>IntegerToken<a class="headerlink" href="#integertoken" title="Permalink to this headline">¶</a></h3>
+<h3>IntegerToken<a class="headerlink" href="#integertoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.IntegerToken">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">IntegerToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IntegerToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">IntegerToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IntegerToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.NumericToken" title="graphtage.expressions.NumericToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">NumericToken</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</p>
 <p>A numeric token for integers.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.IntegerToken.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IntegerToken.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.IntegerToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -701,7 +702,7 @@ function call.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.IntegerToken.value">
-<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">graphtage.expressions.N</span></em><a class="headerlink" href="#graphtage.expressions.IntegerToken.value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">N</span></em><a class="headerlink" href="#graphtage.expressions.IntegerToken.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The numeric value of this token.</p>
 </dd></dl>
 
@@ -709,18 +710,18 @@ function call.</p>
 
 </section>
 <section id="numerictoken">
-<h3>NumericToken<a class="headerlink" href="#numerictoken" title="Permalink to this headline">¶</a></h3>
+<h3>NumericToken<a class="headerlink" href="#numerictoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.NumericToken">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">NumericToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.NumericToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.expressions.N</span></code>]</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">NumericToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.NumericToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code>]</p>
 <p>An abstract base class for numeric tokens.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.NumericToken.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">graphtage.expressions.N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.NumericToken.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.NumericToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -743,7 +744,7 @@ function call.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.NumericToken.value">
-<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">graphtage.expressions.N</span></em><a class="headerlink" href="#graphtage.expressions.NumericToken.value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">N</span></em><a class="headerlink" href="#graphtage.expressions.NumericToken.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>The numeric value of this token.</p>
 </dd></dl>
 
@@ -751,18 +752,18 @@ function call.</p>
 
 </section>
 <section id="openbracket">
-<h3>OpenBracket<a class="headerlink" href="#openbracket" title="Permalink to this headline">¶</a></h3>
+<h3>OpenBracket<a class="headerlink" href="#openbracket" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.OpenBracket">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">OpenBracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OpenBracket" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.OperatorToken" title="graphtage.expressions.OperatorToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.OperatorToken</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedStartToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.OperatorToken" title="graphtage.expressions.OperatorToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">OperatorToken</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedStartToken</span></code></a></p>
 <p>An opening bracket token.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.OpenBracket.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OpenBracket.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -799,7 +800,7 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.OpenBracket.op">
-<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">graphtage.expressions.Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.OpenBracket.op" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.OpenBracket.op" title="Permalink to this definition">¶</a></dt>
 <dd><p>The operator associated with this token.</p>
 </dd></dl>
 
@@ -813,18 +814,18 @@ Otherwise it is a <a class="reference internal" href="#graphtage.expressions.Ope
 
 </section>
 <section id="openparen">
-<h3>OpenParen<a class="headerlink" href="#openparen" title="Permalink to this headline">¶</a></h3>
+<h3>OpenParen<a class="headerlink" href="#openparen" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.OpenParen">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">OpenParen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_function_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OpenParen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Parenthesis" title="graphtage.expressions.Parenthesis"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Parenthesis</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedStartToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Parenthesis" title="graphtage.expressions.Parenthesis"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parenthesis</span></code></a>, <a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedStartToken</span></code></a></p>
 <p>An opening parenthesis token.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.OpenParen.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_function_call</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OpenParen.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -862,11 +863,11 @@ like parenthesis).</p>
 
 </section>
 <section id="operator">
-<h3>Operator<a class="headerlink" href="#operator" title="Permalink to this headline">¶</a></h3>
+<h3>Operator<a class="headerlink" href="#operator" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Operator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Operator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
 <p>An enumeration of operators.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.Operator.ADDITION">
@@ -1018,7 +1019,7 @@ like parenthesis).</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">execute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_left_associative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_in_global_operator_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Operator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an operator enum.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If the length of <a class="reference internal" href="#graphtage.expressions.Operator.token" title="graphtage.expressions.Operator.token"><code class="xref py py-obj docutils literal notranslate"><span class="pre">token</span></code></a> is greater than three. The token will be used to automatically
     parse the operator, and the tokenizer currently supports tokens of at most three characters.</p>
 </dd>
@@ -1033,13 +1034,13 @@ like parenthesis).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.Operator.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Operator.execute" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">execute</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Operator.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>A function to call when the operator is being executed.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.Operator.expand">
-<span class="sig-name descname"><span class="pre">expand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Operator.expand" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">expand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Operator.expand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether each of the operator’s arguments should be auto-expanded before execution.</p>
 </dd></dl>
 
@@ -1066,18 +1067,18 @@ like parenthesis).</p>
 
 </section>
 <section id="operatortoken">
-<h3>OperatorToken<a class="headerlink" href="#operatortoken" title="Permalink to this headline">¶</a></h3>
+<h3>OperatorToken<a class="headerlink" href="#operatortoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.OperatorToken">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">OperatorToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">graphtage.expressions.Operator</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OperatorToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">OperatorToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">Operator</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OperatorToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>A token associated with an <a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Operator</span></code></a>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.OperatorToken.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">graphtage.expressions.Operator</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OperatorToken.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">Operator</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.OperatorToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -1094,7 +1095,7 @@ like parenthesis).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.OperatorToken.op">
-<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">graphtage.expressions.Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">op</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.expressions.Operator" title="graphtage.expressions.Operator"><span class="pre">Operator</span></a></em><a class="headerlink" href="#graphtage.expressions.OperatorToken.op" title="Permalink to this definition">¶</a></dt>
 <dd><p>The operator associated with this token.</p>
 </dd></dl>
 
@@ -1108,11 +1109,11 @@ like parenthesis).</p>
 
 </section>
 <section id="pairedendtoken">
-<h3>PairedEndToken<a class="headerlink" href="#pairedendtoken" title="Permalink to this headline">¶</a></h3>
+<h3>PairedEndToken<a class="headerlink" href="#pairedendtoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.PairedEndToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">PairedEndToken</span></span><a class="headerlink" href="#graphtage.expressions.PairedEndToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.PairedToken" title="graphtage.expressions.PairedToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.PairedToken" title="graphtage.expressions.PairedToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedToken</span></code></a></p>
 <p>The ending token of a pair.</p>
 <p>Examples include “]” and “)”.</p>
 <dl class="py method">
@@ -1128,18 +1129,18 @@ like parenthesis).</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.PairedEndToken.start_token_type">
-<span class="sig-name descname"><span class="pre">start_token_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><span class="pre">graphtage.expressions.PairedStartToken</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.expressions.PairedEndToken.start_token_type" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">start_token_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.10)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.PairedStartToken" title="graphtage.expressions.PairedStartToken"><span class="pre">PairedStartToken</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.expressions.PairedEndToken.start_token_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="pairedstarttoken">
-<h3>PairedStartToken<a class="headerlink" href="#pairedstarttoken" title="Permalink to this headline">¶</a></h3>
+<h3>PairedStartToken<a class="headerlink" href="#pairedstarttoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.PairedStartToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">PairedStartToken</span></span><a class="headerlink" href="#graphtage.expressions.PairedStartToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.PairedToken" title="graphtage.expressions.PairedToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.PairedToken</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.PairedToken" title="graphtage.expressions.PairedToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairedToken</span></code></a></p>
 <p>The starting token of a pair.</p>
 <p>Examples include “[” and “(“.</p>
 <dl class="py method">
@@ -1164,7 +1165,7 @@ like parenthesis).</p>
 
 </section>
 <section id="pairedtoken">
-<h3>PairedToken<a class="headerlink" href="#pairedtoken" title="Permalink to this headline">¶</a></h3>
+<h3>PairedToken<a class="headerlink" href="#pairedtoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.PairedToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">PairedToken</span></span><a class="headerlink" href="#graphtage.expressions.PairedToken" title="Permalink to this definition">¶</a></dt>
@@ -1186,18 +1187,18 @@ like parenthesis).</p>
 
 </section>
 <section id="parenthesis">
-<h3>Parenthesis<a class="headerlink" href="#parenthesis" title="Permalink to this headline">¶</a></h3>
+<h3>Parenthesis<a class="headerlink" href="#parenthesis" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Parenthesis">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Parenthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Parenthesis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>Abstract base class for parenthesis.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Parenthesis.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Parenthesis.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -1222,7 +1223,7 @@ like parenthesis).</p>
 
 </section>
 <section id="parseerror">
-<h3>ParseError<a class="headerlink" href="#parseerror" title="Permalink to this headline">¶</a></h3>
+<h3>ParseError<a class="headerlink" href="#parseerror" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.ParseError">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">ParseError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.ParseError" title="Permalink to this definition">¶</a></dt>
@@ -1249,18 +1250,18 @@ set self.__traceback__ to tb and return self.</p>
 
 </section>
 <section id="stringtoken">
-<h3>StringToken<a class="headerlink" href="#stringtoken" title="Permalink to this headline">¶</a></h3>
+<h3>StringToken<a class="headerlink" href="#stringtoken" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.StringToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">StringToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.StringToken" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.expressions.Token</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
 <p>A token representing a string constant</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.StringToken.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.StringToken.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -1285,7 +1286,7 @@ set self.__traceback__ to tb and return self.</p>
 
 </section>
 <section id="token">
-<h3>Token<a class="headerlink" href="#token" title="Permalink to this headline">¶</a></h3>
+<h3>Token<a class="headerlink" href="#token" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Token">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Token" title="Permalink to this definition">¶</a></dt>
@@ -1296,7 +1297,7 @@ set self.__traceback__ to tb and return self.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Token.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_text</strong> – The raw parsed text of the token.</p></li>
 <li><p><strong>offset</strong> – The offset of the token within the input.</p></li>
@@ -1321,7 +1322,7 @@ set self.__traceback__ to tb and return self.</p>
 
 </section>
 <section id="tokenizer">
-<h3>Tokenizer<a class="headerlink" href="#tokenizer" title="Permalink to this headline">¶</a></h3>
+<h3>Tokenizer<a class="headerlink" href="#tokenizer" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.expressions.Tokenizer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">Tokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.10)"><span class="pre">IO</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Tokenizer" title="Permalink to this definition">¶</a></dt>
@@ -1332,7 +1333,7 @@ set self.__traceback__ to tb and return self.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.10)"><span class="pre">IO</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.Tokenizer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes a tokenizer, but does not commence any tokenization.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>stream</strong> – The input stream from which to tokenize.</p>
 </dd>
 </dl>
@@ -1340,7 +1341,7 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Tokenizer.__iter__">
-<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.__iter__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.__iter__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterates over all of the tokens in the stream.</p>
 </dd></dl>
 
@@ -1356,13 +1357,13 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Tokenizer.next">
-<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.next" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.next" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the next token in the stream.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The next token, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if there are no more tokens.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[<a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token">Token</a>]</p>
 </dd>
 </dl>
@@ -1370,15 +1371,15 @@ set self.__traceback__ to tb and return self.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.Tokenizer.peek">
-<span class="sig-name descname"><span class="pre">peek</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.peek" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">peek</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.Tokenizer.peek" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the next token that would be returned from a call to <a class="reference internal" href="#graphtage.expressions.Tokenizer.next" title="graphtage.expressions.Tokenizer.next"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Tokenizer.next()</span></code></a>.</p>
 <p>This function actually computes and caches the next token if it has not already been cached.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The next token that would be returned from a call to <a class="reference internal" href="#graphtage.expressions.Tokenizer.next" title="graphtage.expressions.Tokenizer.next"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Tokenizer.next()</span></code></a>,
 or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if there are no more tokens.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[<a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token">Token</a>]</p>
 </dd>
 </dl>
@@ -1386,7 +1387,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.expressions.Tokenizer.prev_token">
-<span class="sig-name descname"><span class="pre">prev_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">prev_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.expressions.Tokenizer.prev_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>The previous token yielded by this tokenizer.</p>
 </dd></dl>
 
@@ -1395,15 +1396,15 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 </section>
 </section>
 <section id="expressions-functions">
-<h2>expressions functions<a class="headerlink" href="#expressions-functions" title="Permalink to this headline">¶</a></h2>
+<h2>expressions functions<a class="headerlink" href="#expressions-functions" title="Permalink to this heading">¶</a></h2>
 <section id="get-member">
-<h3>get_member<a class="headerlink" href="#get-member" title="Permalink to this headline">¶</a></h3>
+<h3>get_member<a class="headerlink" href="#get-member" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.expressions.get_member">
-<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">get_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.expressions.IdentifierToken" title="graphtage.expressions.IdentifierToken"><span class="pre">graphtage.expressions.IdentifierToken</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.get_member" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">get_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.expressions.IdentifierToken" title="graphtage.expressions.IdentifierToken"><span class="pre">IdentifierToken</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.get_member" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a member of an object by the member’s identifier.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> – Any Python object.</p></li>
 <li><p><strong>member</strong> – An identifier token representing the name of the member.</p></li>
@@ -1420,16 +1421,16 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference internal" href="#graphtage.expressions.ParseError" title="graphtage.expressions.ParseError"><strong>ParseError</strong></a> – If <code class="xref py py-obj docutils literal notranslate"><span class="pre">member</span></code> is not an <a class="reference internal" href="#graphtage.expressions.IdentifierToken" title="graphtage.expressions.IdentifierToken"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentifierToken</span></code></a>.</p></li>
 <li><p><a class="reference internal" href="#graphtage.expressions.ParseError" title="graphtage.expressions.ParseError"><strong>ParseError</strong></a> – If <a class="reference internal" href="#graphtage.expressions.IdentifierToken.name" title="graphtage.expressions.IdentifierToken.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">member.name</span></code></a> starts with “_”.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The requested attribute of <code class="xref py py-obj docutils literal notranslate"><span class="pre">obj</span></code>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
@@ -1443,19 +1444,19 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 
 </section>
 <section id="infix-to-rpn">
-<h3>infix_to_rpn<a class="headerlink" href="#infix-to-rpn" title="Permalink to this headline">¶</a></h3>
+<h3>infix_to_rpn<a class="headerlink" href="#infix-to-rpn" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.expressions.infix_to_rpn">
-<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">infix_to_rpn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.infix_to_rpn" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">infix_to_rpn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.infix_to_rpn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts an infix expression to reverse Polish notation using the Shunting Yard algorithm.</p>
 </dd></dl>
 
 </section>
 <section id="parse">
-<h3>parse<a class="headerlink" href="#parse" title="Permalink to this headline">¶</a></h3>
+<h3>parse<a class="headerlink" href="#parse" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.expressions.parse">
-<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.expressions.Expression" title="graphtage.expressions.Expression"><span class="pre">graphtage.expressions.Expression</span></a></span></span><a class="headerlink" href="#graphtage.expressions.parse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.expressions.Expression" title="graphtage.expressions.Expression"><span class="pre">Expression</span></a></span></span><a class="headerlink" href="#graphtage.expressions.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function for parsing an expression string.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Expression</span><span class="p">(</span><span class="n">infix_to_rpn</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">expression_str</span><span class="p">)))</span>
@@ -1465,10 +1466,10 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 
 </section>
 <section id="tokenize">
-<h3>tokenize<a class="headerlink" href="#tokenize" title="Permalink to this headline">¶</a></h3>
+<h3>tokenize<a class="headerlink" href="#tokenize" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.expressions.tokenize">
-<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream_or_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.10)"><span class="pre">IO</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">graphtage.expressions.Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.tokenize" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.expressions.</span></span><span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream_or_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.10)"><span class="pre">IO</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.expressions.Token" title="graphtage.expressions.Token"><span class="pre">Token</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.expressions.tokenize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function for tokenizing a string.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">yield from</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">stream_or_str</span><span class="p">)</span>

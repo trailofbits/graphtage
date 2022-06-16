@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -183,7 +184,7 @@
            <div itemprop="articleBody">
             
   <section id="module-graphtage.search">
-<span id="graphtage-search"></span><h1>graphtage.search<a class="headerlink" href="#module-graphtage.search" title="Permalink to this headline">¶</a></h1>
+<span id="graphtage-search"></span><h1>graphtage.search<a class="headerlink" href="#module-graphtage.search" title="Permalink to this heading">¶</a></h1>
 <p>A module for solving a search problem in an iteratively revealed search space.</p>
 <p><strong>Given:</strong> an iterator that yields an unknown but finite number of integer range objects, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">[100,</span> <span class="pre">200]</span></code>,
 <code class="docutils literal notranslate"><span class="pre">[50,</span> <span class="pre">1000]</span></code>, <code class="docutils literal notranslate"><span class="pre">[60,</span> <span class="pre">500]</span></code>, …. Each integer range object has a member function that is guaranteed to tighten the
@@ -195,13 +196,13 @@ guaranteed to shrink with each call to <code class="docutils literal notranslate
 <p><strong>Goal:</strong> Create the most computationally efficient algorithm to determine the range object that converges to the
 smallest integer (<em>i.e.</em>, with the fewest possible tightenings).</p>
 <section id="search-classes">
-<h2>search classes<a class="headerlink" href="#search-classes" title="Permalink to this headline">¶</a></h2>
+<h2>search classes<a class="headerlink" href="#search-classes" title="Permalink to this heading">¶</a></h2>
 <section id="iterativetighteningsearch">
-<h3>IterativeTighteningSearch<a class="headerlink" href="#iterativetighteningsearch" title="Permalink to this headline">¶</a></h3>
+<h3>IterativeTighteningSearch<a class="headerlink" href="#iterativetighteningsearch" title="Permalink to this heading">¶</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.search.</span></span><span class="sig-name descname"><span class="pre">IterativeTighteningSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">possibilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.search.B</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">graphtage.search.B</span></code>]</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.search.</span></span><span class="sig-name descname"><span class="pre">IterativeTighteningSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">possibilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">B</span></code>]</p>
 <p>Implementation of iterative tightening search on a given sequence of <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a> objects.</p>
 <p>The search class itself is <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounds.Bounded</span></code></a>, with bounds on the value of the optimal solution.
 Each call to <a class="reference internal" href="#graphtage.search.IterativeTighteningSearch.tighten_bounds" title="graphtage.search.IterativeTighteningSearch.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IterativeTighteningSearch.tighten_bounds()</span></code></a> will improve these bounds, if possible.</p>
@@ -213,10 +214,10 @@ Each call to <a class="reference internal" href="#graphtage.search.IterativeTigh
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">possibilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.search.B</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">possibilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the search.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>possibilities</strong> – An iterator yielding <code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.bounded.Bounded</span></code> objects over which to search.</p></li>
 <li><p><strong>initial_bounds</strong> – Bounds on the optimal solution, if known. Having good initial bounds can greatly speed up
@@ -229,14 +230,14 @@ outside of <code class="xref py py-obj docutils literal notranslate"><span class
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch.best_match">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_match</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.search.B</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.best_match" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_match</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.best_match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the best solution the search has thus found.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The best solution the search has thus found, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if it has not yet found a
 feasible solution.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[B]</p>
 </dd>
 </dl>
@@ -244,7 +245,7 @@ feasible solution.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch.bounds">
-<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">graphtage.bounds.Range</span></a></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.bounds" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounds of this object.</p>
 </dd></dl>
 
@@ -256,7 +257,7 @@ feasible solution.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch.remove_best">
-<span class="sig-name descname"><span class="pre">remove_best</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">graphtage.search.B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.remove_best" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">remove_best</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.remove_best" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes and returns the current best solution found by the search, if one exists.</p>
 <p>This enables one to iteratively sort the input sequence. However, this function is only guaranteed to return
 the globally optimal item if <a class="reference internal" href="#graphtage.search.IterativeTighteningSearch.goal_test" title="graphtage.search.IterativeTighteningSearch.goal_test"><code class="xref py py-meth docutils literal notranslate"><span class="pre">IterativeTighteningSearch.goal_test()</span></code></a> returns <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>. Therefore,
@@ -276,7 +277,7 @@ each call to this function:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.search.IterativeTighteningSearch.search">
-<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">graphtage.search.B</span></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.search" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">B</span></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.search" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds and returns the smallest item, fully tightened.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">tighten_bounds</span><span class="p">():</span>
@@ -291,10 +292,10 @@ each call to this function:</p>
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.search.IterativeTighteningSearch.tighten_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempts to shrink the bounds of this object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds were tightened.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
 </dd>
 </dl>

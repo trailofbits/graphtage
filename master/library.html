@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -27,6 +27,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -160,11 +161,11 @@
            <div itemprop="articleBody">
             
   <section id="using-graphtage-programmatically">
-<h1>Using Graphtage Programmatically<a class="headerlink" href="#using-graphtage-programmatically" title="Permalink to this headline">¶</a></h1>
+<h1>Using Graphtage Programmatically<a class="headerlink" href="#using-graphtage-programmatically" title="Permalink to this heading">¶</a></h1>
 <p>Graphtage is a command line utility, but it can just as easily be used as a library. This section documents how to
 interact with Graphtage directly from Python.</p>
 <section id="the-intermediate-representation">
-<h2>The Intermediate Representation<a class="headerlink" href="#the-intermediate-representation" title="Permalink to this headline">¶</a></h2>
+<h2>The Intermediate Representation<a class="headerlink" href="#the-intermediate-representation" title="Permalink to this heading">¶</a></h2>
 <p>Graphtage’s diffing algorithms operate on an
 <a class="reference external" href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> rather than on the data
 structures of the original file format. This allows Graphtage to have generic comparison algorithms that can work on
@@ -179,7 +180,7 @@ filetype has a function to convert arbitrary Python objects (comprised of standa
 </div>
 </section>
 <section id="transforming-nodes-with-edits">
-<h2>Transforming Nodes with Edits<a class="headerlink" href="#transforming-nodes-with-edits" title="Permalink to this headline">¶</a></h2>
+<h2>Transforming Nodes with Edits<a class="headerlink" href="#transforming-nodes-with-edits" title="Permalink to this heading">¶</a></h2>
 <p>To see the sequence of edits to transform this tree to another, we call <a class="reference internal" href="graphtage.html#graphtage.TreeNode.get_all_edits" title="graphtage.TreeNode.get_all_edits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.get_all_edits()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">to_tree</span>
@@ -192,7 +193,7 @@ filetype has a function to convert arbitrary Python objects (comprised of standa
 </div>
 </section>
 <section id="applying-edits-to-nodes">
-<h2>Applying Edits to Nodes<a class="headerlink" href="#applying-edits-to-nodes" title="Permalink to this headline">¶</a></h2>
+<h2>Applying Edits to Nodes<a class="headerlink" href="#applying-edits-to-nodes" title="Permalink to this heading">¶</a></h2>
 <p>Both nodes and edits are immutable. We can perform a diff to apply edits to nodes, producing a new tree constructed of
 <a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditedTreeNode</span></code></a> objects. Using some Python magic, the new tree’s nodes maintain all of the same
 characteristics of the source nodes—including their source node class types—but are <em>also</em> <code class="xref py py-func docutils literal notranslate"><span class="pre">instanceof()</span></code>
@@ -210,7 +211,7 @@ node did not need to be edited). There are also additional member variables to i
 removed from its parent container.</p>
 </section>
 <section id="formatting-and-printing-results">
-<h2>Formatting and Printing Results<a class="headerlink" href="#formatting-and-printing-results" title="Permalink to this headline">¶</a></h2>
+<h2>Formatting and Printing Results<a class="headerlink" href="#formatting-and-printing-results" title="Permalink to this heading">¶</a></h2>
 <p>There are two components to outputting a tree or diff: a <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>, which is responsible
 for the syntax of the output, and a <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a>, which is responsible for rendering that output
 to a stream. For example, to print our diff in JSON format to the default printer (STDOUT), we would do:</p>
