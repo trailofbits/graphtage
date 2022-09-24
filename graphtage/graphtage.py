@@ -458,8 +458,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
     """
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`DictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -469,7 +469,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
             DictNode: The resulting :class:`DictNode`.
 
         """
-        return DictNode(
+        return cls(
             sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
         )
 
@@ -520,8 +520,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         """
         return dict
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`FixedKeyDictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -535,7 +535,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             FixedKeyDictNode: The resulting :class:`FixedKeyDictNode`
 
         """
-        return FixedKeyDictNode({
+        return cls({
             kvp.key: kvp
             for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
         })
