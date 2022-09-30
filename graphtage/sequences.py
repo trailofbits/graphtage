@@ -126,6 +126,9 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
+        self.child_indexes: Dict[TreeNode, int] = {
+            child: i for i, child in enumerate(self.children())
+        }
 
     def children(self) -> T:
         if isinstance(self._children, list) or isinstance(self._children, tuple):

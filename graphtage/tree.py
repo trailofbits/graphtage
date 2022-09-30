@@ -3,7 +3,8 @@ import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
 from collections.abc import Iterable
-from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
+from functools import wraps
+from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Tuple, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -296,7 +297,8 @@ class TreeNode(metaclass=ABCMeta):
     """
     _total_size = None
     _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
-    edit_modifiers: Optional[List[Callable[['TreeNode', 'TreeNode'], Optional[Edit]]]] = None
+    _parent: Optional["TreeNode"] = None
+    edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
 
     @property
     def edited(self) -> bool:
@@ -334,9 +336,27 @@ class TreeNode(metaclass=ABCMeta):
         """
         raise NotImplementedError()
 
+    @property
+    def parent(self) -> Optional["TreeNode"]:
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent_node: "TreeNode"):
+        """This setter should only be called by the parent node setting itself as the parent of its child"""
+        if self._parent is not None:
+            if self._parent is parent_node:
+                # we are already assigned to this parent
+                return
+            raise ValueError(f"Error while setting {self!r}.parent = {parent_node!r}: Parent is already assigned to "
+                             f"{self._parent!r}")
+        self._parent = parent_node
+
     @abstractmethod
     def children(self) -> Collection['TreeNode']:
-        """Returns a collection of this node's children, if any."""
+        """Returns a collection of this node's children, if any.
+
+        It is the responsibility of any node that has children must set the `.parent` member of each child.
+        """
         raise NotImplementedError()
 
     def dfs(self) -> Iterator['TreeNode']:
@@ -447,18 +467,18 @@ class TreeNode(metaclass=ABCMeta):
                     ret[key] = value.make_edited()
         return ret
 
-    def get_all_edits(self, node: 'TreeNode') -> Iterator[Edit]:
-        """Returns an iterator over all edits that will transform this node into the provided node.
+    def get_all_edit_contexts(self, node: "TreeNode") -> Iterator[Tuple[Tuple["TreeNode", ...], Edit]]:
+        """Returns an iterator over all edit contexts that will transform this node into the provided node.
 
         Args:
             node: The node to which to transform this one.
 
         Returns:
-            Iterator[Edit]: An iterator over edits. Note that this iterator will automatically
+            Iterator[Tuple[Tuple["TreeNode", ...], Edit]: An iterator over pairs of paths from `node` to the edited
+            node, as well as its edit. Note that this iterator will automatically
             :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
 
         """
-
         edit = self.edits(node)
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
@@ -469,16 +489,31 @@ class TreeNode(metaclass=ABCMeta):
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 t.update(prev_range - new_range)
                 prev_range = new_range
-        edit_stack = [edit]
+        edit_stack: List[Tuple[Tuple[TreeNode, ...], Edit]] = [((node,), edit)]
         while edit_stack:
-            edit = edit_stack.pop()
+            ancestors, edit = edit_stack.pop()
             if isinstance(edit, CompoundEdit):
-                edit_stack.extend(list(edit.edits()))
+                for sub_edit in reversed(list(edit.edits())):
+                    edit_stack.append((ancestors + (sub_edit.from_node,), sub_edit))
             else:
                 while edit.bounds().lower_bound == 0 and not edit.bounds().definitive() and edit.tighten_bounds():
                     pass
                 if edit.bounds().lower_bound > 0:
-                    yield edit
+                    yield ancestors, edit
+
+    def get_all_edits(self, node: "TreeNode") -> Iterator[Edit]:
+        """Returns an iterator over all edits that will transform this node into the provided node.
+
+        Args:
+            node: The node to which to transform this one.
+
+        Returns:
+            Iterator[Edit]: An iterator over edits. Note that this iterator will automatically
+            :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
+
+        """
+        for _, edit in self.get_all_edit_contexts(node):
+            yield edit
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         """Performs a diff against the provided node.
@@ -543,8 +578,24 @@ class TreeNode(metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-class ContainerNode(TreeNode, Iterable, Sized, ABC):
+class ContainerNode(TreeNode, Iterable[TreeNode], Sized, ABC):
     """A tree node that has children."""
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        # wrap the subclass's __init__ function to auto-set the parents of its children
+        if hasattr(cls, "__init__"):
+            orig_init = getattr(cls, "__init__")
+
+            if orig_init is not object.__init__:
+                @wraps(orig_init)
+                def wrapped(self: ContainerNode, *args, **kw):
+                    ret = orig_init(self, *args, **kw)
+                    for child in self.children():
+                        child.parent = self
+                    return ret
+
+                cls.__init__ = wrapped
 
     def children(self) -> List[TreeNode]:
         """The children of this node.
