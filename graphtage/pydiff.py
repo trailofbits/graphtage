@@ -1,30 +1,68 @@
 """A :class:`graphtage.Filetype` for parsing, diffing, and rendering Apple plist files."""
-import os
-from xml.parsers.expat import ExpatError
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union, Iterator
 
-from plistlib import dumps, load
 
-from .edits import Edit, EditCollection, Match
+from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
-    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode,
-    NullNode, StringNode
+    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, ListNode, MappingNode,
+    NullNode, StringFormatter, StringNode
 )
-from .printer import Printer
-from .sequences import SequenceFormatter, SequenceNode
+from .json import JSONFormatter
+from .printer import Fore, Printer
+from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
 
-class _PyObj:
-    pass
+class PyObjEdit(AbstractCompoundEdit):
+    def __init__(self, from_obj: "PyObj", to_obj: "PyObj"):
+        super().__init__(from_obj, to_obj)
+        self.from_obj: PyObj = from_obj
+        self.to_obj: PyObj = to_obj
+        self.name_edit: Edit = self.from_obj.class_name.edits(self.to_obj.class_name)
+        self.attrs_edit: Edit = from_obj.attrs.edits(to_obj.attrs)
+
+    def edits(self) -> Iterator[Edit]:
+        yield self.name_edit
+        yield self.attrs_edit
+
+    def tighten_bounds(self) -> bool:
+        if self.name_edit.tighten_bounds():
+            return True
+        else:
+            return self.attrs_edit.tighten_bounds()
+
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        raise NotImplementedError()
 
 
-class FixedKeyPyObj(FixedKeyDictNode, _PyObj):
-    pass
+class PyObj(ContainerNode):
+    def __init__(self, class_name: StringNode, attrs: MappingNode):
+        self.class_name: StringNode = class_name
+        self.attrs: MappingNode = attrs
 
+    def to_obj(self):
+        return {
+            self.class_name: self.attrs.to_obj()
+        }
 
-class PyObj(DictNode, _PyObj):
-    pass
+    def edits(self, node: 'TreeNode') -> Edit:
+        if not isinstance(node, PyObj) or node.class_name != self.class_name:
+            return Replace(self, node)
+        else:
+            return PyObjEdit(self, node)
+
+    def calculate_total_size(self) -> int:
+        return self.attrs.calculate_total_size()
+
+    def print(self, printer: Printer):
+        PyDiffFormatter.DEFAULT_INSTANCE.print(printer, self)
+
+    def __iter__(self) -> Iterator[TreeNode]:
+        yield self.class_name
+        yield self.attrs
+
+    def __len__(self) -> int:
+        return 2
 
 
 def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeNode:
@@ -41,8 +79,11 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
         ValueError: If the object is of an unsupported type.
 
     """
-    class IncompletePyObj(dict):
-        pass
+    class PyObjMember:
+        def __init__(self, attr: str, value):
+            self.attr: str = attr
+            self.value = value
+            self.value_node: Optional[TreeNode] = None
 
     class DictValue:
         def __init__(self, key, value):
@@ -61,7 +102,7 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
     while True:
         parent, children, work = stack.pop()
 
-        new_node: Optional[Union[TreeNode, DictValue]] = None
+        new_node: Optional[Union[TreeNode, DictValue, PyObjMember]] = None
 
         while not work:
             if parent is None:
@@ -75,6 +116,27 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
                 assert parent.value_node is None
                 assert len(children) == 2
                 parent.key_node, parent.value_node = children
+                new_node = parent
+            elif isinstance(parent, PyObjMember):
+                assert parent.value_node is None
+                assert len(children) == 1
+                parent.value_node = children[0]
+                new_node = parent
+            elif isinstance(parent, PyObj):
+                assert parent.attrs is None
+                assert all(
+                    isinstance(c, PyObjMember) and c.value_node is not None
+                    for c in children
+                )
+                members = {
+                    StringNode(c.attr, quoted=False): c.value_node for c in children
+                }
+                if options.allow_key_edits:
+                    dict_node = DictNode.from_dict(members)
+                    dict_node.auto_match_keys = options.auto_match_keys
+                else:
+                    dict_node = FixedKeyDictNode.from_dict(members)
+                parent.attrs = dict_node
                 new_node = parent
             elif isinstance(parent, list):
                 new_node = ListNode(
@@ -119,16 +181,57 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
             new_node = StringNode(obj.decode('utf-8'))
         elif isinstance(obj, DictValue):
             stack.append((obj, [], [obj.value, obj.key]))
+        elif isinstance(obj, PyObjMember):
+            stack.append((obj, [], [obj.value]))
         elif isinstance(obj, dict):
             stack.append(({}, [], [DictValue(key=k, value=v) for k, v in reversed(obj.items())]))
         elif isinstance(python_obj, (list, tuple)):
-            stack.append(([], [], list(reversed(python_obj))))
+            stack.append(([], [], list(reversed(obj))))
         elif python_obj is None:
             new_node = NullNode()
         else:
-            raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
+            pyobj = PyObj(class_name=StringNode(obj.__class__.__name__, quoted=False), attrs=None)  # type: ignore
+            stack.append((pyobj, [], [
+                PyObjMember(attr=attr, value=getattr(obj, attr))
+                for attr in reversed(dir(obj))
+                if not attr.startswith("__")
+            ]))
 
         if new_node is not None:
             parent, children, work = stack.pop()
             children.append(new_node)
             stack.append((parent, children, work))
+
+
+class PyObjFormatter(SequenceFormatter):
+    is_partial = True
+
+    def __init__(self):
+        super().__init__('(', ')', ', ')
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+    def print_PyObj(self, printer: Printer, node: PyObj):
+        with printer.color(Fore.YELLOW):
+            self.print(printer, node.class_name)
+        self.print(printer, node.attrs)
+
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        """Prints a :class:`graphtage.KeyValuePairNode`.
+
+        By default, the key is printed in red, followed by "=", followed by the value in light blue.
+
+        """
+        with printer.color(Fore.RED):
+            self.print(printer, node.key)
+        printer.write("=")
+        with printer.color(Fore.LIGHTBLUE_EX):
+            self.parent.print(printer, node.value)
+
+
+class PyDiffFormatter(GraphtageFormatter):
+    sub_format_types = [PyObjFormatter]
+
+    #def print_PyObj(self, printer: Printer, node: PyObj):
+    #    breakpoint()
