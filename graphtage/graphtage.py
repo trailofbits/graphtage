@@ -182,8 +182,8 @@ class KeyValuePairNode(ContainerNode):
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['key'] = self.key.make_edited()
-        ret['value'] = self.value.make_edited()
+        ret["key"] = self.key.make_edited()
+        ret["value"] = self.value.make_edited()
         return ret
 
     def children(self) -> Tuple[LeafNode, TreeNode]:
@@ -579,7 +579,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        ret["_children"] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
         return ret
 
     def __hash__(self):

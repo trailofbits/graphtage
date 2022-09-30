@@ -419,7 +419,7 @@ class TreeNode(metaclass=ABCMeta):
         """
         if cls._edited_type is None:
             def init(etn, wrapped_tree_node: TreeNode):
-                etn.__dict__ = dict(wrapped_tree_node.editable_dict())
+                etn.__dict__ = {k: v for k, v in wrapped_tree_node.editable_dict().items() if k != "_parent"}
                 EditedTreeNode.__init__(etn)
 
             cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
