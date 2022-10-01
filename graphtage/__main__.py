@@ -348,35 +348,40 @@ def main(argv=None) -> int:
                         else:
                             formatter = from_format.get_default_formatter()
 
+                        class DoArrow:
+                            def __init__(self):
+                                self.is_first = True
+
+                            def __call__(self, *args, **kwargs):
+                                if self.is_first:
+                                    self.is_first = False
+                                else:
+                                    with printer.color(Fore.BLUE):
+                                        printer.write(" -> ")
+
                         for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
-                            is_first = True
+                            do_arrow = DoArrow()
                             for i, node in enumerate(ancestors):
-                                to_print = None
-                                if i == len(ancestors) - 1:
-                                    to_print = edit
-                                elif isinstance(node, graphtage.KeyValuePairNode) and edit.from_node is not node.key:
-                                    to_print = node.key
                                 if isinstance(node.parent, graphtage.ListNode) and \
                                         node in node.parent.child_indexes:
-                                    if is_first:
-                                        is_first = False
-                                    else:
-                                        with printer.color(Fore.BLUE):
-                                            printer.write(" -> ")
+                                    do_arrow()
                                     with printer.color(Fore.BLUE):
                                         printer.write("[")
                                     with printer.color(Fore.WHITE):
                                         printer.write(str(node.parent.child_indexes[node]))
                                     with printer.color(Fore.BLUE):
                                         printer.write("]")
-                                if to_print is None:
-                                    continue
-                                if is_first:
-                                    is_first = False
-                                else:
+                                elif isinstance(node.parent, graphtage.KeyValuePairNode) and \
+                                        edit.from_node is not node.parent.key:
+                                    do_arrow()
                                     with printer.color(Fore.BLUE):
-                                        printer.write(" -> ")
-                                formatter.print(printer, to_print)
+                                        printer.write("[")
+                                    formatter.print(printer, node.parent.key)
+                                    with printer.color(Fore.BLUE):
+                                        printer.write("]")
+                                if i == len(ancestors) - 1:
+                                    do_arrow()
+                                    formatter.print(printer, edit)
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()
                     else:
