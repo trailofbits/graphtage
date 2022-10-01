@@ -338,11 +338,26 @@ class TreeNode(metaclass=ABCMeta):
 
     @property
     def parent(self) -> Optional["TreeNode"]:
+        """The parent node of this node, or :const:`None` if it has no parent.
+
+        The setter for this property should only be called by the parent node setting itself as the parent of its child.
+
+        :class:`ContainerNode` subclasses automatically set this property for all of their children. However, if
+        you define a subclass of :class:`TreeNode` *does not* extend off of :class:`ContainerNode` and for which
+        ``len(self.children()) > 0``, then each child's parent must be set.
+
+        """
         return self._parent
 
     @parent.setter
     def parent(self, parent_node: "TreeNode"):
-        """This setter should only be called by the parent node setting itself as the parent of its child"""
+        """This setter should only be called by the parent node setting itself as the parent of its child.
+
+        :class:`ContainerNode` subclasses automatically set this property for all of their children. However, if
+        you define a subclass of :class:`TreeNode` *does not* extend off of :class:`ContainerNode` and for which
+        ``len(self.children()) > 0``, then each child's parent must be set.
+
+        """
         if self._parent is not None:
             if self._parent is parent_node:
                 # we are already assigned to this parent
