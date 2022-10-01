@@ -348,39 +348,13 @@ def main(argv=None) -> int:
                         else:
                             formatter = from_format.get_default_formatter()
 
-                        class DoArrow:
-                            def __init__(self):
-                                self.is_first = True
-
-                            def __call__(self, *args, **kwargs):
-                                if self.is_first:
-                                    self.is_first = False
-                                else:
+                        for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
+                            for i, node in enumerate(ancestors):
+                                if node.parent is not None:
+                                    node.parent.print_parent_context(printer, for_child=node)
+                                if i == len(ancestors) - 1:
                                     with printer.color(Fore.BLUE):
                                         printer.write(" -> ")
-
-                        for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
-                            do_arrow = DoArrow()
-                            for i, node in enumerate(ancestors):
-                                if isinstance(node.parent, graphtage.ListNode) and \
-                                        node in node.parent.child_indexes:
-                                    do_arrow()
-                                    with printer.color(Fore.BLUE):
-                                        printer.write("[")
-                                    with printer.color(Fore.WHITE):
-                                        printer.write(str(node.parent.child_indexes[node]))
-                                    with printer.color(Fore.BLUE):
-                                        printer.write("]")
-                                elif isinstance(node.parent, graphtage.KeyValuePairNode) and \
-                                        edit.from_node is not node.parent.key:
-                                    do_arrow()
-                                    with printer.color(Fore.BLUE):
-                                        printer.write("[")
-                                    formatter.print(printer, node.parent.key)
-                                    with printer.color(Fore.BLUE):
-                                        printer.write("]")
-                                if i == len(ancestors) - 1:
-                                    do_arrow()
                                     formatter.print(printer, edit)
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()

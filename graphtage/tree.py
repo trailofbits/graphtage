@@ -587,6 +587,19 @@ class TreeNode(metaclass=ABCMeta):
         """
         return 0
 
+    def print_parent_context(self, printer: Printer, for_child: "TreeNode"):
+        """Prints the context for the given child node.
+
+        For example, if this node represents a list and the child is the element at index 3, then "[3]" might be
+        printed.
+
+        The child is expected to be one of this node's children, but this is not validated.
+
+        The default implementation prints nothing.
+
+        """
+        pass
+
     @abstractmethod
     def print(self, printer: Printer):
         """Prints this node."""
