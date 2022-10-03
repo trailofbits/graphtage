@@ -180,10 +180,23 @@ class KeyValuePairNode(ContainerNode):
     def to_obj(self):
         return self.key, self.value
 
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        elif for_child is self.key:
+            # we only print the context for the value
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        self.key.print(printer)
+        with printer.color(Fore.BLUE):
+            printer.write("]")
+
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['key'] = self.key.make_edited()
-        ret['value'] = self.value.make_edited()
+        ret["key"] = self.key.make_edited()
+        ret["value"] = self.value.make_edited()
         return ret
 
     def children(self) -> Tuple[LeafNode, TreeNode]:
@@ -383,6 +396,10 @@ class MappingNode(ContainerNode, ABC):
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
 
+    def print_parent_context(self, printer: Printer, for_child: "TreeNode"):
+        # this is handled by KeyValuePairNode
+        pass
+
     def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
         """Iterates over the key/value pairs in this mapping, similar to :meth:`dict.items`.
 
@@ -579,7 +596,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        ret["_children"] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
         return ret
 
     def __hash__(self):
