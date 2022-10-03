@@ -17,7 +17,7 @@ from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .graphtage import BuildOptions, ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
     ListNode, StringFormatter, StringNode
 from .json import JSONFormatter
-from .printer import Printer
+from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
@@ -112,7 +112,8 @@ class XMLElementObj:
         """The children of this element."""
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self.children!r})"
+        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, " \
+               f"children={self.children!r})"
 
     def __str__(self):
         ret = f'<{self.tag}'
@@ -128,6 +129,23 @@ class XMLElementObj:
             for child in self.children:
                 ret = f"{ret}{child!s}"
         return f"{ret}</{self.tag}>"
+
+
+class XMLElementChildren(ListNode):
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("<")
+        if for_child not in self.child_indexes:
+            with printer.color(Fore.RED):
+                printer.write("?")
+        else:
+            with printer.color(Fore.WHITE):
+                printer.write(f"child element {self.child_indexes[for_child]!s}")
+        with printer.color(Fore.BLUE):
+            printer.write(">")
 
 
 class XMLElement(ContainerNode):
@@ -170,7 +188,7 @@ class XMLElement(ContainerNode):
         """The text of this element."""
         if self.text is not None:
             self.text.quoted = False
-        self._children: ListNode = ListNode(children)
+        self._children: XMLElementChildren = XMLElementChildren(children)
         if isinstance(self, EditedTreeNode):
             self._children = self._children.make_edited()
 
@@ -236,6 +254,14 @@ class XMLElement(ContainerNode):
             other_text = ''
         return other.tag == self.tag and other.attrib == self.attrib \
                and other_text == my_text and other._children == self._children
+
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child is self.tag:
+            return
+        # XMLFormatter.DEFAULT_INSTANCE.print_XMLElement(printer, self)
+        printer.write("<")
+        XMLFormatter.DEFAULT_INSTANCE.print(printer, self.tag)
+        printer.write(">")
 
     def print(self, printer: Printer):
         return XMLFormatter.DEFAULT_INSTANCE.print(printer, self)
