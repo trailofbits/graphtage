@@ -36,8 +36,10 @@ class PyObjEdit(AbstractCompoundEdit):
 
 
 class PyObj(ContainerNode):
-    def __init__(self, class_name: StringNode, attrs: MappingNode):
+    def __init__(self, class_name: StringNode, attrs: Optional[MappingNode]):
         self.class_name: StringNode = class_name
+        if attrs is None:
+            attrs = DictNode.from_dict({})
         self.attrs: MappingNode = attrs
 
     def to_obj(self):
@@ -45,7 +47,7 @@ class PyObj(ContainerNode):
             self.class_name: self.attrs.to_obj()
         }
 
-    def edits(self, node: 'TreeNode') -> Edit:
+    def edits(self, node: TreeNode) -> Edit:
         if not isinstance(node, PyObj) or node.class_name != self.class_name:
             return Replace(self, node)
         else:
@@ -123,7 +125,6 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
                 parent.value_node = children[0]
                 new_node = parent
             elif isinstance(parent, PyObj):
-                assert parent.attrs is None
                 assert all(
                     isinstance(c, PyObjMember) and c.value_node is not None
                     for c in children
@@ -137,6 +138,7 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
                 else:
                     dict_node = FixedKeyDictNode.from_dict(members)
                 parent.attrs = dict_node
+                dict_node.parent = parent
                 new_node = parent
             elif isinstance(parent, list):
                 new_node = ListNode(
