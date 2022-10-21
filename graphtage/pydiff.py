@@ -5,9 +5,8 @@ from typing import Any, List, Optional, Tuple, Union, Iterator
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, ListNode, MappingNode,
-    NullNode, StringFormatter, StringNode
+    NullNode, StringNode
 )
-from .json import JSONFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -237,3 +236,13 @@ class PyDiffFormatter(GraphtageFormatter):
 
     #def print_PyObj(self, printer: Printer, node: PyObj):
     #    breakpoint()
+
+
+def diff(from_py_obj, to_py_obj):
+    return build_tree(from_py_obj).diff(build_tree(to_py_obj))
+
+
+def print_diff(from_py_obj, to_py_obj, printer: Optional[Printer] = None):
+    if printer is None:
+        printer = Printer()
+    diff(from_py_obj, to_py_obj).print(printer)

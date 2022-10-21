@@ -1,10 +1,7 @@
-from io import StringIO
 from unittest import TestCase
 
 import graphtage
 from graphtage.pydiff import build_tree, PyDiffFormatter
-
-from graphtage.printer import Printer
 
 
 class TestPyDiff(TestCase):
