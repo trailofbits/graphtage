@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -29,6 +29,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -198,7 +199,7 @@
 <li><p>See if there is a specialized formatter for this edit by calling
 <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter.get_formatter" title="graphtage.formatter.Formatter.get_formatter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter.get_formatter()</span></code></a></p></li>
 <li><p>If so, delegate to that formatter and return.</p></li>
-<li><p>If not, try calling the edit’s <a class="reference internal" href="graphtage.html#graphtage.Edit.print" title="graphtage.Edit.print"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.Edit.print()</span></code></a> method. If <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is
+<li><p>If not, try calling the edit’s <a class="reference internal" href="graphtage.html#graphtage.Edit.print" title="graphtage.Edit.print"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.Edit.print()</span></code></a> method. If <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is
 <em>not</em> raised, return.</p></li>
 </ul>
 </dd>

@@ -5,7 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -29,6 +29,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -107,6 +108,9 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.version</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#graphtage.version.DEV_BUILD"><code class="docutils literal notranslate"><span class="pre">DEV_BUILD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graphtage.version.__version__"><code class="docutils literal notranslate"><span class="pre">__version__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graphtage.version.VERSION_STRING"><code class="docutils literal notranslate"><span class="pre">VERSION_STRING</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#version-functions">version functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#git-branch">git_branch</a></li>
 </ul>
@@ -197,7 +201,7 @@ deploying to PyPI.</p>
 <p>If <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, the git branch will be included in <a class="reference internal" href="#graphtage.version.__version__" title="graphtage.version.__version__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.version.__version__</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -211,7 +215,7 @@ ints and strings. If <a class="reference internal" href="#graphtage.version.DEV_
 version.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>], …]</p>
+<dd class="field-odd"><p>Tuple[Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a>], …]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -224,7 +228,7 @@ version.</p>
 or a “-” if the element is a string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -235,7 +239,7 @@ or a “-” if the element is a string.</p>
 <h3>git_branch<a class="headerlink" href="#git-branch" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.version.git_branch">
-<span class="sig-prename descclassname"><span class="pre">graphtage.version.</span></span><span class="sig-name descname"><span class="pre">git_branch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.version.git_branch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.version.</span></span><span class="sig-name descname"><span class="pre">git_branch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.version.git_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the git branch for the codebase, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if it could not be determined.</p>
 <p>The git branch is determined by running</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git symbolic-ref -q HEAD
