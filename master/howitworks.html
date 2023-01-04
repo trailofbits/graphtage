@@ -25,9 +25,6 @@
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -178,18 +175,18 @@ extant diffing algorithms and utilities assume that the structures are ordered. 
 <tr class="row-odd"><td><p>Original JSON</p></td>
 <td><p>Modified JSON</p></td>
 </tr>
-<tr class="row-even"><td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">],</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;bar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<tr class="row-even"><td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;bar&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </td>
-<td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;zab&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;woo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;foobar&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<td><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;foo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;zab&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;testing&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;woo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;foobar&quot;</span><span class="p">]</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </td>
@@ -198,26 +195,26 @@ extant diffing algorithms and utilities assume that the structures are ordered. 
 </table>
 <p>Existing tools effectively canonicalize the JSON (<em>e.g.</em>, sort dictionary elements by key and format lists with one
 item per line), and then perform a traditional diff:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat original.json <span class="p">|</span> jq -M --sort-keys &gt; original.canonical.json
-<span class="gp">$ </span>cat modified.json <span class="p">|</span> jq -M --sort-keys &gt; modified.canonical.json
-<span class="gp">$ </span>diff -u original.canonical.json modified.canonical.json
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cat<span class="w"> </span>original.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-M<span class="w"> </span>--sort-keys<span class="w"> </span>&gt;<span class="w"> </span>original.canonical.json
+<span class="gp">$ </span>cat<span class="w"> </span>modified.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-M<span class="w"> </span>--sort-keys<span class="w"> </span>&gt;<span class="w"> </span>modified.canonical.json
+<span class="gp">$ </span>diff<span class="w"> </span>-u<span class="w"> </span>original.canonical.json<span class="w"> </span>modified.canonical.json
 </pre></div>
 </div>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="w">{</span>
-<span class="linenos"> 2</span><span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span><span class="w"></span>
-<span class="linenos"> 3</span><span class="w"> </span>  &quot;foo&quot;: [<span class="w"></span>
-<span class="linenos"> 4</span><span class="gd">-    1,</span><span class="w"></span>
-<span class="linenos"> 5</span><span class="w"> </span>    2,<span class="w"></span>
-<span class="linenos"> 6</span><span class="w"> </span>    3,<span class="w"></span>
-<span class="linenos"> 7</span><span class="gd">-    4</span><span class="w"></span>
-<span class="linenos"> 8</span><span class="gd">-  ]</span><span class="w"></span>
-<span class="linenos"> 9</span><span class="gi">+    4,</span><span class="w"></span>
-<span class="linenos">10</span><span class="gi">+    5</span><span class="w"></span>
-<span class="linenos">11</span><span class="gi">+  ],</span><span class="w"></span>
-<span class="linenos">12</span><span class="gi">+  &quot;woo&quot;: [</span><span class="w"></span>
-<span class="linenos">13</span><span class="gi">+    &quot;foobar&quot;</span><span class="w"></span>
-<span class="linenos">14</span><span class="gi">+  ],</span><span class="w"></span>
-<span class="linenos">15</span><span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span><span class="w"></span>
+<span class="linenos"> 2</span><span class="gd">-  &quot;bar&quot;: &quot;testing&quot;,</span>
+<span class="linenos"> 3</span><span class="w"> </span>  &quot;foo&quot;: [
+<span class="linenos"> 4</span><span class="gd">-    1,</span>
+<span class="linenos"> 5</span><span class="w"> </span>    2,
+<span class="linenos"> 6</span><span class="w"> </span>    3,
+<span class="linenos"> 7</span><span class="gd">-    4</span>
+<span class="linenos"> 8</span><span class="gd">-  ]</span>
+<span class="linenos"> 9</span><span class="gi">+    4,</span>
+<span class="linenos">10</span><span class="gi">+    5</span>
+<span class="linenos">11</span><span class="gi">+  ],</span>
+<span class="linenos">12</span><span class="gi">+  &quot;woo&quot;: [</span>
+<span class="linenos">13</span><span class="gi">+    &quot;foobar&quot;</span>
+<span class="linenos">14</span><span class="gi">+  ],</span>
+<span class="linenos">15</span><span class="gi">+  &quot;zab&quot;: &quot;testing&quot;</span>
 <span class="linenos">16</span><span class="w">}</span>
 </pre></div>
 </div>
