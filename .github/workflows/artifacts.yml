@@ -19,11 +19,11 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: Install dependencies
@@ -36,6 +36,6 @@ jobs:
           make -C bindist
           cd bindist && echo "DIST_FILE=`make dist-name | tr -d '\n'`" >> $GITHUB_ENV
       - name: Release binary artifacts
-        uses: softprops/action-gh-release@v0.1.14
+        uses: softprops/action-gh-release@v0.1.15
         with:
           files: bindist/${{ env.DIST_FILE }}
