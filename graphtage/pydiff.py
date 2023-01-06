@@ -4,7 +4,7 @@ from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
-    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, ListNode, MappingNode,
+    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode,
     NullNode, StringNode
 )
 from .json import JSONDictFormatter, JSONListFormatter
@@ -35,12 +35,20 @@ class PyObjEdit(AbstractCompoundEdit):
         raise NotImplementedError()
 
 
-class PyObjAttributes(DictNode):
+class PyObjAttribute(KeyValuePairNode):
     pass
+
+
+class PyObjAttributes(DictNode):
+    @classmethod
+    def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
+        return PyObjAttribute(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 class PyObjFixedAttributes(FixedKeyDictNode):
-    pass
+    @classmethod
+    def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
+        return PyObjAttribute(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 PyObjAttributeMapping = Union[PyObjAttributes, PyObjFixedAttributes]
@@ -252,8 +260,8 @@ class PyObjFormatter(SequenceFormatter):
     def print_PyObjFixedAttributes(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
-    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
-        """Prints a :class:`graphtage.KeyValuePairNode`.
+    def print_PyObjAttribute(self, printer: Printer, node: KeyValuePairNode):
+        """Prints a :class:`graphtage.PyObjAttribute` key/value pair.
 
         By default, the key is printed in red, followed by "=", followed by the value in light blue.
 
