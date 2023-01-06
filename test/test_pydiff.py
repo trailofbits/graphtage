@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import graphtage
-from graphtage.pydiff import build_tree, PyDiffFormatter
+from graphtage.pydiff import build_tree, print_diff, PyDiffFormatter
 
 
 class TestPyDiff(TestCase):
@@ -10,9 +10,10 @@ class TestPyDiff(TestCase):
         self.assertIsInstance(build_tree({1: 2, 'a': 'b'}), graphtage.DictNode)
 
     def test_diff(self):
-        diff = build_tree([1, 2, 3, 4]).diff(build_tree([1, 2, 3, '4']))
+        t1 = [1, 2, {3: "three"}, 4]
+        t2 = [1, 2, {3: 3}, "four"]
         printer = graphtage.printer.Printer(ansi_color=True)
-        diff.print(printer)
+        print_diff(t1, t2, printer=printer)
 
     def test_custom_class(self):
         class Foo:
@@ -20,6 +21,5 @@ class TestPyDiff(TestCase):
                 self.bar = bar
                 self.baz = baz
 
-        diff = build_tree(Foo("bar", "baz")).diff(build_tree(Foo("bar", "bak")))
         printer = graphtage.printer.Printer(ansi_color=True)
-        diff.print(printer)
+        print_diff(Foo("bar", "baz"), Foo("bar", "bak"), printer=printer)

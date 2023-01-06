@@ -7,6 +7,7 @@ from .graphtage import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, ListNode, MappingNode,
     NullNode, StringNode
 )
+from .json import JSONDictFormatter, JSONListFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -34,12 +35,23 @@ class PyObjEdit(AbstractCompoundEdit):
         raise NotImplementedError()
 
 
+class PyObjAttributes(DictNode):
+    pass
+
+
+class PyObjFixedAttributes(FixedKeyDictNode):
+    pass
+
+
+PyObjAttributeMapping = Union[PyObjAttributes, PyObjFixedAttributes]
+
+
 class PyObj(ContainerNode):
-    def __init__(self, class_name: StringNode, attrs: Optional[MappingNode]):
+    def __init__(self, class_name: StringNode, attrs: Optional[PyObjAttributeMapping]):
         self.class_name: StringNode = class_name
         if attrs is None:
-            attrs = DictNode.from_dict({})
-        self.attrs: MappingNode = attrs
+            attrs = PyObjAttributes.from_dict({})
+        self.attrs: PyObjAttributeMapping = attrs
 
     def to_obj(self):
         return {
@@ -132,10 +144,10 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
                     StringNode(c.attr, quoted=False): c.value_node for c in children
                 }
                 if options.allow_key_edits:
-                    dict_node = DictNode.from_dict(members)
+                    dict_node = PyObjAttributes.from_dict(members)
                     dict_node.auto_match_keys = options.auto_match_keys
                 else:
-                    dict_node = FixedKeyDictNode.from_dict(members)
+                    dict_node = PyObjFixedAttributes.from_dict(members)
                 parent.attrs = dict_node
                 dict_node.parent = parent
                 new_node = parent
@@ -204,8 +216,24 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
             stack.append((parent, children, work))
 
 
+class PyListFormatter(JSONListFormatter):
+    is_partial = True
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+
+class PyDictFormatter(JSONDictFormatter):
+    is_partial = True
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+
 class PyObjFormatter(SequenceFormatter):
     is_partial = True
+
+    sub_format_types = [PyListFormatter, PyDictFormatter]
 
     def __init__(self):
         super().__init__('(', ')', ', ')
@@ -218,6 +246,12 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.class_name)
         self.print(printer, node.attrs)
 
+    def print_PyObjAttributes(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
+    def print_PyObjFixedAttributes(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         """Prints a :class:`graphtage.KeyValuePairNode`.
 
@@ -228,14 +262,11 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.key)
         printer.write("=")
         with printer.color(Fore.LIGHTBLUE_EX):
-            self.parent.print(printer, node.value)
+            self.print(printer, node.value)
 
 
 class PyDiffFormatter(GraphtageFormatter):
-    sub_format_types = [PyObjFormatter]
-
-    #def print_PyObj(self, printer: Printer, node: PyObj):
-    #    breakpoint()
+    sub_format_types = [PyObjFormatter, PyListFormatter, PyDictFormatter]
 
 
 def diff(from_py_obj, to_py_obj):
@@ -245,4 +276,6 @@ def diff(from_py_obj, to_py_obj):
 def print_diff(from_py_obj, to_py_obj, printer: Optional[Printer] = None):
     if printer is None:
         printer = Printer()
-    diff(from_py_obj, to_py_obj).print(printer)
+    d = diff(from_py_obj, to_py_obj)
+    with printer:
+        PyDiffFormatter.DEFAULT_INSTANCE.print(printer, d)
