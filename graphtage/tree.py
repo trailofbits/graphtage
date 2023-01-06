@@ -184,8 +184,13 @@ class Edit(Bounded, Protocol):
 
 
 @runtime_checkable
-class CompoundEdit(Edit, Iterable, Protocol):
+class CompoundEdit(Edit, Protocol):
     """A protocol for edits that are composed of sub-edits"""
+
+    @abstractmethod
+    def __iter__(self) -> Iterator[Edit]:
+        """Returns an iterator over this edit's sub-edits."""
+        raise NotImplementedError()
 
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
