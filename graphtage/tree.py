@@ -2,7 +2,6 @@ import itertools
 import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
-from collections.abc import Iterable
 from functools import wraps
 from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Tuple, Type, TypeVar, Union
 from typing_extensions import Protocol, runtime_checkable
@@ -611,8 +610,12 @@ class TreeNode(metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-class ContainerNode(TreeNode, Iterable[TreeNode], Sized, ABC):
+class ContainerNode(TreeNode, Sized, ABC):
     """A tree node that has children."""
+
+    @abstractmethod
+    def __iter__(self):
+        raise NotImplementedError()
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
