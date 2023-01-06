@@ -463,7 +463,7 @@ class TreeNode(metaclass=ABCMeta):
             and thereby mutable.
 
         """
-        ret = self.edited_type()(self)
+        ret = self.__class__.edited_type()(self)
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
