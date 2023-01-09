@@ -1,0 +1,70 @@
+graphtage.utils
+===============
+
+.. automodule:: graphtage.utils
+
+utils classes
+-------------
+
+HashableCounter
+***************
+
+.. autoclass:: HashableCounter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+OrderedCounter
+**************
+
+.. autoclass:: OrderedCounter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Sized
+*****
+
+.. autoclass:: Sized
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+SparseMatrix
+************
+
+.. autoclass:: SparseMatrix
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Tempfile
+********
+
+.. autoclass:: Tempfile
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+utils functions
+---------------
+
+getsizeof
+*********
+
+.. autofunction:: getsizeof
+
+largest
+*******
+
+.. autofunction:: largest
+
+smallest
+********
+
+.. autofunction:: smallest

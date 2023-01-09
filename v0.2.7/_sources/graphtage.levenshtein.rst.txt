@@ -1,0 +1,24 @@
+graphtage.levenshtein
+=====================
+
+.. automodule:: graphtage.levenshtein
+
+levenshtein classes
+-------------------
+
+EditDistance
+************
+
+.. autoclass:: EditDistance
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+levenshtein functions
+---------------------
+
+levenshtein_distance
+********************
+
+.. autofunction:: levenshtein_distance
