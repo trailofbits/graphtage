@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Graphtage Documentation &mdash; Graphtage v0.2.6 documentation</title>
+  <title>Graphtage Documentation &mdash; Graphtage v0.2.7 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.6"><div class="version">v0.2.6</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.7"><div class="version">v0.2.7</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -187,6 +187,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 <li class="toctree-l2"><a class="reference internal" href="library.html#transforming-nodes-with-edits">Transforming Nodes with Edits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#applying-edits-to-nodes">Applying Edits to Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="library.html#formatting-and-printing-results">Formatting and Printing Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#diffing-in-memory-python-objects">Diffing In-Memory Python Objects</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a><ul>
@@ -238,6 +239,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#stringformatter">StringFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#stringnode">StringNode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.html#treenode">TreeNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#treenodemeta">TreeNodeMeta</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="graphtage.html#graphtage-functions">graphtage functions</a><ul>
@@ -445,6 +447,27 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pydiff.html">graphtage.pydiff</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.pydiff.html#pydiff-classes">pydiff classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pydictformatter">PyDictFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pydiffformatter">PyDiffFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pylistformatter">PyListFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobj">PyObj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjattribute">PyObjAttribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjattributes">PyObjAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjedit">PyObjEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjfixedattributes">PyObjFixedAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjformatter">PyObjFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.pydiff.html#pydiff-functions">pydiff functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#build-tree">build_tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#diff">diff</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#print-diff">print_diff</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="graphtage.search.html#search-classes">search classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.search.html#iterativetighteningsearch">IterativeTighteningSearch</a></li>
@@ -496,6 +519,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlchildformatter">XMLChildFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelement">XMLElement</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementattribformatter">XMLElementAttribFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementchildren">XMLElementChildren</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementedit">XMLElementEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementobj">XMLElementObj</a></li>
 <li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlformatter">XMLFormatter</a></li>
@@ -587,7 +611,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.6
+        v0.2.7
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -595,6 +619,7 @@ the <a class="reference internal" href="extending.html"><span class="doc">Extend
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
             <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
             <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>

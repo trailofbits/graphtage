@@ -51,6 +51,15 @@ XMLElementAttribFormatter
    :inherited-members:
    :show-inheritance:
 
+XMLElementChildren
+******************
+
+.. autoclass:: XMLElementChildren
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 XMLElementEdit
 **************
 

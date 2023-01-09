@@ -321,6 +321,15 @@ TreeNode
    :inherited-members:
    :show-inheritance:
 
+TreeNodeMeta
+************
+
+.. autoclass:: TreeNodeMeta
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 graphtage functions
 -------------------
 

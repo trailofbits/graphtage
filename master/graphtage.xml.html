@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graphtage.xml &mdash; Graphtage v0.2.6 documentation</title>
+  <title>graphtage.xml &mdash; Graphtage v0.2.7 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.6"><div class="version">v0.2.6</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.7"><div class="version">v0.2.7</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pydiff.html">graphtage.pydiff</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
@@ -112,6 +113,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#xmlchildformatter">XMLChildFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xmlelement">XMLElement</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xmlelementattribformatter">XMLElementAttribFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#xmlelementchildren">XMLElementChildren</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xmlelementedit">XMLElementEdit</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xmlelementobj">XMLElementObj</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#xmlformatter">XMLFormatter</a></li>
@@ -638,26 +640,6 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="graphtage.xml.XMLElement.edited_type">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edited_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElement.edited_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dynamically constructs a new class that is <em>both</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>and</em> an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
-<p>The edited type’s member variables are populated by the result of <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> it wraps:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_node</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">wrapped_tree_node</span><span class="o">.</span><span class="n">editable_dict</span><span class="p">())</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A class that is <em>both</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>and</em> an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.
-Its constructor accepts a <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> that it will wrap.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Type[Union[<a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a>, T]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.xml.XMLElement.edits">
 <span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></span><a class="headerlink" href="#graphtage.xml.XMLElement.edits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the best edit to transform this node into the provided node.</p>
@@ -670,6 +652,25 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElement.get_all_edit_contexts">
+<span class="sig-name descname"><span class="pre">get_all_edit_contexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElement.get_all_edit_contexts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all edit contexts that will transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
+node, as well as its edit. Note that this iterator will automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -711,7 +712,7 @@ Its constructor accepts a <code class="xref py py-class docutils literal notrans
 <span class="sig-name descname"><span class="pre">make_edited</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.xml.XMLElement.make_edited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new, copied instance of this node that is also an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
 <p>This is equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -725,10 +726,30 @@ and thereby mutable.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElement.parent">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#graphtage.xml.XMLElement.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent node of this node, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if it has no parent.</p>
+<p>The setter for this property should only be called by the parent node setting itself as the parent of its child.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code> subclasses automatically set this property for all of their children. However, if
+you define a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>does not</em> extend off of <code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code> and for which
+<code class="docutils literal notranslate"><span class="pre">len(self.children())</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, then each child’s parent must be set.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.xml.XMLElement.print">
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints this node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElement.print_parent_context">
+<span class="sig-name descname"><span class="pre">print_parent_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">for_child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElement.print_parent_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the context for the given child node.</p>
+<p>For example, if this node represents a list and the child is the element at index 3, then “[3]” might be
+printed.</p>
+<p>The child is expected to be one of this node’s children, but this is not validated.</p>
+<p>The default implementation prints nothing.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -959,6 +980,311 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <span class="sig-name descname"><span class="pre">sub_formatters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#graphtage.xml.XMLElementAttribFormatter.sub_formatters" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
 <p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="xmlelementchildren">
+<h3>XMLElementChildren<a class="headerlink" href="#xmlelementchildren" title="Permalink to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.xml.</span></span><span class="sig-name descname"><span class="pre">XMLElementChildren</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListNode</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a List node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodes</strong> – The set of nodes in this list.</p></li>
+<li><p><strong>allow_list_edits</strong> – Whether to consider removal and insertion when editing this list.</p></li>
+<li><p><strong>allow_list_edits_when_same_length</strong> – Whether to consider removal and insertion when comparing this list to
+another list of the same length.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates over this sequence’s child nodes.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of children of this sequence.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.all_children_are_leaves">
+<span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.all_children_are_leaves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether all of the children of this container are leaves.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_leaf</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if all children are leaves.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.calculate_total_size">
+<span class="sig-name descname"><span class="pre">calculate_total_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.calculate_total_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the total size of this sequence.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">total_size</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.child_indexes">
+<span class="sig-name descname"><span class="pre">child_indexes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.child_indexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.children">
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>The children of this node.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.container_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">container_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.container_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The container type required by <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceNode" title="graphtage.sequences.SequenceNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.sequences.SequenceNode</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Type[Tuple[T, …]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.dfs">
+<span class="sig-name descname"><span class="pre">dfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.dfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a depth-first traversal over all of this node’s descendants.</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self</span></code> is always included and yielded first.</p>
+<p>This implementation is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+<span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">node</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.diff">
+<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a diff against the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node against which to perform the diff.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An edited version of this node with all edits being
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">completed</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a>, T]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.edit_modifiers">
+<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.edit_modifiers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.editable_dict">
+<span class="sig-name descname"><span class="pre">editable_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.editable_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on all children.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="n">ret</span><span class="p">[</span><span class="s1">&#39;_children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
+<p>This is used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">SequenceNode.make_edited()</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.edited">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edited</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.edited" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether this node has been edited.</p>
+<p>The default implementation returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, whereas <code class="xref py py-meth docutils literal notranslate"><span class="pre">EditedTreeNode.edited()</span></code> returns <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.edits">
+<span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.edits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the best edit to transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The best possible edit.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.get_all_edit_contexts">
+<span class="sig-name descname"><span class="pre">get_all_edit_contexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.get_all_edit_contexts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all edit contexts that will transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
+node, as well as its edit. Note that this iterator will automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.get_all_edits">
+<span class="sig-name descname"><span class="pre">get_all_edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.get_all_edits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over all edits that will transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over edits. Note that this iterator will automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator[<a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.is_leaf">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_leaf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.is_leaf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container nodes are never leaves, even if they have no children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.make_edited">
+<span class="sig-name descname"><span class="pre">make_edited</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.make_edited" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new, copied instance of this node that is also an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A copied version of this node that is also an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>
+and thereby mutable.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[<a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a>, T]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.parent">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parent node of this node, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if it has no parent.</p>
+<p>The setter for this property should only be called by the parent node setting itself as the parent of its child.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code> subclasses automatically set this property for all of their children. However, if
+you define a subclass of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code> <em>does not</em> extend off of <code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code> and for which
+<code class="docutils literal notranslate"><span class="pre">len(self.children())</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, then each child’s parent must be set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints a sequence node.</p>
+<p>By default, sequence nodes are printed like lists:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.print_parent_context">
+<span class="sig-name descname"><span class="pre">print_parent_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">for_child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.print_parent_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the context for the given child node.</p>
+<p>For example, if this node represents a list and the child is the element at index 3, then “[3]” might be
+printed.</p>
+<p>The child is expected to be one of this node’s children, but this is not validated.</p>
+<p>The default implementation prints nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.to_obj">
+<span class="sig-name descname"><span class="pre">to_obj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.xml.XMLElementChildren.to_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pure Python representation of this node.</p>
+<p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
+A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
+Container nodes should recursively call <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.to_obj()</span></code> on all of their children.</p>
+<p>This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
+options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.xml.XMLElementChildren.total_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#graphtage.xml.XMLElementChildren.total_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The size of this node.</p>
+<p>This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.</p>
+<p>The first time this property is called, its value will be set and memoized by calling
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.calculate_total_size()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An arbitrary integer representing the size of this node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1541,7 +1867,7 @@ already automatically been configured to format them prior to the call to
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.6
+        v0.2.7
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -1549,6 +1875,7 @@ already automatically been configured to format them prior to the call to
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
             <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
             <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>

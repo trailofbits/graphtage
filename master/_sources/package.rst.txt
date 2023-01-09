@@ -17,6 +17,7 @@ Graphtage API
    graphtage.plist
    graphtage.printer
    graphtage.progress
+   graphtage.pydiff
    graphtage.search
    graphtage.sequences
    graphtage.utils

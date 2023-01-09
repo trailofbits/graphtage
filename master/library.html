@@ -9,7 +9,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using Graphtage Programmatically &mdash; Graphtage v0.2.6 documentation</title>
+  <title>Using Graphtage Programmatically &mdash; Graphtage v0.2.7 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
           
 
           
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.6"><div class="version">v0.2.6</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.2.7"><div class="version">v0.2.7</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#transforming-nodes-with-edits">Transforming Nodes with Edits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#applying-edits-to-nodes">Applying Edits to Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formatting-and-printing-results">Formatting and Printing Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diffing-in-memory-python-objects">Diffing In-Memory Python Objects</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
@@ -241,6 +242,29 @@ just as easily output the diff in another format, like YAML:</p>
 </pre></div>
 </div>
 </section>
+<section id="diffing-in-memory-python-objects">
+<h2>Diffing In-Memory Python Objects<a class="headerlink" href="#diffing-in-memory-python-objects" title="Permalink to this heading">¶</a></h2>
+<p>When used as a library, Graphtage has the ability to diff in-memory Python objects. This can be useful when debugging,
+for example, to quickly determine the difference between two Python objects that cause a differential.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage.pydiff</span> <span class="kn">import</span> <span class="n">print_diff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">obj1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;three&quot;</span><span class="p">},</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">obj2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s2">&quot;four&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+<span class="go">[1,2,{3: &quot;three&quot; -&gt; 3},++&quot;four&quot;++~~4~~]</span>
+</pre></div>
+</div>
+<p>Python object diffing also works with custom classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">baz</span> <span class="o">=</span> <span class="n">baz</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">),</span> <span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;bak&quot;</span><span class="p">),</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+<span class="go">Foo(bar=&quot;bar&quot;, baz=&quot;ba++k++~~z~~&quot;)</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -294,7 +318,7 @@ just as easily output the diff in another format, like YAML:</p>
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.2.6
+        v0.2.7
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -302,6 +326,7 @@ just as easily output the diff in another format, like YAML:</p>
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
             <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
             <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
             <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
