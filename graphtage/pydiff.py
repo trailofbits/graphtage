@@ -1,4 +1,7 @@
-"""A :class:`graphtage.Filetype` for parsing, diffing, and rendering Apple plist files."""
+"""Functions to diff in-memory Python objects.
+
+See :doc:`the documentation on using Graphtage programmatically <library>` for some examples.
+"""
 from typing import Any, List, Optional, Tuple, Union, Iterator
 
 
