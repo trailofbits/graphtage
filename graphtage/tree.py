@@ -292,7 +292,42 @@ class EditedTreeNode:
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
 
-class TreeNode(metaclass=ABCMeta):
+class TreeNodeMeta(ABCMeta):
+
+    def __init__(cls, name, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        cls._edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+
+    def edited_type(self) -> Type[Union[EditedTreeNode, T]]:
+        """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+
+        The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
+        :class:`TreeNode` it wraps::
+
+            new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
+
+        Returns:
+            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+            Its constructor accepts a :class:`TreeNode` that it will wrap.
+
+        """
+        if self._edited_type is None:
+            def init(etn, wrapped_tree_node: TreeNode):
+                parent_before = wrapped_tree_node.parent
+                try:
+                    wrapped_tree_node._parent = None
+                    etn.__dict__ = {k: v for k, v in wrapped_tree_node.editable_dict().items() if k != "_parent"}
+                finally:
+                    wrapped_tree_node._parent = parent_before
+                EditedTreeNode.__init__(etn)
+
+            self._edited_type = type(f'Edited{self.__name__}', (EditedTreeNode, self), {
+                '__init__': init
+            })
+        return self._edited_type
+
+
+class TreeNode(metaclass=TreeNodeMeta):
     """Abstract base class for nodes in Graphtage's intermediate representation.
 
     Tree nodes are intended to be immutable. :class:`EditedTreeNode`, on the other hand, can be mutable. See
@@ -300,7 +335,6 @@ class TreeNode(metaclass=ABCMeta):
 
     """
     _total_size = None
-    _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
     _parent: Optional["TreeNode"] = None
     edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
 
@@ -422,41 +456,12 @@ class TreeNode(metaclass=ABCMeta):
         """
         raise NotImplementedError()
 
-    @classmethod
-    def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
-        """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
-
-        The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
-        :class:`TreeNode` it wraps::
-
-            new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
-
-        Returns:
-            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
-            Its constructor accepts a :class:`TreeNode` that it will wrap.
-
-        """
-        if cls._edited_type is None:
-            def init(etn, wrapped_tree_node: TreeNode):
-                parent_before = wrapped_tree_node._parent
-                try:
-                    wrapped_tree_node._parent = None
-                    etn.__dict__ = {k: v for k, v in wrapped_tree_node.editable_dict().items() if k != "_parent"}
-                finally:
-                    wrapped_tree_node._parent = parent_before
-                EditedTreeNode.__init__(etn)
-
-            cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-                '__init__': init
-            })
-        return cls._edited_type
-
     def make_edited(self) -> Union[EditedTreeNode, T]:
         """Returns a new, copied instance of this node that is also an instance of :class:`EditedTreeNode`.
 
         This is equivalent to::
 
-            return self.edited_type()(self)
+            return self.__class__.edited_type()(self)
 
         Returns:
             Union[EditedTreeNode, T]: A copied version of this node that is also an instance of :class:`EditedTreeNode`
