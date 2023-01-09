@@ -205,7 +205,7 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
         elif isinstance(obj, PyObjMember):
             stack.append((obj, [], [obj.value]))
         elif isinstance(obj, dict):
-            stack.append(({}, [], [DictValue(key=k, value=v) for k, v in reversed(obj.items())]))
+            stack.append(({}, [], [DictValue(key=k, value=v) for k, v in reversed(list(obj.items()))]))
         elif isinstance(python_obj, (list, tuple)):
             stack.append(([], [], list(reversed(obj))))
         elif python_obj is None:
