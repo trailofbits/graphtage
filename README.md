@@ -93,6 +93,9 @@ Use `--condensed` or `-j` to apply both of these options:
 
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
 
+The `--edit-digest` or `-d` option is like `--only-edits` but prints a more concise context for each edit that is more
+human-readable.
+
 ### Matching Options
 By default, Graphtage tries to match all possible pairs of elements in a dictionary.
 
@@ -139,6 +142,9 @@ itself. See [our documentation](https://trailofbits.github.io/graphtage/latest/h
 
 ## Using Graphtage as a Library
 
+Graphtage has a complete API for programmatically operating its diffing capabilities.
+When using Graphtage as a library, it is also capable of diffing in-memory Python objects.
+This can be useful for debugging Python code, for example, to determine a differential between two objects.
 See [our documentation](https://trailofbits.github.io/graphtage/latest/library.html) for more information.
 
 ## Extending Graphtage
@@ -155,4 +161,4 @@ This research was developed by [Trail of Bits](https://www.trailofbits.com/) wit
 Advanced Research Projects Agency (DARPA) under the SafeDocs program as a subcontractor to [Galois](https://galois.com).
 It is licensed under the [GNU Lesser General Public License v3.0](LICENSE).
 [Contact us](mailto:opensource@trailofbits.com) if you're looking for an exception to the terms.
-© 2020, Trail of Bits.
+© 2020–2023, Trail of Bits.

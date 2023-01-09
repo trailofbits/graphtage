@@ -6,6 +6,8 @@ import sys
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
+from colorama.ansi import Fore
+
 from .edits import Edit
 from . import expressions
 from . import graphtage
@@ -113,9 +115,19 @@ def main(argv=None) -> int:
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
-    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
-    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
-    parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
+    parser.add_argument('--match-if', '-m', type=str, default=None,
+                        help='only attempt to match two dictionaries if the provided expression is satisfied. For '
+                             'example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary '
+                             'which has a "foo" key that has the same value as the other dictionary\'s "bar" key will '
+                             'be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None,
+                        help='similar to `--match-if`, but only attempt a match if the provided expression evaluates '
+                             'to `False`')
+    edit_output = parser.add_mutually_exclusive_group()
+    edit_output.add_argument('--only-edits', '-e', action='store_true',
+                             help='only print the edits rather than a full diff')
+    edit_output.add_argument('--edit-digest', '-d', action='store_true',
+                             help='similar to `--only-edits`, but prints a more concise context for edits')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
                             help='output format for the diff (default is to use the format of FROM_PATH)')
@@ -328,6 +340,22 @@ def main(argv=None) -> int:
                     if args.only_edits:
                         for edit in from_tree.get_all_edits(to_tree):
                             printer.write(str(edit))
+                            printer.newline()
+                            had_edits = had_edits or edit.has_non_zero_cost()
+                    elif args.edit_digest:
+                        if args.format is not None:
+                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                        else:
+                            formatter = from_format.get_default_formatter()
+
+                        for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
+                            for i, node in enumerate(ancestors):
+                                if node.parent is not None:
+                                    node.parent.print_parent_context(printer, for_child=node)
+                                if i == len(ancestors) - 1:
+                                    with printer.color(Fore.BLUE):
+                                        printer.write(" -> ")
+                                    formatter.print(printer, edit)
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()
                     else:

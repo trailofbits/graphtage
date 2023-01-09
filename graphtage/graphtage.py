@@ -180,10 +180,23 @@ class KeyValuePairNode(ContainerNode):
     def to_obj(self):
         return self.key, self.value
 
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        elif for_child is self.key:
+            # we only print the context for the value
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        self.key.print(printer)
+        with printer.color(Fore.BLUE):
+            printer.write("]")
+
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['key'] = self.key.make_edited()
-        ret['value'] = self.value.make_edited()
+        ret["key"] = self.key.make_edited()
+        ret["value"] = self.value.make_edited()
         return ret
 
     def children(self) -> Tuple[LeafNode, TreeNode]:
@@ -378,10 +391,32 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
 class MappingNode(ContainerNode, ABC):
     """An abstract base class for nodes that represent mappings."""
 
+    @classmethod
+    def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
+        return KeyValuePairNode(key=key, value=value, allow_key_edits=allow_key_edits)
+
+    @classmethod
+    @abstractmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
+        """Constructs a :class:`MappingNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
+
+        Args:
+            source_dict: The source mapping.
+
+        Returns:
+            DictNode: The resulting :class:`MappingNode`.
+
+        """
+        raise NotImplementedError()
+
     def to_obj(self) -> Dict[Any, Any]:
         return {
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
+
+    def print_parent_context(self, printer: Printer, for_child: "TreeNode"):
+        # this is handled by KeyValuePairNode
+        pass
 
     def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
         """Iterates over the key/value pairs in this mapping, similar to :meth:`dict.items`.
@@ -458,8 +493,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
     """
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`DictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -469,8 +504,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
             DictNode: The resulting :class:`DictNode`.
 
         """
-        return DictNode(
-            sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
+        return cls(
+            sorted(cls.make_key_value_pair_node(key, value, allow_key_edits=True) for key, value in source_dict.items())
         )
 
     def edits(self, node: TreeNode) -> Edit:
@@ -520,8 +555,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         """
         return dict
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`FixedKeyDictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -535,9 +570,12 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             FixedKeyDictNode: The resulting :class:`FixedKeyDictNode`
 
         """
-        return FixedKeyDictNode({
+        return cls({
             kvp.key: kvp
-            for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
+            for kvp in (
+                cls.make_key_value_pair_node(key, value, allow_key_edits=False)
+                for key, value in source_dict.items()
+            )
         })
 
     def __getitem__(self, item: LeafNode):
@@ -579,7 +617,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        ret["_children"] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
         return ret
 
     def __hash__(self):
