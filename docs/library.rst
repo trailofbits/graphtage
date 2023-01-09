@@ -86,3 +86,25 @@ just as easily output the diff in another format, like YAML::
     - 3
     - 4
 
+Diffing In-Memory Python Objects
+--------------------------------
+
+When used as a library, Graphtage has the ability to diff in-memory Python objects. This can be useful when debugging,
+for example, to quickly determine the difference between two Python objects that cause a differential.::
+
+    >>> from graphtage.pydiff import print_diff
+    >>> with printer.DEFAULT_PRINTER as p:
+    ...     obj1 = [1, 2, {3: "three"}, 4]
+    ...     obj2 = [1, 2, {3: 3}, "four"]
+    ...     print_diff(obj1, obj2, printer=p)
+    [1,2,{3: "three" -> 3},++"four"++~~4~~]
+
+Python object diffing also works with custom classes::
+
+    >>> class Foo:
+    ...     def __init__(self, bar, baz):
+    ...         self.bar = bar
+    ...         self.baz = baz
+    >>> with printer.DEFAULT_PRINTER as p:
+    ...     print_diff(Foo("bar", "baz"), Foo("bar", "bak"), printer=p)
+    Foo(bar="bar", baz="ba++k++~~z~~")
