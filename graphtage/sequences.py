@@ -63,13 +63,9 @@ class FixedLengthSequenceEdit(SequenceEdit):
     def __init__(
             self,
             from_node: 'SequenceNode',
-            to_node: 'SequenceNode',
-            sub_edits: Optional[Iterable[Edit]] = None
+            to_node: 'SequenceNode'
     ):
-        if sub_edits is not None:
-            self._sub_edits: List[Edit] = list(sub_edits)
-        else:
-            self._sub_edits = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
+        self._sub_edits: List[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
 
         if len(from_node) > len(to_node):
             self.to_remove: Sequence[TreeNode] = from_node.children()[-len(from_node) - len(to_node):]
