@@ -2,12 +2,11 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Tuple, \
-    Type, TypeVar
+from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Type, TypeVar
 
 from .bounds import Range, repeat_until_tightened
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .printer import Printer
+from .printer import Fore, Printer
 from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
@@ -129,6 +128,9 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
+        self.child_indexes: Dict[TreeNode, int] = {
+            child: i for i, child in enumerate(self.children())
+        }
 
     def children(self) -> T:
         if isinstance(self._children, list) or isinstance(self._children, tuple):
@@ -203,6 +205,21 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         ret = dict(self.__dict__)
         ret['_children'] = self.container_type(n.make_edited() for n in self)
         return ret
+
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        if for_child not in self.child_indexes:
+            with printer.color(Fore.RED):
+                printer.write("?")
+        else:
+            with printer.color(Fore.WHITE):
+                printer.write(str(self.child_indexes[for_child]))
+        with printer.color(Fore.BLUE):
+            printer.write("]")
 
     def print(self, printer: Printer):
         """Prints a sequence node.

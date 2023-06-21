@@ -6,6 +6,8 @@ import sys
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 
+from colorama.ansi import Fore
+
 from .edits import Edit
 from . import expressions
 from . import graphtage
@@ -113,9 +115,19 @@ def main(argv=None) -> int:
             default=None,
             help=f'equivalent to `--to-mime {mime}`'
         )
-    parser.add_argument('--match-if', '-m', type=str, default=None, help='only attempt to match two dictionaries if the provided expression is satisfied. For example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key that has the same value as the other dictionary\'s "bar" key will be attempted to be paired')
-    parser.add_argument('--match-unless', '-u', type=str, default=None, help='similar to `--match-if`, but only attempt a match if the provided expression evaluates to `False`')
-    parser.add_argument('--only-edits', '-e', action='store_true', help='only print the edits rather than a full diff')
+    parser.add_argument('--match-if', '-m', type=str, default=None,
+                        help='only attempt to match two dictionaries if the provided expression is satisfied. For '
+                             'example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary '
+                             'which has a "foo" key that has the same value as the other dictionary\'s "bar" key will '
+                             'be attempted to be paired')
+    parser.add_argument('--match-unless', '-u', type=str, default=None,
+                        help='similar to `--match-if`, but only attempt a match if the provided expression evaluates '
+                             'to `False`')
+    edit_output = parser.add_mutually_exclusive_group()
+    edit_output.add_argument('--only-edits', '-e', action='store_true',
+                             help='only print the edits rather than a full diff')
+    edit_output.add_argument('--edit-digest', '-d', action='store_true',
+                             help='similar to `--only-edits`, but prints a more concise context for edits')
     formatting = parser.add_argument_group(title='output formatting')
     formatting.add_argument('--format', '-f', choices=graphtage.FILETYPES_BY_TYPENAME.keys(), default=None,
                             help='output format for the diff (default is to use the format of FROM_PATH)')
@@ -135,14 +147,23 @@ def main(argv=None) -> int:
     formatting.add_argument('--join-lists', '-jl', action='store_true',
                             help='do not print a newline after each list entry')
     formatting.add_argument('--join-dict-items', '-jd', action='store_true',
-                        help='do not print a newline after each key/value pair in a dictionary')
+                            help='do not print a newline after each key/value pair in a dictionary')
     formatting.add_argument('--condensed', '-j', action='store_true', help='equivalent to `-jl -jd`')
     formatting.add_argument('--html', action='store_true', help='output the diff in HTML')
-    parser.add_argument(
+    key_match_strategy = parser.add_mutually_exclusive_group()
+    key_match_strategy.add_argument("--dict-strategy", "-ds", choices=("auto", "match", "none"),
+                                    help="sets the strategy for matching dictionary key/value pairs: `auto` (the "
+                                         "default) will automatically match two key/value pairs if they share the "
+                                         "same key, but consider key edits for all non-identical keys; `match` will "
+                                         "attempt to consider all possible key edits (the most computationally "
+                                         "expensive); and `none` will not consider any edits on dictionary keys (the "
+                                         "least computationally expensive)")
+    key_match_strategy.add_argument(
         '--no-key-edits',
         '-k',
         action='store_true',
-        help='only match dictionary entries if they share the same key. This drastically reduces computation.'
+        help='only match dictionary entries if they share the same key, drastically reducing computation; this is '
+             'equivalent to `--dict-strategy none`'
     )
     list_edit_group = parser.add_mutually_exclusive_group()
     list_edit_group.add_argument(
@@ -273,8 +294,22 @@ def main(argv=None) -> int:
     else:
         match_unless = None
 
+    if args.dict_strategy == "none":
+        allow_key_edits = False
+        auto_match_keys = False
+    elif args.dict_strategy == "auto":
+        allow_key_edits = True
+        auto_match_keys = True
+    elif args.dict_strategy == "match":
+        allow_key_edits = True
+        auto_match_keys = False
+    else:
+        allow_key_edits = not args.no_key_edits
+        auto_match_keys = allow_key_edits
+
     options = graphtage.BuildOptions(
-        allow_key_edits=not args.no_key_edits,
+        allow_key_edits=allow_key_edits,
+        auto_match_keys=auto_match_keys,
         allow_list_edits=not args.no_list_edits,
         allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
     )
@@ -305,6 +340,22 @@ def main(argv=None) -> int:
                     if args.only_edits:
                         for edit in from_tree.get_all_edits(to_tree):
                             printer.write(str(edit))
+                            printer.newline()
+                            had_edits = had_edits or edit.has_non_zero_cost()
+                    elif args.edit_digest:
+                        if args.format is not None:
+                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                        else:
+                            formatter = from_format.get_default_formatter()
+
+                        for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
+                            for i, node in enumerate(ancestors):
+                                if node.parent is not None:
+                                    node.parent.print_parent_context(printer, for_child=node)
+                                if i == len(ancestors) - 1:
+                                    with printer.color(Fore.BLUE):
+                                        printer.write(" -> ")
+                                    formatter.print(printer, edit)
                             printer.newline()
                             had_edits = had_edits or edit.has_non_zero_cost()
                     else:

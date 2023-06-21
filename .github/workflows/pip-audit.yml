@@ -1,0 +1,40 @@
+# IMPORTANT: Read and understand this template fully before applying it.
+
+name: Scan dependencies for vulnerabilities with pip-audit
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: "0 12 * * *"
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          # IMPORTANT: You may need a more specific version here.
+          python-version: "3.x"
+
+      - name: Install project
+        run: |
+          python -m venv /tmp/pip-audit-env
+          source /tmp/pip-audit-env/bin/activate
+
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install .
+
+
+      - name: Run pip-audit
+        uses: pypa/gh-action-pip-audit@v1.0.4
+        with:
+          virtual-environment: /tmp/pip-audit-env
+

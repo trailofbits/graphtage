@@ -62,8 +62,10 @@ def build_tree(
             build_tree(k, options=options, force_leaf_node=True):
                 build_tree(v, options=options) for k, v in python_obj.items()
         }
-        if options is None or options.allow_key_edits:
-            return DictNode.from_dict(dict_items)
+        if options.allow_key_edits:
+            dict_node = DictNode.from_dict(dict_items)
+            dict_node.auto_match_keys = options.auto_match_keys
+            return dict_node
         else:
             return FixedKeyDictNode.from_dict(dict_items)
     elif python_obj is None:
@@ -255,7 +257,8 @@ class JSON(Filetype):
         try:
             return self.build_tree(path=path, options=options)
         except json.decoder.JSONDecodeError as de:
-            return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})'
+            return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} ' \
+                   f'(char {de.pos})'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE
