@@ -131,6 +131,9 @@ class Range:
         self.upper_bound: RangeValue = upper_bound
         """The upper bound of this range."""
 
+    def __contains__(self, subrange: "Range") -> bool:
+        return subrange.lower_bound >= self.lower_bound and subrange.upper_bound <= self.upper_bound
+
     def __eq__(self, other):
         return self.lower_bound == other.lower_bound and self.upper_bound == other.upper_bound
 

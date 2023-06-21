@@ -326,7 +326,13 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
             if self._children == node._children:
                 return Match(self, node, 0)
             elif len(self._children) == 1 == len(node._children):
-                return self._children[0].edits(node._children[0])
+                sub_edit = self._children[0].edits(node._children[0])
+                last_bounds = sub_edit.bounds()
+                return FixedLengthSequenceEdit(
+                    from_node=self,
+                    to_node=node,
+                    sub_edits=[sub_edit]
+                )
             elif not self.allow_list_edits or (len(self._children) == len(node._children) and (
                 not self.allow_list_edits_when_same_length or len(self._children) == 1
             )):
