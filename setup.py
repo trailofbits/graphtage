@@ -51,7 +51,7 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==0.4.3", "twine"]
+        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==1.2.2", "twine"]
     },
     classifiers=[
         'Development Status :: 4 - Beta',
