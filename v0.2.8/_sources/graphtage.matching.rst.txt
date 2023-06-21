@@ -1,0 +1,110 @@
+graphtage.matching
+==================
+
+.. automodule:: graphtage.matching
+
+matching classes
+----------------
+
+Edge
+****
+
+.. autoclass:: Edge
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Matching
+********
+
+.. autoclass:: Matching
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MatchingFromNode
+****************
+
+.. autoclass:: MatchingFromNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MatchingNode
+************
+
+.. autoclass:: MatchingNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MatchingToNode
+**************
+
+.. autoclass:: MatchingToNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PathSet
+*******
+
+.. autoclass:: PathSet
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+QueueElement
+************
+
+.. autoclass:: QueueElement
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+SortedEdges
+***********
+
+.. autoclass:: SortedEdges
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+WeightedBipartiteMatcher
+************************
+
+.. autoclass:: WeightedBipartiteMatcher
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION
+**********************************************
+
+.. autoclass:: WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+matching functions
+------------------
+
+get_dtype
+*********
+
+.. autofunction:: get_dtype
+
+min_weight_bipartite_matching
+*****************************
+
+.. autofunction:: min_weight_bipartite_matching
