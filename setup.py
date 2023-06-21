@@ -36,14 +36,16 @@ setup(
     packages=find_packages(exclude=['test']),
     python_requires='>=3.7',
     install_requires=[
-        'colorama',
-        'intervaltree',
-        'json5==0.9.5',
-        'numpy>=1.19.4',
-        'PyYAML',
-        'scipy>=1.4.0',
-        'tqdm',
-        'typing_extensions>=3.7.4.3'
+        "colorama",
+        "intervaltree",
+        "json5==0.9.5",
+        "numpy>=1.19.4",
+        "PyYAML",
+        "scipy>=1.4.0",
+        "tqdm",
+        "typing_extensions>=3.7.4.3",
+        # workaround for https://github.com/python/importlib_metadata/issues/406:
+        "importlib_metadata<5; python_version == '3.7'"
     ],
     entry_points={
         'console_scripts': [
