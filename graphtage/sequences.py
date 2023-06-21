@@ -93,8 +93,6 @@ class FixedLengthSequenceEdit(SequenceEdit):
     def tighten_bounds(self) -> bool:
         for edit in self._sub_edits:
             prev_bounds = edit.bounds()
-            if str(prev_bounds) == "[29, 84]":
-                breakpoint()
             if edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 if prev_bounds.lower_bound > new_bounds.lower_bound or prev_bounds.upper_bound < new_bounds.upper_bound:
