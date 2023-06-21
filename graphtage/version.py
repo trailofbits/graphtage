@@ -59,7 +59,7 @@ If :const:`True`, the git branch will be included in the version string.
 """
 
 
-__version__: Tuple[Union[int, str], ...] = (0, 2, 7)
+__version__: Tuple[Union[int, str], ...] = (0, 2, 8)
 
 if DEV_BUILD:
     branch_name = git_branch()
