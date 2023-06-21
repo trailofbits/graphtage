@@ -202,7 +202,10 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
         elif isinstance(obj, str):
             new_node = StringNode(obj)
         elif isinstance(obj, bytes):
-            new_node = StringNode(obj.decode('utf-8'))
+            try:
+                new_node = StringNode(obj.decode('utf-8'))
+            except UnicodeDecodeError:
+                new_node = ListNode(map(IntegerNode, obj))
         elif isinstance(obj, DictValue):
             stack.append((obj, [], [obj.value, obj.key]))
         elif isinstance(obj, PyObjMember):

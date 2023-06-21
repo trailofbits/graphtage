@@ -941,6 +941,7 @@ class FiletypeWatcher(ABCMeta):
             instance = cls()
             assert instance.name in FILETYPES_BY_TYPENAME
             assert instance.default_mimetype in FILETYPES_BY_MIME
+            setattr(cls, "default_instance", instance)
         super().__init__(name, bases, clsdict)
 
 
@@ -983,6 +984,7 @@ class Filetype(metaclass=FiletypeWatcher):
     :func:`get_filetype`.
 
     """
+    default_instance: "Filetype"
 
     def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
         """Initializes a new Graphtage file format type

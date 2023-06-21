@@ -96,7 +96,8 @@ class FixedLengthSequenceEdit(SequenceEdit):
             if edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 if prev_bounds.lower_bound > new_bounds.lower_bound or prev_bounds.upper_bound < new_bounds.upper_bound:
-                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from "
+                                f"{prev_bounds} to {new_bounds}")
                 return True
         return False
 
