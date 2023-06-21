@@ -43,9 +43,7 @@ setup(
         "PyYAML",
         "scipy>=1.4.0",
         "tqdm",
-        "typing_extensions>=3.7.4.3",
-        # workaround for https://github.com/python/importlib_metadata/issues/406:
-        "importlib_metadata<5; python_version == '3.7'"
+        "typing_extensions>=3.7.4.3"
     ],
     entry_points={
         'console_scripts': [
@@ -53,7 +51,15 @@ setup(
         ]
     },
     extras_require={
-        "dev": ["flake8", "Sphinx", "pytest", "sphinx_rtd_theme==1.2.2", "twine"]
+        "dev": [
+            "flake8",
+            "Sphinx",
+            "pytest",
+            "sphinx_rtd_theme==1.2.2",
+            "twine",
+            # workaround for https://github.com/python/importlib_metadata/issues/406:
+            "importlib_metadata<5; python_version == '3.7'"
+        ]
     },
     classifiers=[
         'Development Status :: 4 - Beta',
