@@ -12,7 +12,7 @@ from typing import Optional, Union
 
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
     FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode
-from .printer import Fore, Printer
+from .printer import DEFAULT_PRINTER, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
@@ -53,14 +53,16 @@ def build_tree(
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
         return ListNode(
-            [build_tree(n, options=options) for n in python_obj],
+            [build_tree(n, options=options) for n in
+             DEFAULT_PRINTER.tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)],
             allow_list_edits=options.allow_list_edits,
             allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
         )
     elif isinstance(python_obj, dict):
         dict_items = {
             build_tree(k, options=options, force_leaf_node=True):
-                build_tree(v, options=options) for k, v in python_obj.items()
+                build_tree(v, options=options) for k, v in
+            DEFAULT_PRINTER.tqdm(python_obj.items(), delay=2.0, desc="Loading JSON Dict", leave=False)
         }
         if options.allow_key_edits:
             dict_node = DictNode.from_dict(dict_items)

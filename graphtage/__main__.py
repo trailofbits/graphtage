@@ -320,16 +320,20 @@ def main(argv=None) -> int:
                 with PathOrStdin(args.TO_PATH) as to_path:
                     from_format = graphtage.get_filetype(from_path, from_mime)
                     to_format = graphtage.get_filetype(to_path, to_mime)
-                    from_tree = from_format.build_tree_handling_errors(from_path, options)
-                    if isinstance(from_tree, str):
-                        sys.stderr.write(from_tree)
-                        sys.stderr.write('\n\n')
-                        sys.exit(1)
-                    to_tree = to_format.build_tree_handling_errors(to_path, options)
-                    if isinstance(to_tree, str):
-                        sys.stderr.write(to_tree)
-                        sys.stderr.write('\n\n')
-                        sys.exit(1)
+                    with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
+                        from_tree = from_format.build_tree_handling_errors(from_path, options)
+                        t.desc = f"Loading {to_path!s}"
+                        t.update(1)
+                        if isinstance(from_tree, str):
+                            sys.stderr.write(from_tree)
+                            sys.stderr.write('\n\n')
+                            sys.exit(1)
+                        to_tree = to_format.build_tree_handling_errors(to_path, options)
+                        t.update(1)
+                        if isinstance(to_tree, str):
+                            sys.stderr.write(to_tree)
+                            sys.stderr.write('\n\n')
+                            sys.exit(1)
                     if match_if is not None or match_unless is not None:
                         for node in from_tree.dfs():
                             if match_if is not None:
