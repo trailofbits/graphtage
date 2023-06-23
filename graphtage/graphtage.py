@@ -26,6 +26,8 @@ class LeafNode(TreeNode):
 
         """
         self.object = obj
+        # self.__hash__ gets called so often we cache the result:
+        self.__hash = hash(obj)
 
     def to_obj(self):
         """Returns the object wrapped by this node.
@@ -99,7 +101,7 @@ class LeafNode(TreeNode):
             return self.object == other
 
     def __hash__(self):
-        return hash(self.object)
+        return self.__hash
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.object!r})"
@@ -176,6 +178,8 @@ class KeyValuePairNode(ContainerNode):
         self.key: LeafNode = key
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
+        # self.__hash__ gets called so often, we cache the result:
+        self.__hash = hash((key, value))
 
     def to_obj(self):
         return self.key, self.value
@@ -269,7 +273,7 @@ class KeyValuePairNode(ContainerNode):
         return self.key == other.key and self.value == other.value
 
     def __hash__(self):
-        return hash((self.key, self.value))
+        return self.__hash
 
     def __len__(self):
         return 2
@@ -896,7 +900,7 @@ class NullNode(LeafNode):
         return isinstance(other, NullNode)
 
     def __hash__(self):
-        return hash(self.object)
+        return 0
 
     def __repr__(self):
         return f"{self.__class__.__name__}()"
