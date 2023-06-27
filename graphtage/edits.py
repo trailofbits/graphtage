@@ -380,23 +380,23 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
                          to_node=to_node,
                          cost_upper_bound=cost_upper_bound)
 
-    @property
-    def valid(self) -> bool:
-        if not super().valid:
-            return False
-        is_valid = True
-        if self._edit_iter is None:
-            for e in self._sub_edits:
-                if not e.valid:
-                    is_valid = False
-                    break
-        if not is_valid:
-            self.valid = False
-        return is_valid
-
-    @valid.setter
-    def valid(self, is_valid: bool):
-        self._valid = is_valid
+    # @property
+    # def valid(self) -> bool:
+    #     if not super().valid:
+    #         return False
+    #     is_valid = True
+    #     if self._edit_iter is None:
+    #         for e in self._sub_edits:
+    #             if not e.valid:
+    #                 is_valid = False
+    #                 break
+    #     if not is_valid:
+    #         self.valid = False
+    #     return is_valid
+    #
+    # @valid.setter
+    # def valid(self, is_valid: bool):
+    #     self._valid = is_valid
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         for sub_edit in self.edits():

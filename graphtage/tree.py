@@ -336,7 +336,7 @@ class TreeNode(metaclass=TreeNodeMeta):
     """
     _total_size = None
     _parent: Optional["TreeNode"] = None
-    edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
+    _edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
 
     @property
     def edited(self) -> bool:
@@ -348,17 +348,11 @@ class TreeNode(metaclass=TreeNodeMeta):
         return False
 
     def _edits_with_modifiers(self, node: 'TreeNode') -> Edit:
-        for modifier in self.edit_modifiers:
+        for modifier in self._edit_modifiers:
             ret = modifier(self, node)
             if ret is not None:
                 return ret
         return self.__class__.edits(self, node)
-
-    def __getattribute__(self, item):
-        if item == 'edits' and super().__getattribute__('edit_modifiers'):
-            return super().__getattribute__('_edits_with_modifiers')
-        else:
-            return super().__getattribute__(item)
 
     @abstractmethod
     def to_obj(self):
@@ -456,6 +450,12 @@ class TreeNode(metaclass=TreeNodeMeta):
         """
         raise NotImplementedError()
 
+    def add_edit_modifier(self, modifier: Callable[["TreeNode", "TreeNode"], Optional[Edit]]):
+        if self._edit_modifiers is None:
+            self._edit_modifiers = []
+            self.edits = self._edits_with_modifiers
+        self._edit_modifiers.append(modifier)
+
     def make_edited(self) -> Union[EditedTreeNode, T]:
         """Returns a new, copied instance of this node that is also an instance of :class:`EditedTreeNode`.
 
@@ -469,6 +469,8 @@ class TreeNode(metaclass=TreeNodeMeta):
 
         """
         ret = self.__class__.edited_type()(self)
+        if ret._edit_modifiers is not None:
+            ret.edits = ret._edits_with_modifiers
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
