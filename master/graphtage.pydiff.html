@@ -52,6 +52,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
@@ -566,6 +567,11 @@ instances where a list contains a dict.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.pydiff.PyObj.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pydiff.PyObj.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObj.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.pydiff.PyObj.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -640,11 +646,6 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObj.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.pydiff.PyObj.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObj.editable_dict">
@@ -882,6 +883,11 @@ the same key.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttribute.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pydiff.PyObjAttribute.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttribute.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.pydiff.PyObjAttribute.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -956,11 +962,6 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttribute.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.pydiff.PyObjAttribute.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttribute.editable_dict">
@@ -1198,6 +1199,11 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pydiff.PyObjAttributes.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.pydiff.PyObjAttributes.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -1229,11 +1235,6 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.child_indexes">
-<span class="sig-name descname"><span class="pre">child_indexes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.pydiff.PyObjAttributes.child_indexes" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.children">
@@ -1284,11 +1285,6 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.pydiff.PyObjAttributes.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjAttributes.editable_dict">
@@ -1690,6 +1686,11 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pydiff.PyObjFixedAttributes.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.pydiff.PyObjFixedAttributes.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -1716,11 +1717,6 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 </pre></div>
 </div>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.child_indexes">
-<span class="sig-name descname"><span class="pre">child_indexes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.pydiff.PyObjFixedAttributes.child_indexes" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.children">
@@ -1778,11 +1774,6 @@ This is assigned to the protected member <code class="xref py py-attr docutils l
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.pydiff.PyObjFixedAttributes.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pydiff.PyObjFixedAttributes.editable_dict">

@@ -6,6 +6,7 @@ Graphtage API
 
    graphtage
    graphtage.bounds
+   graphtage.constraints
    graphtage.csv
    graphtage.expressions
    graphtage.fibonacci

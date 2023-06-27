@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="graphtage.expressions" href="graphtage.expressions.html" />
-    <link rel="prev" title="graphtage.bounds" href="graphtage.bounds.html" /> 
+    <link rel="prev" title="graphtage.constraints" href="graphtage.constraints.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,6 +52,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.csv</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#csv-classes">csv classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#csv">CSV</a></li>
@@ -318,6 +319,11 @@ another list of the same length.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.csv.CSVNode.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVNode.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.csv.CSVNode.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -344,11 +350,6 @@ another list of the same length.</p></li>
 </pre></div>
 </div>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.csv.CSVNode.child_indexes">
-<span class="sig-name descname"><span class="pre">child_indexes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.csv.CSVNode.child_indexes" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVNode.children">
@@ -406,11 +407,6 @@ another list of the same length.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.csv.CSVNode.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVNode.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVNode.editable_dict">
@@ -624,6 +620,11 @@ another list of the same length.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.csv.CSVRow.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.add_edit_modifier" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVRow.all_children_are_leaves">
 <span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.csv.CSVRow.all_children_are_leaves" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether all of the children of this container are leaves.</p>
@@ -650,11 +651,6 @@ another list of the same length.</p></li>
 </pre></div>
 </div>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.csv.CSVRow.child_indexes">
-<span class="sig-name descname"><span class="pre">child_indexes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.csv.CSVRow.child_indexes" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVRow.children">
@@ -712,11 +708,6 @@ another list of the same length.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.csv.CSVRow.edit_modifiers">
-<span class="sig-name descname"><span class="pre">edit_modifiers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.csv.CSVRow.edit_modifiers" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVRow.editable_dict">
@@ -1249,7 +1240,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="graphtage.bounds.html" class="btn btn-neutral float-left" title="graphtage.bounds" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphtage.constraints.html" class="btn btn-neutral float-left" title="graphtage.constraints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="graphtage.expressions.html" class="btn btn-neutral float-right" title="graphtage.expressions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
