@@ -24,7 +24,7 @@ class TestPyDiff(TestCase):
         printer = graphtage.printer.Printer(ansi_color=True)
         print_diff(Foo("bar", "baz"), Foo("bar", "bak"), printer=printer)
 
-    def test_none_diff(self):
+    def test_nested_tuple_diff(self):
         tree = build_tree({"a": (1, 2)})
         self.assertIsInstance(tree, graphtage.DictNode)
         children = tree.children()
