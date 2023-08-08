@@ -212,9 +212,9 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
             stack.append((obj, [], [obj.value]))
         elif isinstance(obj, dict):
             stack.append(({}, [], [DictValue(key=k, value=v) for k, v in reversed(list(obj.items()))]))
-        elif isinstance(python_obj, (list, tuple)):
+        elif isinstance(obj, (list, tuple)):
             stack.append(([], [], list(reversed(obj))))
-        elif python_obj is None:
+        elif obj is None:
             new_node = NullNode()
         else:
             pyobj = PyObj(class_name=StringNode(obj.__class__.__name__, quoted=False), attrs=None)  # type: ignore
