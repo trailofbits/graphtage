@@ -1,14 +1,15 @@
-import itertools
 from abc import abstractmethod, ABC
+import itertools
 from typing import Any, Callable, cast, Collection, Generic, Iterator, List, Optional, Type, TypeVar
 
+from .debug import Debuggable
 from .printer import Back, Fore, Printer
 from .search import IterativeTighteningSearch
 from .bounds import Range
 from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
-class AbstractEdit(Edit, ABC):
+class AbstractEdit(Debuggable, Edit, ABC):
     """Abstract base class for the :class:`Edit` protocol."""
 
     def __init__(self,
@@ -39,6 +40,28 @@ class AbstractEdit(Edit, ABC):
          This is automatically set by calling :meth:`self.bounds()<AbstractEdit.bounds>` during initialization.
          
          """
+
+    def _debug_tighten_bounds(self) -> bool:
+        """Adds debugging assertions when tightening bounds; for debugging only"""
+        bounds_before = self.bounds()
+        result = self._original_tighten_bounds()
+        new_bounds = self.bounds()
+        if result:
+            if new_bounds not in bounds_before:
+                printer = Printer(ansi_color=True)
+                with printer:
+                    printer.write(f"The bounds before tightening {self!s} were {bounds_before!s}, but {new_bounds!s} "
+                                  f"after\n")
+                exit(255)
+        elif not new_bounds.definitive():
+            printer = Printer(ansi_color=True)
+            with printer:
+                printer.write(f"self.tighten_bounds() returned False; the bounds before tightening {self!s} were "
+                              f"{bounds_before!s} and {new_bounds!s} after, which is not definitive")
+                breakpoint()
+                self._original_tighten_bounds()
+            exit(255)
+        return result
 
     def is_complete(self) -> bool:
         """An edit is complete when no further calls to :meth:`Edit.tighten_bounds` will change the nature of the edit.
@@ -217,7 +240,7 @@ class PossibleEdits(AbstractCompoundEdit):
     def tighten_bounds(self) -> bool:
         tightened = self._search.tighten_bounds()
         # Calling self.valid checks whether our best match is invalid
-        self.valid
+        _ = self.valid
         return tightened
 
     def bounds(self) -> Range:
