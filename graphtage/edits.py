@@ -322,7 +322,7 @@ class Replace(ConstantCostEdit):
             with printer.bright().color(Fore.WHITE).background(Back.GREEN):
                 formatter.print(printer, self.to_node, False)
         else:
-            formatter.print(self.to_node, printer, False)
+            formatter.print(printer, self.to_node, False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(to_replace={self.from_node!r}, replace_with={self.to_node!r})"
@@ -422,7 +422,7 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
             cost_upper_bound += to_node.total_size
         self._cost = None
         self.explode_edits = explode_edits
-        self._add: Callable[[Edit], Any] = lambda e: add_to_collection(self._sub_edits, e)
+        self._add: Callable[[Edit], Any] = lambda e: add_to_collection(self._sub_edits, e)  # type: ignore
         super().__init__(from_node=from_node,
                          to_node=to_node,
                          cost_upper_bound=cost_upper_bound)
