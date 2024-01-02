@@ -16,8 +16,7 @@ class AbstractEdit(Debuggable, Edit, ABC):
                  from_node: TreeNode,
                  to_node: TreeNode = None,
                  constant_cost: Optional[int] = 0,
-                 cost_upper_bound: Optional[int] = None
-    ):
+                 cost_upper_bound: Optional[int] = None):
         """Constructs a new Edit.
 
         Args:
@@ -59,9 +58,33 @@ class AbstractEdit(Debuggable, Edit, ABC):
                 printer.write(f"self.tighten_bounds() returned False; the bounds before tightening {self!s} were "
                               f"{bounds_before!s} and {new_bounds!s} after, which is not definitive")
                 breakpoint()
+                _ = self.bounds()
                 self._original_tighten_bounds()
             exit(255)
         return result
+
+    def _debug___all__(self, name, method, *args, **kwargs):
+        if name in ("bounds", "__getattribute__", "tighten_bounds", "_original_tighten_bounds", "_checking_bounds") \
+                or (hasattr(self, "_checking_bounds") and self._checking_bounds):
+            checking_before = hasattr(self, "_checking_bounds") and self._checking_bounds
+            setattr(self, "_checking_bounds", True)
+            try:
+                return method(*args, **kwargs)
+            finally:
+                setattr(self, "_checking_bounds", checking_before)
+
+        setattr(self, "_checking_bounds", True)
+        try:
+            bounds_before = self.bounds()
+            new_result = method(*args, **kwargs)
+            new_bounds = self.bounds()
+        finally:
+            setattr(self, "_checking_bounds", False)
+        if new_bounds != bounds_before:
+            print(f"Error: Bounds before calling {self!r}.{name}(*{args!r}, **{kwargs!r}) were {bounds_before!s} "
+                  f"but {new_bounds!s} after")
+            exit(255)
+        return new_result
 
     def is_complete(self) -> bool:
         """An edit is complete when no further calls to :meth:`Edit.tighten_bounds` will change the nature of the edit.
@@ -275,7 +298,8 @@ class Match(ConstantCostEdit):
             formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, cost={self.bounds().lower_bound!r})"
+        return (f"{self.__class__.__name__}(match_from={self.from_node!r}, match_to={self.to_node!r}, "
+                f"cost={self.bounds().lower_bound!r})")
 
 
 class Replace(ConstantCostEdit):
