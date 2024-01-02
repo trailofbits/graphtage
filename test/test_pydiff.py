@@ -1,7 +1,10 @@
+import dataclasses
 from unittest import TestCase
 
 import graphtage
 from graphtage.pydiff import build_tree, print_diff, PyDiffFormatter
+
+from .timing import run_with_time_limit
 
 
 class TestPyDiff(TestCase):
@@ -33,3 +36,13 @@ class TestPyDiff(TestCase):
         self.assertIsInstance(kvp, graphtage.KeyValuePairNode)
         self.assertIsInstance(kvp.key, graphtage.StringNode)
         self.assertIsInstance(kvp.value, graphtage.ListNode)
+
+    def test_infinite_loop(self):
+        """Reproduces https://github.com/trailofbits/graphtage/issues/82"""
+
+        @dataclasses.dataclass
+        class Thing:
+            foo: str
+
+        with run_with_time_limit(60):
+            _ = graphtage.pydiff.diff([Thing("ok")], [Thing("bad")])
