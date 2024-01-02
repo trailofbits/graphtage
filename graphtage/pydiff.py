@@ -4,7 +4,7 @@ See :doc:`the documentation on using Graphtage programmatically <library>` for s
 """
 from typing import Any, List, Optional, Tuple, Union, Iterator
 
-
+from . import Range
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode,
@@ -18,24 +18,27 @@ from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
 class PyObjEdit(AbstractCompoundEdit):
     def __init__(self, from_obj: "PyObj", to_obj: "PyObj"):
+        self.name_edit: Edit = from_obj.class_name.edits(to_obj.class_name)
+        self.attrs_edit: Edit = from_obj.attrs.edits(to_obj.attrs)
         super().__init__(from_obj, to_obj)
         self.from_obj: PyObj = from_obj
         self.to_obj: PyObj = to_obj
-        self.name_edit: Edit = self.from_obj.class_name.edits(self.to_obj.class_name)
-        self.attrs_edit: Edit = from_obj.attrs.edits(to_obj.attrs)
 
     def edits(self) -> Iterator[Edit]:
         yield self.name_edit
         yield self.attrs_edit
 
+    def bounds(self) -> Range:
+        return self.name_edit.bounds() + self.attrs_edit.bounds()
+
     def tighten_bounds(self) -> bool:
-        if self.name_edit.tighten_bounds():
-            return True
-        else:
-            return self.attrs_edit.tighten_bounds()
+        return self.name_edit.tighten_bounds() or self.attrs_edit.tighten_bounds()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         raise NotImplementedError()
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(from_obj={self.from_obj!r}, to_obj={self.to_obj!r})"
 
 
 class PyObjAttribute(KeyValuePairNode):
@@ -87,6 +90,9 @@ class PyObj(ContainerNode):
 
     def __len__(self) -> int:
         return 2
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(class_name={self.class_name!r}, attrs={self.attrs!r})"
 
 
 def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeNode:
