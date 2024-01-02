@@ -34,9 +34,10 @@ setup(
     author='Trail of Bits',
     version=get_version_string(),
     packages=find_packages(exclude=['test']),
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=[
         "colorama",
+        "fickling>=0.0.8",
         "intervaltree",
         "json5==0.9.5",
         "numpy>=1.19.4",
