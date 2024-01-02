@@ -227,6 +227,9 @@ def main(argv=None) -> int:
         mimetypes.add_type('application/json5', '.json5')
     if '.plist' not in mimetypes.types_map:
         mimetypes.add_type('application/x-plist', '.plist')
+    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-python-pickle', '.pkl')
+        mimetypes.suffix_map['.pickle'] = '.pkl'
 
     if args.from_mime is not None:
         from_mime = args.from_mime
