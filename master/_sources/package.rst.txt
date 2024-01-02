@@ -8,6 +8,7 @@ Graphtage API
    graphtage.bounds
    graphtage.constraints
    graphtage.csv
+   graphtage.debug
    graphtage.expressions
    graphtage.fibonacci
    graphtage.formatter

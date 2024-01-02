@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.debug.html">graphtage.debug</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
@@ -192,6 +193,12 @@
 <dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractCompoundEdit.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.AbstractCompoundEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -326,7 +333,7 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.AbstractEdit">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">AbstractEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_cost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_upper_bound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="graphtage.debug.html#graphtage.debug.Debuggable" title="graphtage.debug.Debuggable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Debuggable</span></code></a>, <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
 <p>Abstract base class for the <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Edit</span></code></a> protocol.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.AbstractEdit.__init__">
@@ -348,6 +355,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="sig sig-object py" id="graphtage.AbstractEdit.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.AbstractEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.AbstractEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -898,6 +911,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="sig sig-object py" id="graphtage.ConstantCostEdit.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.ConstantCostEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.ConstantCostEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1800,6 +1819,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.EditCollection._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.EditCollection._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.EditCollection.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.EditCollection.bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the bounds of this edit.</p>
@@ -1967,6 +1992,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="sig sig-object py" id="graphtage.EditSequence.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditSequence.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.EditSequence._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.EditSequence._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2671,6 +2702,12 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the bounds of this edit.</p>
@@ -3187,6 +3224,12 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Insert._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Insert._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Insert.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.Insert.bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the bounds of this edit.</p>
@@ -3600,6 +3643,12 @@ printed.</p>
 <dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairEdit.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.KeyValuePairEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.KeyValuePairEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -4994,6 +5043,12 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Match._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Match._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Match.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.Match.bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the bounds of this edit.</p>
@@ -5670,6 +5725,12 @@ printed.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.PossibleEdits._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.PossibleEdits._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.PossibleEdits.best_possibility">
 <span class="sig-name descname"><span class="pre">best_possibility</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.PossibleEdits.best_possibility" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the best possibility as of yet.</p>
@@ -5836,6 +5897,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Remove._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Remove._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Remove.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.Remove.bounds" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the bounds of this edit.</p>
@@ -5963,6 +6030,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="sig sig-object py" id="graphtage.Replace.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Replace._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Replace._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
@@ -6094,6 +6167,12 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dt class="sig sig-object py" id="graphtage.StringEdit.__lt__">
 <span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit.__lt__" title="Permalink to this definition"></a></dt>
 <dd><p>Tests whether the bounds of this edit are less than the bounds of <code class="xref py py-obj docutils literal notranslate"><span class="pre">other</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.StringEdit._debug_tighten_bounds">
+<span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.StringEdit._debug_tighten_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
 </dd></dl>
 
 <dl class="py method">
