@@ -2,7 +2,9 @@
 
 See :doc:`the documentation on using Graphtage programmatically <library>` for some examples.
 """
-from typing import Any, List, Optional, Tuple, Union, Iterator
+import ast
+from dataclasses import dataclass
+from typing import Any, Iterable, List, Optional, Tuple, Union, Iterator
 
 from . import Range
 from .edits import AbstractCompoundEdit, Edit, Replace
@@ -93,6 +95,148 @@ class PyObj(ContainerNode):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(class_name={self.class_name!r}, attrs={self.attrs!r})"
+
+
+ASTNode = Union[ast.AST, ast.stmt, ast.expr, ast.alias]
+
+
+@dataclass(frozen=True)
+class Module:
+    statements: Tuple[Any, ...]
+
+    def __str__(self):
+        return "\n".join(map(str, self.statements))
+
+
+@dataclass(frozen=True)
+class Assignment:
+    targets: Tuple[str, ...]
+    value: Any
+
+    def __str__(self):
+        return f"{', '.join(map(str, self.targets))} = {self.value!s}"
+
+
+class Call:
+    def __init__(self, func, *args):
+        self.func = func
+        self.args = args
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(func={self.func!r}, *{self.args!r})"
+
+    def __str__(self):
+        return f"{self.func!s}({', '.join(map(str, self.args))})"
+
+
+@dataclass(frozen=True)
+class Alias:
+    name: str
+    as_name: Optional[str] = None
+
+    def __str__(self):
+        if self.as_name is None:
+            return self.name
+        return f"{self.name} as {self.as_name}"
+
+
+@dataclass(frozen=True)
+class Import:
+    names: Tuple[Union[str, Alias], ...]
+    from_name: Optional[str] = None
+
+    def __str__(self):
+        if self.from_name is None or self.from_name == "__main__":
+            return f"import {', '.join(map(str, self.names))}"
+        return f"from {self.from_name} import {', '.join(map(str, self.names))}"
+
+
+@dataclass(frozen=True)
+class Attribute:
+    attr: str
+    value: Any
+
+    def __str__(self):
+        return f"{self.attr!s} = {self.value!s}"
+
+
+def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNode:
+    """Builds a Graphtage tree from a Python Abstract Syntax Tree.
+
+    Args:
+        tree: The abstract syntax tree from which to build the Graphtage tree.
+        options: An optional set of options for building the tree.
+
+    Returns:
+        TreeNode: The resulting tree.
+    """
+    work: List[Tuple[ASTNode, List[Any], List[ASTNode]]] = [(tree, [], list(reversed(tree.body)))]
+    while work:
+        node, processed_children, remaining_children = work.pop()
+        if remaining_children:
+            child = remaining_children.pop()
+            new_children: List[ASTNode]
+            if isinstance(child, ast.Module):
+                new_children = child.body
+            elif isinstance(child, ast.List):
+                new_children = child.elts
+            elif isinstance(child, ast.Assign):
+                new_children = child.targets + [child.value]
+            elif isinstance(child, (ast.Name, ast.Constant)):
+                new_children = []
+            elif isinstance(child, ast.Call):
+                new_children = [child.func] + child.args
+            elif isinstance(child, ast.ImportFrom):
+                new_children = child.names
+            elif isinstance(child, ast.alias):
+                new_children = []
+            elif isinstance(child, ast.Expr):
+                work.append((node, processed_children, remaining_children + [child.value]))
+                continue
+            elif isinstance(child, ast.Attribute):
+                new_children = [child.value]
+            elif isinstance(child, ast.Dict):
+                new_children = child.keys + child.values
+            else:
+                raise NotImplementedError(str(child.__class__))
+            work.append((node, processed_children, remaining_children))
+            work.append((child, [], list(reversed(new_children))))  # type: ignore
+            continue
+        result: Optional[Any] = None
+        if not remaining_children:
+            if isinstance(node, ast.Module):
+                result = Module(tuple(processed_children))
+            elif isinstance(node, ast.List):
+                result = processed_children
+            elif isinstance(node, ast.Name):
+                result = node.id
+            elif isinstance(node, ast.Constant):
+                result = node.value
+            elif isinstance(node, ast.Assign):
+                result = Assignment(targets=tuple(processed_children[:-1]), value=processed_children[-1])
+            elif isinstance(node, ast.Call):
+                result = Call(processed_children[0], *processed_children[1:])
+            elif isinstance(node, ast.alias):
+                result = Alias(name=node.name, as_name=node.asname)
+            elif isinstance(node, ast.ImportFrom):
+                result = Import(names=tuple(processed_children), from_name=node.module)
+            elif isinstance(node, ast.Attribute):
+                result = Attribute(attr=node.attr, value=processed_children[0])
+            elif isinstance(node, ast.Dict):
+                n = len(processed_children) // 2
+                keys = processed_children[:n]
+                values = processed_children[n:]
+                result = {
+                    k: v
+                    for k, v in zip(keys, values)
+                }
+            else:
+                raise NotImplementedError(str(node.__class__))
+        if not work:
+            return build_tree(result)
+        else:
+            work[-1][1].append(result)
+    return build_tree(None, options=options)
 
 
 def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeNode:

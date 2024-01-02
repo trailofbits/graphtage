@@ -4,7 +4,7 @@ from typing import Optional, Union
 from fickling.fickle import Interpreter, Pickled, PickleDecodeError
 
 from .graphtage import BuildOptions, Filetype, TreeNode
-from .pydiff import build_tree as pydiff_build_tree, PyDiffFormatter
+from .pydiff import ast_to_tree, PyDiffFormatter
 
 
 class Pickle(Filetype):
@@ -27,7 +27,7 @@ class Pickle(Filetype):
             pickle = Pickled.load(f)
             interpreter = Interpreter(pickle)
             ast = interpreter.to_ast()
-            return pydiff_build_tree(ast, options)
+            return ast_to_tree(ast, options)
 
     def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
         try:
