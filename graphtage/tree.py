@@ -4,7 +4,7 @@ import sys
 from abc import abstractmethod, ABC, ABCMeta
 from functools import wraps
 from typing import (
-    Any, Callable, Collection, Dict, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+    Any, Callable, Collection, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
 )
 from typing_extensions import Protocol, runtime_checkable
 
@@ -370,6 +370,26 @@ class TreeNode(metaclass=TreeNodeMeta):
         """
         raise NotImplementedError()
 
+    def copy_from(self: T, children: Iterable["TreeNode"]) -> T:
+        """Constructs a new instance of this tree node from a list of its children"""
+        return self.__class__(*children)
+
+    def copy(self: T) -> T:
+        """Creates a deep copy of this node"""
+        work: List[Tuple[TreeNode, List[TreeNode], List[TreeNode]]] = [(self, [], list(reversed(self.children())))]
+        while work:
+            node, processed_children, remaining_children = work.pop()
+            if not remaining_children:
+                new_node = node.copy_from(processed_children)
+                if not work:
+                    return new_node
+                work[-1][1].append(new_node)
+            else:
+                child = remaining_children.pop()
+                work.append((node, processed_children, remaining_children))
+                work.append((child, [], list(reversed(child.children()))))
+        raise NotImplementedError("This should not be reachable")
+
     @property
     def parent(self) -> Optional["TreeNode"]:
         """The parent node of this node, or :const:`None` if it has no parent.
@@ -401,8 +421,8 @@ class TreeNode(metaclass=TreeNodeMeta):
         self._parent = parent_node
 
     @abstractmethod
-    def children(self) -> Collection['TreeNode']:
-        """Returns a collection of this node's children, if any.
+    def children(self) -> Sequence['TreeNode']:
+        """Returns a sequence of this node's children, if any.
 
         It is the responsibility of any node that has children must set the `.parent` member of each child.
         """

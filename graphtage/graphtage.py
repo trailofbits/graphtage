@@ -16,6 +16,10 @@ from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
 
 
+C = TypeVar("C", bound=TreeNode)
+T = TypeVar("T", bound=TreeNode)
+
+
 class LeafNode(TreeNode):
     """Abstract class for nodes that have no children."""
 
@@ -29,6 +33,9 @@ class LeafNode(TreeNode):
         self.object = obj
         # self.__hash__ gets called so often we cache the result:
         self.__hash = hash(obj)
+
+    def copy_from(self: C, children: Iterable["TreeNode"]) -> C:
+        return self.__class__(self.object)
 
     def to_obj(self):
         """Returns the object wrapped by this node.
@@ -290,9 +297,6 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-T = TypeVar('T', bound=TreeNode)
-
-
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     """A node containing an ordered sequence of nodes."""
 
@@ -312,6 +316,9 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
         super().__init__(tuple(nodes))
         self.allow_list_edits: bool = allow_list_edits
         self.allow_list_edits_when_same_length: bool = allow_list_edits_when_same_length
+
+    def copy_from(self: C, children: Iterable[TreeNode]) -> C:
+        return self.__class__(children)
 
     def to_obj(self):
         return [n.to_obj() for n in self]
@@ -361,6 +368,9 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             items = HashableCounter(items)
         super().__init__(items)
         self.auto_match_keys: bool = auto_match_keys
+
+    def copy_from(self: C, children: Iterable[T]) -> C:
+        return self.__class__(children, auto_match_keys=self.auto_match_keys)
 
     def to_obj(self):
         return HashableCounter(n.to_obj() for n in self)
@@ -881,6 +891,9 @@ class NullNode(LeafNode):
 
     def __init__(self):
         super().__init__(None)
+
+    def copy_from(self: T, children: Iterable[TreeNode]) -> T:
+        return NullNode()
 
     def calculate_total_size(self) -> int:
         return 0

@@ -229,7 +229,11 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
             if isinstance(node, ast.Module):
                 result = PyModule(tuple(processed_children))
             elif isinstance(node, ast.List):
-                result = build_tree(processed_children, options=options)
+                result = ListNode(
+                    processed_children,
+                    allow_list_edits=options.allow_list_edits,
+                    allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+                )
             elif isinstance(node, ast.Name):
                 result = build_tree(node.id, options=options)
             elif isinstance(node, ast.Constant):
@@ -273,7 +277,6 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
             else:
                 raise NotImplementedError(str(node.__class__))
         if not work:
-            result.print(Printer())
             return result
         else:
             work[-1][1].append(result)
