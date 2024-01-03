@@ -3,10 +3,10 @@
 See :doc:`the documentation on using Graphtage programmatically <library>` for some examples.
 """
 import ast
-from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union, Iterable, Iterator
 
 from . import Range
+from .dataclasses import DataClassNode
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode,
@@ -105,33 +105,11 @@ class PyModule(ListNode):
         SequenceFormatter('', '', '\n').print(printer, self)
 
 
-class PyAssignment(ContainerNode):
+class PyAssignment(DataClassNode):
     """A node representing a Python assignment."""
 
-    def __init__(self, targets: Iterable[TreeNode], value: TreeNode):
-        """Creates a new assignment node."""
-        self.targets: ListNode = ListNode(targets)
-        self.value: TreeNode = value
-        # self.__hash__ gets called so often, we cache the result:
-        self.__hash = hash((self.targets, value))
-
-    def to_obj(self):
-        return self.targets.to_obj(), self.value.to_obj()
-
-    def editable_dict(self) -> Dict[str, Any]:
-        ret = dict(self.__dict__)
-        ret["targets"] = self.targets.make_edited()
-        ret["value"] = self.value.make_edited()
-        return ret
-
-    def children(self) -> List[TreeNode]:
-        return [self.targets, self.value]
-
-    def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, PyAssignment):
-            return PyAssignmentEdit(self, node)
-        else:
-            return Replace(self, node)
+    targets: ListNode
+    value: TreeNode
 
     def print(self, printer: Printer):
         """Prints this node."""
@@ -139,62 +117,6 @@ class PyAssignment(ContainerNode):
         with printer.bright():
             printer.write(" = ")
         self.value.print(printer)
-
-    def calculate_total_size(self):
-        return self.targets.total_size + self.value.total_size + 2
-
-    def __lt__(self, other):
-        """ Compares this assignment to another.
-
-        If :obj:`other` is also an instance of :class:`PyAssignment`, return::
-
-            (self.targets < other.targets) or (self.targets == other.targets and self.value < other.value)
-
-        otherwise, return::
-
-            self.value < other
-
-        Args:
-            other: The object to which to compare.
-
-        Returns:
-            bool: :const:`True` if this assignment is smaller than :obj:`other`.
-
-        """
-        if not isinstance(other, PyAssignment):
-            return self.value < other
-        return (self.targets < other.targets) or (self.targets == other.targets and self.value < other.value)
-
-    def __eq__(self, other):
-        """Tests whether this PyAssignment equals another.
-
-        Equivalent to::
-
-            isinstance(other, PyAssignment) and self.targets == other.targets and self.value == other.value
-
-        Args:
-            other: The object to test.
-
-        Returns:
-            bool: :const:`True` if this assignment is equal to :obj:`other`.
-
-        """
-        if not isinstance(other, PyAssignment):
-            return False
-        return self.targets == other.targets and self.value == other.value
-
-    def __hash__(self):
-        return self.__hash
-
-    def __len__(self):
-        return 2
-
-    def __iter__(self):
-        yield self.targets
-        yield self.value
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(targets={self.targets!r}, value={self.value!r})"
 
     def __str__(self):
         return f"{', '.join(map(str, self.targets.children()))} = {self.value!s}"
@@ -207,35 +129,12 @@ class PyAttribute(KeyValuePairNode):
         self.value.print(printer)
 
 
-class PyCall(ContainerNode):
+class PyCall(DataClassNode):
     """A node representing a Python function call."""
 
-    def __init__(self, func: TreeNode, args: Iterable[TreeNode] = (), kwargs: Iterable[PyAttribute] = ()):
-        """Creates a new call node."""
-        self.func: TreeNode = func
-        self.args: ListNode = ListNode(args)
-        self.kwargs: DictNode = DictNode(kwargs)
-        # self.__hash__ gets called so often, we cache the result:
-        self.__hash = hash((self.func, self.args))
-
-    def to_obj(self):
-        return self.func.to_obj(), self.args.to_obj(), self.kwargs.to_obj()
-
-    def editable_dict(self) -> Dict[str, Any]:
-        ret = dict(self.__dict__)
-        ret["func"] = self.func.make_edited()
-        ret["args"] = self.args.make_edited()
-        ret["kwargs"] = self.kwargs.make_edited()
-        return ret
-
-    def children(self) -> List[TreeNode]:
-        return [self.func, self.args, self.kwargs]
-
-    def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, PyCall):
-            return PyCallEdit(self, node)
-        else:
-            return Replace(self, node)
+    func: TreeNode
+    args: ListNode
+    kwargs: DictNode
 
     def print(self, printer: Printer):
         with printer.color(Fore.YELLOW):
@@ -251,37 +150,6 @@ class PyCall(ContainerNode):
                 printer.write("=")
             kvp.value.print(printer)
         printer.write(")")
-
-    def calculate_total_size(self):
-        return self.func.total_size + self.args.total_size + self.kwargs + 3
-
-    def __lt__(self, other):
-        """Compares this call to another."""
-        if not isinstance(other, PyCall):
-            return False
-        return self.func < other.func or (self.func == other.func and (self.args < other.args or (
-            self.args == other.args and self.kwargs < other.kwargs
-        )))
-
-    def __eq__(self, other):
-        """Tests whether this PyCall equals another."""
-        if not isinstance(other, PyCall):
-            return False
-        return self.func == other.func and self.args == other.args and self.kwargs == other.kwargs
-
-    def __hash__(self):
-        return self.__hash
-
-    def __len__(self):
-        return 3
-
-    def __iter__(self):
-        yield self.func
-        yield self.args
-        yield self.kwargs
-
-    def __repr__(self):
-        return f"{self.__class__.__name__}(func={self.func!r}, args={self.args!r}, kwargs={self.kwargs!r})"
 
     def __str__(self):
         args = ", ".join([str(a) for a in self.args] + [
@@ -299,9 +167,19 @@ class PyAlias(KeyValuePairNode):
             self.value.print(printer)
 
 
-class PyImport(ContainerNode):
-    names: Tuple[Union[str, PyAlias], ...]
-    from_name: Optional[str] = None
+class PyImport(DataClassNode):
+    names: ListNode
+    from_name: StringNode
+
+    def print(self, printer: Printer):
+        if self.from_name.object:
+            with printer.color(Fore.YELLOW):
+                printer.write("from ")
+            self.from_name.print(printer)
+            printer.write(" ")
+        with printer.color(Fore.YELLOW):
+            printer.write("import ")
+        SequenceFormatter('', '', ', ').print(printer, self.names)
 
 
 def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNode:
@@ -357,9 +235,13 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
             elif isinstance(node, ast.Constant):
                 result = build_tree(node.value, options=options)
             elif isinstance(node, ast.Assign):
-                result = PyAssignment(targets=tuple(processed_children[:-1]), value=processed_children[-1])
+                result = PyAssignment(targets=ListNode(processed_children[:-1]), value=processed_children[-1])
             elif isinstance(node, ast.Call):
-                result = PyCall(processed_children[0], processed_children[1:])
+                result = PyCall(
+                    processed_children[0],
+                    ListNode(processed_children[1:]),  # type: ignore
+                    DictNode(())
+                )
             elif isinstance(node, ast.alias):
                 if not node.asname:
                     as_name = NullNode()
@@ -368,10 +250,10 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                 result = PyAlias(StringNode(node.name), as_name)
             elif isinstance(node, ast.ImportFrom):
                 if node.module is None:
-                    from_name = NullNode()
+                    from_name = StringNode("")
                 else:
                     from_name = StringNode(node.module)
-                result = PyImport(names=processed_children, from_name=from_name)
+                result = PyImport(names=ListNode(processed_children), from_name=from_name)
             elif isinstance(node, ast.Attribute):
                 result = PyAttribute(StringNode(node.attr), processed_children[0])
             elif isinstance(node, ast.Dict):
@@ -391,6 +273,7 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
             else:
                 raise NotImplementedError(str(node.__class__))
         if not work:
+            result.print(Printer())
             return result
         else:
             work[-1][1].append(result)

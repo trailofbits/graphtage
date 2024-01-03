@@ -628,7 +628,7 @@ class ContainerNode(TreeNode, Sized, ABC):
     """A tree node that has children."""
 
     @abstractmethod
-    def __iter__(self):
+    def __iter__(self) -> Iterator[TreeNode]:
         raise NotImplementedError()
 
     def __init_subclass__(cls, **kwargs):
@@ -679,3 +679,4 @@ class ContainerNode(TreeNode, Sized, ABC):
 
         """
         return all(c.is_leaf for c in self)
+
