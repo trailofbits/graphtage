@@ -4,7 +4,7 @@ See :doc:`the documentation on using Graphtage programmatically <library>` for s
 """
 import ast
 from dataclasses import dataclass
-from typing import Any, Iterable, List, Optional, Tuple, Union, Iterator
+from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from . import Range
 from .edits import AbstractCompoundEdit, Edit, Replace

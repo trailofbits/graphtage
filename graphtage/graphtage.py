@@ -2,6 +2,7 @@ __docformat__ = "google"
 
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
+import copy as copy_module
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
@@ -974,6 +975,9 @@ class BuildOptions:
         """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
+
+    def copy(self) -> "BuildOptions":
+        return copy_module.copy(self)
 
     def __getattr__(self, item):
         """Default all undefined options to :const:`False`"""
