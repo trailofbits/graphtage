@@ -3,7 +3,7 @@
 See :doc:`the documentation on using Graphtage programmatically <library>` for some examples.
 """
 import ast
-from typing import Any, Dict, List, Optional, Tuple, Union, Iterable, Iterator
+from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from . import Range
 from .dataclasses import DataClassNode
@@ -43,20 +43,31 @@ class PyObjEdit(AbstractCompoundEdit):
         return f"{self.__class__.__name__}(from_obj={self.from_obj!r}, to_obj={self.to_obj!r})"
 
 
-class PyObjAttribute(KeyValuePairNode):
+class PyKeywordArgument(KeyValuePairNode):
     pass
+
+
+class PyObjAttribute(DataClassNode):
+    object: TreeNode
+    attr: StringNode
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if isinstance(object, StringNode):
+            object.quoted = False
+        self.attr.quoted = False
 
 
 class PyObjAttributes(DictNode):
     @classmethod
     def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
-        return PyObjAttribute(key=key, value=value, allow_key_edits=allow_key_edits)
+        return PyKeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 class PyObjFixedAttributes(FixedKeyDictNode):
     @classmethod
     def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
-        return PyObjAttribute(key=key, value=value, allow_key_edits=allow_key_edits)
+        return PyKeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 PyObjAttributeMapping = Union[PyObjAttributes, PyObjFixedAttributes]
@@ -122,19 +133,25 @@ class PyAssignment(DataClassNode):
         return f"{', '.join(map(str, self.targets.children()))} = {self.value!s}"
 
 
-class PyAttribute(KeyValuePairNode):
-    def print(self, printer: Printer):
-        self.key.print(printer)
-        printer.write("=")
-        self.value.print(printer)
+class PyCallArguments(ListNode):
+    pass
+
+
+class PyCallKeywords(DictNode):
+    pass
 
 
 class PyCall(DataClassNode):
     """A node representing a Python function call."""
 
     func: TreeNode
-    args: ListNode
-    kwargs: DictNode
+    args: PyCallArguments
+    kwargs: PyCallKeywords
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if isinstance(self.func, StringNode):
+            self.func.quoted = False
 
     def print(self, printer: Printer):
         with printer.color(Fore.YELLOW):
@@ -159,17 +176,27 @@ class PyCall(DataClassNode):
         return f"{self.func!s}({args})"
 
 
-class PyAlias(KeyValuePairNode):
+class PyAlias(DataClassNode):
+    name: StringNode
+    as_name: StringNode
+
     def print(self, printer: Printer):
-        self.key.print(printer)
-        if not isinstance(self.value, NullNode):
+        self.name.print(printer)
+        if self.as_name.object:
             printer.write(" as ")
-            self.value.print(printer)
+            self.as_name.print(printer)
 
 
 class PyImport(DataClassNode):
     names: ListNode
     from_name: StringNode
+
+    def __init__(self, names: ListNode, from_name: StringNode):
+        super().__init__(names=names, from_name=from_name)
+        self.from_name.quoted = False
+        for child in self.names:
+            if isinstance(child, StringNode):
+                child.quoted = False
 
     def print(self, printer: Printer):
         if self.from_name.object:
@@ -235,31 +262,34 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                     allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
                 )
             elif isinstance(node, ast.Name):
-                result = build_tree(node.id, options=options)
+                result = StringNode(node.id, quoted=False)
             elif isinstance(node, ast.Constant):
                 result = build_tree(node.value, options=options)
             elif isinstance(node, ast.Assign):
                 result = PyAssignment(targets=ListNode(processed_children[:-1]), value=processed_children[-1])
             elif isinstance(node, ast.Call):
+                func_name = processed_children[0]
+                if isinstance(func_name, StringNode):
+                    func_name.quoted = False
                 result = PyCall(
-                    processed_children[0],
-                    ListNode(processed_children[1:]),  # type: ignore
-                    DictNode(())
+                    func_name,
+                    PyCallArguments(processed_children[1:]),  # type: ignore
+                    PyCallKeywords(())
                 )
             elif isinstance(node, ast.alias):
                 if not node.asname:
                     as_name = NullNode()
                 else:
                     as_name = StringNode(node.asname)
-                result = PyAlias(StringNode(node.name), as_name)
+                result = PyAlias(StringNode(node.name, quoted=False), as_name)
             elif isinstance(node, ast.ImportFrom):
                 if node.module is None:
-                    from_name = StringNode("")
+                    from_name = StringNode("", quoted=False)
                 else:
-                    from_name = StringNode(node.module)
+                    from_name = StringNode(node.module, quoted=False)
                 result = PyImport(names=ListNode(processed_children), from_name=from_name)
             elif isinstance(node, ast.Attribute):
-                result = PyAttribute(StringNode(node.attr), processed_children[0])
+                result = PyObjAttribute(processed_children[0], StringNode(node.attr, quoted=False))
             elif isinstance(node, ast.Dict):
                 n = len(processed_children) // 2
                 keys = processed_children[:n]
@@ -438,6 +468,33 @@ class PyDictFormatter(JSONDictFormatter):
         pass
 
 
+class PyImportFormatter(SequenceFormatter):
+    is_partial = True
+
+    sub_format_types = [PyListFormatter]
+
+    def __init__(self):
+        super().__init__('', '', ', ')
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        pass
+
+    def print_PyAssignment(self, printer: Printer, node: PyAssignment):
+        super().print_SequenceNode(printer, node.targets)
+        printer.write(" = ")
+        self.print(printer, node.value)
+
+    def print_PyImport(self, printer: Printer, node: PyImport):
+        if node.from_name.object:
+            with printer.color(Fore.BLUE):
+                printer.write("from ")
+            self.print(printer, node.from_name)
+            printer.write(" ")
+        with printer.color(Fore.BLUE):
+            printer.write("import ")
+        self.print_SequenceNode(printer, node.names)
+
+
 class PyObjFormatter(SequenceFormatter):
     is_partial = True
 
@@ -454,14 +511,29 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.class_name)
         self.print(printer, node.attrs)
 
+    def print_PyCall(self, printer: Printer, node: PyCall):
+        with printer.color(Fore.YELLOW):
+            self.print(printer, node.func)
+        self.print(printer, node.args)
+        if node.kwargs.children():
+            raise NotImplementedError("TODO: Implement full support for keword arguments")
+
+    def print_PyCallArguments(self, *args, **kwargs):
+        super().print_SequenceNode(*args, **kwargs)
+
     def print_PyObjAttributes(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
     def print_PyObjFixedAttributes(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
-    def print_PyObjAttribute(self, printer: Printer, node: KeyValuePairNode):
-        """Prints a :class:`graphtage.PyObjAttribute` key/value pair.
+    def print_PyObjAttribute(self, printer: Printer, node: PyObjAttribute):
+        self.print(printer, node.object)
+        printer.write(".")
+        self.print(printer, node.attr)
+
+    def print_PyKeywordArgument(self, printer: Printer, node: KeyValuePairNode):
+        """Prints a :class:`graphtage.PyKeywordArgument` key/value pair.
 
         By default, the key is printed in red, followed by "=", followed by the value in light blue.
 
@@ -473,8 +545,34 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.value)
 
 
+class PyModuleFormatter(SequenceFormatter):
+    is_partial = True
+
+    sub_format_types = [PyListFormatter]
+
+    def __init__(self):
+        super().__init__('', '', '')
+
+    def items_indent(self, printer: Printer) -> Printer:
+        return printer
+    
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        if not is_first:
+            printer.newline()
+
+    def print_PyModule(self, printer: Printer, node: PyModule):
+        super().print_SequenceNode(printer, node)
+
+
 class PyDiffFormatter(GraphtageFormatter):
-    sub_format_types = [PyObjFormatter, PyListFormatter, PyDictFormatter]
+    sub_format_types = [PyObjFormatter, PyImportFormatter, PyModuleFormatter, PyListFormatter, PyDictFormatter]
+
+    def print_PyAlias(self, printer: Printer, node: PyAlias):
+        self.print(printer, node.name)
+        if node.as_name.object:
+            with printer.color(Fore.BLUE):
+                printer.write(" as ")
+                self.print(printer, node.as_name)
 
 
 def diff(from_py_obj, to_py_obj):
