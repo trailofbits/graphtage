@@ -3,7 +3,9 @@ import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
 from functools import wraps
-from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Tuple, Type, TypeVar, Union
+from typing import (
+    Any, Callable, Collection, Dict, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+)
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -645,7 +647,7 @@ class ContainerNode(TreeNode, Sized, ABC):
 
                 cls.__init__ = wrapped
 
-    def children(self) -> List[TreeNode]:
+    def children(self) -> Sequence[TreeNode]:
         """The children of this node.
 
         Equivalent to::
