@@ -342,7 +342,7 @@ def main(argv=None) -> int:
                         had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
             printer.write('\n')
     except KeyboardInterrupt:
-        return 1
+        return -2  # SIGINT
     finally:
         printer.close()
     if had_edits:
