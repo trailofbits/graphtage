@@ -278,7 +278,7 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                 )
             elif isinstance(node, ast.alias):
                 if not node.asname:
-                    as_name = NullNode()
+                    as_name = StringNode("")
                 else:
                     as_name = StringNode(node.asname)
                 result = PyAlias(StringNode(node.name, quoted=False), as_name)

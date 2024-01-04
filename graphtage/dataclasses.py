@@ -1,4 +1,4 @@
-from typing import Iterator, List, Tuple
+from typing import Dict, Iterator, List, Tuple, Type
 
 from . import AbstractCompoundEdit, Edit, Range, Replace
 from .printer import Fore, Printer
@@ -36,6 +36,7 @@ class DataClassNode(ContainerNode):
     """A container node that can be initialized similar to a Python :func:`dataclasses.dataclass`"""
 
     _SLOTS: Tuple[str, ...]
+    _SLOT_ANNOTATIONS: Dict[str, Type[TreeNode]]
     _NUM_ANCESTOR_SLOTS: int
 
     def __init__(self, *args, **kwargs):
@@ -57,12 +58,17 @@ class DataClassNode(ContainerNode):
         our_args = list(args[starting_index:])
         for s in self._SLOTS:
             if s in our_kwargs:
-                setattr(self, s, our_kwargs[s])
-                continue
-            if not our_args:
+                value = our_kwargs[s]
+            elif not our_args:
                 raise ValueError(f"Missing argument for {self.__class__.__name__}.{s}")
-            setattr(self, s, our_args[0])
-            our_args = our_args[1:]
+            else:
+                value = our_args[0]
+                our_args = our_args[1:]
+            expected_type = self._SLOT_ANNOTATIONS[s]
+            if not isinstance(value, expected_type):
+                raise ValueError(f"Expected a node of type {expected_type.__name__} for argument "
+                                 f"{self.__class__.__name__}.{s} but instead got {value!r}")
+            setattr(self, s, value)
         # self.__hash__ gets called so often, we cache the result:
         self.__hash = hash(tuple(self))
 
@@ -84,9 +90,9 @@ class DataClassNode(ContainerNode):
         ))
         if not hasattr(cls, "_SLOTS") or cls._SLOTS is None:
             cls._SLOTS = ()
-            cls._SLOT_INDEXES = {}
+            cls._SLOT_ANNOTATIONS = {}
         else:
-            cls._SLOT_INDEXES = dict(cls._SLOT_INDEXES)
+            cls._SLOT_ANNOTATIONS = dict(cls._SLOT_ANNOTATIONS)
         new_slots = []
         for i, (name, slot_type) in enumerate(cls.__annotations__.items()):
             if not isinstance(slot_type, type) or not issubclass(slot_type, TreeNode):
@@ -95,6 +101,7 @@ class DataClassNode(ContainerNode):
                 raise TypeError(f"Dataclass {cls.__name__} cannot redefine slot {name!r} because it is already "
                                 f"defined in its superclass {ancestor_slot_names[name].__name__}")
             new_slots.append(name)
+            cls._SLOT_ANNOTATIONS[name] = slot_type
         cls._SLOTS = cls._SLOTS + tuple(new_slots)
 
     def __hash__(self):
