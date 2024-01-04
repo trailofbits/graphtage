@@ -57,9 +57,6 @@ class AbstractEdit(Debuggable, Edit, ABC):
             with printer:
                 printer.write(f"self.tighten_bounds() returned False; the bounds before tightening {self!s} were "
                               f"{bounds_before!s} and {new_bounds!s} after, which is not definitive")
-                breakpoint()
-                _ = self.bounds()
-                self._original_tighten_bounds()
             exit(255)
         return result
 
