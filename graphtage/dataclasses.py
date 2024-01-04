@@ -7,12 +7,13 @@ from .tree import ContainerNode, TreeNode
 
 class DataClassEdit(AbstractCompoundEdit):
     def __init__(self, from_node: "DataClassNode", to_node: "DataClassNode"):
-        from_slots = dict(from_node.items()).keys()
-        if not from_slots == dict(to_node.items()).keys():
+        from_slots = dict(from_node.items())
+        to_slots = dict(to_node.items())
+        if from_slots.keys() != to_slots.keys():
             raise ValueError(f"Node {from_node!r} cannot be edited to {to_node!r} because they have incompatible slots")
         self.slot_edits: List[Edit] = [
-            getattr(from_node, slot).edits(getattr(to_node, slot))
-            for slot in from_slots
+            value.edits(to_slots[slot])
+            for slot, value in from_slots.items()
         ]
         super().__init__(from_node, to_node)
 
@@ -37,9 +38,10 @@ class DataClassNode(ContainerNode):
 
     _SLOTS: Tuple[str, ...]
     _SLOT_ANNOTATIONS: Dict[str, Type[TreeNode]]
-    _NUM_ANCESTOR_SLOTS: int
+    _DATA_CLASS_ANCESTORS: List[Type["DataClassNode"]]
 
     def __init__(self, *args, **kwargs):
+        """Be careful extending __init__; consider using :func:`DataClassNode.post_init` instead."""
         our_kwargs = {
             k: v
             for k, v in kwargs.items()
@@ -50,12 +52,15 @@ class DataClassNode(ContainerNode):
             for k, v in kwargs.items()
             if k not in self._SLOTS
         }
-        starting_index = self._NUM_ANCESTOR_SLOTS - len(parent_kwargs)
-        if starting_index < 0:
-            raise ValueError(f"Unexpected number of kwargs sent to {self.__class__.__name__}.__init__: {kwargs!r}")
-        parent_args = args[:starting_index]
+        required_positional_args = len(self._SLOTS) - len(our_kwargs)
+        assert required_positional_args >= 0
+        if required_positional_args > len(args):
+            raise ValueError(f"Not enough arguments sent to {self.__class__.__name__}.__init__: {args!r} {kwargs!r}; "
+                             f"expected at least {len(self._SLOTS)}")
+        start_index = len(args) - required_positional_args
+        parent_args = args[:start_index]
         super().__init__(*parent_args, **parent_kwargs)
-        our_args = list(args[starting_index:])
+        our_args = list(args[start_index:])
         for s in self._SLOTS:
             if s in our_kwargs:
                 value = our_kwargs[s]
@@ -71,6 +76,16 @@ class DataClassNode(ContainerNode):
             setattr(self, s, value)
         # self.__hash__ gets called so often, we cache the result:
         self.__hash = hash(tuple(self))
+        for ancestor in self._DATA_CLASS_ANCESTORS:
+            ancestor.post_init(self)
+
+    def post_init(self):
+        """Callback called after this class's members have been initialized.
+
+        This callback should not call `super().post_init()`. Each superclass's `post_init()` will be automatically
+        called in order of the `__mro__`.
+        """
+        pass
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -79,18 +94,15 @@ class DataClassNode(ContainerNode):
             for c in cls.__mro__
             if c is not cls and issubclass(c, DataClassNode) and c is not DataClassNode
         ]
+        cls._DATA_CLASS_ANCESTORS = ancestors
         ancestor_slot_names = {
             name: a
             for a in ancestors
             for name in a._SLOTS
         }
-        setattr(cls, "_NUM_ANCESTOR_SLOTS", sum(
-            len(c._SLOTS)
-            for c in ancestors
-        ))
-        if not hasattr(cls, "_SLOTS") or cls._SLOTS is None:
-            cls._SLOTS = ()
+        if not hasattr(cls, "_SLOT_ANNOTATIONS") or cls._SLOT_ANNOTATIONS is None:
             cls._SLOT_ANNOTATIONS = {}
+            cls._SLOTS = ()
         else:
             cls._SLOT_ANNOTATIONS = dict(cls._SLOT_ANNOTATIONS)
         new_slots = []
@@ -108,16 +120,10 @@ class DataClassNode(ContainerNode):
         return self.__hash
 
     def __iter__(self) -> Iterator[TreeNode]:
-        try:
-            yield from super().__iter__()
-        except NotImplementedError:
-            pass
-        for slot in self._SLOTS:
-            yield getattr(self, slot)
+        for _, value in self.items():
+            yield value
 
     def items(self) -> Iterator[Tuple[str, TreeNode]]:
-        if hasattr(super(), "items"):
-            yield from super().items()  # type: ignore
         for slot in self._SLOTS:
             yield slot, getattr(self, slot)
 
@@ -129,8 +135,8 @@ class DataClassNode(ContainerNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, DataClassNode):
-            our_slots = dict(self.items()).keys()
-            their_slots = dict(node.items()).keys()
+            our_slots = set(self._SLOTS)
+            their_slots = set(node._SLOTS)
             if our_slots == their_slots:
                 return DataClassEdit(self, node)
         return Replace(self, node)
@@ -153,7 +159,7 @@ class DataClassNode(ContainerNode):
         printer.write(")")
 
     def __len__(self):
-        return self._NUM_ANCESTOR_SLOTS + len(self._SLOTS)
+        return len(self._SLOTS)
 
     def __eq__(self, other):
         return isinstance(other, DataClassNode) and dict(self.items()) == dict(other.items())
