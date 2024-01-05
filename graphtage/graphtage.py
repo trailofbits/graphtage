@@ -971,6 +971,8 @@ class BuildOptions:
                  auto_match_keys=True,
                  allow_list_edits=True,
                  allow_list_edits_when_same_length=True,
+                 check_for_cyces=True,
+                 ignore_cycles=False,
                  **kwargs
                  ):
         """Initializes the options. All keyword values will be set as attributes of this class.
@@ -986,6 +988,16 @@ class BuildOptions:
         """Whether to consider insert and remove edits on lists that are the same length"""
         self.auto_match_keys = auto_match_keys
         """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
+        self.check_for_cycles = check_for_cyces
+        """If possible, check for cycles in the input
+        
+        If `True` and if `ignore_cycles` is `False`, then a :class:`ValueError` will be raised if a cycle is detected
+        while constructing the Graphtage tree.
+        
+        """
+        self.ignore_cycles = ignore_cycles
+        """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
+        preventing an infinite loop."""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 

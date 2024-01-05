@@ -3,6 +3,7 @@
 See :doc:`the documentation on using Graphtage programmatically <library>` for some examples.
 """
 import ast
+import logging
 from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from . import Range
@@ -13,9 +14,13 @@ from .graphtage import (
     NullNode, StringNode
 )
 from .json import JSONDictFormatter, JSONListFormatter
+from .object_set import ObjectSet
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
+
+
+log = logging.getLogger(__name__)
 
 
 class PyObjEdit(AbstractCompoundEdit):
@@ -324,7 +329,7 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
         TreeNode: The resulting tree.
 
     Raises:
-        ValueError: If the object is of an unsupported type.
+        ValueError: If the object is of an unsupported type, or if a cycle is detected and not ignored.
 
     """
     class PyObjMember:
@@ -343,6 +348,7 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
     stack: List[Tuple[Any, List[TreeNode], List[Any]]] = [
         (None, [], [python_obj])
     ]
+    history = ObjectSet()
 
     if options is None:
         options = BuildOptions()
@@ -362,11 +368,19 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
             if isinstance(parent, DictValue):
                 assert parent.key_node is None
                 assert parent.value_node is None
+                if len(children) != 2 and options.check_for_cycles and options.ignore_cycles:
+                    # one of our children induced a cycle, so discard the parent
+                    parent, children, work = stack.pop()
+                    continue
                 assert len(children) == 2
                 parent.key_node, parent.value_node = children
                 new_node = parent
             elif isinstance(parent, PyObjMember):
                 assert parent.value_node is None
+                if len(children) != 1 and options.check_for_cycles and options.ignore_cycles:
+                    # one of our children induced a cycle, so discard the parent
+                    parent, children, work = stack.pop()
+                    continue
                 assert len(children) == 1
                 parent.value_node = children[0]
                 new_node = parent
@@ -416,6 +430,15 @@ def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeN
 
         obj = work.pop()
         stack.append((parent, children, work))
+
+        if options.check_for_cycles:
+            if obj in history:
+                if options.ignore_cycles:
+                    log.debug(f"Detected a cycle in {python_obj!r} at member {obj!r}; ignoring…")
+                    continue
+                else:
+                    raise ValueError(f"Detected a cycle in {python_obj!r} at member {obj!r}")
+            history.add(obj)
 
         if isinstance(obj, bool):
             new_node = BoolNode(obj)
@@ -575,13 +598,13 @@ class PyDiffFormatter(GraphtageFormatter):
                 self.print(printer, node.as_name)
 
 
-def diff(from_py_obj, to_py_obj):
-    return build_tree(from_py_obj).diff(build_tree(to_py_obj))
+def diff(from_py_obj, to_py_obj, options: Optional[BuildOptions] = None):
+    return build_tree(from_py_obj, options=options).diff(build_tree(to_py_obj, options=options))
 
 
-def print_diff(from_py_obj, to_py_obj, printer: Optional[Printer] = None):
+def print_diff(from_py_obj, to_py_obj, printer: Optional[Printer] = None, options: Optional[BuildOptions] = None):
     if printer is None:
         printer = Printer()
-    d = diff(from_py_obj, to_py_obj)
+    d = diff(from_py_obj, to_py_obj, options=options)
     with printer:
         PyDiffFormatter.DEFAULT_INSTANCE.print(printer, d)
