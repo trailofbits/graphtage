@@ -11,7 +11,7 @@ from .dataclasses import DataClassNode
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode,
-    NullNode, StringNode
+    MultiSetNode, NullNode, StringNode
 )
 from .json import JSONDictFormatter, JSONListFormatter
 from .object_set import ObjectSet
@@ -192,6 +192,19 @@ class PyAlias(DataClassNode):
             self.as_name.print(printer)
 
 
+class PySubscript(DataClassNode):
+    value: TreeNode
+    slice: TreeNode
+
+    def print(self, printer: Printer):
+        self.value.print(printer)
+        with printer.color(Fore.LIGHTBLUE_EX):
+            printer.write("[")
+        self.slice.write(printer)
+        with printer.color(Fore.LIGHTBLUE_EX):
+            printer.write("]")
+
+
 class PyImport(DataClassNode):
     names: ListNode
     from_name: StringNode
@@ -234,6 +247,10 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                 new_children = child.body
             elif isinstance(child, ast.List):
                 new_children = child.elts
+            elif isinstance(child, ast.Tuple):
+                new_children = child.elts
+            elif isinstance(child, ast.Set):
+                new_children = child.elts
             elif isinstance(child, ast.Assign):
                 new_children = child.targets + [child.value]
             elif isinstance(child, (ast.Name, ast.Constant)):
@@ -251,8 +268,11 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                 new_children = [child.value]
             elif isinstance(child, ast.Dict):
                 new_children = child.keys + child.values
+            elif isinstance(child, ast.Subscript):
+                new_children = [child.value, child.slice]
             else:
-                raise NotImplementedError(str(child.__class__))
+                raise NotImplementedError(f"We do not yet have support for AST nodes of type "
+                                          f"{child.__class__.__name__}: {child!r}")
             work.append((node, processed_children, remaining_children))
             work.append((child, [], list(reversed(new_children))))  # type: ignore
             continue
@@ -266,8 +286,18 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
                     allow_list_edits=options.allow_list_edits,
                     allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
                 )
+            elif isinstance(node, ast.Tuple):
+                result = ListNode(
+                    processed_children,
+                    allow_list_edits=options.allow_list_edits,
+                    allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+                )
+            elif isinstance(node, ast.Set):
+                result = MultiSetNode(items=processed_children, auto_match_keys=options.auto_match_keys)
             elif isinstance(node, ast.Name):
                 result = StringNode(node.id, quoted=False)
+            elif isinstance(node, ast.Subscript):
+                result = PySubscript(*processed_children)
             elif isinstance(node, ast.Constant):
                 result = build_tree(node.value, options=options)
             elif isinstance(node, ast.Assign):
@@ -596,6 +626,14 @@ class PyDiffFormatter(GraphtageFormatter):
             with printer.color(Fore.BLUE):
                 printer.write(" as ")
                 self.print(printer, node.as_name)
+
+    def print_PySubscript(self, printer: Printer, node: PySubscript):
+        self.print(printer, node.value)
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        self.print(printer, node.slice)
+        with printer.color(Fore.BLUE):
+            printer.write("[")
 
 
 def diff(from_py_obj, to_py_obj, options: Optional[BuildOptions] = None):
