@@ -14,6 +14,7 @@ Attributes:
 """
 
 import logging
+import os
 import sys
 from abc import abstractmethod
 from collections import defaultdict
@@ -649,3 +650,17 @@ class HTMLPrinter(Printer):
 
 
 DEFAULT_PRINTER: Printer = Printer()
+
+
+class NullWriter(Writer):
+    def write(self, s: str) -> int:
+        return 0
+
+    def isatty(self) -> bool:
+        return True
+
+    def flush(self):
+        pass
+
+
+NULL_PRINTER: Printer = Printer(out_stream=NullWriter(), quiet=True)

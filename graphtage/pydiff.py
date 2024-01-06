@@ -237,115 +237,121 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
     Returns:
         TreeNode: The resulting tree.
     """
-    work: List[Tuple[ASTNode, List[TreeNode], List[ASTNode]]] = [(tree, [], list(reversed(tree.body)))]
-    while work:
-        node, processed_children, remaining_children = work.pop()
-        if remaining_children:
-            child = remaining_children.pop()
-            new_children: List[ASTNode]
-            if isinstance(child, ast.Module):
-                new_children = child.body
-            elif isinstance(child, ast.List):
-                new_children = child.elts
-            elif isinstance(child, ast.Tuple):
-                new_children = child.elts
-            elif isinstance(child, ast.Set):
-                new_children = child.elts
-            elif isinstance(child, ast.Assign):
-                new_children = child.targets + [child.value]
-            elif isinstance(child, (ast.Name, ast.Constant)):
-                new_children = []
-            elif isinstance(child, ast.Call):
-                new_children = [child.func] + child.args
-            elif isinstance(child, ast.ImportFrom):
-                new_children = child.names
-            elif isinstance(child, ast.alias):
-                new_children = []
-            elif isinstance(child, ast.Expr):
-                work.append((node, processed_children, remaining_children + [child.value]))
+    if options is None:
+        options = BuildOptions()
+    with options.printer.tqdm(desc="Walking the AST", leave=False, delay=2.0, unit=" nodes", total=1) as t:
+        work: List[Tuple[ASTNode, List[TreeNode], List[ASTNode]]] = [(tree, [], list(reversed(tree.body)))]
+        while work:
+            node, processed_children, remaining_children = work.pop()
+            if remaining_children:
+                child = remaining_children.pop()
+                new_children: List[ASTNode]
+                if isinstance(child, ast.Module):
+                    new_children = child.body
+                elif isinstance(child, ast.List):
+                    new_children = child.elts
+                elif isinstance(child, ast.Tuple):
+                    new_children = child.elts
+                elif isinstance(child, ast.Set):
+                    new_children = child.elts
+                elif isinstance(child, ast.Assign):
+                    new_children = child.targets + [child.value]
+                elif isinstance(child, (ast.Name, ast.Constant)):
+                    new_children = []
+                elif isinstance(child, ast.Call):
+                    new_children = [child.func] + child.args
+                elif isinstance(child, ast.ImportFrom):
+                    new_children = child.names
+                elif isinstance(child, ast.alias):
+                    new_children = []
+                elif isinstance(child, ast.Expr):
+                    work.append((node, processed_children, remaining_children + [child.value]))
+                    continue
+                elif isinstance(child, ast.Attribute):
+                    new_children = [child.value]
+                elif isinstance(child, ast.Dict):
+                    new_children = child.keys + child.values
+                elif isinstance(child, ast.Subscript):
+                    new_children = [child.value, child.slice]
+                else:
+                    raise NotImplementedError(f"We do not yet have support for AST nodes of type "
+                                              f"{child.__class__.__name__}: {child!r}")
+                t.total = t.total + 1
+                t.refresh()
+                work.append((node, processed_children, remaining_children))
+                work.append((child, [], list(reversed(new_children))))  # type: ignore
                 continue
-            elif isinstance(child, ast.Attribute):
-                new_children = [child.value]
-            elif isinstance(child, ast.Dict):
-                new_children = child.keys + child.values
-            elif isinstance(child, ast.Subscript):
-                new_children = [child.value, child.slice]
+            result: Optional[Any] = None
+            if not remaining_children:
+                if isinstance(node, ast.Module):
+                    result = PyModule(tuple(processed_children))
+                elif isinstance(node, ast.List):
+                    result = ListNode(
+                        processed_children,
+                        allow_list_edits=options.allow_list_edits,
+                        allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+                    )
+                elif isinstance(node, ast.Tuple):
+                    result = ListNode(
+                        processed_children,
+                        allow_list_edits=options.allow_list_edits,
+                        allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
+                    )
+                elif isinstance(node, ast.Set):
+                    result = MultiSetNode(items=processed_children, auto_match_keys=options.auto_match_keys)
+                elif isinstance(node, ast.Name):
+                    result = StringNode(node.id, quoted=False)
+                elif isinstance(node, ast.Subscript):
+                    result = PySubscript(*processed_children)
+                elif isinstance(node, ast.Constant):
+                    result = build_tree(node.value, options=options)
+                elif isinstance(node, ast.Assign):
+                    result = PyAssignment(targets=ListNode(processed_children[:-1]), value=processed_children[-1])
+                elif isinstance(node, ast.Call):
+                    func_name = processed_children[0]
+                    if isinstance(func_name, StringNode):
+                        func_name.quoted = False
+                    result = PyCall(
+                        func_name,
+                        PyCallArguments(processed_children[1:]),  # type: ignore
+                        PyCallKeywords(())
+                    )
+                elif isinstance(node, ast.alias):
+                    if not node.asname:
+                        as_name = StringNode("")
+                    else:
+                        as_name = StringNode(node.asname)
+                    result = PyAlias(StringNode(node.name, quoted=False), as_name)
+                elif isinstance(node, ast.ImportFrom):
+                    if node.module is None:
+                        from_name = StringNode("", quoted=False)
+                    else:
+                        from_name = StringNode(node.module, quoted=False)
+                    result = PyImport(names=ListNode(processed_children), from_name=from_name)
+                elif isinstance(node, ast.Attribute):
+                    result = PyObjAttribute(processed_children[0], StringNode(node.attr, quoted=False))
+                elif isinstance(node, ast.Dict):
+                    n = len(processed_children) // 2
+                    keys = processed_children[:n]
+                    values = processed_children[n:]
+                    dict_items = {
+                        k: v
+                        for k, v in zip(keys, values)
+                    }
+                    if options.allow_key_edits:
+                        dict_node = DictNode.from_dict(dict_items)
+                        dict_node.auto_match_keys = options.auto_match_keys
+                        result = dict_node
+                    else:
+                        result = FixedKeyDictNode.from_dict(dict_items)
+                else:
+                    raise NotImplementedError(str(node.__class__))
+            t.update(1)
+            if not work:
+                return result
             else:
-                raise NotImplementedError(f"We do not yet have support for AST nodes of type "
-                                          f"{child.__class__.__name__}: {child!r}")
-            work.append((node, processed_children, remaining_children))
-            work.append((child, [], list(reversed(new_children))))  # type: ignore
-            continue
-        result: Optional[Any] = None
-        if not remaining_children:
-            if isinstance(node, ast.Module):
-                result = PyModule(tuple(processed_children))
-            elif isinstance(node, ast.List):
-                result = ListNode(
-                    processed_children,
-                    allow_list_edits=options.allow_list_edits,
-                    allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
-                )
-            elif isinstance(node, ast.Tuple):
-                result = ListNode(
-                    processed_children,
-                    allow_list_edits=options.allow_list_edits,
-                    allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
-                )
-            elif isinstance(node, ast.Set):
-                result = MultiSetNode(items=processed_children, auto_match_keys=options.auto_match_keys)
-            elif isinstance(node, ast.Name):
-                result = StringNode(node.id, quoted=False)
-            elif isinstance(node, ast.Subscript):
-                result = PySubscript(*processed_children)
-            elif isinstance(node, ast.Constant):
-                result = build_tree(node.value, options=options)
-            elif isinstance(node, ast.Assign):
-                result = PyAssignment(targets=ListNode(processed_children[:-1]), value=processed_children[-1])
-            elif isinstance(node, ast.Call):
-                func_name = processed_children[0]
-                if isinstance(func_name, StringNode):
-                    func_name.quoted = False
-                result = PyCall(
-                    func_name,
-                    PyCallArguments(processed_children[1:]),  # type: ignore
-                    PyCallKeywords(())
-                )
-            elif isinstance(node, ast.alias):
-                if not node.asname:
-                    as_name = StringNode("")
-                else:
-                    as_name = StringNode(node.asname)
-                result = PyAlias(StringNode(node.name, quoted=False), as_name)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module is None:
-                    from_name = StringNode("", quoted=False)
-                else:
-                    from_name = StringNode(node.module, quoted=False)
-                result = PyImport(names=ListNode(processed_children), from_name=from_name)
-            elif isinstance(node, ast.Attribute):
-                result = PyObjAttribute(processed_children[0], StringNode(node.attr, quoted=False))
-            elif isinstance(node, ast.Dict):
-                n = len(processed_children) // 2
-                keys = processed_children[:n]
-                values = processed_children[n:]
-                dict_items = {
-                    k: v
-                    for k, v in zip(keys, values)
-                }
-                if options.allow_key_edits:
-                    dict_node = DictNode.from_dict(dict_items)
-                    dict_node.auto_match_keys = options.auto_match_keys
-                    result = dict_node
-                else:
-                    result = FixedKeyDictNode.from_dict(dict_items)
-            else:
-                raise NotImplementedError(str(node.__class__))
-        if not work:
-            return result
-        else:
-            work[-1][1].append(result)
-    return build_tree(None, options=options)
+                work[-1][1].append(result)
+        return build_tree(None, options=options)
 
 
 def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeNode:

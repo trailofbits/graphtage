@@ -10,7 +10,7 @@ from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, Fore, NullANSIContext, Printer
+from .printer import Back, Fore, NullANSIContext, NULL_PRINTER, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
@@ -973,6 +973,7 @@ class BuildOptions:
                  allow_list_edits_when_same_length=True,
                  check_for_cyces=True,
                  ignore_cycles=False,
+                 printer=NULL_PRINTER,
                  **kwargs
                  ):
         """Initializes the options. All keyword values will be set as attributes of this class.
@@ -998,6 +999,8 @@ class BuildOptions:
         self.ignore_cycles = ignore_cycles
         """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
         preventing an infinite loop."""
+        self.printer = printer
+        """A printer to use while building trees (default is :class:`graphtage.printer.NullPrinter`)"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 

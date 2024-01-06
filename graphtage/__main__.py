@@ -282,6 +282,7 @@ def main(argv=None) -> int:
 
     try:
         with printer:
+            options.printer = printer
             with PathOrStdin(args.FROM_PATH) as from_path:
                 with PathOrStdin(args.TO_PATH) as to_path:
                     try:
