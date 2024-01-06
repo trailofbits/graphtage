@@ -4,7 +4,10 @@ from abc import ABC
 import logging
 from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Type, TypeVar
 
-from . import BoolNode, BuildOptions, FloatNode, IntegerNode, LeafNode, ListNode, NullNode, StringNode, TreeNode
+from . import (
+    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, LeafNode, ListNode, MultiSetNode,
+    NullNode, StringNode, TreeNode
+)
 from .object_set import ObjectSet
 
 C = TypeVar("C")
@@ -21,9 +24,9 @@ class CyclicReference(LeafNode):
         return isinstance(other, CyclicReference) and other.object is self.object
 
 
-class Visitor(ABC):
-    EXPANDERS: Dict[Type[Any], Callable[["Visitor", Any], Optional[Iterable[Any]]]]
-    BUILDERS: Dict[Type[Any], Callable[["Visitor", Any, List[TreeNode]], TreeNode]]
+class Builder(ABC):
+    EXPANDERS: Dict[Type[Any], Callable[["Builder", Any], Optional[Iterable[Any]]]]
+    BUILDERS: Dict[Type[Any], Callable[["Builder", Any, List[TreeNode]], TreeNode]]
 
     def __init__(self, options: Optional[BuildOptions] = None):
         if options is None:
@@ -34,7 +37,10 @@ class Visitor(ABC):
     @staticmethod
     def expander(node_type: Type[T]):
         def wrapper(func: Callable[[C, T], Iterable[Any]]) -> Callable[[C, T], Iterable[Any]]:
-            setattr(func, "_visitor_expander_for_type", node_type)
+            if hasattr(func, "_visitor_expander_for_type"):
+                func._visitor_expander_for_type = func._visitor_expander_for_type + (node_type,)
+            else:
+                setattr(func, "_visitor_expander_for_type", (node_type,))
             return func
 
         return wrapper
@@ -42,7 +48,10 @@ class Visitor(ABC):
     @staticmethod
     def builder(node_type: Type[T]):
         def wrapper(func: Callable[[C, T, List[TreeNode]], TreeNode]) -> Callable[[C, T, List[TreeNode]], TreeNode]:
-            setattr(func, "_visitor_builder_for_type", node_type)
+            if hasattr(func, "_visitor_builder_for_type"):
+                func._visitor_builder_for_type = func._visitor_builder_for_type + (node_type,)
+            else:
+                setattr(func, "_visitor_builder_for_type", (node_type,))
             return func
 
         return wrapper
@@ -59,39 +68,35 @@ class Visitor(ABC):
             setattr(cls, "BUILDERS", dict(cls.BUILDERS))
         new_expanders = {}
         new_builders = {}
-        for member_name in dir(cls):
-            try:
-                member = getattr(cls, member_name)
-            except AttributeError:
-                continue
+        for member_name, member in cls.__dict__.items():
             if hasattr(member, "_visitor_expander_for_type"):
-                expander_type = getattr(member, "_visitor_expander_for_type")
-                if not isinstance(expander_type, type):
-                    raise TypeError(f"{cls.__name__}.{member_name} was registered as an expander for "
-                                    f"{expander_type!r}, which is not a type")
-                elif expander_type in cls.EXPANDERS:
-                    raise TypeError(f"An expander for type {expander_type.__name__} is already registered to "
-                                    f"{cls.EXPANDERS[expander_type]!r} and cannot be re-registered to "
-                                    f"{cls.__name__}.{member_name}")
-                elif expander_type in new_expanders:
-                    raise TypeError(f"An expander for type {expander_type.__name__} is already registered to "
-                                    f"{new_expanders[expander_type]!r} and cannot be re-registered to "
-                                    f"{cls.__name__}.{member_name}")
-                new_expanders[expander_type] = member
+                for expander_type in getattr(member, "_visitor_expander_for_type"):
+                    if not isinstance(expander_type, type):
+                        raise TypeError(f"{cls.__name__}.{member_name} was registered as an expander for "
+                                        f"{expander_type!r}, which is not a type")
+                    elif expander_type in cls.EXPANDERS:
+                        raise TypeError(f"An expander for type {expander_type.__name__} is already registered to "
+                                        f"{cls.EXPANDERS[expander_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{member_name}")
+                    elif expander_type in new_expanders:
+                        raise TypeError(f"An expander for type {expander_type.__name__} is already registered to "
+                                        f"{new_expanders[expander_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{member_name}")
+                    new_expanders[expander_type] = member
             if hasattr(member, "_visitor_builder_for_type"):
-                builder_type = getattr(member, "_visitor_builder_for_type")
-                if not isinstance(builder_type, type):
-                    raise TypeError(f"{cls.__name__}.{member_name} was registered as an builder for "
-                                    f"{builder_type!r}, which is not a type")
-                elif builder_type in cls.EXPANDERS:
-                    raise TypeError(f"A builder for type {builder_type.__name__} is already registered to "
-                                    f"{cls.BUILDERS[builder_type]!r} and cannot be re-registered to "
-                                    f"{cls.__name__}.{builder_type}")
-                elif builder_type in new_builders:
-                    raise TypeError(f"A builder for type {builder_type.__name__} is already registered to "
-                                    f"{new_builders[builder_type]!r} and cannot be re-registered to "
-                                    f"{cls.__name__}.{builder_type}")
-                new_builders[builder_type] = member
+                for builder_type in getattr(member, "_visitor_builder_for_type"):
+                    if not isinstance(builder_type, type):
+                        raise TypeError(f"{cls.__name__}.{member_name} was registered as an builder for "
+                                        f"{builder_type!r}, which is not a type")
+                    elif builder_type in cls.EXPANDERS:
+                        raise TypeError(f"A builder for type {builder_type.__name__} is already registered to "
+                                        f"{cls.BUILDERS[builder_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{builder_type}")
+                    elif builder_type in new_builders:
+                        raise TypeError(f"A builder for type {builder_type.__name__} is already registered to "
+                                        f"{new_builders[builder_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{builder_type}")
+                    new_builders[builder_type] = member
         cls.EXPANDERS.update(new_expanders)
         cls.BUILDERS.update(new_builders)
 
@@ -166,32 +171,68 @@ class Visitor(ABC):
         return NullNode()
 
 
-class AbstractVisitor(Visitor):
-    @Visitor.builder(int)
+class BasicBuilder(Builder):
+    """A builder for basic Python types"""
+
+    @Builder.builder(int)
     def build_int(self, obj: int, _) -> IntegerNode:
         return IntegerNode(obj)
 
-    @Visitor.builder(str)
+    @Builder.builder(str)
     def build_str(self, obj: str, _) -> StringNode:
         return StringNode(obj)
 
-    @Visitor.builder(type(None))
+    @Builder.builder(type(None))
     def build_none(self, obj, _) -> NullNode:
         assert obj is None
         return NullNode()
 
-    @Visitor.builder(float)
+    @Builder.builder(float)
     def build_float(self, obj: float, _) -> FloatNode:
         return FloatNode(obj)
 
-    @Visitor.builder(bool)
+    @Builder.builder(bool)
     def build_bool(self, obj: bool, _) -> BoolNode:
         return BoolNode(obj)
 
-    @Visitor.expander(list)
+    @Builder.expander(list)
+    @Builder.expander(tuple)
+    @Builder.expander(set)
+    @Builder.expander(frozenset)
     def list_expander(self, obj: list):
         yield from obj
 
-    @Visitor.builder(list)
-    def list_builder(self, obj: list, children: List[TreeNode]) -> TreeNode:
-        return ListNode(children)
+    @Builder.builder(list)
+    @Builder.builder(tuple)
+    def list_builder(self, obj, children: List[TreeNode]) -> ListNode:
+        return ListNode(
+            children,
+            allow_list_edits=self.options.allow_list_edits,
+            allow_list_edits_when_same_length=self.options.allow_list_edits_when_same_length
+        )
+
+    @Builder.builder(set)
+    @Builder.builder(frozenset)
+    def set_builder(self, obj, children: List[TreeNode]) -> MultiSetNode:
+        return MultiSetNode(children)
+
+    @Builder.expander(dict)
+    def dict_expander(self, obj: dict):
+        yield from obj.keys()
+        yield from obj.values()
+
+    @Builder.builder(dict)
+    def dict_builder(self, obj: dict, children: List[TreeNode]):
+        n = len(children) // 2
+        keys = children[:n]
+        values = children[n:]
+        dict_items = {
+            k: v
+            for k, v in zip(keys, values)
+        }
+        if self.options.allow_key_edits:
+            dict_node = DictNode.from_dict(dict_items)
+            dict_node.auto_match_keys = self.options.auto_match_keys
+            return dict_node
+        else:
+            return FixedKeyDictNode.from_dict(dict_items)
