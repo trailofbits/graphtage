@@ -100,7 +100,7 @@ class Builder(ABC):
         cls.EXPANDERS.update(new_expanders)
         cls.BUILDERS.update(new_builders)
 
-    def default_expander(self, node: Any) -> Optional[Iterable[Any]]:
+    def default_expander(self, node: Any) -> Iterable[Any]:
         return ()
 
     def default_builder(self, node: Any, children: List[TreeNode]) -> TreeNode:
@@ -148,6 +148,7 @@ class Builder(ABC):
     def build_tree(self, root_obj) -> TreeNode:
         children = self.expand(root_obj)
         work: List[Tuple[Any, List[TreeNode], List[Any]]] = [(root_obj, [], list(reversed(list(children))))]
+        basic_builder = BasicBuilder(self.options)
         with self.options.printer.tqdm(
                 desc="Walking the Tree", leave=False, delay=2.0, unit=" nodes", total=1 + len(work[-1][-1])
         ) as t:
@@ -161,19 +162,31 @@ class Builder(ABC):
                     grandchildren = list(self.expand(child))
 
                     if grandchildren and self.options.check_for_cycles:
-                        # make sure we aren't already in the process of expanding this child
-                        is_cycle = False
-                        for already_expanding, _, _ in work:
-                            if already_expanding is child:
-                                if self.options.ignore_cycles:
-                                    log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
-                                    processed_children.append(CyclicReference(child))
-                                    is_cycle = True
+                        # first, check if all of our grandchildren are leaves; if so, we don't need to check for a cycle
+                        all_are_leaves = True
+                        for grandchild in grandchildren:
+                            try:
+                                grandchild_node = basic_builder.build_tree(grandchild)
+                                if not grandchild_node.is_leaf:
+                                    all_are_leaves = False
                                     break
-                                else:
-                                    raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
-                        if is_cycle:
-                            continue
+                            except NotImplementedError:
+                                all_are_leaves = False
+                                break
+                        if not all_are_leaves:
+                            # make sure we aren't already in the process of expanding this child
+                            is_cycle = False
+                            for already_expanding, _, _ in work:
+                                if already_expanding is child:
+                                    if self.options.ignore_cycles:
+                                        log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
+                                        processed_children.append(CyclicReference(child))
+                                        is_cycle = True
+                                        break
+                                    else:
+                                        raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
+                            if is_cycle:
+                                continue
                     work.append((child, [], list(reversed(grandchildren))))
                     t.total = t.total + 1 + len(grandchildren)
                     t.refresh()
