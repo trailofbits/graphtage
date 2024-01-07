@@ -162,15 +162,18 @@ class Builder(ABC):
 
                     if grandchildren and self.options.check_for_cycles:
                         # make sure we aren't already in the process of expanding this child
+                        is_cycle = False
                         for already_expanding, _, _ in work:
                             if already_expanding is child:
                                 if self.options.ignore_cycles:
                                     log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
                                     processed_children.append(CyclicReference(child))
-                                    continue
+                                    is_cycle = True
+                                    break
                                 else:
                                     raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
-
+                        if is_cycle:
+                            continue
                     work.append((child, [], list(reversed(grandchildren))))
                     t.total = t.total + 1 + len(grandchildren)
                     t.refresh()
