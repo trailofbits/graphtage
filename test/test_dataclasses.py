@@ -38,7 +38,7 @@ class TestDataclasses(TestCase):
 
         # test equality
         self.assertEqual(Bar(IntegerNode(10), StringNode("bar")), b)
-        self.assertNotEquals(Bar(IntegerNode(11), StringNode("bar")), b)
+        self.assertNotEqual(Bar(IntegerNode(11), StringNode("bar")), b)
 
         # test diffing of different dataclasses
         f = Foo(IntegerNode(10))
