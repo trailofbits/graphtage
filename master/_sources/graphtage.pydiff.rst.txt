@@ -6,6 +6,24 @@ graphtage.pydiff
 pydiff classes
 --------------
 
+ASTBuilder
+**********
+
+.. autoclass:: ASTBuilder
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyAlias
+*******
+
+.. autoclass:: PyAlias
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 PyDictFormatter
 ***************
 
@@ -24,10 +42,28 @@ PyDiffFormatter
    :inherited-members:
    :show-inheritance:
 
+PyImportFormatter
+*****************
+
+.. autoclass:: PyImportFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 PyListFormatter
 ***************
 
 .. autoclass:: PyListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyModuleFormatter
+*****************
+
+.. autoclass:: PyModuleFormatter
    :members:
    :undoc-members:
    :inherited-members:
@@ -55,6 +91,15 @@ PyObjAttributes
 ***************
 
 .. autoclass:: PyObjAttributes
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjBuilder
+************
+
+.. autoclass:: PyObjBuilder
    :members:
    :undoc-members:
    :inherited-members:
@@ -89,6 +134,11 @@ PyObjFormatter
 
 pydiff functions
 ----------------
+
+ast_to_tree
+***********
+
+.. autofunction:: ast_to_tree
 
 build_tree
 **********

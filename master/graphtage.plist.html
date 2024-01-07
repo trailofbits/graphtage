@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="graphtage.printer" href="graphtage.printer.html" />
-    <link rel="prev" title="graphtage.multiset" href="graphtage.multiset.html" /> 
+    <link rel="prev" title="graphtage.pickle" href="graphtage.pickle.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,9 +51,12 @@
 <li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.ast.html">graphtage.ast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.builder.html">graphtage.builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.dataclasses.html">graphtage.dataclasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.debug.html">graphtage.debug</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
@@ -62,6 +65,8 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.object_set.html">graphtage.object_set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pickle.html">graphtage.pickle</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.plist</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#plist-classes">plist classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#plist">PLIST</a></li>
@@ -363,12 +368,24 @@ This is an arbitrary, immutable value that is used to calculate the bounded cost
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.plist.PLISTNode.children">
-<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.plist.PLISTNode.children" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.12)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.plist.PLISTNode.children" title="Permalink to this definition"></a></dt>
 <dd><p>The children of this node.</p>
 <p>Equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.plist.PLISTNode.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.plist.PLISTNode.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a deep copy of this node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.plist.PLISTNode.copy_from">
+<span class="sig-name descname"><span class="pre">copy_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.plist.PLISTNode.copy_from" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a new instance of this tree node from a list of its children</p>
 </dd></dl>
 
 <dl class="py method">
@@ -780,7 +797,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="graphtage.multiset.html" class="btn btn-neutral float-left" title="graphtage.multiset" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphtage.pickle.html" class="btn btn-neutral float-left" title="graphtage.pickle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="graphtage.printer.html" class="btn btn-neutral float-right" title="graphtage.printer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

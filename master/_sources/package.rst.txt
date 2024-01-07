@@ -5,9 +5,12 @@ Graphtage API
    :maxdepth: 4
 
    graphtage
+   graphtage.ast
    graphtage.bounds
+   graphtage.builder
    graphtage.constraints
    graphtage.csv
+   graphtage.dataclasses
    graphtage.debug
    graphtage.expressions
    graphtage.fibonacci
@@ -16,6 +19,8 @@ Graphtage API
    graphtage.levenshtein
    graphtage.matching
    graphtage.multiset
+   graphtage.object_set
+   graphtage.pickle
    graphtage.plist
    graphtage.printer
    graphtage.progress

@@ -51,9 +51,12 @@
 <li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.ast.html">graphtage.ast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.builder.html">graphtage.builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.dataclasses.html">graphtage.dataclasses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.debug.html">graphtage.debug</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
@@ -62,6 +65,8 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.object_set.html">graphtage.object_set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pickle.html">graphtage.pickle</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.printer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#graphtage.printer.DEFAULT_PRINTER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_PRINTER</span></code></a></li>
@@ -72,6 +77,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#htmlansicontext">HTMLANSIContext</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#htmlprinter">HTMLPrinter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#nullansicontext">NullANSIContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nullwriter">NullWriter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#printer">Printer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#rawwriter">RawWriter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#writer">Writer</a></li>
@@ -741,6 +747,49 @@ provide additional formatting options to functions that use this printer.</p></l
 <dt class="sig sig-object py" id="graphtage.printer.NullANSIContext.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.NullANSIContext.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="nullwriter">
+<h3>NullWriter<a class="headerlink" href="#nullwriter" title="Permalink to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphtage.printer.NullWriter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">NullWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.NullWriter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.printer.Writer" title="graphtage.printer.Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Writer</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.printer.NullWriter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.NullWriter.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.printer.NullWriter.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.NullWriter.flush" title="Permalink to this definition"></a></dt>
+<dd><p>Flushes any buffered bytes, if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.printer.NullWriter.isatty">
+<span class="sig-name descname"><span class="pre">isatty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.printer.NullWriter.isatty" title="Permalink to this definition"></a></dt>
+<dd><p>Returns whether this writer is a TTY.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.printer.NullWriter.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.printer.NullWriter.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a given string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – The string to write.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of bytes written.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

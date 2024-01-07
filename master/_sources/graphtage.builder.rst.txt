@@ -1,0 +1,34 @@
+graphtage.builder
+=================
+
+.. automodule:: graphtage.builder
+
+builder classes
+---------------
+
+BasicBuilder
+************
+
+.. autoclass:: BasicBuilder
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Builder
+*******
+
+.. autoclass:: Builder
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CyclicReference
+***************
+
+.. autoclass:: CyclicReference
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

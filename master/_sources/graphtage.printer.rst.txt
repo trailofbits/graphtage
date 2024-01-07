@@ -60,6 +60,15 @@ NullANSIContext
    :inherited-members:
    :show-inheritance:
 
+NullWriter
+**********
+
+.. autoclass:: NullWriter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 Printer
 *******
 
