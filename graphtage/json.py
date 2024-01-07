@@ -229,7 +229,7 @@ class JSONFormatter(GraphtageFormatter):
 
         """
         # Treat the container like a list
-        list_node = ListNode(node.children())
+        list_node = ListNode((c.copy() for c in node.children()))
         self.print(printer, list_node)
 
 

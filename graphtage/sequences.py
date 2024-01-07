@@ -130,7 +130,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
             child: i for i, child in enumerate(self.children())
         }
 
-    def children(self) -> T:
+    def children(self) -> Sequence[TreeNode]:
         if isinstance(self._children, list) or isinstance(self._children, tuple):
             return self._children
         else:

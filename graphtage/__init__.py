@@ -6,8 +6,8 @@ from .edits import *
 
 from .version import __version__, VERSION_STRING
 from . import (
-    bounds, constraints, edits, expressions, fibonacci, formatter, levenshtein, matching, printer, pydiff, search,
-    sequences, tree, utils
+    ast, bounds, builder, constraints, dataclasses, edits, expressions, fibonacci, formatter, levenshtein, matching,
+    object_set, pickle, printer, pydiff, search, sequences, tree, utils
 )
 from . import csv, json, xml, yaml, plist
 

@@ -2,6 +2,7 @@ __docformat__ = "google"
 
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
+import copy as copy_module
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
@@ -9,10 +10,14 @@ from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, Fore, NullANSIContext, Printer
+from .printer import Back, Fore, NullANSIContext, NULL_PRINTER, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
+
+
+C = TypeVar("C", bound=TreeNode)
+T = TypeVar("T", bound=TreeNode)
 
 
 class LeafNode(TreeNode):
@@ -28,6 +33,9 @@ class LeafNode(TreeNode):
         self.object = obj
         # self.__hash__ gets called so often we cache the result:
         self.__hash = hash(obj)
+
+    def copy_from(self: C, children: Iterable["TreeNode"]) -> C:
+        return self.__class__(self.object)
 
     def to_obj(self):
         """Returns the object wrapped by this node.
@@ -289,9 +297,6 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-T = TypeVar('T', bound=TreeNode)
-
-
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
     """A node containing an ordered sequence of nodes."""
 
@@ -311,6 +316,9 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
         super().__init__(tuple(nodes))
         self.allow_list_edits: bool = allow_list_edits
         self.allow_list_edits_when_same_length: bool = allow_list_edits_when_same_length
+
+    def copy_from(self: C, children: Iterable[TreeNode]) -> C:
+        return self.__class__(children)
 
     def to_obj(self):
         return [n.to_obj() for n in self]
@@ -360,6 +368,9 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             items = HashableCounter(items)
         super().__init__(items)
         self.auto_match_keys: bool = auto_match_keys
+
+    def copy_from(self: C, children: Iterable[T]) -> C:
+        return self.__class__(children, auto_match_keys=self.auto_match_keys)
 
     def to_obj(self):
         return HashableCounter(n.to_obj() for n in self)
@@ -674,6 +685,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints a starting quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -682,6 +695,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -700,7 +715,9 @@ class StringFormatter(GraphtageFormatter):
         else:
             return c
 
-    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+    def write_char(
+            self, printer: Printer, c: Union[str, int], index: int, num_edits: int, removed=False, inserted=False
+    ):
         """Writes a character to the printer.
 
         Note:
@@ -737,6 +754,18 @@ class StringFormatter(GraphtageFormatter):
                 printer.write(Insert.INSERT_STRING)
             self._last_was_removed = removed
             self._last_was_inserted = inserted
+        if isinstance(c, int):
+            # we are printing a bytes object, not a str
+            if 32 <= c <= 126:
+                c = chr(c)
+            elif c == ord('\n'):
+                c = '\n'
+            elif c == ord('\t'):
+                c = '\t'
+            elif c == ord('\r'):
+                c = '\r'
+            else:
+                c = f"\\x{c:02x}"
         escaped = self.escape(c)
         if escaped != c and not isinstance(printer, NullANSIContext):
             with printer.color(Fore.YELLOW):
@@ -829,7 +858,7 @@ class StringFormatter(GraphtageFormatter):
 class StringNode(LeafNode):
     """A node containing a string"""
 
-    def __init__(self, string_like: str, quoted=True):
+    def __init__(self, string_like: Union[str, bytes], quoted=True):
         """Initializes a string node.
 
         Args:
@@ -880,6 +909,9 @@ class NullNode(LeafNode):
 
     def __init__(self):
         super().__init__(None)
+
+    def copy_from(self: T, children: Iterable[TreeNode]) -> T:
+        return NullNode()
 
     def calculate_total_size(self) -> int:
         return 0
@@ -957,6 +989,9 @@ class BuildOptions:
                  auto_match_keys=True,
                  allow_list_edits=True,
                  allow_list_edits_when_same_length=True,
+                 check_for_cyces=True,
+                 ignore_cycles=False,
+                 printer=NULL_PRINTER,
                  **kwargs
                  ):
         """Initializes the options. All keyword values will be set as attributes of this class.
@@ -972,8 +1007,23 @@ class BuildOptions:
         """Whether to consider insert and remove edits on lists that are the same length"""
         self.auto_match_keys = auto_match_keys
         """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
+        self.check_for_cycles = check_for_cyces
+        """If possible, check for cycles in the input
+        
+        If `True` and if `ignore_cycles` is `False`, then a :class:`ValueError` will be raised if a cycle is detected
+        while constructing the Graphtage tree.
+        
+        """
+        self.ignore_cycles = ignore_cycles
+        """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
+        preventing an infinite loop."""
+        self.printer = printer
+        """A printer to use while building trees (default is :class:`graphtage.printer.NullPrinter`)"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
+
+    def copy(self) -> "BuildOptions":
+        return copy_module.copy(self)
 
     def __getattr__(self, item):
         """Default all undefined options to :const:`False`"""

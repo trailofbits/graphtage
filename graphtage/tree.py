@@ -3,7 +3,9 @@ import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
 from functools import wraps
-from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Tuple, Type, TypeVar, Union
+from typing import (
+    Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+)
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -293,7 +295,6 @@ class EditedTreeNode:
 
 
 class TreeNodeMeta(ABCMeta):
-
     def __init__(cls, name, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
         cls._edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
@@ -312,6 +313,9 @@ class TreeNodeMeta(ABCMeta):
 
         """
         if self._edited_type is None:
+            if issubclass(self, EditedTreeNode):
+                return self
+
             def init(etn, wrapped_tree_node: TreeNode):
                 parent_before = wrapped_tree_node.parent
                 try:
@@ -321,8 +325,12 @@ class TreeNodeMeta(ABCMeta):
                     wrapped_tree_node._parent = parent_before
                 EditedTreeNode.__init__(etn)
 
+            def edited_copy(etn):
+                return etn.__class__(etn)
+
             self._edited_type = type(f'Edited{self.__name__}', (EditedTreeNode, self), {
-                '__init__': init
+                '__init__': init,
+                'copy': edited_copy
             })
         return self._edited_type
 
@@ -368,6 +376,26 @@ class TreeNode(metaclass=TreeNodeMeta):
         """
         raise NotImplementedError()
 
+    def copy_from(self: T, children: Iterable["TreeNode"]) -> T:
+        """Constructs a new instance of this tree node from a list of its children"""
+        return self.__class__(*children)
+
+    def copy(self: T) -> T:
+        """Creates a deep copy of this node"""
+        work: List[Tuple[TreeNode, List[TreeNode], List[TreeNode]]] = [(self, [], list(reversed(self.children())))]
+        while work:
+            node, processed_children, remaining_children = work.pop()
+            if not remaining_children:
+                new_node = node.copy_from(processed_children)
+                if not work:
+                    return new_node
+                work[-1][1].append(new_node)
+            else:
+                child = remaining_children.pop()
+                work.append((node, processed_children, remaining_children))
+                work.append((child, [], list(reversed(child.children()))))
+        raise NotImplementedError("This should not be reachable")
+
     @property
     def parent(self) -> Optional["TreeNode"]:
         """The parent node of this node, or :const:`None` if it has no parent.
@@ -399,8 +427,8 @@ class TreeNode(metaclass=TreeNodeMeta):
         self._parent = parent_node
 
     @abstractmethod
-    def children(self) -> Collection['TreeNode']:
-        """Returns a collection of this node's children, if any.
+    def children(self) -> Sequence['TreeNode']:
+        """Returns a sequence of this node's children, if any.
 
         It is the responsibility of any node that has children must set the `.parent` member of each child.
         """
@@ -626,26 +654,33 @@ class ContainerNode(TreeNode, Sized, ABC):
     """A tree node that has children."""
 
     @abstractmethod
-    def __iter__(self):
+    def __iter__(self) -> Iterator[TreeNode]:
         raise NotImplementedError()
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         # wrap the subclass's __init__ function to auto-set the parents of its children
-        if hasattr(cls, "__init__"):
+        if "__init__" in cls.__dict__ and cls.__init__ is not object.__init__:
             orig_init = getattr(cls, "__init__")
 
-            if orig_init is not object.__init__:
-                @wraps(orig_init)
-                def wrapped(self: ContainerNode, *args, **kw):
-                    ret = orig_init(self, *args, **kw)
+            @wraps(orig_init)
+            def wrapped(self: ContainerNode, *args, **kw):
+                if hasattr(self, "_container_initializing") and self._container_initializing:
+                    first_init = False
+                else:
+                    setattr(self, "_container_initializing", True)
+                    first_init = True
+                ret = orig_init(self, *args, **kw)
+                if first_init:
                     for child in self.children():
                         child.parent = self
-                    return ret
+                    if hasattr(self, "_container_initializing"):
+                        delattr(self, "_container_initializing")
+                return ret
 
-                cls.__init__ = wrapped
+            cls.__init__ = wrapped
 
-    def children(self) -> List[TreeNode]:
+    def children(self) -> Sequence[TreeNode]:
         """The children of this node.
 
         Equivalent to::
@@ -677,3 +712,4 @@ class ContainerNode(TreeNode, Sized, ABC):
 
         """
         return all(c.is_leaf for c in self)
+

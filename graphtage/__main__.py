@@ -227,6 +227,9 @@ def main(argv=None) -> int:
         mimetypes.add_type('application/json5', '.json5')
     if '.plist' not in mimetypes.types_map:
         mimetypes.add_type('application/x-plist', '.plist')
+    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-python-pickle', '.pkl')
+        mimetypes.suffix_map['.pickle'] = '.pkl'
 
     if args.from_mime is not None:
         from_mime = args.from_mime
@@ -279,10 +282,15 @@ def main(argv=None) -> int:
 
     try:
         with printer:
+            options.printer = printer
             with PathOrStdin(args.FROM_PATH) as from_path:
                 with PathOrStdin(args.TO_PATH) as to_path:
-                    from_format = graphtage.get_filetype(from_path, from_mime)
-                    to_format = graphtage.get_filetype(to_path, to_mime)
+                    try:
+                        from_format = graphtage.get_filetype(from_path, from_mime)
+                        to_format = graphtage.get_filetype(to_path, to_mime)
+                    except ValueError as e:
+                        sys.stderr.write(f"Error: {e!s}\n\n")
+                        return 1
                     with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
                         from_tree = from_format.build_tree_handling_errors(from_path, options)
                         t.desc = f"Loading {to_path!s}"
@@ -290,13 +298,13 @@ def main(argv=None) -> int:
                         if isinstance(from_tree, str):
                             sys.stderr.write(from_tree)
                             sys.stderr.write('\n\n')
-                            sys.exit(1)
+                            return 1
                         to_tree = to_format.build_tree_handling_errors(to_path, options)
                         t.update(1)
                         if isinstance(to_tree, str):
                             sys.stderr.write(to_tree)
                             sys.stderr.write('\n\n')
-                            sys.exit(1)
+                            return 1
                     if match_if is not None or match_unless is not None:
                         for node in from_tree.dfs():
                             if match_if is not None:
@@ -335,7 +343,7 @@ def main(argv=None) -> int:
                         had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
             printer.write('\n')
     except KeyboardInterrupt:
-        sys.exit(1)
+        return -2  # SIGINT
     finally:
         printer.close()
     if had_edits:
