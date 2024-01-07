@@ -668,7 +668,8 @@ class ContainerNode(TreeNode, Sized, ABC):
                 if first_init:
                     for child in self.children():
                         child.parent = self
-                    delattr(self, "_container_initializing")
+                    if hasattr(self, "_container_initializing"):
+                        delattr(self, "_container_initializing")
                 return ret
 
             cls.__init__ = wrapped

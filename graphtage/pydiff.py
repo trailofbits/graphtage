@@ -7,6 +7,7 @@ import logging
 from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from . import Range
+from .builder import BasicBuilder, Builder
 from .dataclasses import DataClassNode
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
@@ -227,6 +228,115 @@ class PyImport(DataClassNode):
         SequenceFormatter('', '', ', ').print(printer, self.names)
 
 
+class ASTBuilder(BasicBuilder):
+    """Builds a Graphtage tree from a Python Abstract Syntax Tree"""
+
+    @Builder.expander(ast.Module)
+    def expand_module(self, node: ast.Module):
+        yield from node.body
+
+    @Builder.builder(ast.Module)
+    def build_module(self, _, children: List[TreeNode]):
+        return PyModule(tuple(children))
+
+    @Builder.expander(ast.List)
+    @Builder.expander(ast.Tuple)
+    @Builder.expander(ast.Set)
+    def expand_collection(self, node: Union[ast.List, ast.Tuple, ast.Set]):
+        yield from node.elts
+
+    @Builder.builder(ast.Set)
+    def build_set(self, _, children: List[TreeNode]):
+        return MultiSetNode(items=children, auto_match_keys=self.options.auto_match_keys)
+
+    @Builder.builder(ast.List)
+    @Builder.builder(ast.Tuple)
+    def build_ast_list(self, node: ast.List, children):
+        return self.build_list(node, children)
+
+    @Builder.expander(ast.Assign)
+    def expand_assign(self, node: ast.Assign):
+        return node.targets + [node.value]
+
+    @Builder.builder(ast.Assign)
+    def build_assign(self, _, children):
+        return PyAssignment(targets=ListNode(children[:-1]), value=children[-1])
+
+    @Builder.builder(ast.Name)
+    def build_name(self, node: ast.Name, _):
+        return StringNode(node.id, quoted=False)
+
+    @Builder.expander(ast.Constant)
+    @Builder.expander(ast.Expr)
+    @Builder.expander(ast.Attribute)
+    def expand_constant(self, node: ast.Constant):
+        yield node.value
+
+    @Builder.builder(ast.Constant)
+    @Builder.builder(ast.Expr)
+    def build_constant(self, _, children: List[TreeNode]):
+        assert len(children) == 1
+        return children[0]
+
+    @Builder.expander(ast.Call)
+    def expand_call(self, node: ast.Call):
+        return [node.func] + node.args
+
+    @Builder.builder(ast.Call)
+    def build_call(self, _, children: List[TreeNode]):
+        func_name = children[0]
+        if isinstance(func_name, StringNode):
+            func_name.quoted = False
+        return PyCall(
+            func_name,
+            PyCallArguments(children[1:]),  # type: ignore
+            PyCallKeywords(())
+        )
+
+    @Builder.expander(ast.ImportFrom)
+    def expand_import_from(self, node: ast.ImportFrom):
+        return node.names
+
+    @Builder.builder(ast.ImportFrom)
+    def build_import_from(self, node: ast.ImportFrom, children: List[TreeNode]):
+        if node.module is None:
+            from_name = StringNode("", quoted=False)
+        else:
+            from_name = StringNode(node.module, quoted=False)
+        return PyImport(names=ListNode(children), from_name=from_name)
+
+    @Builder.builder(ast.alias)
+    def build_alias(self, node: ast.alias, _):
+        if not node.asname:
+            as_name = StringNode("")
+        else:
+            as_name = StringNode(node.asname)
+        return PyAlias(StringNode(node.name, quoted=False), as_name)
+
+    @Builder.builder(ast.Attribute)
+    def build_attribute(self, node: ast.Attribute, children: List[TreeNode]):
+        assert len(children) == 1
+        return PyObjAttribute(children[0], StringNode(node.attr, quoted=False))
+
+    @Builder.expander(ast.Dict)
+    def expand_ast_dict(self, node: ast.Dict):
+        yield from node.keys
+        yield from node.values
+
+    @Builder.builder(ast.Dict)
+    def build_ast_dict(self, node: ast.Dict, children: List[TreeNode]):
+        return self.build_dict(node, children)
+
+    @Builder.expander(ast.Subscript)
+    def expand_subscript(self, node: ast.Subscript):
+        yield node.value
+        yield node.slice
+
+    @Builder.builder(ast.Subscript)
+    def build_subscript(self, _, children: List[TreeNode]):
+        return PySubscript(*children)
+
+
 def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNode:
     """Builds a Graphtage tree from a Python Abstract Syntax Tree.
 
@@ -237,6 +347,8 @@ def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNo
     Returns:
         TreeNode: The resulting tree.
     """
+    return ASTBuilder(options).build_tree(tree)
+
     if options is None:
         options = BuildOptions()
     with options.printer.tqdm(desc="Walking the AST", leave=False, delay=2.0, unit=" nodes", total=1) as t:

@@ -133,13 +133,22 @@ class Builder(ABC):
     def build(self, node: Any, children: List[TreeNode]) -> TreeNode:
         builder = self.resolve_builder(type(node))
         if builder is None:
-            return self.default_builder(node, children)
-        return builder(self, node, children)
+            result = self.default_builder(node, children)
+        else:
+            result = builder(self, node, children)
+        if result is None:
+            if builder is None:
+                raise ValueError(f"{self.__class__.__name__}.default_builder returned None for node {node!r} with "
+                                 f"children {children!r}; the default builder must return a graphtage.TreeNode")
+            else:
+                raise ValueError(f"{builder!r} returned None for node {node!r} with children {children!r}; builder "
+                                 f"methods must return a graphtage.TreeNode")
+        return result
 
     def build_tree(self, root_obj) -> TreeNode:
         children = self.expand(root_obj)
         work: List[Tuple[Any, List[TreeNode], List[Any]]] = [(root_obj, [], list(reversed(list(children))))]
-        history = ObjectSet((root_obj,))
+        basic_builder = BasicBuilder(self.options)
         while work:
             node, processed_children, unprocessed_children = work[-1]
 
@@ -149,14 +158,15 @@ class Builder(ABC):
                 grandchildren = list(self.expand(child))
 
                 if grandchildren and self.options.check_for_cycles:
-                    if child in history:
-                        if self.options.ignore_cycles:
-                            log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
-                            processed_children.append(CyclicReference(child))
-                            continue
-                        else:
-                            raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
-                    history.add(child)
+                    # make sure we aren't already in the process of expanding this child
+                    for already_expanding, _, _ in work:
+                        if already_expanding is child:
+                            if self.options.ignore_cycles:
+                                log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
+                                processed_children.append(CyclicReference(child))
+                                continue
+                            else:
+                                raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
 
                 work.append((child, [], list(reversed(grandchildren))))
                 continue
@@ -179,6 +189,7 @@ class BasicBuilder(Builder):
         return IntegerNode(obj)
 
     @Builder.builder(str)
+    @Builder.builder(bytes)
     def build_str(self, obj: str, _) -> StringNode:
         return StringNode(obj)
 
@@ -199,12 +210,12 @@ class BasicBuilder(Builder):
     @Builder.expander(tuple)
     @Builder.expander(set)
     @Builder.expander(frozenset)
-    def list_expander(self, obj: list):
+    def expand_list(self, obj: list):
         yield from obj
 
     @Builder.builder(list)
     @Builder.builder(tuple)
-    def list_builder(self, obj, children: List[TreeNode]) -> ListNode:
+    def build_list(self, obj, children: List[TreeNode]) -> ListNode:
         return ListNode(
             children,
             allow_list_edits=self.options.allow_list_edits,
@@ -213,16 +224,16 @@ class BasicBuilder(Builder):
 
     @Builder.builder(set)
     @Builder.builder(frozenset)
-    def set_builder(self, obj, children: List[TreeNode]) -> MultiSetNode:
+    def build_set(self, obj, children: List[TreeNode]) -> MultiSetNode:
         return MultiSetNode(children)
 
     @Builder.expander(dict)
-    def dict_expander(self, obj: dict):
+    def expand_dict(self, obj: dict):
         yield from obj.keys()
         yield from obj.values()
 
     @Builder.builder(dict)
-    def dict_builder(self, obj: dict, children: List[TreeNode]):
+    def build_dict(self, _, children: List[TreeNode]):
         n = len(children) // 2
         keys = children[:n]
         values = children[n:]
