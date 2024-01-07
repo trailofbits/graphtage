@@ -4,7 +4,7 @@ import sys
 from abc import abstractmethod, ABC, ABCMeta
 from functools import wraps
 from typing import (
-    Any, Callable, Collection, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+    Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
 )
 from typing_extensions import Protocol, runtime_checkable
 
@@ -654,18 +654,24 @@ class ContainerNode(TreeNode, Sized, ABC):
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         # wrap the subclass's __init__ function to auto-set the parents of its children
-        if hasattr(cls, "__init__"):
+        if "__init__" in cls.__dict__ and cls.__init__ is not object.__init__:
             orig_init = getattr(cls, "__init__")
 
-            if orig_init is not object.__init__:
-                @wraps(orig_init)
-                def wrapped(self: ContainerNode, *args, **kw):
-                    ret = orig_init(self, *args, **kw)
+            @wraps(orig_init)
+            def wrapped(self: ContainerNode, *args, **kw):
+                if hasattr(self, "_container_initializing") and self._container_initializing:
+                    first_init = False
+                else:
+                    setattr(self, "_container_initializing", True)
+                    first_init = True
+                ret = orig_init(self, *args, **kw)
+                if first_init:
                     for child in self.children():
                         child.parent = self
-                    return ret
+                    delattr(self, "_container_initializing")
+                return ret
 
-                cls.__init__ = wrapped
+            cls.__init__ = wrapped
 
     def children(self) -> Sequence[TreeNode]:
         """The children of this node.
