@@ -166,7 +166,7 @@ class DataClassNode(ContainerNode):
 
     def __repr__(self):
         attrs = ", ".join(
-            f"{slot}={value}"
+            f"{slot}={value!r}"
             for slot, value in self.items()
         )
         return f"{self.__class__.__name__}({attrs})"
