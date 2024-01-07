@@ -148,37 +148,43 @@ class Builder(ABC):
     def build_tree(self, root_obj) -> TreeNode:
         children = self.expand(root_obj)
         work: List[Tuple[Any, List[TreeNode], List[Any]]] = [(root_obj, [], list(reversed(list(children))))]
-        basic_builder = BasicBuilder(self.options)
-        while work:
-            node, processed_children, unprocessed_children = work[-1]
+        with self.options.printer.tqdm(
+                desc="Walking the Tree", leave=False, delay=2.0, unit=" nodes", total=1 + len(work[-1][-1])
+        ) as t:
+            while work:
+                node, processed_children, unprocessed_children = work[-1]
 
-            if unprocessed_children:
-                child = unprocessed_children.pop()
+                if unprocessed_children:
+                    child = unprocessed_children.pop()
+                    t.update(1)
 
-                grandchildren = list(self.expand(child))
+                    grandchildren = list(self.expand(child))
 
-                if grandchildren and self.options.check_for_cycles:
-                    # make sure we aren't already in the process of expanding this child
-                    for already_expanding, _, _ in work:
-                        if already_expanding is child:
-                            if self.options.ignore_cycles:
-                                log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
-                                processed_children.append(CyclicReference(child))
-                                continue
-                            else:
-                                raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
+                    if grandchildren and self.options.check_for_cycles:
+                        # make sure we aren't already in the process of expanding this child
+                        for already_expanding, _, _ in work:
+                            if already_expanding is child:
+                                if self.options.ignore_cycles:
+                                    log.debug(f"Detected a cycle in {node!r} at child {child!r}; ignoring…")
+                                    processed_children.append(CyclicReference(child))
+                                    continue
+                                else:
+                                    raise ValueError(f"Detected a cycle in {node!r} at child {child!r}")
 
-                work.append((child, [], list(reversed(grandchildren))))
-                continue
+                    work.append((child, [], list(reversed(grandchildren))))
+                    t.total = t.total + 1 + len(grandchildren)
+                    t.refresh()
+                    continue
 
-            _ = work.pop()
+                _ = work.pop()
+                t.update(1)
 
-            new_node = self.build(node, processed_children)
-            if not work:
-                return new_node
-            work[-1][1].append(new_node)
+                new_node = self.build(node, processed_children)
+                if not work:
+                    return new_node
+                work[-1][1].append(new_node)
 
-        return NullNode()
+            return NullNode()
 
 
 class BasicBuilder(Builder):
