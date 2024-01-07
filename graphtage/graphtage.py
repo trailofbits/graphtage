@@ -685,6 +685,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints a starting quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -693,6 +695,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -711,7 +715,9 @@ class StringFormatter(GraphtageFormatter):
         else:
             return c
 
-    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+    def write_char(
+            self, printer: Printer, c: Union[str, int], index: int, num_edits: int, removed=False, inserted=False
+    ):
         """Writes a character to the printer.
 
         Note:
@@ -748,6 +754,18 @@ class StringFormatter(GraphtageFormatter):
                 printer.write(Insert.INSERT_STRING)
             self._last_was_removed = removed
             self._last_was_inserted = inserted
+        if isinstance(c, int):
+            # we are printing a bytes object, not a str
+            if 32 <= c <= 126:
+                c = chr(c)
+            elif c == ord('\n'):
+                c = '\n'
+            elif c == ord('\t'):
+                c = '\t'
+            elif c == ord('\r'):
+                c = '\r'
+            else:
+                c = f"\\x{c:02x}"
         escaped = self.escape(c)
         if escaped != c and not isinstance(printer, NullANSIContext):
             with printer.color(Fore.YELLOW):
@@ -840,7 +858,7 @@ class StringFormatter(GraphtageFormatter):
 class StringNode(LeafNode):
     """A node containing a string"""
 
-    def __init__(self, string_like: str, quoted=True):
+    def __init__(self, string_like: Union[str, bytes], quoted=True):
         """Initializes a string node.
 
         Args:
