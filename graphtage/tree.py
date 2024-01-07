@@ -295,7 +295,6 @@ class EditedTreeNode:
 
 
 class TreeNodeMeta(ABCMeta):
-
     def __init__(cls, name, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
         cls._edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
@@ -314,6 +313,9 @@ class TreeNodeMeta(ABCMeta):
 
         """
         if self._edited_type is None:
+            if issubclass(self, EditedTreeNode):
+                return self
+
             def init(etn, wrapped_tree_node: TreeNode):
                 parent_before = wrapped_tree_node.parent
                 try:
@@ -323,8 +325,12 @@ class TreeNodeMeta(ABCMeta):
                     wrapped_tree_node._parent = parent_before
                 EditedTreeNode.__init__(etn)
 
+            def edited_copy(etn):
+                return etn.__class__(etn)
+
             self._edited_type = type(f'Edited{self.__name__}', (EditedTreeNode, self), {
-                '__init__': init
+                '__init__': init,
+                'copy': edited_copy
             })
         return self._edited_type
 
