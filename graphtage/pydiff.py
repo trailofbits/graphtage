@@ -431,12 +431,12 @@ class PyImportFormatter(SequenceFormatter):
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         pass
 
-    def print_PyAssignment(self, printer: Printer, node: Assignment):
+    def print_Assignment(self, printer: Printer, node: Assignment):
         super().print_SequenceNode(printer, node.targets)
         printer.write(" = ")
         self.print(printer, node.value)
 
-    def print_PyImport(self, printer: Printer, node: Import):
+    def print_Import(self, printer: Printer, node: Import):
         if node.from_name.object:
             with printer.color(Fore.BLUE):
                 printer.write("from ")
@@ -463,14 +463,14 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.class_name)
         self.print(printer, node.attrs)
 
-    def print_PyCall(self, printer: Printer, node: Call):
+    def print_Call(self, printer: Printer, node: Call):
         with printer.color(Fore.YELLOW):
             self.print(printer, node.func)
         self.print(printer, node.args)
         if node.kwargs.children():
             raise NotImplementedError("TODO: Implement full support for keword arguments")
 
-    def print_PyCallArguments(self, *args, **kwargs):
+    def print_CallArguments(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
     def print_PyObjAttributes(self, *args, **kwargs):
@@ -484,7 +484,7 @@ class PyObjFormatter(SequenceFormatter):
         printer.write(".")
         self.print(printer, node.attr)
 
-    def print_PyKeywordArgument(self, printer: Printer, node: KeyValuePairNode):
+    def print_KeywordArgument(self, printer: Printer, node: KeyValuePairNode):
         """Prints a :class:`graphtage.PyKeywordArgument` key/value pair.
 
         By default, the key is printed in red, followed by "=", followed by the value in light blue.
@@ -512,7 +512,7 @@ class PyModuleFormatter(SequenceFormatter):
         if not is_first:
             printer.newline()
 
-    def print_PyModule(self, printer: Printer, node: Module):
+    def print_Module(self, printer: Printer, node: Module):
         super().print_SequenceNode(printer, node)
 
 
@@ -526,7 +526,7 @@ class PyDiffFormatter(GraphtageFormatter):
                 printer.write(" as ")
                 self.print(printer, node.as_name)
 
-    def print_PySubscript(self, printer: Printer, node: Subscript):
+    def print_Subscript(self, printer: Printer, node: Subscript):
         self.print(printer, node.value)
         with printer.color(Fore.BLUE):
             printer.write("[")
