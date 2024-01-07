@@ -230,6 +230,11 @@ class TestFormatting(TestCase):
         # However, test_formatter_coverage will complain unless this function is here!
         pass
 
+    def test_pickle_formatting(self):
+        # test_formatter_coverage will complain unless this function is here!
+        # TODO: Implement a Pickle formatting test
+        pass
+
     @filetype_test
     def test_yaml_formatting(self):
         orig_obj = TestFormatting.make_random_obj(
