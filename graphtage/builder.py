@@ -136,13 +136,13 @@ class Builder(ABC):
             result = self.default_builder(node, children)
         else:
             result = builder(self, node, children)
-        if result is None:
+        if not isinstance(result, TreeNode):
             if builder is None:
-                raise ValueError(f"{self.__class__.__name__}.default_builder returned None for node {node!r} with "
-                                 f"children {children!r}; the default builder must return a graphtage.TreeNode")
+                source = f"{self.__class__.__name__}.default_builder"
             else:
-                raise ValueError(f"{builder!r} returned None for node {node!r} with children {children!r}; builder "
-                                 f"methods must return a graphtage.TreeNode")
+                source = f"{builder!r}"
+            raise ValueError(f"{source}(node={node!r}, children={children!r}) returned {result!r}; "
+                             f"builders must return a graphtage.TreeNode")
         return result
 
     def build_tree(self, root_obj) -> TreeNode:
