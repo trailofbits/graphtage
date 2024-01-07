@@ -7,6 +7,7 @@ import logging
 from typing import Any, List, Optional, Tuple, Union, Iterator
 
 from . import Range
+from .ast import Assignment, Call, CallArguments, CallKeywords, Import, KeywordArgument, Module, Subscript
 from .builder import BasicBuilder, Builder
 from .dataclasses import DataClassNode
 from .edits import AbstractCompoundEdit, Edit, Replace
@@ -49,10 +50,6 @@ class PyObjEdit(AbstractCompoundEdit):
         return f"{self.__class__.__name__}(from_obj={self.from_obj!r}, to_obj={self.to_obj!r})"
 
 
-class PyKeywordArgument(KeyValuePairNode):
-    pass
-
-
 class PyObjAttribute(DataClassNode):
     object: TreeNode
     attr: StringNode
@@ -67,13 +64,13 @@ class PyObjAttribute(DataClassNode):
 class PyObjAttributes(DictNode):
     @classmethod
     def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
-        return PyKeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
+        return KeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 class PyObjFixedAttributes(FixedKeyDictNode):
     @classmethod
     def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
-        return PyKeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
+        return KeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
 PyObjAttributeMapping = Union[PyObjAttributes, PyObjFixedAttributes]
@@ -117,71 +114,6 @@ class PyObj(ContainerNode):
 ASTNode = Union[ast.AST, ast.stmt, ast.expr, ast.alias]
 
 
-class PyModule(ListNode):
-    def print(self, printer: Printer):
-        SequenceFormatter('', '', '\n').print(printer, self)
-
-
-class PyAssignment(DataClassNode):
-    """A node representing a Python assignment."""
-
-    targets: ListNode
-    value: TreeNode
-
-    def print(self, printer: Printer):
-        """Prints this node."""
-        SequenceFormatter('', '', ', ').print(printer, self.targets)
-        with printer.bright():
-            printer.write(" = ")
-        self.value.print(printer)
-
-    def __str__(self):
-        return f"{', '.join(map(str, self.targets.children()))} = {self.value!s}"
-
-
-class PyCallArguments(ListNode):
-    pass
-
-
-class PyCallKeywords(DictNode):
-    pass
-
-
-class PyCall(DataClassNode):
-    """A node representing a Python function call."""
-
-    func: TreeNode
-    args: PyCallArguments
-    kwargs: PyCallKeywords
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if isinstance(self.func, StringNode):
-            self.func.quoted = False
-
-    def print(self, printer: Printer):
-        with printer.color(Fore.YELLOW):
-            self.func.print(printer)
-        printer.write("(")
-        SequenceFormatter('', '', ', ').print(printer, self.args)
-        if self.args and len(self.kwargs) > 0:
-            printer.write(", ")
-        for kvp in self.kwargs:
-            with printer.color(Fore.RED):
-                kvp.key.print(printer)
-            with printer.bright():
-                printer.write("=")
-            kvp.value.print(printer)
-        printer.write(")")
-
-    def __str__(self):
-        args = ", ".join([str(a) for a in self.args] + [
-            f"{kvp.key!s}={kvp.value!s}"
-            for kvp in self.kwargs
-        ])
-        return f"{self.func!s}({args})"
-
-
 class PyAlias(DataClassNode):
     name: StringNode
     as_name: StringNode
@@ -193,41 +125,6 @@ class PyAlias(DataClassNode):
             self.as_name.print(printer)
 
 
-class PySubscript(DataClassNode):
-    value: TreeNode
-    slice: TreeNode
-
-    def print(self, printer: Printer):
-        self.value.print(printer)
-        with printer.color(Fore.LIGHTBLUE_EX):
-            printer.write("[")
-        self.slice.write(printer)
-        with printer.color(Fore.LIGHTBLUE_EX):
-            printer.write("]")
-
-
-class PyImport(DataClassNode):
-    names: ListNode
-    from_name: StringNode
-
-    def __init__(self, names: ListNode, from_name: StringNode):
-        super().__init__(names=names, from_name=from_name)
-        self.from_name.quoted = False
-        for child in self.names:
-            if isinstance(child, StringNode):
-                child.quoted = False
-
-    def print(self, printer: Printer):
-        if self.from_name.object:
-            with printer.color(Fore.YELLOW):
-                printer.write("from ")
-            self.from_name.print(printer)
-            printer.write(" ")
-        with printer.color(Fore.YELLOW):
-            printer.write("import ")
-        SequenceFormatter('', '', ', ').print(printer, self.names)
-
-
 class ASTBuilder(BasicBuilder):
     """Builds a Graphtage tree from a Python Abstract Syntax Tree"""
 
@@ -237,7 +134,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.builder(ast.Module)
     def build_module(self, _, children: List[TreeNode]):
-        return PyModule(tuple(children))
+        return Module(tuple(children))
 
     @Builder.expander(ast.List)
     @Builder.expander(ast.Tuple)
@@ -260,7 +157,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.builder(ast.Assign)
     def build_assign(self, _, children):
-        return PyAssignment(targets=ListNode(children[:-1]), value=children[-1])
+        return Assignment(targets=ListNode(children[:-1]), value=children[-1])
 
     @Builder.builder(ast.Name)
     def build_name(self, node: ast.Name, _):
@@ -287,10 +184,10 @@ class ASTBuilder(BasicBuilder):
         func_name = children[0]
         if isinstance(func_name, StringNode):
             func_name.quoted = False
-        return PyCall(
+        return Call(
             func_name,
-            PyCallArguments(children[1:]),  # type: ignore
-            PyCallKeywords(())
+            CallArguments(children[1:]),  # type: ignore
+            CallKeywords(())
         )
 
     @Builder.expander(ast.ImportFrom)
@@ -303,7 +200,7 @@ class ASTBuilder(BasicBuilder):
             from_name = StringNode("", quoted=False)
         else:
             from_name = StringNode(node.module, quoted=False)
-        return PyImport(names=ListNode(children), from_name=from_name)
+        return Import(names=ListNode(children), from_name=from_name)
 
     @Builder.builder(ast.alias)
     def build_alias(self, node: ast.alias, _):
@@ -334,7 +231,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.builder(ast.Subscript)
     def build_subscript(self, _, children: List[TreeNode]):
-        return PySubscript(*children)
+        return Subscript(*children)
 
 
 def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNode:
@@ -534,12 +431,12 @@ class PyImportFormatter(SequenceFormatter):
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         pass
 
-    def print_PyAssignment(self, printer: Printer, node: PyAssignment):
+    def print_PyAssignment(self, printer: Printer, node: Assignment):
         super().print_SequenceNode(printer, node.targets)
         printer.write(" = ")
         self.print(printer, node.value)
 
-    def print_PyImport(self, printer: Printer, node: PyImport):
+    def print_PyImport(self, printer: Printer, node: Import):
         if node.from_name.object:
             with printer.color(Fore.BLUE):
                 printer.write("from ")
@@ -566,7 +463,7 @@ class PyObjFormatter(SequenceFormatter):
             self.print(printer, node.class_name)
         self.print(printer, node.attrs)
 
-    def print_PyCall(self, printer: Printer, node: PyCall):
+    def print_PyCall(self, printer: Printer, node: Call):
         with printer.color(Fore.YELLOW):
             self.print(printer, node.func)
         self.print(printer, node.args)
@@ -615,7 +512,7 @@ class PyModuleFormatter(SequenceFormatter):
         if not is_first:
             printer.newline()
 
-    def print_PyModule(self, printer: Printer, node: PyModule):
+    def print_PyModule(self, printer: Printer, node: Module):
         super().print_SequenceNode(printer, node)
 
 
@@ -629,7 +526,7 @@ class PyDiffFormatter(GraphtageFormatter):
                 printer.write(" as ")
                 self.print(printer, node.as_name)
 
-    def print_PySubscript(self, printer: Printer, node: PySubscript):
+    def print_PySubscript(self, printer: Printer, node: Subscript):
         self.print(printer, node.value)
         with printer.color(Fore.BLUE):
             printer.write("[")
