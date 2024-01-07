@@ -7,7 +7,7 @@ from collections.abc import MutableSet
 from typing import Any, Iterable, Set
 
 
-class _HashableWrapper:
+class IdentityHash:
     def __init__(self, obj):
         self.obj = obj
 
@@ -15,7 +15,7 @@ class _HashableWrapper:
         return id(self.obj)
 
     def __eq__(self, other):
-        if not isinstance(other, _HashableWrapper):
+        if not isinstance(other, IdentityHash):
             return False
         return id(self.obj) == id(other.obj)
 
@@ -27,19 +27,19 @@ class ObjectSet(MutableSet):
 
     """
     def __init__(self, initial_objs: Iterable[Any] = ()):
-        self.objs: Set[_HashableWrapper] = set()
+        self.objs: Set[IdentityHash] = set()
         for obj in initial_objs:
             self.add(obj)
 
     def add(self, value):
-        self.objs.add(_HashableWrapper(value))
+        self.objs.add(IdentityHash(value))
 
     def discard(self, value):
-        value = _HashableWrapper(value)
+        value = IdentityHash(value)
         self.objs.remove(value)
 
     def __contains__(self, x):
-        x = _HashableWrapper(x)
+        x = IdentityHash(x)
         return x in self.objs
 
     def __len__(self):

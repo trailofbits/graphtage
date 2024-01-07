@@ -8,7 +8,7 @@ from . import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, LeafNode, ListNode, MultiSetNode,
     NullNode, StringNode, TreeNode
 )
-from .object_set import ObjectSet
+from .object_set import IdentityHash
 
 C = TypeVar("C")
 T = TypeVar("T")
@@ -17,6 +17,9 @@ log = logging.getLogger(__name__)
 
 
 class CyclicReference(LeafNode):
+    def __init__(self, obj):
+        super().__init__(IdentityHash(obj))
+
     def __hash__(self):
         return id(self.object)
 
@@ -163,16 +166,10 @@ class Builder(ABC):
 
                     if grandchildren and self.options.check_for_cycles:
                         # first, check if all of our grandchildren are leaves; if so, we don't need to check for a cycle
-                        all_are_leaves = True
-                        for grandchild in grandchildren:
-                            try:
-                                grandchild_node = basic_builder.build_tree(grandchild)
-                                if not grandchild_node.is_leaf:
-                                    all_are_leaves = False
-                                    break
-                            except NotImplementedError:
-                                all_are_leaves = False
-                                break
+                        all_are_leaves = all(
+                            all(False for _ in self.expand(grandchild))
+                            for grandchild in grandchildren
+                        )
                         if not all_are_leaves:
                             # make sure we aren't already in the process of expanding this child
                             is_cycle = False
