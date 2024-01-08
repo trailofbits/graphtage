@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Extending Graphtage &mdash; Graphtage v0.3.0 documentation</title>
+  <title>Extending Graphtage &mdash; Graphtage v0.3.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/extending.html"/>
@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Printing Protocol" href="printing.html" />
+    <link rel="next" title="Constructing Graphtage Trees" href="builders.html" />
     <link rel="prev" title="Using Graphtage Programmatically" href="library.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
           <a href="index.html" class="icon icon-home">
             Graphtage
           </a>
-<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.0"><div class="version">v0.3.0</div></a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.1"><div class="version">v0.3.1</div></a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -48,6 +48,8 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Extending Graphtage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="printing.html">Printing Protocol</a></li>
 </ul>
 </li>
@@ -85,6 +87,16 @@
 formatters, and printers. This section will give some examples on how to implement each.</p>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="builders.html#expanding-children">Expanding Children</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builders.html#custom-nodes">Custom Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="filetypes.html#filetype-matching">Filetype Matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filetypes.html#implementing-a-new-filetype">Implementing a New Filetype</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="printing.html">Printing Protocol</a></li>
 </ul>
 </div>
@@ -95,7 +107,7 @@ formatters, and printers. This section will give some examples on how to impleme
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="library.html" class="btn btn-neutral float-left" title="Using Graphtage Programmatically" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="printing.html" class="btn btn-neutral float-right" title="Printing Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="builders.html" class="btn btn-neutral float-right" title="Constructing Graphtage Trees" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -123,7 +135,7 @@ formatters, and printers. This section will give some examples on how to impleme
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
       <span class="rst-current-version" data-toggle="rst-current-version">
         <span class="fa fa-book"> Graphtage Documentation</span>
-        v0.3.0
+        v0.3.1
         <span class="fa fa-caret-down"></span>
       </span>
       <div class="rst-other-versions">
@@ -131,6 +143,7 @@ formatters, and printers. This section will give some examples on how to impleme
           <dt>Versions</dt>
           
             <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
             <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
             <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
             <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>

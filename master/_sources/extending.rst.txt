@@ -7,4 +7,6 @@ formatters, and printers. This section will give some examples on how to impleme
 .. toctree::
    :maxdepth: 4
 
+   builders
+   filetypes
    printing

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Defining New Filetypes &mdash; Graphtage v0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/filetypes.html"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Printing Protocol" href="printing.html" />
+    <link rel="prev" title="Constructing Graphtage Trees" href="builders.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Graphtage
+          </a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.1"><div class="version">v0.3.1</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending Graphtage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Defining New Filetypes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#filetype-matching">Filetype Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-a-new-filetype">Implementing a New Filetype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="printing.html">Printing Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="extending.html">Extending Graphtage</a></li>
+      <li class="breadcrumb-item active">Defining New Filetypes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/filetypes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="defining-new-filetypes">
+<span id="filetypes"></span><h1>Defining New Filetypes<a class="headerlink" href="#defining-new-filetypes" title="Permalink to this heading"></a></h1>
+<p>Implementing support for a new Graphtage filetype entails extending the <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> class. Subclassing <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> automatically registers it with Graphtage.</p>
+<section id="filetype-matching">
+<h2>Filetype Matching<a class="headerlink" href="#filetype-matching" title="Permalink to this heading"></a></h2>
+<p>Input files are matched to an associated <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> using MIME types. Each <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> registers one or more MIME types for which it will be responsible. Input file MIME types are classified using the <a class="reference external" href="https://docs.python.org/3/library/mimetypes.html#module-mimetypes" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code></a> module. Sometimes a filetype does not have a standardized MIME type or is not properly classified by the <a class="reference external" href="https://docs.python.org/3/library/mimetypes.html#module-mimetypes" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code></a> module. For example, Graphtage’s <a class="reference internal" href="graphtage.pickle.html#graphtage.pickle.Pickle" title="graphtage.pickle.Pickle"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.pickle.Pickle</span></code></a> filetype has neither. You can add support for such a filetype as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mimetypes</span>
+
+<span class="k">if</span> <span class="s1">&#39;.pkl&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span> <span class="ow">and</span> <span class="s1">&#39;.pickle&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="p">:</span>
+    <span class="n">mimetypes</span><span class="o">.</span><span class="n">add_type</span><span class="p">(</span><span class="s1">&#39;application/x-python-pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;.pkl&#39;</span><span class="p">)</span>
+    <span class="n">mimetypes</span><span class="o">.</span><span class="n">suffix_map</span><span class="p">[</span><span class="s1">&#39;.pickle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;.pkl&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="implementing-a-new-filetype">
+<h2>Implementing a New Filetype<a class="headerlink" href="#implementing-a-new-filetype" title="Permalink to this heading"></a></h2>
+<p>With the MIME type registered, here is a sketch of how one might define the Pickle filetype:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">BuildOptions</span><span class="p">,</span> <span class="n">Filetype</span><span class="p">,</span> <span class="n">Formatter</span><span class="p">,</span> <span class="n">TreeNode</span>
+
+<span class="k">class</span> <span class="nc">Pickle</span><span class="p">(</span><span class="n">Filetype</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;pickle&quot;</span><span class="p">,</span>                      <span class="c1"># a unique identifier</span>
+            <span class="s2">&quot;application/python-pickle&quot;</span><span class="p">,</span>   <span class="c1"># the primary MIME type</span>
+            <span class="s2">&quot;application/x-python-pickle&quot;</span>  <span class="c1"># an optional secondary MIME type</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">build_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BuildOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TreeNode</span><span class="p">:</span>
+        <span class="c1"># return the root node of the tree built from the given pickle file</span>
+
+    <span class="k">def</span> <span class="nf">build_tree_handling_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BuildOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TreeNode</span><span class="p">]:</span>
+        <span class="c1"># the same as the build_tree() function,</span>
+        <span class="c1"># but on error return a string containing the error message</span>
+        <span class="c1">#</span>
+        <span class="c1"># for example:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">PickleDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Error deserializing </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!s}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">get_default_formatter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GraphtageFormatter</span><span class="p">:</span>
+        <span class="c1"># return the formatter associated with this file type</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="builders.html" class="btn btn-neutral float-left" title="Constructing Graphtage Trees" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="printing.html" class="btn btn-neutral float-right" title="Printing Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Trail of Bits.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.3.1
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
+            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
+            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
+            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
+            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
+            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>
