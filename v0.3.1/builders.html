@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constructing Graphtage Trees &mdash; Graphtage v0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/builders.html"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Defining New Filetypes" href="filetypes.html" />
+    <link rel="prev" title="Extending Graphtage" href="extending.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Graphtage
+          </a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.1"><div class="version">v0.3.1</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending Graphtage</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Constructing Graphtage Trees</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#expanding-children">Expanding Children</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-nodes">Custom Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="printing.html">Printing Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="extending.html">Extending Graphtage</a></li>
+      <li class="breadcrumb-item active">Constructing Graphtage Trees</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/builders.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="constructing-graphtage-trees">
+<span id="builders"></span><h1>Constructing Graphtage Trees<a class="headerlink" href="#constructing-graphtage-trees" title="Permalink to this heading"></a></h1>
+<p>Graphtage operates on trees represented by the <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> base class.
+There are various predefined specializations of tree nodes, such as <a class="reference internal" href="graphtage.html#graphtage.IntegerNode" title="graphtage.IntegerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.IntegerNode</span></code></a> for integers, <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a> for lists, and <a class="reference internal" href="graphtage.html#graphtage.DictNode" title="graphtage.DictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.DictNode</span></code></a> for dictionaries. <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> has an optional <a class="reference internal" href="graphtage.html#graphtage.TreeNode.parent" title="graphtage.TreeNode.parent"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code></a> and a potentially empty set of <a class="reference internal" href="graphtage.html#graphtage.TreeNode.children" title="graphtage.TreeNode.children"><code class="xref py py-func docutils literal notranslate"><span class="pre">children</span></code></a>.</p>
+<p>Graphtage provides a <a class="reference internal" href="graphtage.builder.html#graphtage.builder.Builder" title="graphtage.builder.Builder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.Builder</span></code></a> class for conveniently converting arbitrary objects into a tree of <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code></a> objects. It uses Python magic to define the conversions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">IntegerNode</span><span class="p">,</span> <span class="n">TreeNode</span>
+<span class="kn">from</span> <span class="nn">graphtage.builder</span> <span class="kn">import</span> <span class="n">Builder</span>
+
+<span class="k">class</span> <span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">Builder</span><span class="p">):</span>
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">build_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">IntegerNode(10)</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;Builder.builder(int)</span></code> decorator specifies that the function is able to build a Graphtage <cite>TreeNode</cite> object from inputs that are <code class="xref py py-func docutils literal notranslate"><span class="pre">instanceof()</span></code> the type <cite>int</cite>. If there are multiple builder functions that match a given object, the function associated with the most specialized type is chosen. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Bar</span><span class="p">(</span><span class="n">Foo</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">Builder</span><span class="p">):</span>
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">build_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+
+    <span class="nd">@Build</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="n">Bar</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">build_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Bar</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">Foo</span><span class="p">())</span>
+<span class="go">StringNode(&quot;foo&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">Bar</span><span class="p">())</span>
+<span class="go">StringNode(&quot;bar&quot;)</span>
+</pre></div>
+</div>
+<section id="expanding-children">
+<h2>Expanding Children<a class="headerlink" href="#expanding-children" title="Permalink to this heading"></a></h2>
+<p>So far we have only given examples of the production of leaf nodes, like integers and strings.
+What if a node has children, like a list? We can handle this using the <code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;Builder.expander</span></code> decorator. Here is an example of how a list can be built:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">Builder</span><span class="p">):</span>
+    <span class="o">...</span>
+
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">expand_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an iterable over the node&#39;s children&quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="n">node</span>
+
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">build_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="n">ListNode</span><span class="p">(</span><span class="n">children</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">ListNode([IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4)])</span>
+</pre></div>
+</div>
+<p>If an expander is not defined for a type, it is assumed that the type is a leaf with no children.</p>
+<p>If the root node or one of its descendants is of a type that has no associated builder function, a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.12)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
+<p>Graphtage has a subclassed builder <a class="reference internal" href="graphtage.builder.html#graphtage.builder.BasicBuilder" title="graphtage.builder.BasicBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.BasicBuilder</span></code></a> that has builders and expanders for the Python basic types like <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. You can extend <a class="reference internal" href="graphtage.builder.html#graphtage.builder.BasicBuilder" title="graphtage.builder.BasicBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.BasicBuilder</span></code></a> to implement support for additional types.</p>
+</section>
+<section id="custom-nodes">
+<h2>Custom Nodes<a class="headerlink" href="#custom-nodes" title="Permalink to this heading"></a></h2>
+<p>Graphtage provides abstract classes like <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.SequenceNode</span></code> to aid in the implementation of custom node types. But the easiest way to define a custom node type is to extend off of <code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.dataclasses.DataClass</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">IntegerNode</span><span class="p">,</span> <span class="n">ListNode</span><span class="p">,</span> <span class="n">StringNode</span>
+<span class="kn">from</span> <span class="nn">graphtage.dataclasses</span> <span class="kn">import</span> <span class="n">DataClass</span>
+
+<span class="k">class</span> <span class="nc">CustomNode</span><span class="p">(</span><span class="n">DataClass</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">StringNode</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">IntegerNode</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="n">ListNode</span>
+</pre></div>
+</div>
+<p>This will automatically build a node type that has three children: a string, an integer, and a list.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;the name&quot;</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1337</span><span class="p">),</span> <span class="n">attributes</span><span class="o">=</span><span class="n">ListNode</span><span class="p">((</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">3</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p>Let’s say you have another, non-graphtage class that corresponds to <code class="xref py py-class docutils literal notranslate"><span class="pre">CustomNode</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NonGraphtageClass</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">attributes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You can add support for building Graphtage nodes from this custom class as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">BasicBuilder</span><span class="p">):</span>
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="n">NonGraphtageClass</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">expand_non_graphtage_class</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">NonGraphtageClass</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">yield</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">yield</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span>
+
+    <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="n">NonGraphtageClass</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">build_non_graphtage_class</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">NonGraphtageClass</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CustomNode</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CustomNode</span><span class="p">(</span><span class="o">*</span><span class="n">children</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="extending.html" class="btn btn-neutral float-left" title="Extending Graphtage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="filetypes.html" class="btn btn-neutral float-right" title="Defining New Filetypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Trail of Bits.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.3.1
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
+            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
+            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
+            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
+            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
+            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

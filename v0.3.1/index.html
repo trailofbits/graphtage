@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graphtage Documentation &mdash; Graphtage v0.3.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/index.html"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using Graphtage Programmatically" href="library.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Graphtage
+          </a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.1"><div class="version">v0.3.1</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Graphtage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Graphtage Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graphtage-documentation">
+<h1>Graphtage Documentation<a class="headerlink" href="#graphtage-documentation" title="Permalink to this heading"></a></h1>
+<p>Graphtage is <em>both</em> a commandline utility <em>and</em> a general purpose library for semantically comparing and merging
+tree-like structures, such as JSON, XML, HTML, YAML, and CSV files. Its name is a portmanteau of “graph” and
+“graftage”—the latter being the practice of joining two trees together such that they grow as one.</p>
+<p>There are several reasons why you might be here…</p>
+<aside class="topic">
+<p class="topic-title">You want to learn how to use Graphtage as a command line utility.</p>
+<p>This documentation focuses on Graphtage’ use as a library, specifically how to extend it by implementing new file
+formats. For instructions on using Graphtage as a utility, see the documentation in its <a class="reference external" href="https://github.com/trailofbits/graphtage">GitHub page</a>.</p>
+</aside>
+<aside class="topic">
+<p class="topic-title">You want to programmatically interact with Graphtage as a library.</p>
+<p>You should start by reading about <a class="reference internal" href="library.html"><span class="doc">Using Graphtage Programmatically</span></a>.</p>
+</aside>
+<aside class="topic">
+<p class="topic-title">You want to modify or extend Graphtage.</p>
+<p>For example, you might want to implement support for a new file format or edit type. You should start by reading
+the <a class="reference internal" href="extending.html"><span class="doc">Extending Graphtage</span></a> section.</p>
+</aside>
+<aside class="topic">
+<p class="topic-title">You are already familiar with Graphtage and just need an API reference.</p>
+<p>The API documentation is <a class="reference internal" href="package.html"><span class="doc">here</span></a>.</p>
+</aside>
+<aside class="topic">
+<p class="topic-title">You are curious and want to learn more about how Graphtage works.</p>
+<p>Documentation on how Graphtage works is <a class="reference internal" href="howitworks.html"><span class="doc">here</span></a>.</p>
+</aside>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="library.html#the-intermediate-representation">The Intermediate Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#transforming-nodes-with-edits">Transforming Nodes with Edits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#applying-edits-to-nodes">Applying Edits to Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#formatting-and-printing-results">Formatting and Printing Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="library.html#diffing-in-memory-python-objects">Diffing In-Memory Python Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="builders.html#expanding-children">Expanding Children</a></li>
+<li class="toctree-l3"><a class="reference internal" href="builders.html#custom-nodes">Custom Nodes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="filetypes.html#filetype-matching">Filetype Matching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filetypes.html#implementing-a-new-filetype">Implementing a New Filetype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="printing.html">Printing Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howitworks.html#why-mapping-trees-is-complex">Why Mapping Trees is Complex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howitworks.html#matching-ordered-sequences">Matching Ordered Sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howitworks.html#matching-unordered-collections">Matching Unordered Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howitworks.html#footnotes">Footnotes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.html#graphtage-classes">graphtage classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#abstractcompoundedit">AbstractCompoundEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#abstractedit">AbstractEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#boolnode">BoolNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#buildoptions">BuildOptions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#compoundedit">CompoundEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#constantcostedit">ConstantCostEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#containernode">ContainerNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#dictnode">DictNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#edit">Edit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#editcollection">EditCollection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#editsequence">EditSequence</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#editedtreenode">EditedTreeNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#filetype">Filetype</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#filetypewatcher">FiletypeWatcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#fixedkeydictnode">FixedKeyDictNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#fixedkeydictnodeedit">FixedKeyDictNodeEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#floatnode">FloatNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#graphtageformatter">GraphtageFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#insert">Insert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#integernode">IntegerNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#keyvaluepairedit">KeyValuePairEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#keyvaluepairnode">KeyValuePairNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#leafnode">LeafNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#listnode">ListNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#mappingnode">MappingNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#match">Match</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#multisetnode">MultiSetNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#nullnode">NullNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#possibleedits">PossibleEdits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#remove">Remove</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#replace">Replace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#stringedit">StringEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#stringformatter">StringFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#stringnode">StringNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#treenode">TreeNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#treenodemeta">TreeNodeMeta</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.html#graphtage-functions">graphtage functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#explode-edits">explode_edits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#get-filetype">get_filetype</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.html#string-edit-distance">string_edit_distance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.ast.html">graphtage.ast</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.ast.html#ast-classes">ast classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#assignment">Assignment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#call">Call</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#callarguments">CallArguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#callkeywords">CallKeywords</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#import">Import</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#keywordargument">KeywordArgument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#module">Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.ast.html#subscript">Subscript</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.NEGATIVE_INFINITY"><code class="docutils literal notranslate"><span class="pre">NEGATIVE_INFINITY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.POSITIVE_INFINITY"><code class="docutils literal notranslate"><span class="pre">POSITIVE_INFINITY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.bounds.html#bounds-classes">bounds classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#bounded">Bounded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#boundedcomparator">BoundedComparator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#constantbound">ConstantBound</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#infinity">Infinity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#range">Range</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.bounds.html#bounds-functions">bounds functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#make-distinct">make_distinct</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#min-bounded">min_bounded</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#repeat-until-tightened">repeat_until_tightened</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.bounds.html#sort">sort</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.builder.html">graphtage.builder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.builder.html#builder-classes">builder classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.builder.html#basicbuilder">BasicBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.builder.html#builder">Builder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.builder.html#cyclicreference">CyclicReference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.constraints.html#constraints-classes">constraints classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.constraints.html#conditionalmatcher">ConditionalMatcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.constraints.html#matchif">MatchIf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.constraints.html#matchunless">MatchUnless</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.csv.html#csv-classes">csv classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csv">CSV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csvformatter">CSVFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csvnode">CSVNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csvrow">CSVRow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csvrowformatter">CSVRowFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#csvrows">CSVRows</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.csv.html#csv-functions">csv functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.csv.html#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.dataclasses.html">graphtage.dataclasses</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.dataclasses.html#dataclasses-classes">dataclasses classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.dataclasses.html#dataclassedit">DataClassEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.dataclasses.html#dataclassnode">DataClassNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.debug.html">graphtage.debug</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.debug.html#debug-classes">debug classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.debug.html#debuggable">Debuggable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.expressions.html#graphtage.expressions.DEFAULT_GLOBALS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_GLOBALS</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.expressions.html#graphtage.expressions.OPERATORS_BY_NAME"><code class="docutils literal notranslate"><span class="pre">OPERATORS_BY_NAME</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.expressions.html#graphtage.expressions.IDENTIFIER_BYTES"><code class="docutils literal notranslate"><span class="pre">IDENTIFIER_BYTES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.expressions.html#expressions-classes">expressions classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#closebracket">CloseBracket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#closeparen">CloseParen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#collectioninfo">CollectionInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#comma">Comma</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#expression">Expression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#fixedsizecollection">FixedSizeCollection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#floattoken">FloatToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#functioncall">FunctionCall</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#identifiertoken">IdentifierToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#integertoken">IntegerToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#numerictoken">NumericToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#openbracket">OpenBracket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#openparen">OpenParen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#operator">Operator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#operatortoken">OperatorToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#pairedendtoken">PairedEndToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#pairedstarttoken">PairedStartToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#pairedtoken">PairedToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#parenthesis">Parenthesis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#parseerror">ParseError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#stringtoken">StringToken</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#token">Token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#tokenizer">Tokenizer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.expressions.html#expressions-functions">expressions functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#get-member">get_member</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#infix-to-rpn">infix_to_rpn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#parse">parse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.expressions.html#tokenize">tokenize</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.fibonacci.html#fibonacci-classes">fibonacci classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.fibonacci.html#fibonacciheap">FibonacciHeap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.fibonacci.html#heapnode">HeapNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.fibonacci.html#maxfibonacciheap">MaxFibonacciHeap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.fibonacci.html#reversedcomparator">ReversedComparator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.formatter.html#why-does-the-formatter-module-exist">Why does the formatter module exist?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.formatter.html#what-the-formatter-module-can-do">What the formatter module can do</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.formatter.html#formatting-protocol">Formatting Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.formatter.html#formatter-classes">formatter classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.formatter.html#basicformatter">BasicFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.formatter.html#formatter">Formatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.formatter.html#formatterchecker">FormatterChecker</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.formatter.html#formatter-functions">formatter functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.formatter.html#get-formatter">get_formatter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.json.html#json-classes">json classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#json">JSON</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#json5">JSON5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#jsondictformatter">JSONDictFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#jsonformatter">JSONFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#jsonlistformatter">JSONListFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#jsonstringformatter">JSONStringFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.json.html#json-functions">json functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.json.html#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.levenshtein.html#levenshtein-classes">levenshtein classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.levenshtein.html#editdistance">EditDistance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.levenshtein.html#levenshtein-functions">levenshtein functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.levenshtein.html#levenshtein-distance">levenshtein_distance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.matching.html#matching-classes">matching classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#edge">Edge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#matching">Matching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#matchingfromnode">MatchingFromNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#matchingnode">MatchingNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#matchingtonode">MatchingToNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#pathset">PathSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#queueelement">QueueElement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#sortededges">SortedEdges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#weightedbipartitematcher">WeightedBipartiteMatcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#weightedbipartitematcherpartial-implementation">WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.matching.html#matching-functions">matching functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#get-dtype">get_dtype</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.matching.html#min-weight-bipartite-matching">min_weight_bipartite_matching</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.multiset.html#multiset-classes">multiset classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.multiset.html#multisetedit">MultiSetEdit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.object_set.html">graphtage.object_set</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.object_set.html#object-set-classes">object_set classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.object_set.html#identityhash">IdentityHash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.object_set.html#objectset">ObjectSet</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pickle.html">graphtage.pickle</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.pickle.html#pickle-classes">pickle classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pickle.html#pickle">Pickle</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.plist.html#plist-classes">plist classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.plist.html#plist">PLIST</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.plist.html#plistformatter">PLISTFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.plist.html#plistnode">PLISTNode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.plist.html#plistsequenceformatter">PLISTSequenceFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.plist.html#plist-functions">plist functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.plist.html#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.DEFAULT_PRINTER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_PRINTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.printer.html#printer-classes">printer classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#ansicontext">ANSIContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#combiningmarkcontext">CombiningMarkContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#combiningmarkwriter">CombiningMarkWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#htmlansicontext">HTMLANSIContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#htmlprinter">HTMLPrinter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#nullansicontext">NullANSIContext</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#nullwriter">NullWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#printer">Printer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#rawwriter">RawWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#writer">Writer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.printer.html#printer-functions">printer functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.printer.html#only-ansi">only_ansi</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.progress.html#progress-classes">progress classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.progress.html#statuswriter">StatusWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pydiff.html">graphtage.pydiff</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.pydiff.html#pydiff-classes">pydiff classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#astbuilder">ASTBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyalias">PyAlias</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pydictformatter">PyDictFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pydiffformatter">PyDiffFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyimportformatter">PyImportFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pylistformatter">PyListFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pymoduleformatter">PyModuleFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobj">PyObj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjattribute">PyObjAttribute</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjattributes">PyObjAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjbuilder">PyObjBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjedit">PyObjEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjfixedattributes">PyObjFixedAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#pyobjformatter">PyObjFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.pydiff.html#pydiff-functions">pydiff functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#ast-to-tree">ast_to_tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#build-tree">build_tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#diff">diff</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.pydiff.html#print-diff">print_diff</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.search.html#search-classes">search classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.search.html#iterativetighteningsearch">IterativeTighteningSearch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.sequences.html#sequences-classes">sequences classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#fixedlengthsequenceedit">FixedLengthSequenceEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequenceedit">SequenceEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequenceformatter">SequenceFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.sequences.html#sequencenode">SequenceNode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.utils.html#utils-classes">utils classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#hashablecounter">HashableCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#orderedcounter">OrderedCounter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#sized">Sized</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#sparsematrix">SparseMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#tempfile">Tempfile</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.utils.html#utils-functions">utils functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#getsizeof">getsizeof</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#largest">largest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.utils.html#smallest">smallest</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.version.html#graphtage.version.DEV_BUILD"><code class="docutils literal notranslate"><span class="pre">DEV_BUILD</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.version.html#graphtage.version.__version__"><code class="docutils literal notranslate"><span class="pre">__version__</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.version.html#graphtage.version.VERSION_STRING"><code class="docutils literal notranslate"><span class="pre">VERSION_STRING</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.version.html#version-functions">version functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.version.html#git-branch">git_branch</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.xml.html#xml-classes">xml classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#html">HTML</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xml">XML</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlchildformatter">XMLChildFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelement">XMLElement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementattribformatter">XMLElementAttribFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementchildren">XMLElementChildren</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementedit">XMLElementEdit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlelementobj">XMLElementObj</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlformatter">XMLFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#xmlstringformatter">XMLStringFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.xml.html#xml-functions">xml functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.xml.html#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.yaml.html">graphtage.yaml</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.yaml.html#yaml-classes">yaml classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yaml">YAML</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yamldictformatter">YAMLDictFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yamlformatter">YAMLFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yamlkeyvaluepairformatter">YAMLKeyValuePairFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yamllistformatter">YAMLListFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#yamlstringformatter">YAMLStringFormatter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="graphtage.yaml.html#yaml-functions">yaml functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graphtage.yaml.html#build-tree">build_tree</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="library.html" class="btn btn-neutral float-right" title="Using Graphtage Programmatically" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Trail of Bits.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.3.1
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          
+            <dd><a href="/graphtage/latest">latest</a></dd>
+            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
+            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
+            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
+            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
+            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
+            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
+            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
+            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
+            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
+            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
+            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
+            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
+            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
+            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
+          
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>
