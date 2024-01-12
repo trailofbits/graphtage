@@ -198,6 +198,8 @@ log = logging.getLogger(__name__)
 FORMATTERS: Sequence['Formatter[Any]'] = []
 """A list of default instances of non-partial formatters that have subclassed :class:`Formatter`."""
 
+C = TypeVar("C")
+
 
 class SubFormatterError(TypeError):
     pass
@@ -358,7 +360,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
     If `True`, this formatter will be considered on every print that is not resolvable from the base formatter.
      
     """
-    PRINTERS: Dict[Type[T], Callable[[Printer, T], None]]
+    PRINTERS: Dict[Type[T], Callable[["Formatter", Printer, T], Any]]
 
     @property
     def root(self) -> 'Formatter[T]':
@@ -367,6 +369,17 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         while node.parent is not None:
             node = node.parent
         return node
+
+    @staticmethod
+    def printer(item_type: Type[T]):
+        def wrapper(func: Callable[[C, Printer, T], Any]) -> Callable[[C, Printer, T], Any]:
+            if hasattr(func, "_printer_for_type"):
+                func._printer_for_type = func._printer_for_type + (item_type,)
+            else:
+                setattr(func, "_printer_for_type", (item_type,))
+            return func
+
+        return wrapper
 
     def __new__(cls, *args, **kwargs) -> 'Formatter[T]':
         """Instantiates a new formatter.
@@ -386,6 +399,47 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
                                         f"{sub_formatter.__name__}; its default constructor raised: {e!s}. "
                                         f"Sub-formatters must be instantiable via a constructor with no arguments.")
         return ret
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if not hasattr(cls, "PRINTERS") or cls.PRINTERS is None:
+            setattr(cls, "PRINTERS", {})
+        else:
+            setattr(cls, "PRINTERS", dict(cls.PRINTERS))
+        new_printers: Dict[Type[T], Callable[["Formatter", Printer, T], Any]] = {}
+        for member_name, _ in inspect.getmembers(cls):
+            if member_name.startswith("__"):
+                continue
+            try:
+                member = getattr(cls, member_name)
+            except AttributeError:
+                continue
+            if hasattr(member, "_printer_for_type"):
+                for printer_type in getattr(member, "_printer_for_type"):
+                    if not isinstance(printer_type, type):
+                        raise TypeError(f"{cls.__name__}.{member_name} was registered as a printer for "
+                                        f"{printer_type!r}, which is not a type")
+                    elif printer_type in cls.PRINTERS:
+                        raise TypeError(f"A printer for type {printer_type.__name__} is already registered to "
+                                        f"{cls.PRINTERS[printer_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{member_name}")
+                    elif printer_type in new_printers:
+                        raise TypeError(f"A printer for type {printer_type.__name__} is already registered to "
+                                        f"{new_printers[printer_type]!r} and cannot be re-registered to "
+                                        f"{cls.__name__}.{member_name}")
+                    new_printers[printer_type] = member  # type: ignore
+        cls.PRINTERS.update(new_printers)
+
+    @classmethod
+    def get_printer(cls, item_type: Type[T]) -> Optional[Callable[["Formatter", Printer, T], Any]]:
+        for t in item_type.__mro__:
+            if t in cls.PRINTERS:
+                return cls.PRINTERS[t]
+        for sub in cls.sub_formatters:
+            sub_printer = sub.get_printer(item_type)
+            if sub_printer is not None:
+                return sub_printer
+        return None
 
     def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
         """Looks up a formatter for the given item using this formatter as a base.

@@ -12,6 +12,7 @@ from tqdm import trange
 
 import graphtage
 from graphtage import xml
+from graphtage.formatter import Formatter
 
 
 STR_BYTES: FrozenSet[str] = frozenset([
@@ -258,3 +259,19 @@ class TestFormatting(TestCase):
     def test_plist_formatting(self):
         orig_obj = TestFormatting.make_random_obj(force_string_keys=True, exclude_bytes=frozenset('<>/\n&?|@{}[]'))
         return orig_obj, plistlib.dumps(orig_obj)
+
+
+class TestNewFormattingAPI(TestCase):
+    def test_printer_decorator(self):
+        class TestFormatter(Formatter[object]):
+            @Formatter.printer(int)
+            def print_int(self, printer: graphtage.printer.Printer, item: int):
+                return 1234
+
+            def print(self, printer: graphtage.printer.Printer, item: object):
+                raise NotImplementedError()
+
+        self.assertIsNone(TestFormatter.get_printer(str))
+        int_printer = TestFormatter.get_printer(int)
+        self.assertIsNotNone(int_printer)
+        self.assertEqual(1234, int_printer(TestFormatter(), None, -1))
