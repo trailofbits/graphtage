@@ -174,11 +174,12 @@ Examples:
 
 """
 
+from abc import ABCMeta, abstractmethod
+from functools import wraps
 import inspect
 import logging
 import sys
-from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Set, Type, TypeVar
 
 if sys.version_info.major == 3 and sys.version_info.minor < 7:
     # Backward compatibility for pre-Python3.7
@@ -202,6 +203,22 @@ class SubFormatterError(TypeError):
     pass
 
 
+_PRINTED_WARNINGS: Set[type] = set()
+
+
+def deprecated_printer(instance_type: type, func: Callable):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if instance_type not in _PRINTED_WARNINGS:
+            _PRINTED_WARNINGS.add(instance_type)
+            log.warning(f"{instance_type.__name__}.{func.__name__} uses the legacy Graphtage formatting protocol. "
+                        f"This may be deprecated in the future. "
+                        f"Please update to using the newer `graphtage.Formatter.printer` decorators.")
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 class FormatterChecker(GenericMeta):
     """The metaclass for :class:`Formatter`.
 
@@ -221,6 +238,7 @@ class FormatterChecker(GenericMeta):
                 with a type hint that is not a subclass of :class:`graphtage.printer.Printer`.
 
         """
+
         if len(cls.mro()) > 2 and not cls.__abstractmethods__:
             # Instantiate a version of the Formatter to add it to our global dicts:
             # If the formatter has a custom init, we can't use it as a default
@@ -235,6 +253,11 @@ class FormatterChecker(GenericMeta):
                 log.debug(f"Formatter {name} cannot be instantiated as a default constructor: {e!s}")
                 instance = None
             if instance is not None:
+                if not hasattr(instance, "PRINTERS") or instance.PRINTERS is None:
+                    setattr(instance, "PRINTERS", {})
+                else:
+                    setattr(instance, "PRINTERS", dict(instance.PRINTERS))
+                print_funcs = []
                 for member, member_type in inspect.getmembers(instance):
                     if member.startswith('print_'):
                         sig = inspect.signature(member_type)
@@ -242,7 +265,11 @@ class FormatterChecker(GenericMeta):
                             a = sig.parameters['printer'].annotation
                             if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
                                     and not issubclass(Printer, a):
-                                raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
+                                raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected "
+                                                f"to be a superclass of graphtage.printer.Printer")
+                        print_funcs.append(member)
+                for member in print_funcs:
+                    setattr(instance, member, deprecated_printer(instance_type=cls, func=getattr(instance, member)))
                 if not instance.is_partial and not cls.__name__ == 'BasicFormatter':
                     FORMATTERS.append(instance)
                 setattr(cls, 'DEFAULT_INSTANCE', instance)
@@ -326,6 +353,12 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
     """
     is_partial: bool = False
+    """A flag indicating whether or not this formatter is partial.
+    
+    If `True`, this formatter will be considered on every print that is not resolvable from the base formatter.
+     
+    """
+    PRINTERS: Dict[Type[T], Callable[[Printer, T], None]]
 
     @property
     def root(self) -> 'Formatter[T]':
