@@ -198,6 +198,10 @@ FORMATTERS: Sequence['Formatter[Any]'] = []
 """A list of default instances of non-partial formatters that have subclassed :class:`Formatter`."""
 
 
+class SubFormatterError(TypeError):
+    pass
+
+
 class FormatterChecker(GenericMeta):
     """The metaclass for :class:`Formatter`.
 
@@ -225,8 +229,10 @@ class FormatterChecker(GenericMeta):
                     pass
                 # if we got this far then the Formatter class has a default constructor
                 instance = cls()
-            except TypeError:
-                log.debug(f"Formatter {name} cannot be instantiated as a default constructor")
+            except SubFormatterError:
+                raise
+            except TypeError as e:
+                log.debug(f"Formatter {name} cannot be instantiated as a default constructor: {e!s}")
                 instance = None
             if instance is not None:
                 for member, member_type in inspect.getmembers(instance):
@@ -339,8 +345,13 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         ret: Formatter[T] = super().__new__(cls)
         setattr(ret, 'sub_formatters', [])
         for sub_formatter in ret.sub_format_types:
-            ret.sub_formatters.append(sub_formatter())
-            ret.sub_formatters[-1].parent = ret
+            try:
+                ret.sub_formatters.append(sub_formatter())
+                ret.sub_formatters[-1].parent = ret
+            except TypeError as e:
+                raise SubFormatterError(f"Error instantiating {cls.__name__}'s sub-formatter of type "
+                                        f"{sub_formatter.__name__}; its default constructor raised: {e!s}. "
+                                        f"Sub-formatters must be instantiable via a constructor with no arguments.")
         return ret
 
     def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
