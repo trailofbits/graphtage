@@ -308,25 +308,28 @@ def _get_formatter(
         base_formatter: 'Formatter',
         tested: Set[Type['Formatter']]
 ) -> Optional[Callable[[Printer, T], Any]]:
-    if base_formatter.__class__ not in tested:
-        ret = base_formatter.get_printer(node_type)
+    test_stack = list(reversed([
+        formatter
+        for formatter in
+        [base_formatter] + base_formatter.sub_formatters
+        if formatter.__class__ not in tested
+    ]))
+    while test_stack:
+        formatter = test_stack.pop()
+        if formatter.__class__ in tested:
+            continue
+        tested.add(formatter.__class__)
+        ret = base_formatter.get_printer(node_type, cls_instance=formatter)
         if ret is not None:
             return ret
-        grandchildren = []
         for c in node_type.mro():
-            if hasattr(base_formatter, f'print_{c.__name__}'):
-                return getattr(base_formatter, f'print_{c.__name__}')
-            for sub_formatter in base_formatter.sub_formatters:
-                if sub_formatter not in tested:
-                    if hasattr(sub_formatter, f'print_{c.__name__}'):
-                        return getattr(sub_formatter, f'print_{c.__name__}')
-                    grandchildren.extend(sub_formatter.sub_formatters)
-        tested.add(base_formatter.__class__)
-        tested |= set(s.__class__ for s in base_formatter.sub_formatters)
-        for grandchild in grandchildren:
-            ret = _get_formatter(node_type, grandchild, tested)
-            if ret is not None:
-                return ret
+            if hasattr(formatter, f'print_{c.__name__}'):
+                return getattr(formatter, f'print_{c.__name__}')
+        test_stack.extend(reversed([
+            child
+            for child in formatter.sub_formatters
+            if child.__class__ not in tested
+        ]))
     if base_formatter.parent is not None:
         return _get_formatter(node_type, base_formatter.parent, tested)
 
