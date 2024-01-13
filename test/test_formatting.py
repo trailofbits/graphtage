@@ -12,7 +12,7 @@ from tqdm import trange
 
 import graphtage
 from graphtage import xml
-from graphtage.formatter import Formatter
+from graphtage.formatter import BasicFormatter, Formatter
 
 
 STR_BYTES: FrozenSet[str] = frozenset([
@@ -274,4 +274,49 @@ class TestNewFormattingAPI(TestCase):
         self.assertIsNone(TestFormatter.get_printer(str))
         int_printer = TestFormatter.get_printer(int)
         self.assertIsNotNone(int_printer)
-        self.assertEqual(1234, int_printer(TestFormatter(), None, -1))
+        self.assertEqual(1234, int_printer(None, -1))
+        int_printer = TestFormatter().get_formatter(10)
+        self.assertIsNotNone(int_printer)
+        self.assertEqual(1234, int_printer(None, -1))
+
+    def test_inheritance(self):
+        class Foo(Formatter[object]):
+            @Formatter.printer(int)
+            def print_int(self, printer: graphtage.printer.Printer, item: int):
+                return 1234
+
+            def print(self, printer: graphtage.printer.Printer, item: object):
+                raise NotImplementedError()
+
+        class Bar(Foo):
+            @Formatter.printer(str)
+            def print_str(self, printer: graphtage.printer.Printer, item: str):
+                return "1234"
+
+        self.assertIsNotNone(Bar.get_printer(str))
+        self.assertIsNotNone(Bar.get_printer(int))
+        self.assertIsNone(Foo.get_printer(str))
+        self.assertEqual("1234", Bar.get_printer(str)(None, 1234))
+
+    def test_sub_formatters(self):
+        class Foo:
+            def __init__(self, item):
+                self.item = item
+
+        class Sub(BasicFormatter):
+            is_partial = True
+
+            @Formatter.printer(str)
+            def print_str(self, printer: graphtage.printer.Printer, item: str):
+                return "1234"
+
+        class Parent(BasicFormatter):
+            sub_format_types = [Sub]
+
+            @Formatter.printer(Foo)
+            def print_foo(self, printer: graphtage.printer.Printer, item: Foo):
+                return self.print(printer, item.item)
+
+        self.assertIsNotNone(Parent.get_printer(Foo))
+        self.assertIsNotNone(Parent.get_printer(str))
+        self.assertEqual("1234", Parent.DEFAULT_INSTANCE.print(None, Foo("asdf")))

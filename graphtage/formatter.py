@@ -175,7 +175,7 @@ Examples:
 """
 
 from abc import ABCMeta, abstractmethod
-from functools import wraps
+from functools import partial, wraps
 import inspect
 import logging
 import sys
@@ -201,7 +201,11 @@ FORMATTERS: Sequence['Formatter[Any]'] = []
 C = TypeVar("C")
 
 
-class SubFormatterError(TypeError):
+class FormatterError(TypeError):
+    pass
+
+
+class SubFormatterError(FormatterError):
     pass
 
 
@@ -274,8 +278,26 @@ class FormatterChecker(GenericMeta):
                     setattr(instance, member, deprecated_printer(instance_type=cls, func=getattr(instance, member)))
                 if not instance.is_partial and not cls.__name__ == 'BasicFormatter':
                     FORMATTERS.append(instance)
-                setattr(cls, 'DEFAULT_INSTANCE', instance)
+                setattr(cls, '_DEFAULT_INSTANCE', instance)
         super().__init__(name, bases, clsdict)
+
+    @property
+    def DEFAULT_INSTANCE(cls: Type[C]) -> C:
+        """A default instance of this formatter, automatically instantiated.
+
+        If this formatter is abstract, retrieving this property will raise a FormatterError.
+
+        """
+        if not hasattr(cls, "_DEFAULT_INSTANCE") or cls._DEFAULT_INSTANCE is None:
+            if cls.__abstractmethods__:
+                abstract = [f"`{m}`" for m in sorted(cls.__abstractmethods__)]
+                raise FormatterError(f"{cls.__name__} does not have a DEFAULT_INSTANCE because it cannot be "
+                                     f"instantiated; abstract method{['', 's'][len(abstract) > 1]} "
+                                     f"{', '.join(abstract)} must be implemented")
+            raise FormatterError(f"{cls.__name__} does not have a DEFAULT_INSTANCE because an unknown error occurred "
+                                 f"during its instantiation")
+
+        return cls._DEFAULT_INSTANCE
 
 
 T = TypeVar('T')
@@ -287,6 +309,9 @@ def _get_formatter(
         tested: Set[Type['Formatter']]
 ) -> Optional[Callable[[Printer, T], Any]]:
     if base_formatter.__class__ not in tested:
+        ret = base_formatter.get_printer(node_type)
+        if ret is not None:
+            return ret
         grandchildren = []
         for c in node_type.mro():
             if hasattr(base_formatter, f'print_{c.__name__}'):
@@ -338,8 +363,6 @@ def get_formatter(
 class Formatter(Generic[T], metaclass=FormatterChecker):
     """"""
 
-    DEFAULT_INSTANCE: 'Formatter[T]' = None
-    """A default instance of this formatter, automatically instantiated by the :class:`FormatterChecker` metaclass."""
     sub_format_types: Sequence[Type['Formatter[T]']] = ()
     """A list of formatter types that should be used as sub-formatters in the :ref:`Formatting Protocol`."""
     sub_formatters: List['Formatter[T]'] = []
@@ -388,7 +411,12 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         :attr:`parent<Formatter.parent>` to this new formatter.
 
         """
-        ret: Formatter[T] = super().__new__(cls)
+        if cls.__abstractmethods__:
+            args_str = [str(a) for a in args]
+            kwarg_str = [f"{k!s}={v!r}" for k, v in kwargs.items()]
+            raise FormatterError(f"Cannot instantiate {cls.__name__}({', '.join(args_str + kwarg_str)}) because "
+                                 f"it has unimplemented abstract methods: {cls.__abstractmethods__!r}")
+        ret: Formatter[T] = super().__new__(cls, *args, **kwargs)
         setattr(ret, 'sub_formatters', [])
         for sub_formatter in ret.sub_format_types:
             try:
@@ -407,12 +435,8 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         else:
             setattr(cls, "PRINTERS", dict(cls.PRINTERS))
         new_printers: Dict[Type[T], Callable[["Formatter", Printer, T], Any]] = {}
-        for member_name, _ in inspect.getmembers(cls):
+        for member_name, member in cls.__dict__.items():
             if member_name.startswith("__"):
-                continue
-            try:
-                member = getattr(cls, member_name)
-            except AttributeError:
                 continue
             if hasattr(member, "_printer_for_type"):
                 for printer_type in getattr(member, "_printer_for_type"):
@@ -431,12 +455,16 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         cls.PRINTERS.update(new_printers)
 
     @classmethod
-    def get_printer(cls, item_type: Type[T]) -> Optional[Callable[["Formatter", Printer, T], Any]]:
-        for t in item_type.__mro__:
+    def get_printer(
+            cls: Type[C], item_type: Type[T], cls_instance: Optional[C] = None
+    ) -> Optional[Callable[[Printer, T], Any]]:
+        if cls_instance is None:
+            cls_instance = cls.DEFAULT_INSTANCE
+        for t in item_type.mro():
             if t in cls.PRINTERS:
-                return cls.PRINTERS[t]
-        for sub in cls.sub_formatters:
-            sub_printer = sub.get_printer(item_type)
+                return partial(cls.PRINTERS[t], cls_instance)
+        for sub in cls_instance.sub_formatters:
+            sub_printer = sub.get_printer(item_type, cls_instance=sub)
             if sub_printer is not None:
                 return sub_printer
         return None
@@ -479,13 +507,13 @@ class BasicFormatter(*basic_formatter_types):
 
             formatter = self.get_formatter(item)
             if formatter is None:
-                printer.write(str(item))
+                return printer.write(str(item))
             else:
-                formatter(printer, item)
+                return formatter(printer, item)
 
         """
-        f = self.get_formatter(item)
-        if f is None:
-            printer.write(str(item))
+        formatter = self.get_formatter(item)
+        if formatter is None:
+            return printer.write(str(item))
         else:
-            f(printer, item)
+            return formatter(printer, item)
