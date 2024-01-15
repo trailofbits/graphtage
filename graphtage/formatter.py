@@ -179,7 +179,7 @@ from functools import partial, wraps
 import inspect
 import logging
 import sys
-from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Set, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 if sys.version_info.major == 3 and sys.version_info.minor < 7:
     # Backward compatibility for pre-Python3.7
@@ -306,32 +306,39 @@ T = TypeVar('T')
 def _get_formatter(
         node_type: Type[T],
         base_formatter: 'Formatter',
-        tested: Set[Type['Formatter']]
-) -> Optional[Callable[[Printer, T], Any]]:
-    test_stack = list(reversed([
-        formatter
-        for formatter in
-        [base_formatter] + base_formatter.sub_formatters
-        if formatter.__class__ not in tested
-    ]))
-    while test_stack:
-        formatter = test_stack.pop()
-        if formatter.__class__ in tested:
-            continue
-        tested.add(formatter.__class__)
-        ret = base_formatter.get_printer(node_type, cls_instance=formatter)
-        if ret is not None:
-            return ret
-        for c in node_type.mro():
-            if hasattr(formatter, f'print_{c.__name__}'):
-                return getattr(formatter, f'print_{c.__name__}')
-        test_stack.extend(reversed([
-            child
-            for child in formatter.sub_formatters
-            if child.__class__ not in tested
-        ]))
-    if base_formatter.parent is not None:
-        return _get_formatter(node_type, base_formatter.parent, tested)
+        tested: Set[Type['Formatter']],
+        test_parent: bool = True
+) -> Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]]:
+    ret = base_formatter.resolve_printer(node_type, cls_instance=base_formatter)
+    if ret is not None:
+        return ret
+    formatter_stack = [base_formatter]
+    while formatter_stack:
+        formatter = formatter_stack.pop()
+        if formatter.__class__ not in tested:
+            grandchildren = []
+            for c in node_type.mro():
+                if hasattr(formatter, f'print_{c.__name__}'):
+                    return formatter, c, getattr(formatter, f'print_{c.__name__}')
+                for sub_formatter in formatter.sub_formatters:
+                    if sub_formatter not in tested:
+                        if hasattr(sub_formatter, f'print_{c.__name__}'):
+                            return formatter, c, getattr(sub_formatter, f'print_{c.__name__}')
+                        grandchildren.extend(sub_formatter.sub_formatters)
+            tested.add(formatter.__class__)
+            tested |= set(s.__class__ for s in formatter.sub_formatters)
+            formatter_stack.extend(reversed(grandchildren))
+    if test_parent:
+        parent = base_formatter.parent
+        while parent is not None:
+            if parent.__class__ not in tested:
+                new_instance = parent.__class__()
+                new_instance.parent = base_formatter
+                ret = _get_formatter(node_type, new_instance, tested, test_parent=False)
+                if ret is not None:
+                    return ret
+            parent = parent.parent
+    return None
 
 
 def get_formatter(
@@ -352,15 +359,26 @@ def get_formatter(
     """
     tested_formatters: Set[Type[Formatter]] = set()
     if base_formatter is not None:
-        ret = _get_formatter(node_type, base_formatter, tested_formatters)
-        if ret is not None:
+        matched = _get_formatter(node_type, base_formatter, tested_formatters)
+        if matched is not None:
+            _, _, ret = matched
             return ret
+
+    lowest_mro_depth = len(node_type.mro()) + 1
+    best_possibility: Optional[Callable[[Printer, T], Any]] = None
     for formatter in FORMATTERS:
         if formatter.__class__ not in tested_formatters:
-            ret = _get_formatter(node_type, formatter, tested_formatters)
-            if ret is not None:
-                return ret
-    return None
+            if base_formatter is not None:
+                formatter = formatter.__class__()
+                formatter.parent = base_formatter
+            matched = _get_formatter(node_type, formatter, tested_formatters)
+            if matched is not None:
+                _, matched_type, ret = matched
+                mro_depth = len(matched_type.mro())
+                if mro_depth < lowest_mro_depth:
+                    lowest_mro_depth = mro_depth
+                    best_possibility = ret
+    return best_possibility
 
 
 class Formatter(Generic[T], metaclass=FormatterChecker):
@@ -458,19 +476,42 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         cls.PRINTERS.update(new_printers)
 
     @classmethod
+    def resolve_printer(
+            cls: Type[C], item_type: Type[T], cls_instance: Optional[C] = None
+    ) -> Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]]:
+        if cls_instance is None:
+            cls_instance = cls.DEFAULT_INSTANCE
+        lowest_mro_depth = len(item_type.mro()) + 1
+        best_possibility: Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]] = None
+        for sub_type in cls_instance.sub_format_types:
+            sub = sub_type()
+            sub_printer = sub_type.resolve_printer(item_type, cls_instance=sub)
+            if sub_printer is not None:
+                _, matched_type, _ = sub_printer
+                for i, t in enumerate(item_type.mro()):
+                    if t == matched_type:
+                        if best_possibility is None or i < lowest_mro_depth:
+                            lowest_mro_depth = i
+                            best_possibility = sub_printer
+                        break
+                else:
+                    raise NotImplementedError("This should never happen")
+        for i, t in enumerate(item_type.mro()):
+            if best_possibility is not None and i >= lowest_mro_depth:
+                break
+            if t in cls.PRINTERS:
+                return cls_instance, t, partial(cls.PRINTERS[t], cls_instance)
+        return best_possibility
+
+    @classmethod
     def get_printer(
             cls: Type[C], item_type: Type[T], cls_instance: Optional[C] = None
     ) -> Optional[Callable[[Printer, T], Any]]:
-        if cls_instance is None:
-            cls_instance = cls.DEFAULT_INSTANCE
-        for t in item_type.mro():
-            if t in cls.PRINTERS:
-                return partial(cls.PRINTERS[t], cls_instance)
-        for sub in cls_instance.sub_formatters:
-            sub_printer = sub.get_printer(item_type, cls_instance=sub)
-            if sub_printer is not None:
-                return sub_printer
-        return None
+        match = cls.resolve_printer(item_type, cls_instance=cls_instance)
+        if match is None:
+            return None
+        _, _, ret = match
+        return ret
 
     def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
         """Looks up a formatter for the given item using this formatter as a base.
