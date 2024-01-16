@@ -11,8 +11,8 @@ except ImportError:
 
 from . import json
 from .edits import Insert, Match
-from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, ListNode, MappingNode, StringNode, \
-    StringEdit, StringFormatter
+from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, ListNode, MappingNode, MultiSetNode, \
+    StringNode, StringEdit, StringFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
@@ -90,14 +90,13 @@ class YAMLDictFormatter(SequenceFormatter):
     def __init__(self):
         super().__init__('', '', '')
 
+    @GraphtageFormatter.printer(MultiSetNode)
     def print_MultiSetNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
+    @GraphtageFormatter.printer(MappingNode)
     def print_MappingNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
-
-    def print_SequenceNode(self, *args, **kwargs):
-        self.parent.print(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_first and not is_last:
@@ -133,7 +132,8 @@ class YAMLStringFormatter(StringFormatter):
         if self.has_newline:
             printer.indents -= 1
 
-    def print_StringNode(self, printer: Printer, node: 'StringNode'):
+    @GraphtageFormatter.printer(StringNode)
+    def print_StringNode(self, printer: Printer, node: StringNode):
         s = node.object
         if '\n' in s:
             if printer.context().fore is None:
@@ -192,9 +192,11 @@ class YAMLFormatter(GraphtageFormatter):
             ret = ret[:-1]
         printer.write(ret)
 
+    @GraphtageFormatter.printer(LeafNode)
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         self.write_obj(printer, node.object)
 
+    @GraphtageFormatter.printer(ContainerNode)
     def print_ContainerNode(self, printer: Printer, node: ContainerNode):
         """Prints a :class:`graphtage.ContainerNode`.
 

@@ -787,6 +787,7 @@ class StringFormatter(GraphtageFormatter):
                 self.write_char(p, c, i, num_edits)
             self.write_end_quote(p, StringEdit(node, node))
 
+    @GraphtageFormatter.printer(StringEdit)
     def print_StringEdit(self, printer: Printer, edit: StringEdit):
         self._last_was_inserted = False
         self._last_was_removed = False

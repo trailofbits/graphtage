@@ -7,7 +7,8 @@ from plistlib import dumps, load
 
 from . import json
 from .edits import Edit, EditCollection, Match
-from .graphtage import BoolNode, BuildOptions, Filetype, FloatNode, KeyValuePairNode, IntegerNode, LeafNode, StringNode
+from .graphtage import BoolNode, BuildOptions, Filetype, FloatNode, KeyValuePairNode, IntegerNode, LeafNode, ListNode, \
+    MappingNode, MultiSetNode, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -63,19 +64,23 @@ class PLISTSequenceFormatter(SequenceFormatter):
     def __init__(self):
         super().__init__('', '', '')
 
-    def print_SequenceNode(self, printer: Printer, node: SequenceNode):
-        self.parent.print(printer, node)
-
+    @SequenceFormatter.printer(ListNode)
     def print_ListNode(self, printer: Printer, *args, **kwargs):
         printer.write("<array>")
         super().print_SequenceNode(printer, *args, **kwargs)
         printer.write("</array>")
 
+    @SequenceFormatter.printer(MultiSetNode)
     def print_MultiSetNode(self, printer: Printer, *args, **kwargs):
         printer.write("<dict>")
         super().print_SequenceNode(printer, *args, **kwargs)
         printer.write("</dict>")
 
+    @SequenceFormatter.printer(MappingNode)
+    def print_MappingNode(self, *args, **kwargs):
+        return self.print_MultiSetNode(*args, **kwargs)
+
+    @SequenceFormatter.printer(KeyValuePairNode)
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         printer.write("<key>")
         if isinstance(node.key, StringNode):
@@ -85,8 +90,6 @@ class PLISTSequenceFormatter(SequenceFormatter):
         printer.write("</key>")
         printer.newline()
         self.print(printer, node.value)
-
-    print_MappingNode = print_MultiSetNode
 
 
 def _plist_header_footer() -> Tuple[str, str]:
@@ -117,24 +120,30 @@ class PLISTFormatter(GraphtageFormatter):
         encoded = dumps(obj).decode("utf-8")
         printer.write(encoded[len(PLIST_HEADER):-len(PLIST_FOOTER)])
 
+    @GraphtageFormatter.printer(StringNode)
     def print_StringNode(self, printer: Printer, node: StringNode):
         printer.write(f"<string>{node.object}</string>")
 
+    @GraphtageFormatter.printer(IntegerNode)
     def print_IntegerNode(self, printer: Printer, node: IntegerNode):
         printer.write(f"<integer>{node.object}</integer>")
 
+    @GraphtageFormatter.printer(FloatNode)
     def print_FloatNode(self, printer: Printer, node: FloatNode):
         printer.write(f"<real>{node.object}</real>")
 
+    @GraphtageFormatter.printer(BoolNode)
     def print_BoolNode(self, printer, node: BoolNode):
         if node.object:
             printer.write("<true />")
         else:
             printer.write("<false />")
 
+    @GraphtageFormatter.printer(LeafNode)
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         self.write_obj(printer, node.object)
 
+    @GraphtageFormatter.printer(PLISTNode)
     def print_PLISTNode(self, printer: Printer, node: PLISTNode):
         printer.write(PLIST_HEADER)
         self.print(printer, node.root)

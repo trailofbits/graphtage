@@ -11,7 +11,8 @@ import os
 from typing import Optional, Union
 
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, MappingNode, MultiSetNode, NullNode, SequenceNode, \
+    StringFormatter, StringNode
 from .printer import DEFAULT_PRINTER, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -94,6 +95,7 @@ class JSONListFormatter(SequenceFormatter):
         if not hasattr(printer, 'join_lists') or not printer.join_lists:
             printer.newline()
 
+    @GraphtageFormatter.printer(ListNode)
     def print_ListNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.ListNode`.
 
@@ -104,18 +106,18 @@ class JSONListFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
-    def print_SequenceNode(self, *args, **kwargs):
-        """Prints a non-List sequence.
-
-        This delegates to the parent formatter's implementation::
-
-            self.parent.print(*args, **kwargs)
-
-        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONDictFormatter` in
-        instances where a list contains a dict.
-
-        """
-        self.parent.print(*args, **kwargs)
+    # def print_SequenceNode(self, *args, **kwargs):
+    #     """Prints a non-List sequence.
+    #
+    #     This delegates to the parent formatter's implementation::
+    #
+    #         self.parent.print(*args, **kwargs)
+    #
+    #     which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONDictFormatter` in
+    #     instances where a list contains a dict.
+    #
+    #     """
+    #     self.parent.print(*args, **kwargs)
 
 
 class JSONDictFormatter(SequenceFormatter):
@@ -129,6 +131,7 @@ class JSONDictFormatter(SequenceFormatter):
         if not hasattr(printer, 'join_dict_items') or not printer.join_dict_items:
             printer.newline()
 
+    @GraphtageFormatter.printer(MultiSetNode)
     def print_MultiSetNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.MultiSetNode`.
 
@@ -139,6 +142,7 @@ class JSONDictFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
+    @GraphtageFormatter.printer(MappingNode)
     def print_MappingNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.MappingNode`.
 
@@ -149,18 +153,19 @@ class JSONDictFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
-    def print_SequenceNode(self, *args, **kwargs):
-        """Prints a non-Dict sequence.
-
-        This delegates to the parent formatter's implementation::
-
-            self.parent.print(*args, **kwargs)
-
-        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONListFormatter` in
-        instances where a dict contains a list.
-
-        """
-        self.parent.print(*args, **kwargs)
+    # @GraphtageFormatter.printer(SequenceNode)
+    # def print_SequenceNode(self, *args, **kwargs):
+    #     """Prints a non-Dict sequence.
+    #
+    #     This delegates to the parent formatter's implementation::
+    #
+    #         self.parent.print(*args, **kwargs)
+    #
+    #     which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONListFormatter` in
+    #     instances where a dict contains a list.
+    #
+    #     """
+    #     self.parent.print(*args, **kwargs)
 
 
 class JSONStringFormatter(StringFormatter):
@@ -200,6 +205,7 @@ class JSONFormatter(GraphtageFormatter):
     """The default JSON formatter."""
     sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
 
+    @GraphtageFormatter.printer(LeafNode)
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         """Prints a :class:`graphtage.LeafNode`.
 
@@ -210,6 +216,7 @@ class JSONFormatter(GraphtageFormatter):
         """
         printer.write(json.dumps(node.object))
 
+    @GraphtageFormatter.printer(KeyValuePairNode)
     def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
         """Prints a :class:`graphtage.KeyValuePairNode`.
 
@@ -222,6 +229,7 @@ class JSONFormatter(GraphtageFormatter):
             printer.write(": ")
         self.print(printer, node.value)
 
+    @GraphtageFormatter.printer(ContainerNode)
     def print_ContainerNode(self, printer: Printer, node: ContainerNode):
         """Prints a :class:`graphtage.ContainerNode`.
 

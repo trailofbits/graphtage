@@ -378,9 +378,11 @@ class XMLFormatter(GraphtageFormatter):
                 printer.write(html.escape(section))
                 printer.newline()
 
+    @GraphtageFormatter.printer(LeafNode)
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         printer.write(html.escape(str(node.object)))
 
+    @GraphtageFormatter.printer(XMLElement)
     def print_XMLElement(self, printer: Printer, node: XMLElement):
         printer.write('<')
         self.print(printer, node.tag)

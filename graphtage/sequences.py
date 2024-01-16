@@ -309,6 +309,7 @@ class SequenceFormatter(GraphtageFormatter):
         """
         self.print(printer, edit)
 
+    @GraphtageFormatter.printer(SequenceNode)
     def print_SequenceNode(self, printer: Printer, node: SequenceNode):
         """Formats a sequence node.
 
