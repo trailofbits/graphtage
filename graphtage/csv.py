@@ -74,6 +74,7 @@ class CSVRowFormatter(SequenceFormatter):
         """
         super().__init__('', '', ',')
 
+    @GraphtageFormatter.printer(CSVRow)
     def print_CSVRow(self, *args, **kwargs):
         """Prints a CSV row.
 
@@ -105,6 +106,7 @@ class CSVRows(SequenceFormatter):
         """
         super().__init__('', '', '')
 
+    @GraphtageFormatter.printer(CSVNode)
     def print_CSVNode(self, *args, **kwargs):
         """Prints a CSV node.
 
@@ -116,7 +118,7 @@ class CSVRows(SequenceFormatter):
         super().print_SequenceNode(*args, **kwargs)
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        """Prints a newline on all but the first and last items."""
+        """Prints a newline on all but the first item."""
         if not is_first:
             printer.newline()
 
@@ -129,6 +131,7 @@ class CSVFormatter(GraphtageFormatter):
     """Top-level formatter for CSV files."""
     sub_format_types = [CSVRows, JSONFormatter]
 
+    @GraphtageFormatter.printer(graphtage.LeafNode)
     def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):
         """Prints a leaf node, which should always be a column in a CSV row.
 
