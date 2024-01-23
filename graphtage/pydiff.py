@@ -307,6 +307,19 @@ class PyDictFormatter(JSONDictFormatter):
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         pass
 
+    @GraphtageFormatter.printer(KeyValuePairNode)
+    def print_kvp_node(self, printer: Printer, node: KeyValuePairNode):
+        """Prints a :class:`graphtage.KeyValuePairNode`.
+
+        By default, the key is printed in blue, followed by a bright ": ", followed by the value.
+
+        """
+        with printer.color(Fore.BLUE):
+            self.print(printer, node.key)
+        with printer.bright():
+            printer.write(": ")
+        self.print(printer, node.value)
+
 
 class PyImportFormatter(SequenceFormatter):
     is_partial = True
@@ -381,7 +394,7 @@ class PyObjFormatter(SequenceFormatter):
         self.print(printer, node.attr)
 
     @GraphtageFormatter.printer(KeywordArgument)
-    def print_KeywordArgument(self, printer: Printer, node: KeyValuePairNode):
+    def print_KeywordArgument(self, printer: Printer, node: KeywordArgument):
         """Prints a :class:`graphtage.PyKeywordArgument` key/value pair.
 
         By default, the key is printed in red, followed by "=", followed by the value in light blue.

@@ -281,7 +281,8 @@ class EditDistance(SequenceEdit):
                         initial=0,
                         desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
                         disable=fringe_total <= 0,
-                        leave=False
+                        leave=False,
+                        delay=2.0
                 ) as t:
                     for row, col in self._fringe_diagonal():
                         while self.edit_matrix[row][col].tighten_bounds():

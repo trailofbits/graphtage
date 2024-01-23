@@ -106,18 +106,19 @@ class JSONListFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
-    # def print_SequenceNode(self, *args, **kwargs):
-    #     """Prints a non-List sequence.
-    #
-    #     This delegates to the parent formatter's implementation::
-    #
-    #         self.parent.print(*args, **kwargs)
-    #
-    #     which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONDictFormatter` in
-    #     instances where a list contains a dict.
-    #
-    #     """
-    #     self.parent.print(*args, **kwargs)
+    @GraphtageFormatter.printer(SequenceNode)
+    def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-List sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONDictFormatter` in
+        instances where a list contains a dict.
+
+        """
+        self.parent.print(*args, **kwargs)
 
 
 class JSONDictFormatter(SequenceFormatter):
@@ -153,19 +154,19 @@ class JSONDictFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
-    # @GraphtageFormatter.printer(SequenceNode)
-    # def print_SequenceNode(self, *args, **kwargs):
-    #     """Prints a non-Dict sequence.
-    #
-    #     This delegates to the parent formatter's implementation::
-    #
-    #         self.parent.print(*args, **kwargs)
-    #
-    #     which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONListFormatter` in
-    #     instances where a dict contains a list.
-    #
-    #     """
-    #     self.parent.print(*args, **kwargs)
+    @GraphtageFormatter.printer(SequenceNode)
+    def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-Dict sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`JSONFormatter.print`, thereby delegating to the :class:`JSONListFormatter` in
+        instances where a dict contains a list.
+
+        """
+        self.parent.print(*args, **kwargs)
 
 
 class JSONStringFormatter(StringFormatter):

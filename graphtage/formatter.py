@@ -179,7 +179,7 @@ from functools import partial, wraps
 import inspect
 import logging
 import sys
-from typing import Any, Callable, Dict, Generic, List, Optional, Sequence, Set, Tuple, Type, TypeVar
+from typing import Any, Callable, Dict, Generic, Iterable, List, Optional, Sequence, Set, Tuple, Type, TypeVar
 
 if sys.version_info.major == 3 and sys.version_info.minor < 7:
     # Backward compatibility for pre-Python3.7
@@ -189,6 +189,7 @@ else:
     # It was a subclass of ABCMeta in Python3.6, anyway
     GenericMeta = ABCMeta
 
+from .debug import DEBUG_MODE
 from .printer import Printer
 
 
@@ -309,7 +310,7 @@ def _get_formatter(
         tested: Set[Type['Formatter']],
         test_parent: bool = True
 ) -> Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]]:
-    ret = base_formatter.resolve_printer(node_type, cls_instance=base_formatter)
+    ret = base_formatter.resolve_printer(node_type, cls_instance=base_formatter, ignore_formatters=tested)
     if ret is not None:
         return ret
     formatter_stack = [base_formatter]
@@ -464,7 +465,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
                     if not isinstance(printer_type, type):
                         raise TypeError(f"{cls.__name__}.{member_name} was registered as a printer for "
                                         f"{printer_type!r}, which is not a type")
-                    elif printer_type in cls.PRINTERS:
+                    elif printer_type in cls.PRINTERS and cls.PRINTERS[printer_type].__name__ != member_name:
                         raise TypeError(f"A printer for type {printer_type.__name__} is already registered to "
                                         f"{cls.PRINTERS[printer_type]!r} and cannot be re-registered to "
                                         f"{cls.__name__}.{member_name}")
@@ -477,15 +478,20 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
     @classmethod
     def resolve_printer(
-            cls: Type[C], item_type: Type[T], cls_instance: Optional[C] = None
+            cls: Type[C], item_type: Type[T], cls_instance: Optional[C] = None,
+            ignore_formatters: Iterable[Type["Formatter"]] = ()
     ) -> Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]]:
         if cls_instance is None:
             cls_instance = cls.DEFAULT_INSTANCE
+        ignore_formatters = frozenset(ignore_formatters)
         lowest_mro_depth = len(item_type.mro()) + 1
         best_possibility: Optional[Tuple["Formatter", Type[T], Callable[[Printer, T], Any]]] = None
         for sub_type in cls_instance.sub_format_types:
+            if sub_type in ignore_formatters:
+                continue
             sub = sub_type()
-            sub_printer = sub_type.resolve_printer(item_type, cls_instance=sub)
+            sub.parent = cls_instance
+            sub_printer = sub_type.resolve_printer(item_type, cls_instance=sub, ignore_formatters=ignore_formatters)
             if sub_printer is not None:
                 _, matched_type, _ = sub_printer
                 for i, t in enumerate(item_type.mro()):
@@ -496,11 +502,12 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
                         break
                 else:
                     raise NotImplementedError("This should never happen")
-        for i, t in enumerate(item_type.mro()):
-            if best_possibility is not None and i >= lowest_mro_depth:
-                break
-            if t in cls.PRINTERS:
-                return cls_instance, t, partial(cls.PRINTERS[t], cls_instance)
+        if cls not in ignore_formatters:
+            for i, t in enumerate(item_type.mro()):
+                if best_possibility is not None and i >= lowest_mro_depth:
+                    break
+                if t in cls.PRINTERS:
+                    return cls_instance, t, partial(cls.PRINTERS[t], cls_instance)
         return best_possibility
 
     @classmethod
