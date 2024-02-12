@@ -16,7 +16,7 @@ optimal edit sequence is discovered.
 
 import itertools
 import logging
-from typing import Iterator, List, Optional, Sequence, Tuple
+from typing import Iterator, List, Optional, Sequence, Tuple, TypeVar
 
 import numpy as np
 
@@ -30,8 +30,10 @@ from .tree import Edit, TreeNode
 
 log = logging.getLogger(__name__)
 
+T = TypeVar("T")
 
-def levenshtein_distance(s: str, t: str) -> int:
+
+def levenshtein_distance(s: Sequence[T], t: Sequence[T]) -> int:
     """Canonical implementation of the Levenshtein distance metric.
 
     Args:
@@ -89,7 +91,7 @@ class EditDistance(SequenceEdit):
             to_node: TreeNode,
             from_seq: Sequence[TreeNode],
             to_seq: Sequence[TreeNode],
-            insert_remove_penalty: int = 1,
+            insert_remove_penalty: int = 1
     ):
         """Initializes the edit distance edit.
 
@@ -126,7 +128,14 @@ class EditDistance(SequenceEdit):
         self.to_seq: Sequence[TreeNode] = to_seq[
                                             len(self.shared_prefix):len(to_seq)-len(self.reversed_shared_suffix)
                                           ]
-        log.debug(f"Levenshtein len(shared prefix)={len(self.shared_prefix)}, len(shared suffix)={len(self.reversed_shared_suffix)}, len(from_seq)={len(self.from_seq)}, len(to_seq)={len(self.to_seq)}")
+        # self.all_nodes_are_leaves: bool = all(
+        #     node.is_leaf and (not isinstance(node.object, str) or len(node.object) < 2) for node in self.from_seq
+        # ) and all(
+        #     node.is_leaf and (not isinstance(node.object, str) or len(node.object) < 2) for node in self.to_seq
+        # )
+        log.debug(f"Levenshtein len(shared prefix)={len(self.shared_prefix)}, "
+                  f"len(shared suffix)={len(self.reversed_shared_suffix)}, len(from_seq)={len(self.from_seq)}, "
+                  f"len(to_seq)={len(self.to_seq)}")
         constant_cost = 0
         if len(from_seq) != len(to_seq):
             sizes: FibonacciHeap[TreeNode, int] = FibonacciHeap(key=lambda node: node.total_size)
@@ -244,6 +253,7 @@ class EditDistance(SequenceEdit):
             return False
         elif self.is_complete() and not self.edit_matrix[-1][-1].bounds().definitive():
             return self.edit_matrix[-1][-1].tighten_bounds()
+
         # We are still building the matrix
         initial_bounds: Range = self.bounds()
         while True:

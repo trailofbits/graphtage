@@ -74,7 +74,7 @@ class LeafNode(TreeNode):
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, LeafNode):
             return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
-        elif isinstance(node, ContainerNode):
+        else:
             return Replace(self, node)
 
     def print(self, printer: Printer):
@@ -650,7 +650,8 @@ class StringEdit(AbstractEdit):
             from_node: 'StringNode',
             to_node: 'StringNode'
     ):
-        self.edit_distance = string_edit_distance(from_node.object, to_node.object)
+        self.edit_distance = StringEditDistance(from_node, to_node)
+        # string_edit_distance(from_node.object, to_node.object)
         super().__init__(
             from_node=from_node,
             to_node=to_node
@@ -959,6 +960,33 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
     return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
+
+
+class StringEditDistance(EditDistance):
+    def __init__(self, from_node: StringNode, to_node: StringNode):
+        list1 = ListNode([StringNode(c) for c in from_node.object])
+        list2 = ListNode([StringNode(c) for c in to_node.object])
+        super().__init__(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
+
+    def tighten_bounds(self) -> bool:
+        # tighten everything at once
+        if not self.from_seq and not self.to_seq:
+            return False
+        elif self.edit_matrix is None:
+            # This means we are already fully tightened and deleted the interstitial datastructures to save memory
+            return False
+        elif self.is_complete():
+            return False
+        cols = len(self.from_seq) + 1
+        rows = len(self.to_seq) + 1
+        for col in range(cols):
+            for row in range(rows):
+                self._add_node(row, col)
+        # for col in range(1, cols):
+        #     for row in range(1, rows):
+        #         _, _, _ = self._best_match(row, col)
+        self._cleanup()
+        return True
 
 
 FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
