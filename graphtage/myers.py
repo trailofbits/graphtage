@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Sequence, Tuple, TypeVar
+from typing import Callable, Dict, List, Optional, Sequence, Tuple, TypeVar
 
 from .printer import DEFAULT_PRINTER
 
@@ -15,7 +15,13 @@ class Edit(Enum):
         return f"{self.__class__.__name__}.{self.name}"
 
 
-def myers(from_seq: Sequence[T], to_seq: Sequence[T]) -> List[Tuple[Edit, T]]:
+def myers(
+        from_seq: Sequence[T], to_seq: Sequence[T], is_eq: Optional[Callable[[T, T], bool]] = None
+) -> List[Tuple[Edit, T]]:
+    if is_eq is None:
+        def is_eq(s1: T, s2: T) -> bool:
+            return s1 == s2
+
     fringe: Dict[int, Tuple[int, List[Tuple[Edit, T]]]] = {1: (0, [])}
 
     for d in DEFAULT_PRINTER.trange(0, len(from_seq) + len(to_seq) + 1, desc="Diffing Sequences", leave=False,
@@ -38,7 +44,8 @@ def myers(from_seq: Sequence[T], to_seq: Sequence[T]) -> List[Tuple[Edit, T]]:
             elif 1 <= from_index <= len(from_seq):
                 history.append((Edit.REMOVE, from_seq[from_index - 1]))
 
-            while from_index < len(from_seq) and to_index < len(to_seq) and from_seq[from_index] == to_seq[to_index]:
+            while from_index < len(from_seq) and to_index < len(to_seq) \
+                    and is_eq(from_seq[from_index], to_seq[to_index]):
                 from_index += 1
                 to_index += 1
                 history.append((Edit.KEEP, from_seq[from_index - 1]))
