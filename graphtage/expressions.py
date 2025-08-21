@@ -48,7 +48,7 @@ DEFAULT_GLOBALS: Dict[str, Any] = {
     obj.__name__: obj for obj in (
         str, bool, int, bytes, float, bytearray, dict, set, frozenset,
         enumerate, zip, map, filter, any, all, chr, ord, abs, ascii, bin, bool, complex, hash, hex, oct, min, max, id,
-        iter, len, list, slice, sorted, sum, tuple, round
+        iter, len, list, slice, sorted, sum, tuple, round, pow, divmod, repr, isinstance, issubclass, range, reversed
     )
 }
 
