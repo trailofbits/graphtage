@@ -37,7 +37,7 @@ setup(
     python_requires='>=3.8',
     install_requires=[
         "colorama",
-        "fickling>=0.0.8",
+        "fickling>=0.1.3",
         "intervaltree",
         "json5==0.9.5",
         "numpy>=1.19.4",
