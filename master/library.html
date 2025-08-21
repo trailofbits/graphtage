@@ -95,7 +95,7 @@ structures of the original file format. This allows Graphtage to have generic co
 <em>any</em> input file type. The intermediate representation is a tree of <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> objects.</p>
 <p>Therefore, the first step is to convert the files being diffed into Graphtage’s intermediate representation. The JSON
 filetype has a function to convert arbitrary Python objects (comprised of standard Python types) into Graphtage trees:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">json</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">json</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">from_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">from_tree</span>
 <span class="go">DictNode([KeyValuePairNode(key=StringNode(&#39;foo&#39;), value=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
@@ -138,7 +138,7 @@ removed from its parent container.</p>
 <p>There are two components to outputting a tree or diff: a <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>, which is responsible
 for the syntax of the output, and a <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a>, which is responsible for rendering that output
 to a stream. For example, to print our diff in JSON format to the default printer (STDOUT), we would do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">printer</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">printer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">json</span><span class="o">.</span><span class="n">JSONFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 <span class="gp">...</span>
@@ -154,7 +154,7 @@ to a stream. For example, to print our diff in JSON format to the default printe
 </div>
 <p>Since Graphtage’s formatters are independent of the input format, thanks to the intermediate representation, we can
 just as easily output the diff in another format, like YAML:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage</span> <span class="kn">import</span> <span class="n">yaml</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">yaml</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 <span class="gp">...</span>
@@ -170,7 +170,7 @@ just as easily output the diff in another format, like YAML:</p>
 <h2>Diffing In-Memory Python Objects<a class="headerlink" href="#diffing-in-memory-python-objects" title="Permalink to this heading"></a></h2>
 <p>When used as a library, Graphtage has the ability to diff in-memory Python objects. This can be useful when debugging,
 for example, to quickly determine the difference between two Python objects that cause a differential.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">graphtage.pydiff</span> <span class="kn">import</span> <span class="n">print_diff</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_diff</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">obj1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;three&quot;</span><span class="p">},</span> <span class="mi">4</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">obj2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s2">&quot;four&quot;</span><span class="p">]</span>
@@ -179,8 +179,8 @@ for example, to quickly determine the difference between two Python objects that
 </pre></div>
 </div>
 <p>Python object diffing also works with custom classes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">Foo</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">baz</span> <span class="o">=</span> <span class="n">baz</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
