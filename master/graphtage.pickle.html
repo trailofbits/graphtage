@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>graphtage.pickle &mdash; Graphtage v0.3.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.pickle.html"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.pickle.html"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=bd95bda3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -113,19 +113,19 @@
            <div itemprop="articleBody">
              
   <section id="module-graphtage.pickle">
-<span id="graphtage-pickle"></span><h1>graphtage.pickle<a class="headerlink" href="#module-graphtage.pickle" title="Permalink to this heading"></a></h1>
+<span id="graphtage-pickle"></span><h1>graphtage.pickle<a class="headerlink" href="#module-graphtage.pickle" title="Link to this heading"></a></h1>
 <section id="pickle-classes">
-<h2>pickle classes<a class="headerlink" href="#pickle-classes" title="Permalink to this heading"></a></h2>
+<h2>pickle classes<a class="headerlink" href="#pickle-classes" title="Link to this heading"></a></h2>
 <section id="pickle">
-<h3>Pickle<a class="headerlink" href="#pickle" title="Permalink to this heading"></a></h3>
+<h3>Pickle<a class="headerlink" href="#pickle" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.pickle.</span></span><span class="sig-name descname"><span class="pre">Pickle</span></span><a class="headerlink" href="#graphtage.pickle.Pickle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.pickle.</span></span><span class="sig-name descname"><span class="pre">Pickle</span></span><a class="headerlink" href="#graphtage.pickle.Pickle" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a></p>
 <p>The Python Pickle file type.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pickle.Pickle.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.pickle.Pickle.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initializes the Pickle file type.</p>
 <p>By default, Pickle associates itself with the “pickle”, “application/python-pickle”,
 and “application/x-python-pickle” MIME types.</p>
@@ -133,7 +133,7 @@ and “application/x-python-pickle” MIME types.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle.build_tree">
-<span class="sig-name descname"><span class="pre">build_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">BuildOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.build_tree" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">BuildOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.build_tree" title="Link to this definition"></a></dt>
 <dd><p>Builds an intermediate representation tree from a file of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -153,7 +153,7 @@ and “application/x-python-pickle” MIME types.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle.build_tree_handling_errors">
-<span class="sig-name descname"><span class="pre">build_tree_handling_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">BuildOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.build_tree_handling_errors" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">build_tree_handling_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">BuildOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.build_tree_handling_errors" title="Link to this definition"></a></dt>
 <dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">Filetype.build_tree()</span></code>, but it should return a human-readable error string on failure.</p>
 <p>This function should never throw an exception.</p>
 <dl class="field-list simple">
@@ -174,12 +174,12 @@ and “application/x-python-pickle” MIME types.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle.default_instance">
-<span class="sig-name descname"><span class="pre">default_instance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><span class="pre">Filetype</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;graphtage.pickle.Pickle</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.pickle.Pickle.default_instance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">default_instance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><span class="pre">Filetype</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;graphtage.pickle.Pickle</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.pickle.Pickle.default_instance" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.pickle.Pickle.get_default_formatter">
-<span class="sig-name descname"><span class="pre">get_default_formatter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.PyDiffFormatter" title="graphtage.pydiff.PyDiffFormatter"><span class="pre">PyDiffFormatter</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.get_default_formatter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_default_formatter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.PyDiffFormatter" title="graphtage.pydiff.PyDiffFormatter"><span class="pre">PyDiffFormatter</span></a></span></span><a class="headerlink" href="#graphtage.pickle.Pickle.get_default_formatter" title="Link to this definition"></a></dt>
 <dd><p>Returns the default formatter for printing files of this type.</p>
 </dd></dl>
 

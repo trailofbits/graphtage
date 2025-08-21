@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Constructing Graphtage Trees &mdash; Graphtage v0.3.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/builders.html"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/builders.html"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=bd95bda3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -87,7 +87,7 @@
            <div itemprop="articleBody">
              
   <section id="constructing-graphtage-trees">
-<span id="builders"></span><h1>Constructing Graphtage Trees<a class="headerlink" href="#constructing-graphtage-trees" title="Permalink to this heading"></a></h1>
+<span id="builders"></span><h1>Constructing Graphtage Trees<a class="headerlink" href="#constructing-graphtage-trees" title="Link to this heading"></a></h1>
 <p>Graphtage operates on trees represented by the <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> base class.
 There are various predefined specializations of tree nodes, such as <a class="reference internal" href="graphtage.html#graphtage.IntegerNode" title="graphtage.IntegerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.IntegerNode</span></code></a> for integers, <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a> for lists, and <a class="reference internal" href="graphtage.html#graphtage.DictNode" title="graphtage.DictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.DictNode</span></code></a> for dictionaries. <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> has an optional <a class="reference internal" href="graphtage.html#graphtage.TreeNode.parent" title="graphtage.TreeNode.parent"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code></a> and a potentially empty set of <a class="reference internal" href="graphtage.html#graphtage.TreeNode.children" title="graphtage.TreeNode.children"><code class="xref py py-func docutils literal notranslate"><span class="pre">children</span></code></a>.</p>
 <p>Graphtage provides a <a class="reference internal" href="graphtage.builder.html#graphtage.builder.Builder" title="graphtage.builder.Builder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.Builder</span></code></a> class for conveniently converting arbitrary objects into a tree of <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code></a> objects. It uses Python magic to define the conversions.</p>
@@ -130,7 +130,7 @@ There are various predefined specializations of tree nodes, such as <a class="re
 </pre></div>
 </div>
 <section id="expanding-children">
-<h2>Expanding Children<a class="headerlink" href="#expanding-children" title="Permalink to this heading"></a></h2>
+<h2>Expanding Children<a class="headerlink" href="#expanding-children" title="Link to this heading"></a></h2>
 <p>So far we have only given examples of the production of leaf nodes, like integers and strings.
 What if a node has children, like a list? We can handle this using the <code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;Builder.expander</span></code> decorator. Here is an example of how a list can be built:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">Builder</span><span class="p">):</span>
@@ -155,7 +155,7 @@ What if a node has children, like a list? We can handle this using the <code cla
 <p>Graphtage has a subclassed builder <a class="reference internal" href="graphtage.builder.html#graphtage.builder.BasicBuilder" title="graphtage.builder.BasicBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.BasicBuilder</span></code></a> that has builders and expanders for the Python basic types like <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. You can extend <a class="reference internal" href="graphtage.builder.html#graphtage.builder.BasicBuilder" title="graphtage.builder.BasicBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.BasicBuilder</span></code></a> to implement support for additional types.</p>
 </section>
 <section id="custom-nodes">
-<h2>Custom Nodes<a class="headerlink" href="#custom-nodes" title="Permalink to this heading"></a></h2>
+<h2>Custom Nodes<a class="headerlink" href="#custom-nodes" title="Link to this heading"></a></h2>
 <p>Graphtage provides abstract classes like <a class="reference internal" href="graphtage.html#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ContainerNode</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.SequenceNode</span></code> to aid in the implementation of custom node types. But the easiest way to define a custom node type is to extend off of <code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.dataclasses.DataClass</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegerNode</span><span class="p">,</span> <span class="n">ListNode</span><span class="p">,</span> <span class="n">StringNode</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataClass</span>

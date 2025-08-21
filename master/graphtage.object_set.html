@@ -1,22 +1,22 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>graphtage.object_set &mdash; Graphtage v0.3.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.object_set.html"/>
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.object_set.html"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=bd95bda3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -114,41 +114,41 @@
            <div itemprop="articleBody">
              
   <section id="module-graphtage.object_set">
-<span id="graphtage-object-set"></span><h1>graphtage.object_set<a class="headerlink" href="#module-graphtage.object_set" title="Permalink to this heading"></a></h1>
+<span id="graphtage-object-set"></span><h1>graphtage.object_set<a class="headerlink" href="#module-graphtage.object_set" title="Link to this heading"></a></h1>
 <p>A data structure that can hold a set of unique Python objects, even if those objects are not hashable.
 Uniqueness is determined based upon identity.</p>
 <section id="object-set-classes">
-<h2>object_set classes<a class="headerlink" href="#object-set-classes" title="Permalink to this heading"></a></h2>
+<h2>object_set classes<a class="headerlink" href="#object-set-classes" title="Link to this heading"></a></h2>
 <section id="identityhash">
-<h3>IdentityHash<a class="headerlink" href="#identityhash" title="Permalink to this heading"></a></h3>
+<h3>IdentityHash<a class="headerlink" href="#identityhash" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.object_set.IdentityHash">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.object_set.</span></span><span class="sig-name descname"><span class="pre">IdentityHash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.IdentityHash" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.object_set.</span></span><span class="sig-name descname"><span class="pre">IdentityHash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.IdentityHash" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.IdentityHash.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.IdentityHash.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.IdentityHash.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </section>
 <section id="objectset">
-<h3>ObjectSet<a class="headerlink" href="#objectset" title="Permalink to this heading"></a></h3>
+<h3>ObjectSet<a class="headerlink" href="#objectset" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.object_set.</span></span><span class="sig-name descname"><span class="pre">ObjectSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_objs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.object_set.</span></span><span class="sig-name descname"><span class="pre">ObjectSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_objs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSet" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MutableSet</span></code></a></p>
 <p>A set that can hold unhashable Python objects</p>
 <p>Uniqueness is determined based upon identity.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_objs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initial_objs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.13)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.13)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet._from_iterable">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_from_iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">it</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet._from_iterable" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_from_iterable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">it</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet._from_iterable" title="Link to this definition"></a></dt>
 <dd><p>Construct an instance of the class from any iterable input.</p>
 <p>Must override this method if the class constructor signature
 does not accept an iterable for an input.</p>
@@ -156,7 +156,7 @@ does not accept an iterable for an input.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet._hash">
-<span class="sig-name descname"><span class="pre">_hash</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet._hash" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_hash</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet._hash" title="Link to this definition"></a></dt>
 <dd><p>Compute the hash value of a set.</p>
 <p>Note that we don’t define __hash__: not all sets are hashable.
 But if you define a hashable set type, its __hash__ should
@@ -171,37 +171,37 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.add">
-<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.add" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.add" title="Link to this definition"></a></dt>
 <dd><p>Add an element.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.clear" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.clear" title="Link to this definition"></a></dt>
 <dd><p>This is slow (creates N new iterators!) but effective.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.discard">
-<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.discard" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.discard" title="Link to this definition"></a></dt>
 <dd><p>Remove an element.  Do not raise an exception if absent.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.isdisjoint">
-<span class="sig-name descname"><span class="pre">isdisjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.isdisjoint" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">isdisjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.isdisjoint" title="Link to this definition"></a></dt>
 <dd><p>Return True if two sets have a null intersection.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.pop">
-<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.pop" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.pop" title="Link to this definition"></a></dt>
 <dd><p>Return the popped value.  Raise KeyError if empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.object_set.ObjectSet.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.remove" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.object_set.ObjectSet.remove" title="Link to this definition"></a></dt>
 <dd><p>Remove an element. If not a member, raise a KeyError.</p>
 </dd></dl>
 
