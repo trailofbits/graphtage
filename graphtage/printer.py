@@ -600,6 +600,7 @@ class HTMLPrinter(Printer):
         self.indents += 1
 
     def close(self):
+        super().flush()
         if self.indents != 3:
             log.warning(f"Mismatched indent; expected 3 but got {self.indents}")
         self.indents -= 1
@@ -609,6 +610,7 @@ class HTMLPrinter(Printer):
         super().newline()
         self.raw_write("</html>")
         super().newline()
+        super().close()
 
     def html_element(self, element_name, inline=False, **kwargs) -> 'HTMLPrinter':
         """A convenience function for printing an element."""

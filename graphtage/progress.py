@@ -98,9 +98,10 @@ class StatusWriter(IO[str]):
             self.flush()
         return len(text)
 
-    def close(self) -> None:
+    def close(self):
         self.flush(final=True)
-        return self.status_stream.close()
+        if self.status_stream is not sys.stdout and self.status_stream is not sys.stderr:
+            self.status_stream.close()
 
     def fileno(self) -> int:
         return self.status_stream.fileno()
