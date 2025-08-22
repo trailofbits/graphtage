@@ -409,7 +409,7 @@ def smallest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Cal
 
 
 def largest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Callable[[T], Any]] = None) -> Iterator[T]:
-    if len(sequence) == 1 and isinstance(sequence, Iterable):
+    if len(sequence) == 1 and isinstance(sequence[0], Iterable):
         sequence = sequence[0]
 
     if isinstance(sequence, AbstractSized) and len(sequence) <= n:

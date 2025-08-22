@@ -2,12 +2,11 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Tuple, \
-    Type, TypeVar
+from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Type, TypeVar
 
 from .bounds import Range, repeat_until_tightened
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .printer import Printer
+from .printer import Fore, Printer
 from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
@@ -97,7 +96,8 @@ class FixedLengthSequenceEdit(SequenceEdit):
             if edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 if prev_bounds.lower_bound > new_bounds.lower_bound or prev_bounds.upper_bound < new_bounds.upper_bound:
-                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from {prev_bounds} to {new_bounds}")
+                    log.warning(f"The most recent call to `tighten_bounds()` on edit {edit} tightened its bounds from "
+                                f"{prev_bounds} to {new_bounds}")
                 return True
         return False
 
@@ -126,8 +126,11 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
+        self.child_indexes: Dict[TreeNode, int] = {
+            child: i for i, child in enumerate(self.children())
+        }
 
-    def children(self) -> T:
+    def children(self) -> Sequence[TreeNode]:
         if isinstance(self._children, list) or isinstance(self._children, tuple):
             return self._children
         else:
@@ -200,6 +203,21 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         ret = dict(self.__dict__)
         ret['_children'] = self.container_type(n.make_edited() for n in self)
         return ret
+
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        if for_child not in self.child_indexes:
+            with printer.color(Fore.RED):
+                printer.write("?")
+        else:
+            with printer.color(Fore.WHITE):
+                printer.write(str(self.child_indexes[for_child]))
+        with printer.color(Fore.BLUE):
+            printer.write("]")
 
     def print(self, printer: Printer):
         """Prints a sequence node.

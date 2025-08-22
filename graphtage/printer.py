@@ -14,6 +14,7 @@ Attributes:
 """
 
 import logging
+import os
 import sys
 from abc import abstractmethod
 from collections import defaultdict
@@ -599,6 +600,7 @@ class HTMLPrinter(Printer):
         self.indents += 1
 
     def close(self):
+        super().flush()
         if self.indents != 3:
             log.warning(f"Mismatched indent; expected 3 but got {self.indents}")
         self.indents -= 1
@@ -608,6 +610,7 @@ class HTMLPrinter(Printer):
         super().newline()
         self.raw_write("</html>")
         super().newline()
+        super().close()
 
     def html_element(self, element_name, inline=False, **kwargs) -> 'HTMLPrinter':
         """A convenience function for printing an element."""
@@ -649,3 +652,17 @@ class HTMLPrinter(Printer):
 
 
 DEFAULT_PRINTER: Printer = Printer()
+
+
+class NullWriter(Writer):
+    def write(self, s: str) -> int:
+        return 0
+
+    def isatty(self) -> bool:
+        return True
+
+    def flush(self):
+        pass
+
+
+NULL_PRINTER: Printer = Printer(out_stream=NullWriter(), quiet=True)

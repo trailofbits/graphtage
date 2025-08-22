@@ -54,14 +54,14 @@ class StatusWriter(IO[str]):
 
     def tqdm(self, *args, **kwargs) -> tqdm:
         """Returns a :class:`tqdm.tqdm` object."""
-        if self.quiet:
-            kwargs['disable'] = True
+        if self.quiet or 'disable' not in kwargs:
+            kwargs['disable'] = self.quiet
         return tqdm(*args, **kwargs)
 
     def trange(self, *args, **kwargs) -> trange:
         """Returns a :class:`tqdm.trange` object."""
-        if self.quiet:
-            kwargs['disable'] = True
+        if self.quiet or 'disable' not in kwargs:
+            kwargs['disable'] = self.quiet
         return trange(*args, **kwargs)
 
     def flush(self, final=False):
@@ -98,9 +98,10 @@ class StatusWriter(IO[str]):
             self.flush()
         return len(text)
 
-    def close(self) -> None:
+    def close(self):
         self.flush(final=True)
-        return self.status_stream.close()
+        if self.status_stream is not sys.stdout and self.status_stream is not sys.stderr:
+            self.status_stream.close()
 
     def fileno(self) -> int:
         return self.status_stream.fileno()

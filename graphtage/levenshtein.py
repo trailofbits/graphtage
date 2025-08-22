@@ -149,6 +149,7 @@ class EditDistance(SequenceEdit):
         self.costs = np.full((len(self.to_seq) + 1, len(self.from_seq) + 1), 0, dtype=np.uint64)
         self._fringe_row: int = -1
         self._fringe_col: int = 0
+        self._last_fringe: List[Tuple[int, int]] = []
         super().__init__(
             from_node=from_node,
             to_node=to_node,
@@ -185,6 +186,7 @@ class EditDistance(SequenceEdit):
     def _next_fringe(self) -> bool:
         if self.is_complete():
             return False
+        self._last_fringe = list(self._fringe_diagonal())
         self._fringe_row += 1
         if self._fringe_row >= len(self.to_seq) + 1:
             self._fringe_row = len(self.to_seq)
@@ -320,9 +322,11 @@ class EditDistance(SequenceEdit):
             if self._fringe_row <= 0:
                 return base_bounds
             return Range(
-                max(base_bounds.lower_bound, min(
+                max(base_bounds.lower_bound, min(min(
                     int(self.costs[row][col]) for row, col in self._fringe_diagonal()
-                )),
+                ), min(
+                    int(self.costs[row][col]) for row, col in self._last_fringe
+                ))),
                 base_bounds.upper_bound
             )
 

@@ -2,6 +2,7 @@ __docformat__ = "google"
 
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
+import copy as copy_module
 from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
 
 from .bounds import Range
@@ -9,10 +10,14 @@ from .edits import AbstractEdit, EditCollection
 from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, Fore, NullANSIContext, Printer
+from .printer import Back, Fore, NullANSIContext, NULL_PRINTER, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
+
+
+C = TypeVar("C", bound=TreeNode)
+T = TypeVar("T", bound=TreeNode)
 
 
 class LeafNode(TreeNode):
@@ -26,6 +31,11 @@ class LeafNode(TreeNode):
 
         """
         self.object = obj
+        # self.__hash__ gets called so often we cache the result:
+        self.__hash = hash(obj)
+
+    def copy_from(self: C, children: Iterable["TreeNode"]) -> C:
+        return self.__class__(self.object)
 
     def to_obj(self):
         """Returns the object wrapped by this node.
@@ -99,7 +109,7 @@ class LeafNode(TreeNode):
             return self.object == other
 
     def __hash__(self):
-        return hash(self.object)
+        return self.__hash
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.object!r})"
@@ -176,14 +186,29 @@ class KeyValuePairNode(ContainerNode):
         self.key: LeafNode = key
         self.value: TreeNode = value
         self.allow_key_edits: bool = allow_key_edits
+        # self.__hash__ gets called so often, we cache the result:
+        self.__hash = hash((key, value))
 
     def to_obj(self):
         return self.key, self.value
 
+    def print_parent_context(self, printer: Printer, for_child: TreeNode):
+        if for_child.parent is not self:
+            # this is not one of our children!
+            return
+        elif for_child is self.key:
+            # we only print the context for the value
+            return
+        with printer.color(Fore.BLUE):
+            printer.write("[")
+        self.key.print(printer)
+        with printer.color(Fore.BLUE):
+            printer.write("]")
+
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['key'] = self.key.make_edited()
-        ret['value'] = self.value.make_edited()
+        ret["key"] = self.key.make_edited()
+        ret["value"] = self.value.make_edited()
         return ret
 
     def children(self) -> Tuple[LeafNode, TreeNode]:
@@ -256,7 +281,7 @@ class KeyValuePairNode(ContainerNode):
         return self.key == other.key and self.value == other.value
 
     def __hash__(self):
-        return hash((self.key, self.value))
+        return self.__hash
 
     def __len__(self):
         return 2
@@ -270,9 +295,6 @@ class KeyValuePairNode(ContainerNode):
 
     def __str__(self):
         return f"{self.key!s}: {self.value!s}"
-
-
-T = TypeVar('T', bound=TreeNode)
 
 
 class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
@@ -294,6 +316,9 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
         super().__init__(tuple(nodes))
         self.allow_list_edits: bool = allow_list_edits
         self.allow_list_edits_when_same_length: bool = allow_list_edits_when_same_length
+
+    def copy_from(self: C, children: Iterable[TreeNode]) -> C:
+        return self.__class__(children)
 
     def to_obj(self):
         return [n.to_obj() for n in self]
@@ -338,10 +363,14 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
 class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
     """A node representing a set that can contain duplicate items."""
 
-    def __init__(self, items: Iterable[T]):
+    def __init__(self, items: Iterable[T], auto_match_keys: bool = True):
         if not isinstance(items, HashableCounter):
             items = HashableCounter(items)
         super().__init__(items)
+        self.auto_match_keys: bool = auto_match_keys
+
+    def copy_from(self: C, children: Iterable[T]) -> C:
+        return self.__class__(children, auto_match_keys=self.auto_match_keys)
 
     def to_obj(self):
         return HashableCounter(n.to_obj() for n in self)
@@ -357,7 +386,7 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
             elif self._children == node._children:
                 return Match(self, node, 0)
             else:
-                return MultiSetEdit(self, node, self._children, node._children)
+                return MultiSetEdit(self, node, self._children, node._children, auto_match_keys=self.auto_match_keys)
         else:
             return Replace(self, node)
 
@@ -377,10 +406,32 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
 class MappingNode(ContainerNode, ABC):
     """An abstract base class for nodes that represent mappings."""
 
+    @classmethod
+    def make_key_value_pair_node(cls, key: LeafNode, value: TreeNode, allow_key_edits: bool = True) -> KeyValuePairNode:
+        return KeyValuePairNode(key=key, value=value, allow_key_edits=allow_key_edits)
+
+    @classmethod
+    @abstractmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
+        """Constructs a :class:`MappingNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
+
+        Args:
+            source_dict: The source mapping.
+
+        Returns:
+            DictNode: The resulting :class:`MappingNode`.
+
+        """
+        raise NotImplementedError()
+
     def to_obj(self) -> Dict[Any, Any]:
         return {
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
+
+    def print_parent_context(self, printer: Printer, for_child: "TreeNode"):
+        # this is handled by KeyValuePairNode
+        pass
 
     def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
         """Iterates over the key/value pairs in this mapping, similar to :meth:`dict.items`.
@@ -457,8 +508,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
     """
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'DictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`DictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -468,8 +519,8 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
             DictNode: The resulting :class:`DictNode`.
 
         """
-        return DictNode(
-            sorted(KeyValuePairNode(key, value, allow_key_edits=True) for key, value in source_dict.items())
+        return cls(
+            sorted(cls.make_key_value_pair_node(key, value, allow_key_edits=True) for key, value in source_dict.items())
         )
 
     def edits(self, node: TreeNode) -> Edit:
@@ -519,8 +570,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         """
         return dict
 
-    @staticmethod
-    def from_dict(source_dict: Dict[LeafNode, TreeNode]) -> 'FixedKeyDictNode':
+    @classmethod
+    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`FixedKeyDictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -534,9 +585,12 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             FixedKeyDictNode: The resulting :class:`FixedKeyDictNode`
 
         """
-        return FixedKeyDictNode({
+        return cls({
             kvp.key: kvp
-            for kvp in (KeyValuePairNode(key, value, allow_key_edits=False) for key, value in source_dict.items())
+            for kvp in (
+                cls.make_key_value_pair_node(key, value, allow_key_edits=False)
+                for key, value in source_dict.items()
+            )
         })
 
     def __getitem__(self, item: LeafNode):
@@ -574,12 +628,11 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
             return Replace(self, node)
 
     def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
-        for k, v in self._children.items():
-            yield k.to_obj(), v.to_obj()
+        yield from iter(self._children.items())
 
     def editable_dict(self) -> Dict[str, Any]:
         ret = dict(self.__dict__)
-        ret['_children'] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
+        ret["_children"] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
         return ret
 
     def __hash__(self):
@@ -632,6 +685,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints a starting quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -640,6 +695,8 @@ class StringFormatter(GraphtageFormatter):
         """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
+            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
+                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -658,7 +715,9 @@ class StringFormatter(GraphtageFormatter):
         else:
             return c
 
-    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
+    def write_char(
+            self, printer: Printer, c: Union[str, int], index: int, num_edits: int, removed=False, inserted=False
+    ):
         """Writes a character to the printer.
 
         Note:
@@ -695,6 +754,18 @@ class StringFormatter(GraphtageFormatter):
                 printer.write(Insert.INSERT_STRING)
             self._last_was_removed = removed
             self._last_was_inserted = inserted
+        if isinstance(c, int):
+            # we are printing a bytes object, not a str
+            if 32 <= c <= 126:
+                c = chr(c)
+            elif c == ord('\n'):
+                c = '\n'
+            elif c == ord('\t'):
+                c = '\t'
+            elif c == ord('\r'):
+                c = '\r'
+            else:
+                c = f"\\x{c:02x}"
         escaped = self.escape(c)
         if escaped != c and not isinstance(printer, NullANSIContext):
             with printer.color(Fore.YELLOW):
@@ -787,7 +858,7 @@ class StringFormatter(GraphtageFormatter):
 class StringNode(LeafNode):
     """A node containing a string"""
 
-    def __init__(self, string_like: str, quoted=True):
+    def __init__(self, string_like: Union[str, bytes], quoted=True):
         """Initializes a string node.
 
         Args:
@@ -833,6 +904,40 @@ class BoolNode(LeafNode):
         super().__init__(bool_like)
 
 
+class NullNode(LeafNode):
+    """A node representing a null or :const:`None` type."""
+
+    def __init__(self):
+        super().__init__(None)
+
+    def copy_from(self: T, children: Iterable[TreeNode]) -> T:
+        return NullNode()
+
+    def calculate_total_size(self) -> int:
+        return 0
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, NullNode):
+            return Match(self, node, 0)
+        else:
+            return Replace(self, node)
+
+    def __lt__(self, other):
+        if isinstance(other, NullNode):
+            return False
+        else:
+            return True
+
+    def __eq__(self, other):
+        return isinstance(other, NullNode)
+
+    def __hash__(self):
+        return 0
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}()"
+
+
 def string_edit_distance(s1: str, s2: str) -> EditDistance:
     """A convenience function for computing the edit distance between two strings.
 
@@ -872,6 +977,7 @@ class FiletypeWatcher(ABCMeta):
             instance = cls()
             assert instance.name in FILETYPES_BY_TYPENAME
             assert instance.default_mimetype in FILETYPES_BY_MIME
+            setattr(cls, "default_instance", instance)
         super().__init__(name, bases, clsdict)
 
 
@@ -880,8 +986,12 @@ class BuildOptions:
 
     def __init__(self, *,
                  allow_key_edits=True,
+                 auto_match_keys=True,
                  allow_list_edits=True,
                  allow_list_edits_when_same_length=True,
+                 check_for_cyces=True,
+                 ignore_cycles=False,
+                 printer=NULL_PRINTER,
                  **kwargs
                  ):
         """Initializes the options. All keyword values will be set as attributes of this class.
@@ -895,8 +1005,25 @@ class BuildOptions:
         """Whether to consider insert and remove edits to lists"""
         self.allow_list_edits_when_same_length = allow_list_edits_when_same_length
         """Whether to consider insert and remove edits on lists that are the same length"""
+        self.auto_match_keys = auto_match_keys
+        """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
+        self.check_for_cycles = check_for_cyces
+        """If possible, check for cycles in the input
+        
+        If `True` and if `ignore_cycles` is `False`, then a :class:`ValueError` will be raised if a cycle is detected
+        while constructing the Graphtage tree.
+        
+        """
+        self.ignore_cycles = ignore_cycles
+        """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
+        preventing an infinite loop."""
+        self.printer = printer
+        """A printer to use while building trees (default is :class:`graphtage.printer.NullPrinter`)"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
+
+    def copy(self) -> "BuildOptions":
+        return copy_module.copy(self)
 
     def __getattr__(self, item):
         """Default all undefined options to :const:`False`"""
@@ -911,6 +1038,7 @@ class Filetype(metaclass=FiletypeWatcher):
     :func:`get_filetype`.
 
     """
+    default_instance: "Filetype"
 
     def __init__(self, type_name: str, default_mimetype: str, *mimetypes: str):
         """Initializes a new Graphtage file format type

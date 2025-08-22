@@ -10,18 +10,23 @@ on:
 jobs:
   deploydocs:
     runs-on: ubuntu-latest
-
+    permissions:
+      # NOTE: Needed to push to the repository.
+      contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           path: graphtage
       - name: Get the version
         id: get_version
         run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/}"
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+        env:
+          # The use of ::set-env here is safe!
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: 3.12
       - name: Install dependencies
         run: |
           cd graphtage
@@ -33,7 +38,7 @@ jobs:
           cd graphtage/docs
           make html
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages

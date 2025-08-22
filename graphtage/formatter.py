@@ -336,7 +336,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         :attr:`parent<Formatter.parent>` to this new formatter.
 
         """
-        ret: Formatter[T] = super().__new__(cls, *args, **kwargs)
+        ret: Formatter[T] = super().__new__(cls)
         setattr(ret, 'sub_formatters', [])
         for sub_formatter in ret.sub_format_types:
             ret.sub_formatters.append(sub_formatter())

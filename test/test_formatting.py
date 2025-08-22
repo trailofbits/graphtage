@@ -1,5 +1,6 @@
 import csv
 import json
+import plistlib
 import random
 from functools import partial, wraps
 from io import StringIO
@@ -45,12 +46,11 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
         formatter = filetype.get_default_formatter()
 
         for _ in trange(iterations):
-            orig_obj, str_representation = test_func(self)
-            with graphtage.utils.Tempfile(str_representation.encode('utf-8')) as t:
-                tree = filetype.build_tree_handling_errors(t)
-                if isinstance(tree, str):
-                    self.fail(f"""{filetype_name.upper()} parse error {tree}: Original object:
-{orig_obj!r}""")
+            orig_obj, representation = test_func(self)
+            if isinstance(representation, str):
+                representation = representation.encode("utf-8")
+            with graphtage.utils.Tempfile(representation) as t:
+                tree = filetype.build_tree(t)
                 stream = StringIO()
                 printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
                 formatter.print(printer, tree)
@@ -62,7 +62,7 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
                     self.fail(f"""{filetype_name.upper()} decode error {e}: Original object:
 {orig_obj!r}
 Expected format:
-{str_representation!s}
+{representation.decode("utf-8")}
 Actual format:
 {formatted_str!s}""")
             if test_equality:
@@ -266,6 +266,11 @@ class TestFormatting(TestCase):
         # However, test_formatter_coverage will complain unless this function is here!
         pass
 
+    def test_pickle_formatting(self):
+        # test_formatter_coverage will complain unless this function is here!
+        # TODO: Implement a Pickle formatting test
+        pass
+
     @filetype_test
     def test_yaml_formatting(self):
         orig_obj = TestFormatting.make_random_obj(
@@ -284,3 +289,8 @@ class TestFormatting(TestCase):
         s = StringIO()
         yaml.dump(orig_obj, s, Dumper=graphtage.yaml.Dumper)
         return orig_obj, s.getvalue()
+
+    @filetype_test(test_equality=False)
+    def test_plist_formatting(self):
+        orig_obj = TestFormatting.make_random_obj(force_string_keys=True, exclude_bytes=frozenset('<>/\n&?|@{}[]'))
+        return orig_obj, plistlib.dumps(orig_obj)

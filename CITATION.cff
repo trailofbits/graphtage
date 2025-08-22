@@ -1,0 +1,31 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Graphtage
+message: >-
+  Graphtage is a command-line utility and underlying library
+  for semantically comparing and merging tree-like
+  structures, such as JSON, XML, HTML, YAML, plist, and CSS
+  files.
+type: software
+authors:
+  - given-names: Evan
+    family-names: Sultanik
+    email: evan.sultanik@trailofbits.com
+    affiliation: Trail of Bits
+    orcid: 'https://orcid.org/0000-0002-6246-1422'
+repository-code: 'https://github.com/trailofbits/graphtage'
+url: 'https://trailofbits.github.io/graphtage/'
+abstract: >-
+  Graphtage is a command-line utility and underlying library
+  for semantically comparing and merging tree-like
+  structures, such as JSON, XML, HTML, YAML, plist, and CSS
+  files. Its name is a portmanteau of “graph” and
+  “graftage”—the latter being the horticultural practice of
+  joining two trees together such that they grow as one.
+keywords:
+  - diffing
+  - graph isomorphism
+  - edit distance
+license: LGPL-3.0

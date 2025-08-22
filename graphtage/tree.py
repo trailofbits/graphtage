@@ -2,8 +2,10 @@ import itertools
 import logging
 import sys
 from abc import abstractmethod, ABC, ABCMeta
-from collections.abc import Iterable
-from typing import Any, Callable, Collection, Dict, Iterator, List, Optional, Sized, Type, TypeVar, Union
+from functools import wraps
+from typing import (
+    Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+)
 from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
@@ -184,8 +186,13 @@ class Edit(Bounded, Protocol):
 
 
 @runtime_checkable
-class CompoundEdit(Edit, Iterable, Protocol):
+class CompoundEdit(Edit, Protocol):
     """A protocol for edits that are composed of sub-edits"""
+
+    @abstractmethod
+    def __iter__(self) -> Iterator[Edit]:
+        """Returns an iterator over this edit's sub-edits."""
+        raise NotImplementedError()
 
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
@@ -287,7 +294,48 @@ class EditedTreeNode:
         return sum(e.bounds().upper_bound for e in self.edit_list)
 
 
-class TreeNode(metaclass=ABCMeta):
+class TreeNodeMeta(ABCMeta):
+    def __init__(cls, name, *args, **kwargs):
+        super().__init__(name, *args, **kwargs)
+        cls._edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+
+    def edited_type(self) -> Type[Union[EditedTreeNode, T]]:
+        """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+
+        The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
+        :class:`TreeNode` it wraps::
+
+            new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
+
+        Returns:
+            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+            Its constructor accepts a :class:`TreeNode` that it will wrap.
+
+        """
+        if self._edited_type is None:
+            if issubclass(self, EditedTreeNode):
+                return self
+
+            def init(etn, wrapped_tree_node: TreeNode):
+                parent_before = wrapped_tree_node.parent
+                try:
+                    wrapped_tree_node._parent = None
+                    etn.__dict__ = {k: v for k, v in wrapped_tree_node.editable_dict().items() if k != "_parent"}
+                finally:
+                    wrapped_tree_node._parent = parent_before
+                EditedTreeNode.__init__(etn)
+
+            def edited_copy(etn):
+                return etn.__class__(etn)
+
+            self._edited_type = type(f'Edited{self.__name__}', (EditedTreeNode, self), {
+                '__init__': init,
+                'copy': edited_copy
+            })
+        return self._edited_type
+
+
+class TreeNode(metaclass=TreeNodeMeta):
     """Abstract base class for nodes in Graphtage's intermediate representation.
 
     Tree nodes are intended to be immutable. :class:`EditedTreeNode`, on the other hand, can be mutable. See
@@ -295,8 +343,8 @@ class TreeNode(metaclass=ABCMeta):
 
     """
     _total_size = None
-    _edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
-    edit_modifiers: Optional[List[Callable[['TreeNode', 'TreeNode'], Optional[Edit]]]] = None
+    _parent: Optional["TreeNode"] = None
+    _edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
 
     @property
     def edited(self) -> bool:
@@ -308,17 +356,11 @@ class TreeNode(metaclass=ABCMeta):
         return False
 
     def _edits_with_modifiers(self, node: 'TreeNode') -> Edit:
-        for modifier in self.edit_modifiers:
+        for modifier in self._edit_modifiers:
             ret = modifier(self, node)
             if ret is not None:
                 return ret
         return self.__class__.edits(self, node)
-
-    def __getattribute__(self, item):
-        if item == 'edits' and super().__getattribute__('edit_modifiers'):
-            return super().__getattribute__('_edits_with_modifiers')
-        else:
-            return super().__getattribute__(item)
 
     @abstractmethod
     def to_obj(self):
@@ -334,9 +376,62 @@ class TreeNode(metaclass=ABCMeta):
         """
         raise NotImplementedError()
 
+    def copy_from(self: T, children: Iterable["TreeNode"]) -> T:
+        """Constructs a new instance of this tree node from a list of its children"""
+        return self.__class__(*children)
+
+    def copy(self: T) -> T:
+        """Creates a deep copy of this node"""
+        work: List[Tuple[TreeNode, List[TreeNode], List[TreeNode]]] = [(self, [], list(reversed(self.children())))]
+        while work:
+            node, processed_children, remaining_children = work.pop()
+            if not remaining_children:
+                new_node = node.copy_from(processed_children)
+                if not work:
+                    return new_node
+                work[-1][1].append(new_node)
+            else:
+                child = remaining_children.pop()
+                work.append((node, processed_children, remaining_children))
+                work.append((child, [], list(reversed(child.children()))))
+        raise NotImplementedError("This should not be reachable")
+
+    @property
+    def parent(self) -> Optional["TreeNode"]:
+        """The parent node of this node, or :const:`None` if it has no parent.
+
+        The setter for this property should only be called by the parent node setting itself as the parent of its child.
+
+        :class:`ContainerNode` subclasses automatically set this property for all of their children. However, if
+        you define a subclass of :class:`TreeNode` *does not* extend off of :class:`ContainerNode` and for which
+        ``len(self.children()) > 0``, then each child's parent must be set.
+
+        """
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent_node: "TreeNode"):
+        """This setter should only be called by the parent node setting itself as the parent of its child.
+
+        :class:`ContainerNode` subclasses automatically set this property for all of their children. However, if
+        you define a subclass of :class:`TreeNode` *does not* extend off of :class:`ContainerNode` and for which
+        ``len(self.children()) > 0``, then each child's parent must be set.
+
+        """
+        if self._parent is not None:
+            if self._parent is parent_node:
+                # we are already assigned to this parent
+                return
+            raise ValueError(f"Error while setting {self!r}.parent = {parent_node!r}: Parent is already assigned to "
+                             f"{self._parent!r}")
+        self._parent = parent_node
+
     @abstractmethod
-    def children(self) -> Collection['TreeNode']:
-        """Returns a collection of this node's children, if any."""
+    def children(self) -> Sequence['TreeNode']:
+        """Returns a sequence of this node's children, if any.
+
+        It is the responsibility of any node that has children must set the `.parent` member of each child.
+        """
         raise NotImplementedError()
 
     def dfs(self) -> Iterator['TreeNode']:
@@ -350,14 +445,14 @@ class TreeNode(metaclass=ABCMeta):
             while stack:
                 node = stack.pop()
                 yield node
-                stack.extend(node.children())
+                stack.extend(reversed(node.children()))
 
         """
         stack = [self]
         while stack:
             node = stack.pop()
             yield node
-            stack.extend(node.children())
+            stack.extend(reversed(node.children()))
 
     @property
     def is_leaf(self) -> bool:
@@ -383,43 +478,27 @@ class TreeNode(metaclass=ABCMeta):
         """
         raise NotImplementedError()
 
-    @classmethod
-    def edited_type(cls) -> Type[Union[EditedTreeNode, T]]:
-        """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
-
-        The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
-        :class:`TreeNode` it wraps::
-
-            new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
-
-        Returns:
-            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
-            Its constructor accepts a :class:`TreeNode` that it will wrap.
-
-        """
-        if cls._edited_type is None:
-            def init(etn, wrapped_tree_node: TreeNode):
-                etn.__dict__ = dict(wrapped_tree_node.editable_dict())
-                EditedTreeNode.__init__(etn)
-
-            cls._edited_type = type(f'Edited{cls.__name__}', (EditedTreeNode, cls), {
-                '__init__': init
-            })
-        return cls._edited_type
+    def add_edit_modifier(self, modifier: Callable[["TreeNode", "TreeNode"], Optional[Edit]]):
+        if self._edit_modifiers is None:
+            self._edit_modifiers = []
+            self.edits = self._edits_with_modifiers
+        self._edit_modifiers.append(modifier)
 
     def make_edited(self) -> Union[EditedTreeNode, T]:
         """Returns a new, copied instance of this node that is also an instance of :class:`EditedTreeNode`.
 
         This is equivalent to::
 
-            return self.edited_type()(self)
+            return self.__class__.edited_type()(self)
 
         Returns:
             Union[EditedTreeNode, T]: A copied version of this node that is also an instance of :class:`EditedTreeNode`
             and thereby mutable.
 
         """
-        ret = self.edited_type()(self)
+        ret = self.__class__.edited_type()(self)
+        if ret._edit_modifiers is not None:
+            ret.edits = ret._edits_with_modifiers
         assert isinstance(ret, self.__class__)
         assert isinstance(ret, EditedTreeNode)
         return ret
@@ -447,18 +526,18 @@ class TreeNode(metaclass=ABCMeta):
                     ret[key] = value.make_edited()
         return ret
 
-    def get_all_edits(self, node: 'TreeNode') -> Iterator[Edit]:
-        """Returns an iterator over all edits that will transform this node into the provided node.
+    def get_all_edit_contexts(self, node: "TreeNode") -> Iterator[Tuple[Tuple["TreeNode", ...], Edit]]:
+        """Returns an iterator over all edit contexts that will transform this node into the provided node.
 
         Args:
             node: The node to which to transform this one.
 
         Returns:
-            Iterator[Edit]: An iterator over edits. Note that this iterator will automatically
+            Iterator[Tuple[Tuple["TreeNode", ...], Edit]: An iterator over pairs of paths from `node` to the edited
+            node, as well as its edit. Note that this iterator will automatically
             :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
 
         """
-
         edit = self.edits(node)
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
@@ -469,16 +548,31 @@ class TreeNode(metaclass=ABCMeta):
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 t.update(prev_range - new_range)
                 prev_range = new_range
-        edit_stack = [edit]
+        edit_stack: List[Tuple[Tuple[TreeNode, ...], Edit]] = [((node,), edit)]
         while edit_stack:
-            edit = edit_stack.pop()
+            ancestors, edit = edit_stack.pop()
             if isinstance(edit, CompoundEdit):
-                edit_stack.extend(list(edit.edits()))
+                for sub_edit in reversed(list(edit.edits())):
+                    edit_stack.append((ancestors + (sub_edit.from_node,), sub_edit))
             else:
                 while edit.bounds().lower_bound == 0 and not edit.bounds().definitive() and edit.tighten_bounds():
                     pass
                 if edit.bounds().lower_bound > 0:
-                    yield edit
+                    yield ancestors, edit
+
+    def get_all_edits(self, node: "TreeNode") -> Iterator[Edit]:
+        """Returns an iterator over all edits that will transform this node into the provided node.
+
+        Args:
+            node: The node to which to transform this one.
+
+        Returns:
+            Iterator[Edit]: An iterator over edits. Note that this iterator will automatically
+            :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
+
+        """
+        for _, edit in self.get_all_edit_contexts(node):
+            yield edit
 
     def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
         """Performs a diff against the provided node.
@@ -537,16 +631,56 @@ class TreeNode(metaclass=ABCMeta):
         """
         return 0
 
+    def print_parent_context(self, printer: Printer, for_child: "TreeNode"):
+        """Prints the context for the given child node.
+
+        For example, if this node represents a list and the child is the element at index 3, then "[3]" might be
+        printed.
+
+        The child is expected to be one of this node's children, but this is not validated.
+
+        The default implementation prints nothing.
+
+        """
+        pass
+
     @abstractmethod
     def print(self, printer: Printer):
         """Prints this node."""
         raise NotImplementedError()
 
 
-class ContainerNode(TreeNode, Iterable, Sized, ABC):
+class ContainerNode(TreeNode, Sized, ABC):
     """A tree node that has children."""
 
-    def children(self) -> List[TreeNode]:
+    @abstractmethod
+    def __iter__(self) -> Iterator[TreeNode]:
+        raise NotImplementedError()
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        # wrap the subclass's __init__ function to auto-set the parents of its children
+        if "__init__" in cls.__dict__ and cls.__init__ is not object.__init__:
+            orig_init = getattr(cls, "__init__")
+
+            @wraps(orig_init)
+            def wrapped(self: ContainerNode, *args, **kw):
+                if hasattr(self, "_container_initializing") and self._container_initializing:
+                    first_init = False
+                else:
+                    setattr(self, "_container_initializing", True)
+                    first_init = True
+                ret = orig_init(self, *args, **kw)
+                if first_init:
+                    for child in self.children():
+                        child.parent = self
+                    if hasattr(self, "_container_initializing"):
+                        delattr(self, "_container_initializing")
+                return ret
+
+            cls.__init__ = wrapped
+
+    def children(self) -> Sequence[TreeNode]:
         """The children of this node.
 
         Equivalent to::
@@ -578,3 +712,4 @@ class ContainerNode(TreeNode, Iterable, Sized, ABC):
 
         """
         return all(c.is_leaf for c in self)
+

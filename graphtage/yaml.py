@@ -3,7 +3,7 @@ import os
 from io import StringIO
 from typing import Optional, Union
 
-from yaml import dump, load, YAMLError
+from yaml import dump, load_all, YAMLError
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -21,8 +21,15 @@ from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 def build_tree(path: str, options: Optional[BuildOptions] = None, *args, **kwargs) -> TreeNode:
     """Constructs a YAML tree from an YAML file."""
     with open(path, 'rb') as stream:
-        data = load(stream, Loader=Loader)
-        return json.build_tree(data, options=options, *args, **kwargs)
+        document_stream = load_all(stream, Loader=Loader)
+        documents = list(document_stream)
+        if len(documents) == 0:
+            return json.build_tree(None, options=options, *args, **kwargs)
+        elif len(documents) > 1:
+            return json.build_tree(documents, options=options, *args, **kwargs)
+        else:
+            singleton = documents[0]
+            return json.build_tree(singleton, options=options, *args, **kwargs)
 
 
 class YAMLListFormatter(SequenceFormatter):

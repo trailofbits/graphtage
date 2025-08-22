@@ -11,8 +11,8 @@ import os
 from typing import Optional, Union
 
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, StringFormatter, StringNode
-from .printer import Fore, Printer
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode
+from .printer import DEFAULT_PRINTER, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
@@ -53,19 +53,25 @@ def build_tree(
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
         return ListNode(
-            [build_tree(n, options=options) for n in python_obj],
+            [build_tree(n, options=options) for n in
+             DEFAULT_PRINTER.tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)],
             allow_list_edits=options.allow_list_edits,
             allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
         )
     elif isinstance(python_obj, dict):
         dict_items = {
             build_tree(k, options=options, force_leaf_node=True):
-                build_tree(v, options=options) for k, v in python_obj.items()
+                build_tree(v, options=options) for k, v in
+            DEFAULT_PRINTER.tqdm(python_obj.items(), delay=2.0, desc="Loading JSON Dict", leave=False)
         }
-        if options is None or options.allow_key_edits:
-            return DictNode.from_dict(dict_items)
+        if options.allow_key_edits:
+            dict_node = DictNode.from_dict(dict_items)
+            dict_node.auto_match_keys = options.auto_match_keys
+            return dict_node
         else:
             return FixedKeyDictNode.from_dict(dict_items)
+    elif python_obj is None:
+        return NullNode()
     else:
         raise ValueError(f"Unsupported Python object {python_obj!r} of type {type(python_obj)}")
 
@@ -223,7 +229,7 @@ class JSONFormatter(GraphtageFormatter):
 
         """
         # Treat the container like a list
-        list_node = ListNode(node.children())
+        list_node = ListNode((c.copy() for c in node.children()))
         self.print(printer, list_node)
 
 
@@ -253,7 +259,8 @@ class JSON(Filetype):
         try:
             return self.build_tree(path=path, options=options)
         except json.decoder.JSONDecodeError as de:
-            return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} (char {de.pos})'
+            return f'Error parsing {os.path.basename(path)}: {de.msg}: line {de.lineno}, column {de.colno} ' \
+                   f'(char {de.pos})'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE
