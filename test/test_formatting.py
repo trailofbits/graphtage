@@ -221,9 +221,63 @@ class TestFormatting(TestCase):
         return orig_obj, str(orig_obj)
 
     def test_html_formatting(self):
-        # For now, HTML support is implemented through XML, so we don't need a separate test.
-        # However, test_formatter_coverage will complain unless this function is here!
-        pass
+        # Test basic HTML parsing and formatting
+        # This tests both quoted and unquoted attributes (issue #25)
+        import tempfile
+        import os
+
+        # Test with unquoted attributes
+        html_unquoted = """<!DOCTYPE html>
+<html>
+<head>
+    <meta name=foo content=bar>
+    <meta charset=utf-8>
+</head>
+<body>
+    <h1>Test</h1>
+</body>
+</html>"""
+
+        # Test with quoted attributes
+        html_quoted = """<!DOCTYPE html>
+<html>
+<head>
+    <meta name="foo" content="bar">
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Test</h1>
+</body>
+</html>"""
+
+        for html_content in [html_unquoted, html_quoted]:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+                f.write(html_content)
+                temp_file = f.name
+
+            try:
+                # Should parse without errors
+                filetype = graphtage.FILETYPES_BY_TYPENAME['html']
+                tree = filetype.build_tree(temp_file)
+
+                # Verify it's an XMLElement
+                self.assertIsInstance(tree, xml.XMLElement)
+
+                # Verify it can be formatted
+                formatter = filetype.get_default_formatter()
+                from io import StringIO
+                from graphtage.printer import Printer
+                output = StringIO()
+                printer = Printer(output)
+                formatter.print(printer, tree)
+                result = output.getvalue()
+
+                # Verify output contains expected elements
+                self.assertIn('<html>', result)
+                self.assertIn('<meta', result)
+                self.assertIn('</html>', result)
+            finally:
+                os.unlink(temp_file)
 
     def test_json5_formatting(self):
         # For now, JSON5 support is implemented using the regular JSON formatter, so we don't need a separate test.
