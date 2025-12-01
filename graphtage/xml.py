@@ -446,6 +446,61 @@ class HTML(XML):
             'application/xhtml+xml'
         )
 
+    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+        """Builds a tree from an HTML file using lxml's HTML parser.
+
+        This method uses lxml.html instead of xml.etree.ElementTree to properly handle
+        HTML5 syntax, including unquoted attributes like <meta name=foo>.
+
+        Args:
+            path: The path to the HTML file to parse.
+            options: Optional build options.
+
+        Returns:
+            TreeNode: The root XMLElement node representing the HTML document.
+        """
+        try:
+            from lxml import html as lxml_html
+        except ImportError:
+            # Fallback to XML parser if lxml is not available
+            return super().build_tree(path, options)
+
+        # Parse HTML file using lxml's lenient HTML parser
+        with open(path, 'rb') as f:
+            tree = lxml_html.parse(f)
+
+        # Convert lxml element to xml.etree.ElementTree.Element
+        root = tree.getroot()
+
+        # Convert lxml tree to standard ET format
+        et_root = self._lxml_to_et(root)
+
+        # Use the existing build_tree function with the converted ET element
+        return build_tree(et_root, options)
+
+    @staticmethod
+    def _lxml_to_et(lxml_elem) -> ET.Element:
+        """Converts an lxml element to a standard xml.etree.ElementTree.Element.
+
+        Args:
+            lxml_elem: An lxml.etree.Element object.
+
+        Returns:
+            ET.Element: A standard ElementTree Element object.
+        """
+        # Create new ET element with same tag and attributes
+        et_elem = ET.Element(lxml_elem.tag, attrib=dict(lxml_elem.attrib))
+
+        # Copy text and tail
+        et_elem.text = lxml_elem.text
+        et_elem.tail = lxml_elem.tail
+
+        # Recursively convert children
+        for child in lxml_elem:
+            et_elem.append(HTML._lxml_to_et(child))
+
+        return et_elem
+
 
 # Tell JSON how to format XML:
 def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
