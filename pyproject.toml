@@ -33,6 +33,7 @@ dependencies = [
     "numpy>=1.19.4",
     "PyYAML",
     "scipy>=1.4.0",
+    "toml>=0.10.2",
     "tqdm",
     "typing_extensions>=3.7.4.3",
 ]
