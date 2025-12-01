@@ -36,6 +36,6 @@ jobs:
           make -C bindist
           cd bindist && echo "DIST_FILE=`make dist-name | tr -d '\n'`" >> $GITHUB_ENV
       - name: Release binary artifacts
-        uses: softprops/action-gh-release@v2.0.5
+        uses: softprops/action-gh-release@v2.4.2
         with:
           files: bindist/${{ env.DIST_FILE }}
