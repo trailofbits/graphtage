@@ -261,38 +261,49 @@ class EditDistance(SequenceEdit):
                 return ret
 
             if not first_fringe:
+                diagonal_cells = list(self._fringe_diagonal())
+
                 if DEFAULT_PRINTER.quiet:
-                    fringe_ranges = {}
-                    fringe_total = 0
-                    num_diagonals = 0
+                    # Use parallel tightening when in quiet mode (no progress bar)
+                    from graphtage.parallel import tighten_diagonal
+
+                    tighten_diagonal(
+                        diagonal_cells,
+                        lambda r, c: self.edit_matrix[r][c],
+                    )
+                    # Now call _best_match for each cell to set costs
+                    for row, col in diagonal_cells:
+                        assert self.edit_matrix[row][col].bounds().definitive()
+                        _, _, _ = self._best_match(row, col)
                 else:
+                    # Sequential with progress bar
                     fringe_ranges = {
                         (row, col): (
                             self.edit_matrix[row][col].bounds().upper_bound
                             - self.edit_matrix[row][col].bounds().lower_bound
                         )
-                        for row, col in self._fringe_diagonal()
+                        for row, col in diagonal_cells
                     }
                     fringe_total = sum(fringe_ranges.values())
                     num_diagonals = len(self.from_seq) + len(self.to_seq)
 
-                with DEFAULT_PRINTER.tqdm(
-                        total=fringe_total,
-                        initial=0,
-                        desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
-                        disable=fringe_total <= 0,
-                        leave=False
-                ) as t:
-                    for row, col in self._fringe_diagonal():
-                        while self.edit_matrix[row][col].tighten_bounds():
-                            if fringe_total:
-                                new_bounds = self.edit_matrix[row][col].bounds()
-                                new_range = new_bounds.upper_bound - new_bounds.lower_bound
-                                t.update(fringe_ranges[(row, col)] - new_range)
-                                fringe_ranges[(row, col)] = new_range
-                        assert self.edit_matrix[row][col].bounds().definitive()
-                        # Call self._best_match because it sets self.path_costs and self.costs for this cell
-                        _, _, _ = self._best_match(row, col)
+                    with DEFAULT_PRINTER.tqdm(
+                            total=fringe_total,
+                            initial=0,
+                            desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",
+                            disable=fringe_total <= 0,
+                            leave=False
+                    ) as t:
+                        for row, col in diagonal_cells:
+                            while self.edit_matrix[row][col].tighten_bounds():
+                                if fringe_total:
+                                    new_bounds = self.edit_matrix[row][col].bounds()
+                                    new_range = new_bounds.upper_bound - new_bounds.lower_bound
+                                    t.update(fringe_ranges[(row, col)] - new_range)
+                                    fringe_ranges[(row, col)] = new_range
+                            assert self.edit_matrix[row][col].bounds().definitive()
+                            # Call self._best_match because it sets self.path_costs and self.costs for this cell
+                            _, _, _ = self._best_match(row, col)
 
             if self.bounds().upper_bound < initial_bounds.upper_bound or \
                     self.bounds().lower_bound > initial_bounds.lower_bound:

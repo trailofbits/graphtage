@@ -610,11 +610,17 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
 
         This property lazily constructs the edge matrix and memoizes the result.
 
+        When running on Python 3.14+ with free-threading enabled, this
+        computation is parallelized across multiple threads for improved
+        performance on large matrices.
+
         """
         if self._edges is None:
-            self._edges = [
-                [self.get_edge(from_node, to_node) for to_node in self.to_nodes] for from_node in self.from_nodes
-            ]
+            from graphtage.parallel import compute_edge_matrix
+
+            self._edges = compute_edge_matrix(
+                self.from_nodes, self.to_nodes, self.get_edge
+            )
         return self._edges
 
     def bounds(self) -> Range:

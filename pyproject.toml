@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Utilities",
 ]
 dependencies = [
@@ -39,8 +40,12 @@ dependencies = [
 dynamic = ["version"]
 
 [project.optional-dependencies]
+parallel = [
+    "wgpu>=0.18.0",
+]
 dev = [
     "pytest>=7.0.0",
+    "pytest-benchmark>=4.0.0",
     "ruff>=0.1.0",
     "sphinx>=5.0.0",
     "sphinx_rtd_theme==3.0.2",
