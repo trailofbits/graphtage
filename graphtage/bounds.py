@@ -37,6 +37,9 @@ log = logging.getLogger(__name__)
 
 class Infinity:
     """A class for representing infinite values. This is primarily used for unbounded ranges."""
+
+    __slots__ = ('_positive',)
+
     def __init__(self, positive=True):
         self._positive = positive
 
@@ -113,6 +116,8 @@ RangeValue = Union[int, Infinity]
 
 class Range:
     """An integer range."""
+    __slots__ = ('lower_bound', 'upper_bound')
+
     def __init__(self, lower_bound: RangeValue = NEGATIVE_INFINITY, upper_bound: RangeValue = POSITIVE_INFINITY):
         """Constructs a range.
 
@@ -264,6 +269,9 @@ def repeat_until_tightened(func):
 
 class ConstantBound(Bounded):
     """An object with constant bounds."""
+
+    __slots__ = ('_range',)
+
     def __init__(self, value: RangeValue):
         """Initializes the constant bounded object.
 
@@ -289,6 +297,9 @@ class BoundedComparator:
     definitive or sufficiently distinct to differentiate them from another object to which it is being compared.
 
     """
+
+    __slots__ = ('bounded',)
+
     def __init__(self, bounded: Bounded):
         """Initializes this bounded comparator.
 

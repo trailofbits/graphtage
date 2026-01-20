@@ -23,6 +23,9 @@ class MultiSetEdit(SequenceEdit):
     the elements of one collection to the elements of the other.
 
     """
+
+    __slots__ = ('_matched_kvp_edits', 'to_insert', 'to_remove', '_edits', '_matcher')
+
     def __init__(
             self,
             from_node: SequenceNode,
