@@ -261,11 +261,11 @@ class EditDistance(SequenceEdit):
                 return ret
 
             if not first_fringe:
-                if DEFAULT_PRINTER.quiet:
-                    fringe_ranges = {}
-                    fringe_total = 0
-                    num_diagonals = 0
-                else:
+                fringe_ranges = {}
+                fringe_total = 0
+                num_diagonals = 0
+
+                if not DEFAULT_PRINTER.quiet:
                     fringe_ranges = {
                         (row, col): (
                             self.edit_matrix[row][col].bounds().upper_bound
