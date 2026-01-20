@@ -33,6 +33,7 @@ class AbstractEdit(Debuggable, Edit, ABC):
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
+        self._cached_bounds: Optional[Range] = None
         self.initial_bounds = self.bounds()
         """The initial bounds of this edit.
          
@@ -128,6 +129,8 @@ class AbstractEdit(Debuggable, Edit, ABC):
             Range: A range bounding the cost of this edit.
 
         """
+        if self._cached_bounds is not None:
+            return self._cached_bounds
         lb = self._constant_cost
         if self._cost_upper_bound is None:
             if self.to_node is None:
@@ -136,7 +139,13 @@ class AbstractEdit(Debuggable, Edit, ABC):
                 ub = self.from_node.total_size + self.to_node.total_size + 1
         else:
             ub = self._cost_upper_bound
-        return Range(lb, ub)
+        result = Range(lb, ub)
+        self._cached_bounds = result
+        return result
+
+    def invalidate_bounds_cache(self):
+        """Invalidate the cached bounds. Call this when bounds may have changed."""
+        self._cached_bounds = None
 
 
 class ConstantCostEdit(AbstractEdit, ABC):
