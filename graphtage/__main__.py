@@ -113,6 +113,8 @@ def main(argv=None) -> int:
                             help='do not print a newline after each key/value pair in a dictionary')
     formatting.add_argument('--condensed', '-j', action='store_true', help='equivalent to `-jl -jd`')
     formatting.add_argument('--html', action='store_true', help='output the diff in HTML')
+    formatting.add_argument('--no-unicode', action='store_true',
+                            help='do not use Unicode combining marks in the output (only use colors)')
     key_match_strategy = parser.add_mutually_exclusive_group()
     key_match_strategy.add_argument("--dict-strategy", "-ds", choices=("auto", "match", "none"),
                                     help="sets the strategy for matching dictionary key/value pairs: `auto` (the "
@@ -206,7 +208,8 @@ def main(argv=None) -> int:
         options={
             'join_lists': args.condensed or args.join_lists,
             'join_dict_items': args.condensed or args.join_dict_items
-        }
+        },
+        enable_unicode=not args.no_unicode
     )
     printermodule.DEFAULT_PRINTER = printer
 
