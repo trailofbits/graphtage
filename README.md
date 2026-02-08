@@ -50,6 +50,54 @@ $ graphtage original.json modified.json
 $ pip3 install graphtage
 ```
 
+## Performance
+
+Graphtage supports parallel execution on Python 3.14+ with free-threading enabled,
+providing up to 2.8x speedup for diffs where individual tree node comparisons are expensive.
+
+### Enabling Parallel Execution
+
+Parallel execution is automatically enabled when running on Python 3.14+ with the GIL disabled:
+
+```console
+# Install free-threaded Python 3.14
+$ uv python install cpython-3.14+freethreaded
+
+# Run graphtage with free-threading
+$ uv run --python cpython-3.14+freethreaded graphtage file1.json file2.json
+```
+
+Alternatively, if you have Python 3.14t installed:
+
+```console
+$ python3.14t -m graphtage file1.json file2.json
+```
+
+### Programmatic Configuration
+
+```python
+from graphtage.parallel import configure, Backend
+
+# Force threaded backend
+configure(preferred_backend=Backend.THREADED)
+
+# Disable parallel execution
+configure(enabled=False)
+
+# Customize thread pool size
+configure(max_workers=8)
+```
+
+### When Parallelization Helps
+
+Parallel execution provides the most benefit for:
+- Large JSON/YAML files with many nested objects
+- Dictionaries/multisets with many key-value pairs to match
+- Files where individual tree node comparisons are expensive
+
+For small files or simple comparisons, sequential execution may be faster due to
+threading overhead.
+
 ## Command Line Usage
 
 ### Output Formatting

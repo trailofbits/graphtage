@@ -22,6 +22,8 @@ from graphtage.parallel import (
     compute_edge_matrix_threaded,
     configure,
     is_free_threading_available,
+    make_distinct_sequential,
+    make_distinct_threaded,
     tighten_diagonal_sequential,
     tighten_diagonal_threaded,
 )
@@ -205,6 +207,44 @@ def benchmark_diagonal_tightening(sizes: list[int]) -> dict:
     return results
 
 
+def benchmark_make_distinct(sizes: list[int]) -> dict:
+    """Benchmark make_distinct at various sizes."""
+    import random
+
+    results = {}
+
+    for size in sizes:
+        print(f"  make_distinct (n={size} items)...", end=" ", flush=True)
+
+        def run_sequential():
+            random.seed(42)
+            items = [RandomDecreasingRange() for _ in range(size)]
+            make_distinct_sequential(items)
+
+        def run_threaded():
+            random.seed(42)
+            items = [RandomDecreasingRange() for _ in range(size)]
+            make_distinct_threaded(items, max_workers=4)
+
+        # Sequential benchmark
+        seq_result = benchmark(run_sequential, iterations=3)
+
+        # Threaded benchmark
+        thr_result = benchmark(run_threaded, iterations=3)
+
+        speedup = seq_result["mean"] / thr_result["mean"] if thr_result["mean"] > 0 else 0
+
+        results[size] = {
+            "sequential": seq_result,
+            "threaded": thr_result,
+            "speedup": speedup,
+        }
+
+        print(f"seq={seq_result['mean']*1000:.1f}ms, thr={thr_result['mean']*1000:.1f}ms, speedup={speedup:.2f}x")
+
+    return results
+
+
 def benchmark_weighted_bipartite_matcher(sizes: list[int]) -> dict:
     """Benchmark WeightedBipartiteMatcher end-to-end."""
     from graphtage.matching import WeightedBipartiteMatcher
@@ -263,6 +303,7 @@ def print_summary_table(
     edge_results: dict,
     edge_expensive_results: dict,
     diagonal_results: dict,
+    make_distinct_results: dict,
     matcher_results: dict,
 ):
     """Print a summary table of all results."""
@@ -307,6 +348,17 @@ def print_summary_table(
         print(f"{size:>10} {seq_ms:>10.1f}ms {thr_ms:>10.1f}ms {speedup:>9.2f}x")
     print()
 
+    print("make_distinct (overlapping interval tightening):")
+    print("-" * 60)
+    print(f"{'Items':>10} {'Sequential':>12} {'Threaded':>12} {'Speedup':>10}")
+    print("-" * 60)
+    for size, data in make_distinct_results.items():
+        seq_ms = data["sequential"]["mean"] * 1000
+        thr_ms = data["threaded"]["mean"] * 1000
+        speedup = data["speedup"]
+        print(f"{size:>10} {seq_ms:>10.1f}ms {thr_ms:>10.1f}ms {speedup:>9.2f}x")
+    print()
+
     print("WeightedBipartiteMatcher (end-to-end):")
     print("-" * 60)
     print(f"{'Size':>10} {'Sequential':>12} {'Parallel':>12} {'Speedup':>10}")
@@ -332,6 +384,7 @@ def main():
     edge_sizes = [10, 25, 50]
     edge_expensive_sizes = [10, 20, 30, 40]
     diagonal_sizes = [10, 25, 50, 75]
+    make_distinct_sizes = [20, 50, 100, 200]
     matcher_sizes = [10, 15, 20]
 
     print("Running edge matrix benchmarks (trivial work)...")
@@ -343,11 +396,20 @@ def main():
     print("\nRunning diagonal tightening benchmarks...")
     diagonal_results = benchmark_diagonal_tightening(diagonal_sizes)
 
+    print("\nRunning make_distinct benchmarks...")
+    make_distinct_results = benchmark_make_distinct(make_distinct_sizes)
+
     print("\nRunning WeightedBipartiteMatcher benchmarks...")
     matcher_results = benchmark_weighted_bipartite_matcher(matcher_sizes)
 
     # Print summary
-    print_summary_table(edge_results, edge_expensive_results, diagonal_results, matcher_results)
+    print_summary_table(
+        edge_results,
+        edge_expensive_results,
+        diagonal_results,
+        make_distinct_results,
+        matcher_results,
+    )
 
     # Reset config
     configure()

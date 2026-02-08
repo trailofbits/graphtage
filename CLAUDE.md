@@ -36,6 +36,7 @@ Key capabilities:
 - **search.py**: Iterative tightening search for edit cost optimization
 - **bounds.py**: Cost range calculations (Range class)
 - **fibonacci.py**: Fibonacci search for optimization
+- **parallel.py**: Parallel execution support for Python 3.14+ free-threading
 
 ### File Format Modules
 Each format implements its own TreeNode subclasses and parser:

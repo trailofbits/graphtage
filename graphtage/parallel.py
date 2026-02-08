@@ -144,7 +144,7 @@ class ParallelConfig:
         preferred_backend: The preferred backend to use. If None, auto-selects.
         max_workers: Maximum number of worker threads. None means auto-detect.
         webgpu_min_size: Minimum problem size to use WebGPU (default 10000).
-        threaded_min_size: Minimum problem size to use threading (default 100).
+        threaded_min_size: Minimum problem size to use threading (default 500).
         enabled: Whether parallel execution is enabled at all.
 
     """
@@ -152,7 +152,7 @@ class ParallelConfig:
     preferred_backend: Optional[Backend] = None
     max_workers: Optional[int] = None
     webgpu_min_size: int = 10000
-    threaded_min_size: int = 100
+    threaded_min_size: int = 500
     enabled: bool = True
 
 
@@ -164,7 +164,7 @@ def configure(
     preferred_backend: Optional[Backend] = None,
     max_workers: Optional[int] = None,
     webgpu_min_size: int = 10000,
-    threaded_min_size: int = 100,
+    threaded_min_size: int = 500,
     enabled: bool = True,
 ) -> None:
     """Configure parallel execution globally.
@@ -431,3 +431,208 @@ def tighten_diagonal(
         return tighten_diagonal_threaded(cells, get_edit, max_workers=config.max_workers)
 
     return tighten_diagonal_sequential(cells, get_edit)
+
+
+def make_distinct_sequential(bounded_items: List["Bounded"]) -> None:  # noqa: F821
+    """Make all bounded items distinct sequentially (baseline implementation).
+
+    This is the original algorithm from bounds.py.
+
+    Args:
+        bounded_items: List of Bounded objects to make distinct.
+
+    """
+    from intervaltree import Interval, IntervalTree
+
+    tree: IntervalTree = IntervalTree()
+    for b in bounded_items:
+        if not b.bounds().finite:
+            b.tighten_bounds()
+            if not b.bounds().finite:
+                raise ValueError(f"Could not tighten {b!r} to a finite bound")
+        tree.add(Interval(b.bounds().lower_bound, b.bounds().upper_bound + 1, b))
+
+    while len(tree) > 1:
+        # Find the biggest interval in the tree
+        biggest: Optional[Interval] = None
+        for m in tree:
+            m_size = m.end - m.begin
+            if biggest is None or m_size > biggest.end - biggest.begin:
+                biggest = m
+        assert biggest is not None
+        if biggest.data.bounds().definitive():
+            break
+        tree.remove(biggest)
+        matching = tree[biggest.begin:biggest.end]
+        if len(matching) < 1:
+            continue
+        # Find the biggest other interval that intersects with biggest
+        second_biggest: Optional[Interval] = None
+        for m in matching:
+            m_size = m.end - m.begin
+            if second_biggest is None or m_size > second_biggest.end - second_biggest.begin:
+                second_biggest = m
+        assert second_biggest is not None
+        tree.remove(second_biggest)
+        # Shrink the two biggest intervals until they are distinct
+        while True:
+            biggest_bound = biggest.data.bounds()
+            second_biggest_bound = second_biggest.data.bounds()
+            if (
+                (biggest_bound.definitive() and second_biggest_bound.definitive())
+                or biggest_bound.upper_bound < second_biggest_bound.lower_bound
+                or second_biggest_bound.upper_bound < biggest_bound.lower_bound
+            ):
+                break
+            biggest.data.tighten_bounds()
+            second_biggest.data.tighten_bounds()
+        new_interval = Interval(
+            begin=biggest.data.bounds().lower_bound,
+            end=biggest.data.bounds().upper_bound + 1,
+            data=biggest.data,
+        )
+        if tree.overlaps(new_interval.begin, new_interval.end):
+            tree.add(new_interval)
+        new_interval = Interval(
+            begin=second_biggest.data.bounds().lower_bound,
+            end=second_biggest.data.bounds().upper_bound + 1,
+            data=second_biggest.data,
+        )
+        if tree.overlaps(new_interval.begin, new_interval.end):
+            tree.add(new_interval)
+
+
+def _find_independent_pairs(
+    tree: "IntervalTree",  # noqa: F821
+) -> List[Tuple["Bounded", "Bounded"]]:  # noqa: F821
+    """Find pairs of overlapping intervals that can be tightened independently.
+
+    Two pairs are independent if they share no common bounded items.
+    This allows them to be processed in parallel.
+
+    Args:
+        tree: IntervalTree containing bounded items.
+
+    Returns:
+        List of (bounded1, bounded2) pairs that can be processed in parallel.
+
+    """
+    pairs = []
+    used = set()
+
+    # Sort intervals by size (largest first) for greedy matching
+    intervals = sorted(tree, key=lambda m: m.end - m.begin, reverse=True)
+
+    for interval in intervals:
+        if id(interval.data) in used:
+            continue
+        if interval.data.bounds().definitive():
+            continue
+
+        # Find overlapping intervals
+        matching = tree[interval.begin:interval.end]
+        for other in matching:
+            if other is interval:
+                continue
+            if id(other.data) in used:
+                continue
+
+            # Found an independent pair
+            pairs.append((interval.data, other.data))
+            used.add(id(interval.data))
+            used.add(id(other.data))
+            break
+
+    return pairs
+
+
+def make_distinct_threaded(
+    bounded_items: List["Bounded"],  # noqa: F821
+    max_workers: Optional[int] = None,
+) -> None:
+    """Make all bounded items distinct using parallel processing.
+
+    This parallelizes the make_distinct algorithm by processing multiple
+    independent pairs of overlapping intervals concurrently.
+
+    Args:
+        bounded_items: List of Bounded objects to make distinct.
+        max_workers: Maximum number of worker threads.
+
+    """
+    from intervaltree import Interval, IntervalTree
+
+    def tighten_pair(b1: "Bounded", b2: "Bounded") -> None:  # noqa: F821
+        """Tighten a pair of bounded items until they are distinct."""
+        while True:
+            b1_bound = b1.bounds()
+            b2_bound = b2.bounds()
+            if (
+                (b1_bound.definitive() and b2_bound.definitive())
+                or b1_bound.upper_bound < b2_bound.lower_bound
+                or b2_bound.upper_bound < b1_bound.lower_bound
+            ):
+                break
+            b1.tighten_bounds()
+            b2.tighten_bounds()
+
+    def rebuild_tree(items: List["Bounded"]) -> IntervalTree:  # noqa: F821
+        """Rebuild the interval tree with current bounds."""
+        tree = IntervalTree()
+        for b in items:
+            bounds = b.bounds()
+            if not bounds.definitive():
+                tree.add(Interval(bounds.lower_bound, bounds.upper_bound + 1, b))
+        return tree
+
+    # Initial tightening to ensure finite bounds
+    for b in bounded_items:
+        if not b.bounds().finite:
+            b.tighten_bounds()
+            if not b.bounds().finite:
+                raise ValueError(f"Could not tighten {b!r} to a finite bound")
+
+    # Build initial tree
+    tree = rebuild_tree(bounded_items)
+
+    while len(tree) > 1:
+        # Find independent pairs that can be processed in parallel
+        pairs = _find_independent_pairs(tree)
+
+        if not pairs:
+            # No pairs found - all remaining intervals are either distinct
+            # or definitive
+            break
+
+        # Process pairs in parallel
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = [executor.submit(tighten_pair, b1, b2) for b1, b2 in pairs]
+            for future in futures:
+                future.result()
+
+        # Rebuild tree with updated bounds
+        tree = rebuild_tree(bounded_items)
+
+
+def make_distinct(
+    bounded_items: List["Bounded"],  # noqa: F821
+    preferred_backend: Optional[Backend] = None,
+) -> None:
+    """Make all bounded items distinct using the optimal backend.
+
+    Ensures that all bounded items are tightened until they are finite and
+    either definitive or non-overlapping with any of the other items.
+
+    Note: Profiling shows that the threaded implementation is slower than
+    sequential due to thread overhead exceeding the benefit of parallelism.
+    The work per pair (tightening bounds) is too fast to benefit from
+    threading. Therefore, this always uses the sequential implementation.
+
+    Args:
+        bounded_items: List of Bounded objects to make distinct.
+        preferred_backend: Ignored (sequential is always faster).
+
+    """
+    # Always use sequential - profiling shows threaded is slower due to
+    # thread overhead exceeding the benefit of parallelism for this operation
+    make_distinct_sequential(bounded_items)

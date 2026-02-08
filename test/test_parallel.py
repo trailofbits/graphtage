@@ -6,6 +6,7 @@ from unittest import TestCase
 from graphtage.parallel import (
     Backend,
     ParallelConfig,
+    _find_independent_pairs,
     _reset_backend_cache,
     available_backends,
     compute_edge_matrix,
@@ -16,6 +17,9 @@ from graphtage.parallel import (
     get_config,
     is_free_threading_available,
     is_webgpu_available,
+    make_distinct,
+    make_distinct_sequential,
+    make_distinct_threaded,
     tighten_diagonal,
     tighten_diagonal_sequential,
     tighten_diagonal_threaded,
@@ -66,7 +70,7 @@ class TestConfiguration(TestCase):
         self.assertIsNone(config.preferred_backend)
         self.assertIsNone(config.max_workers)
         self.assertEqual(10000, config.webgpu_min_size)
-        self.assertEqual(100, config.threaded_min_size)
+        self.assertEqual(500, config.threaded_min_size)
         self.assertTrue(config.enabled)
 
     def test_configure_updates_config(self):
@@ -271,3 +275,165 @@ class TestIntegration(TestCase):
 
         self.assertTrue(matcher.bounds().definitive())
         self.assertEqual(0, matcher.bounds().upper_bound)
+
+
+class TestMakeDistinct(TestCase):
+    """Tests for make_distinct functions."""
+
+    def tearDown(self):
+        configure()  # Reset to defaults
+
+    def _assert_all_distinct(self, items):
+        """Assert all items have non-overlapping or definitive bounds."""
+        for i, item_i in enumerate(items):
+            bounds_i = item_i.bounds()
+            # All bounds should be finite
+            self.assertTrue(bounds_i.finite)
+            for j, item_j in enumerate(items):
+                if i >= j:
+                    continue
+                bounds_j = item_j.bounds()
+                # Either both are definitive, or they don't overlap
+                if not (bounds_i.definitive() and bounds_j.definitive()):
+                    overlaps = not (
+                        bounds_i.upper_bound < bounds_j.lower_bound
+                        or bounds_j.upper_bound < bounds_i.lower_bound
+                    )
+                    if overlaps:
+                        # If they still overlap, both must be definitive
+                        self.assertTrue(
+                            bounds_i.definitive() and bounds_j.definitive(),
+                            f"Items {i} and {j} overlap but are not definitive",
+                        )
+
+    def test_sequential_makes_items_distinct(self):
+        """Test that sequential make_distinct works correctly."""
+        import random
+
+        random.seed(123)
+        items = [RandomDecreasingRange() for _ in range(10)]
+
+        make_distinct_sequential(items)
+
+        # All items should be distinct (non-overlapping or definitive)
+        self._assert_all_distinct(items)
+
+    def test_threaded_makes_items_distinct(self):
+        """Test that threaded make_distinct works correctly."""
+        import random
+
+        random.seed(456)
+        items = [RandomDecreasingRange() for _ in range(10)]
+
+        make_distinct_threaded(items, max_workers=4)
+
+        # All items should be distinct (non-overlapping or definitive)
+        self._assert_all_distinct(items)
+
+    def test_threaded_matches_sequential_results(self):
+        """Test that threaded produces same final state as sequential."""
+        import random
+
+        # Create two identical sets with same random seed
+        random.seed(789)
+        items_seq = [RandomDecreasingRange() for _ in range(15)]
+        random.seed(789)
+        items_thr = [RandomDecreasingRange() for _ in range(15)]
+
+        make_distinct_sequential(items_seq)
+        make_distinct_threaded(items_thr, max_workers=4)
+
+        # Both should have distinct items
+        self._assert_all_distinct(items_seq)
+        self._assert_all_distinct(items_thr)
+
+        # Final values should match since they started with same seed
+        for i in range(len(items_seq)):
+            self.assertEqual(
+                items_seq[i].final_value,
+                items_thr[i].final_value,
+            )
+
+    def test_make_distinct_auto_backend(self):
+        """Test that make_distinct with auto backend works."""
+        import random
+
+        random.seed(999)
+        items = [RandomDecreasingRange() for _ in range(10)]
+
+        make_distinct(items)
+
+        # All items should be distinct
+        self._assert_all_distinct(items)
+
+    def test_empty_input(self):
+        """Test handling of empty input."""
+        # Should not raise
+        make_distinct_sequential([])
+        make_distinct_threaded([])
+        make_distinct([])
+
+    def test_single_item(self):
+        """Test handling of single item."""
+        item = RandomDecreasingRange()
+
+        make_distinct_sequential([item])
+
+        # Should have finite bounds
+        self.assertTrue(item.bounds().finite)
+
+    def test_find_independent_pairs_basic(self):
+        """Test that _find_independent_pairs finds correct pairs."""
+        from intervaltree import Interval, IntervalTree
+
+        # Create bounded items with overlapping ranges
+        items = [
+            RandomDecreasingRange(fixed_lb=0, fixed_ub=100),
+            RandomDecreasingRange(fixed_lb=50, fixed_ub=150),
+            RandomDecreasingRange(fixed_lb=200, fixed_ub=300),
+            RandomDecreasingRange(fixed_lb=250, fixed_ub=350),
+        ]
+
+        tree = IntervalTree()
+        for item in items:
+            bounds = item.bounds()
+            tree.add(Interval(bounds.lower_bound, bounds.upper_bound + 1, item))
+
+        pairs = _find_independent_pairs(tree)
+
+        # Should find at least one pair (items 0-1 or items 2-3 overlap)
+        self.assertGreater(len(pairs), 0)
+
+        # Verify pairs don't share items
+        used_ids = set()
+        for b1, b2 in pairs:
+            self.assertNotIn(id(b1), used_ids)
+            self.assertNotIn(id(b2), used_ids)
+            used_ids.add(id(b1))
+            used_ids.add(id(b2))
+
+    def test_find_independent_pairs_non_overlapping(self):
+        """Test that non-overlapping intervals don't form pairs."""
+        from intervaltree import Interval, IntervalTree
+
+        # Create non-overlapping bounded items
+        items = [
+            RandomDecreasingRange(fixed_lb=0, fixed_ub=10, final_value=5),
+            RandomDecreasingRange(fixed_lb=100, fixed_ub=110, final_value=105),
+            RandomDecreasingRange(fixed_lb=200, fixed_ub=210, final_value=205),
+        ]
+
+        # Tighten them to make them definitive and non-overlapping
+        for item in items:
+            while not item.bounds().definitive():
+                item.tighten_bounds()
+
+        tree = IntervalTree()
+        for item in items:
+            bounds = item.bounds()
+            if not bounds.definitive():
+                tree.add(Interval(bounds.lower_bound, bounds.upper_bound + 1, item))
+
+        # Tree should be empty (all definitive) or have no overlapping pairs
+        pairs = _find_independent_pairs(tree)
+        self.assertEqual(0, len(pairs))
