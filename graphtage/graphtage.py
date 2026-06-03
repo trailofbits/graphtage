@@ -121,6 +121,8 @@ class LeafNode(TreeNode):
 class KeyValuePairEdit(AbstractCompoundEdit):
     """An edit type for two key/value pairs"""
 
+    __slots__ = ('key_edit', 'value_edit')
+
     def __init__(
             self,
             from_kvp: 'KeyValuePairNode',
@@ -535,6 +537,9 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
 
 class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
     """The edit type returned by :class:`FixedKeyDictNode`."""
+
+    __slots__ = ()
+
     def __init__(
             self,
             from_node: 'FixedKeyDictNode',
@@ -644,6 +649,8 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
 
 class StringEdit(AbstractEdit):
     """An edit returned from a :class:`StringNode`"""
+
+    __slots__ = ('edit_distance',)
 
     def __init__(
             self,

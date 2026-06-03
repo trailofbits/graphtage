@@ -15,6 +15,9 @@ log = logging.getLogger(__name__)
 
 class SequenceEdit(AbstractCompoundEdit, ABC):
     """An edit type for sequence nodes."""
+
+    __slots__ = ()
+
     def __init__(
             self,
             from_node: 'SequenceNode',
@@ -60,6 +63,9 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
 
 class FixedLengthSequenceEdit(SequenceEdit):
     """An edit for sequences that does not consider interleaving."""
+
+    __slots__ = ('_sub_edits', 'to_remove', 'to_insert')
+
     def __init__(
             self,
             from_node: 'SequenceNode',

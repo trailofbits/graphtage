@@ -12,6 +12,11 @@ from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNo
 class AbstractEdit(Debuggable, Edit, ABC):
     """Abstract base class for the :class:`Edit` protocol."""
 
+    __slots__ = (
+        'from_node', 'to_node', '_constant_cost', '_cost_upper_bound',
+        '_valid', 'initial_bounds', '_checking_bounds'
+    )
+
     def __init__(self,
                  from_node: TreeNode,
                  to_node: TreeNode = None,
@@ -141,6 +146,9 @@ class AbstractEdit(Debuggable, Edit, ABC):
 
 class ConstantCostEdit(AbstractEdit, ABC):
     """An edit whose definitive cost is known at the time of construction."""
+
+    __slots__ = ()
+
     def __init__(
             self,
             from_node: TreeNode,
@@ -169,6 +177,8 @@ class ConstantCostEdit(AbstractEdit, ABC):
 
 class AbstractCompoundEdit(AbstractEdit, CompoundEdit, ABC):
     """Abstract base class implementing the :class:`CompoundEdit` protocol."""
+
+    __slots__ = ()
 
     @abstractmethod
     def edits(self) -> Iterator[Edit]:
@@ -206,6 +216,8 @@ class PossibleEdits(AbstractCompoundEdit):
     The best option is chosen by performing :class:`graphtage.search.IterativeTighteningSearch` on the alternatives.
 
     """
+
+    __slots__ = ('_search',)
 
     def __init__(
             self,
@@ -270,6 +282,8 @@ class PossibleEdits(AbstractCompoundEdit):
 class Match(ConstantCostEdit):
     """A constant cost edit specifying that one node should be matched to another."""
 
+    __slots__ = ()
+
     def __init__(self, match_from: TreeNode, match_to: TreeNode, cost: int):
         super().__init__(
             from_node=match_from,
@@ -302,6 +316,8 @@ class Match(ConstantCostEdit):
 class Replace(ConstantCostEdit):
     """A constant cost edit specifying that one node should be replaced with another."""
 
+    __slots__ = ()
+
     def __init__(self, to_replace: TreeNode, replace_with: TreeNode):
         cost = max(to_replace.total_size, replace_with.total_size) + 1
         super().__init__(
@@ -327,6 +343,8 @@ class Replace(ConstantCostEdit):
 
 class Remove(ConstantCostEdit):
     """A constant cost edit specifying that a node should be removed from a container."""
+
+    __slots__ = ()
 
     REMOVE_STRING: str = '~~'
     """The string used to denote a removal if ANSI color is disabled."""
@@ -360,6 +378,8 @@ class Remove(ConstantCostEdit):
 
 class Insert(ConstantCostEdit):
     """A constant cost edit specifying that a node should be added to a container."""
+
+    __slots__ = ()
 
     INSERT_STRING: str = '++'
     """The string used to denote an insertion if ANSI color is disabled."""
@@ -402,6 +422,8 @@ C = TypeVar('C', bound=Collection)
 
 class EditCollection(AbstractCompoundEdit, Generic[C]):
     """An edit comprised of one or more sub-edits."""
+
+    __slots__ = ('_edit_iter', '_sub_edits', '_cost', 'explode_edits', '_add')
 
     def __init__(
             self,
@@ -530,6 +552,8 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
 
 class EditSequence(EditCollection[List]):
     """An :class:`EditCollection` using a :class:`list` as the underlying container."""
+
+    __slots__ = ()
 
     def __init__(
             self,
