@@ -1,0 +1,65 @@
+graphtage.toml
+==============
+
+.. automodule:: graphtage.toml
+
+toml classes
+------------
+
+TOML
+****
+
+.. autoclass:: TOML
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLFormatter
+*************
+
+.. autoclass:: TOMLFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLListFormatter
+*****************
+
+.. autoclass:: TOMLListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLMapping
+***********
+
+.. autoclass:: TOMLMapping
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLStringFormatter
+*******************
+
+.. autoclass:: TOMLStringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+toml functions
+--------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree
+
+toml_dumps
+**********
+
+.. autofunction:: toml_dumps

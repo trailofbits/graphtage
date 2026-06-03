@@ -27,6 +27,7 @@ Graphtage API
    graphtage.pydiff
    graphtage.search
    graphtage.sequences
+   graphtage.toml
    graphtage.utils
    graphtage.version
    graphtage.xml
