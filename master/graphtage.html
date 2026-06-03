@@ -325,6 +325,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.AbstractCompoundEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.AbstractCompoundEdit.valid" title="Link to this definition"></a></dt>
@@ -474,6 +479,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds().definitive()</span></code></a>.</p>
 </div>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.AbstractEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.AbstractEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.AbstractEdit.valid">
@@ -1034,6 +1044,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.ConstantCostEdit.tighten_bounds" title="Link to this definition"></a></dt>
 <dd><p>This always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.ConstantCostEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.ConstantCostEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.ConstantCostEdit.valid">
@@ -1897,6 +1912,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.EditCollection.explode_edits">
+<span class="sig-name descname"><span class="pre">explode_edits</span></span><a class="headerlink" href="#graphtage.EditCollection.explode_edits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.EditCollection.from_node">
 <span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.EditCollection.from_node" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1989,6 +2009,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.EditCollection.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.EditCollection.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.EditCollection.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.EditCollection.valid" title="Link to this definition"></a></dt>
@@ -2071,6 +2096,11 @@ provided to the constructor, the upper bound defaults to:</p>
 <span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.EditSequence.edits" title="Link to this definition"></a></dt>
 <dd><p>Returns an iterator over this edit’s sub-edits</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.EditSequence.explode_edits">
+<span class="sig-name descname"><span class="pre">explode_edits</span></span><a class="headerlink" href="#graphtage.EditSequence.explode_edits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.EditSequence.from_node">
@@ -2164,6 +2194,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds().definitive()</span></code></a>.</p>
 </div>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.EditSequence.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.EditSequence.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.EditSequence.valid">
@@ -2792,6 +2827,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.explode_edits">
+<span class="sig-name descname"><span class="pre">explode_edits</span></span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.explode_edits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.from_node">
 <span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.from_node" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -2889,6 +2929,11 @@ the sub-edits:</p>
 <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds().definitive()</span></code></a>.</p>
 </div>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.valid">
@@ -3403,6 +3448,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_insert</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.Insert.to_insert" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.Insert.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.Insert.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.Insert.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.Insert.valid" title="Link to this definition"></a></dt>
@@ -3800,6 +3850,11 @@ of this edit and will not affect the semantics of the edit.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.key_edit">
+<span class="sig-name descname"><span class="pre">key_edit</span></span><a class="headerlink" href="#graphtage.KeyValuePairEdit.key_edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.on_diff">
 <span class="sig-name descname"><span class="pre">on_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairEdit.on_diff" title="Link to this definition"></a></dt>
@@ -3852,11 +3907,21 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.KeyValuePairEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.KeyValuePairEdit.valid" title="Link to this definition"></a></dt>
 <dd><p>Returns whether this edit is valid</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.value_edit">
+<span class="sig-name descname"><span class="pre">value_edit</span></span><a class="headerlink" href="#graphtage.KeyValuePairEdit.value_edit" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -5272,6 +5337,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dd><p>This always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.Match.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.Match.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.Match.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.Match.valid" title="Link to this definition"></a></dt>
@@ -6009,6 +6079,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.PossibleEdits.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.PossibleEdits.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.PossibleEdits.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.PossibleEdits.valid" title="Link to this definition"></a></dt>
@@ -6150,6 +6225,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dd><p>This always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.Remove.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.Remove.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.Remove.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.Remove.valid" title="Link to this definition"></a></dt>
@@ -6286,6 +6366,11 @@ Raising <a class="reference external" href="https://docs.python.org/3/library/ex
 <dd><p>This always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.Replace.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.Replace.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.Replace.valid">
 <em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.Replace.valid" title="Link to this definition"></a></dt>
@@ -6348,6 +6433,11 @@ provided to the constructor, the upper bound defaults to:</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.StringEdit.edit_distance">
+<span class="sig-name descname"><span class="pre">edit_distance</span></span><a class="headerlink" href="#graphtage.StringEdit.edit_distance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.StringEdit.from_node">
@@ -6434,6 +6524,11 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds().definitive()</span></code></a>.</p>
 </div>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.StringEdit.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.StringEdit.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.StringEdit.valid">

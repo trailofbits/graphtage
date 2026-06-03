@@ -151,7 +151,7 @@ bound.</p>
 <li><p><strong>from_node</strong> – The node that will be transformed.</p></li>
 <li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.levenshtein.EditDistance.from_node" title="graphtage.levenshtein.EditDistance.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> will be transformed.</p></li>
 <li><p><strong>from_seq</strong> – A sequence of nodes that comprise <a class="reference internal" href="#graphtage.levenshtein.EditDistance.from_node" title="graphtage.levenshtein.EditDistance.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a>.</p></li>
-<li><p><strong>to_seq</strong> – A sequence of nodes that comprise <code class="xref py py-obj docutils literal notranslate"><span class="pre">to_node</span></code>.</p></li>
+<li><p><strong>to_seq</strong> – A sequence of nodes that comprise <a class="reference internal" href="#graphtage.levenshtein.EditDistance.to_node" title="graphtage.levenshtein.EditDistance.to_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_node</span></code></a>.</p></li>
 <li><p><strong>insert_remove_penalty</strong> – The penalty for inserting or removing a node (default is 1).</p></li>
 </ul>
 </dd>
@@ -202,6 +202,16 @@ minimum cost in the last completed matrix diagonal as the upper bound.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.costs">
+<span class="sig-name descname"><span class="pre">costs</span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.costs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.edit_matrix">
+<span class="sig-name descname"><span class="pre">edit_matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.edit_matrix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.edits">
 <span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.edits" title="Link to this definition"></a></dt>
@@ -211,6 +221,11 @@ minimum cost in the last completed matrix diagonal as the upper bound.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.from_node">
 <span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.from_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.from_seq">
+<span class="sig-name descname"><span class="pre">from_seq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.from_seq" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -251,6 +266,16 @@ the sub-edits:</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.path_costs">
+<span class="sig-name descname"><span class="pre">path_costs</span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.path_costs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.penalty">
+<span class="sig-name descname"><span class="pre">penalty</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.penalty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.print">
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><span class="pre">GraphtageFormatter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.print" title="Link to this definition"></a></dt>
@@ -260,6 +285,11 @@ the sub-edits:</p>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.reversed_shared_suffix">
+<span class="sig-name descname"><span class="pre">reversed_shared_suffix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.reversed_shared_suffix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.sequence">
@@ -271,12 +301,27 @@ the sub-edits:</p>
 </div>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.shared_prefix">
+<span class="sig-name descname"><span class="pre">shared_prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.shared_prefix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.tighten_bounds">
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.tighten_bounds" title="Link to this definition"></a></dt>
 <dd><p>Tightens the bounds of this edit, if possible.</p>
 <p>If the Levenshtein matrix is not yet complete, construct and fully tighten the next diagonal of the matrix.</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.to_node">
+<span class="sig-name descname"><span class="pre">to_node</span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance.to_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.to_seq">
+<span class="sig-name descname"><span class="pre">to_seq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.levenshtein.EditDistance.to_seq" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance.valid">
