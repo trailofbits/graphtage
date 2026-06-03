@@ -210,6 +210,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.dataclasses.DataClassEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.dataclasses.DataClassEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.dataclasses.DataClassEdit.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.dataclasses.DataClassEdit.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code> will change the nature of the edit.</p>

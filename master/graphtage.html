@@ -251,6 +251,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractCompoundEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.AbstractCompoundEdit.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.AbstractCompoundEdit.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -410,6 +416,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.AbstractEdit.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.AbstractEdit.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.AbstractEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.AbstractEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.AbstractEdit.is_complete">
@@ -988,6 +1000,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.ConstantCostEdit.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.ConstantCostEdit.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.ConstantCostEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.ConstantCostEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.ConstantCostEdit.is_complete">
@@ -1935,6 +1953,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.EditCollection.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditCollection.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.EditCollection.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.EditCollection.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -2119,6 +2143,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.EditSequence.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.EditSequence.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.EditSequence.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.EditSequence.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.EditSequence.is_complete">
@@ -2850,6 +2880,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.FixedKeyDictNodeEdit.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.FixedKeyDictNodeEdit.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -3388,6 +3424,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Insert.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Insert.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Insert.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Insert.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -3826,6 +3868,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.KeyValuePairEdit.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.KeyValuePairEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.KeyValuePairEdit.is_complete">
@@ -5282,6 +5330,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Match.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Match.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Match.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Match.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -6005,6 +6059,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.PossibleEdits.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.PossibleEdits.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.PossibleEdits.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.PossibleEdits.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -6170,6 +6230,12 @@ definitive.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Remove.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Remove.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Remove.is_complete">
 <span class="sig-name descname"><span class="pre">is_complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.Remove.is_complete" title="Link to this definition"></a></dt>
 <dd><p>An edit is complete when no further calls to <a class="reference internal" href="#graphtage.Edit.tighten_bounds" title="graphtage.Edit.tighten_bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.tighten_bounds()</span></code></a> will change the nature of the edit.</p>
@@ -6309,6 +6375,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.Replace.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.Replace.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.Replace.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Replace.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Replace.is_complete">
@@ -6456,6 +6528,12 @@ definitive.</p>
 <dt class="sig sig-object py" id="graphtage.StringEdit.initial_bounds">
 <span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.StringEdit.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.StringEdit.invalidate_bounds_cache">
+<span class="sig-name descname"><span class="pre">invalidate_bounds_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit.invalidate_bounds_cache" title="Link to this definition"></a></dt>
+<dd><p>Invalidate the cached bounds. Call this when bounds may have changed.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.StringEdit.is_complete">
