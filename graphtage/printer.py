@@ -450,7 +450,8 @@ class Printer(StatusWriter, RawWriter):
             out_stream: Optional[Writer] = None,
             ansi_color: Optional[bool] = None,
             quiet: bool = False,
-            options: Optional[Dict[str, Any]] = None
+            options: Optional[Dict[str, Any]] = None,
+            enable_unicode: bool = True
     ):
         """Initializes a Printer.
 
@@ -461,6 +462,8 @@ class Printer(StatusWriter, RawWriter):
             quiet: If :const:`True`, progress and status messages will be suppressed.
             options: An optional dict, the keys of which will be set as attributes of this class. This is used to
                 provide additional formatting options to functions that use this printer.
+            enable_unicode: Whether or not Unicode combining marks should be used in the output. If :const:`False`,
+                only ANSI colors will be used to highlight differences.
 
         """
         if out_stream is None:
@@ -472,6 +475,7 @@ class Printer(StatusWriter, RawWriter):
         self._context_type: Type[ANSIContext] = ANSIContext
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
         """The stream wrapped by this printer."""
+        self.out_stream.enabled = enable_unicode
         self.indents: int = 0
         """The number of indent steps."""
         self.indent_str: str = ' ' * 4
