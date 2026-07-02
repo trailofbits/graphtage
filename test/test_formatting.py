@@ -1,4 +1,5 @@
 import csv
+import configparser
 import json
 import plistlib
 import random
@@ -232,6 +233,25 @@ class TestFormatting(TestCase):
             return orig_obj, toml.dumps(orig_obj)
         except (TypeError, ValueError, IndexError) as e:
             self.fail(f"""Invalid random TOML object {orig_obj!r}: {e}""")
+
+    @filetype_test(iterations=200)
+    def test_ini_formatting(self):
+        config = configparser.ConfigParser(interpolation=None)
+        config.optionxform = str
+        excluded = frozenset('\t \\\'"\r:[]{}&\n()`|+%<>#*^$@!~_+-=.,;?/')
+        orig_obj = {
+            TestFormatting.make_random_str(exclude_bytes=excluded, allow_empty_strings=False): {
+                TestFormatting.make_random_str(exclude_bytes=excluded, allow_empty_strings=False):
+                    TestFormatting.make_random_str(exclude_bytes=frozenset('\n\r'), allow_empty_strings=True)
+                for _ in range(random.randint(1, 5))
+            }
+            for _ in range(random.randint(1, 5))
+        }
+        for section, options in orig_obj.items():
+            config[section] = options
+        s = StringIO()
+        config.write(s)
+        return orig_obj, s.getvalue()
 
     @staticmethod
     def make_random_xml() -> xml.XMLElementObj:
