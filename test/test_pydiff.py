@@ -1,8 +1,9 @@
+import ast
 import dataclasses
 from unittest import TestCase
 
 import graphtage
-from graphtage.pydiff import build_tree, print_diff, PyDiffFormatter
+from graphtage.pydiff import ast_to_tree, build_tree, print_diff, PyDiffFormatter
 
 from .timing import run_with_time_limit
 
@@ -11,6 +12,15 @@ class TestPyDiff(TestCase):
     def test_build_tree(self):
         self.assertIsInstance(build_tree([1, 2, 3, 4]), graphtage.ListNode)
         self.assertIsInstance(build_tree({1: 2, 'a': 'b'}), graphtage.DictNode)
+
+    def test_python_list_literals_stay_ordered(self):
+        """Elements of a Python list literal are positional, so `ignore_list_order` must not apply to them."""
+        options = graphtage.BuildOptions(ignore_list_order=True)
+        tree = ast_to_tree(ast.parse("x = [1, 2, 3]"), options)
+        lists = [n for n in tree.dfs() if isinstance(n, graphtage.ListNode)]
+        self.assertTrue(lists)
+        for node in tree.dfs():
+            self.assertNotIsInstance(node, graphtage.UnorderedListNode)
 
     def test_diff(self):
         t1 = [1, 2, {3: "three"}, 4]

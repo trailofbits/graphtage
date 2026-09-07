@@ -11,7 +11,8 @@ import os
 from typing import Optional, Union
 
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode
+    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode, \
+    UnorderedListNode
 from .printer import DEFAULT_PRINTER, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -52,9 +53,14 @@ def build_tree(
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
+        children = [
+            build_tree(n, options=options) for n in
+            DEFAULT_PRINTER.tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)
+        ]
+        if options.ignore_list_order:
+            return UnorderedListNode(children, auto_match_keys=options.auto_match_keys)
         return ListNode(
-            [build_tree(n, options=options) for n in
-             DEFAULT_PRINTER.tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)],
+            children,
             allow_list_edits=options.allow_list_edits,
             allow_list_edits_when_same_length=options.allow_list_edits_when_same_length
         )
@@ -103,6 +109,8 @@ class JSONListFormatter(SequenceFormatter):
 
         """
         super().print_SequenceNode(*args, **kwargs)
+
+    print_UnorderedListNode = print_ListNode
 
     def print_SequenceNode(self, *args, **kwargs):
         """Prints a non-List sequence.

@@ -1,7 +1,7 @@
 from typing import List
 from unittest import TestCase
 
-from graphtage import IntegerNode, ListNode, TreeNode
+from graphtage import BuildOptions, IntegerNode, ListNode, TreeNode, UnorderedListNode
 from graphtage.builder import BasicBuilder, Builder
 
 
@@ -10,6 +10,13 @@ class TestBuilder(TestCase):
         result = BasicBuilder().build_tree([1, "a", (2, "b"), {1, 2}, {"a": "b"}, None])
         self.assertIsInstance(result, ListNode)
         self.assertEqual(6, len(result.children()))
+
+    def test_ignore_list_order(self):
+        options = BuildOptions(ignore_list_order=True)
+        result = BasicBuilder(options).build_tree([1, 2, 3])
+        self.assertIsInstance(result, UnorderedListNode)
+        self.assertEqual(3, len(result.children()))
+        self.assertEqual([1, 2, 3], result.to_obj())
 
     def test_custom_builder(self):
         test = self
