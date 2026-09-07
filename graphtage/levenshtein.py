@@ -52,7 +52,6 @@ def levenshtein_distance(s: str, t: str) -> int:
     for i in range(1, cols):
         dist[0][i] = i
 
-    col = row = 0
     for col in range(1, cols):
         for row in range(1, rows):
             if s[row - 1] == t[col - 1]:
@@ -63,7 +62,7 @@ def levenshtein_distance(s: str, t: str) -> int:
                                  dist[row][col - 1] + 1,
                                  dist[row - 1][col - 1] + cost)
 
-    return dist[row][col]
+    return dist[rows - 1][cols - 1]
 
 
 class EditDistance(SequenceEdit):
@@ -356,6 +355,9 @@ class EditDistance(SequenceEdit):
             Range: The bounds on the cost of this edit.
 
         """
+        if not self.from_seq and not self.to_seq:
+            # The shared prefix and suffix consumed both sequences, so every edit is a zero-cost match
+            return Range(0, 0)
         base_bounds: Range = super().bounds()
         if self.is_complete():
             if self.__edits is None:
