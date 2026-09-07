@@ -84,6 +84,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#printer-functions">printer functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#enable-ansi-support">enable_ansi_support</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#only-ansi">only_ansi</a></li>
 </ul>
 </li>
@@ -1144,6 +1145,26 @@ provide additional formatting options to functions that use this printer.</p></l
 </section>
 <section id="printer-functions">
 <h2>printer functions<a class="headerlink" href="#printer-functions" title="Link to this heading"></a></h2>
+<section id="enable-ansi-support">
+<h3>enable_ansi_support<a class="headerlink" href="#enable-ansi-support" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.printer.enable_ansi_support">
+<span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">enable_ansi_support</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.enable_ansi_support" title="Link to this definition"></a></dt>
+<dd><p>Prepares <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stderr</span></code> to receive ANSI escape sequences.</p>
+<p>On a legacy Windows console, <code class="xref py py-mod docutils literal notranslate"><span class="pre">colorama</span></code> replaces both streams with wrappers that translate the escape
+sequences into Win32 console calls. A <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> captures its output stream when it is constructed, so call
+this function first; a printer constructed beforehand writes past the wrapper and its color is lost.</p>
+<p>This function mutates global state, so call it from an application entry point rather than from library code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>force_color</strong> – If <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>, keep the escape sequences even when the output stream is not a terminal.
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">colorama</span></code> strips them in that case by default, which would discard color that the user explicitly
+requested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="only-ansi">
 <h3>only_ansi<a class="headerlink" href="#only-ansi" title="Link to this heading"></a></h3>
 <dl class="py function">

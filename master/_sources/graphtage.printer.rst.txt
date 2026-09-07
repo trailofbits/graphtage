@@ -99,6 +99,11 @@ Writer
 printer functions
 -----------------
 
+enable_ansi_support
+*******************
+
+.. autofunction:: enable_ansi_support
+
 only_ansi
 *********
 
