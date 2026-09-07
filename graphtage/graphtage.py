@@ -403,6 +403,33 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
         return f"{self.__class__.__name__}({list(self)!r})"
 
 
+class UnorderedListNode(MultiSetNode[T], Generic[T]):
+    """A list whose elements are matched as an unordered collection.
+
+    This is the node type that :attr:`BuildOptions.ignore_list_order` builds in place of :class:`ListNode`. It keeps
+    the rendering of a list in every output format while inheriting the matching semantics of :class:`MultiSetNode`,
+    so reordering a list costs nothing. Duplicate elements still count: ``[1, 1, 2]`` matches ``[2, 1, 1]`` for free,
+    but not ``[1, 2, 2]``.
+
+    """
+
+    def to_obj(self):
+        return [n.to_obj() for n in self]
+
+    def edits(self, node: TreeNode) -> Edit:
+        if isinstance(node, MappingNode):
+            return Replace(self, node)
+        elif isinstance(node, MultiSetNode):
+            return super().edits(node)
+        elif isinstance(node, ListNode):
+            other = HashableCounter(node._children)
+            if self._children == other:
+                return Match(self, node, 0)
+            return MultiSetEdit(self, node, self._children, other, auto_match_keys=self.auto_match_keys)
+        else:
+            return Replace(self, node)
+
+
 class MappingNode(ContainerNode, ABC):
     """An abstract base class for nodes that represent mappings."""
 
@@ -524,7 +551,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
         )
 
     def edits(self, node: TreeNode) -> Edit:
-        if isinstance(node, MultiSetNode):
+        if isinstance(node, MultiSetNode) and not isinstance(node, UnorderedListNode):
             return super().edits(node)
         else:
             return Replace(self, node)
