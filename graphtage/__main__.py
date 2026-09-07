@@ -17,6 +17,15 @@ from .utils import Tempfile
 
 log = logging.getLogger('graphtage')
 
+EXIT_SUCCESS = 0
+"""The exit status used when the two inputs are semantically identical."""
+
+EXIT_DIFFERENCES_FOUND = 1
+"""The exit status used when the two inputs differ."""
+
+EXIT_ERROR = 2
+"""The exit status used when Graphtage could not compute a diff."""
+
 
 class PathOrStdin:
     def __init__(self, path):
@@ -35,6 +44,32 @@ class PathOrStdin:
     def __exit__(self, *args, **kwargs):
         if self._tempfile is not None:
             return self._tempfile.__exit__(*args, **kwargs)
+
+
+def register_mimetypes():
+    """Registers the MIME types of the file formats that Graphtage supports.
+
+    :func:`mimetypes.guess_type` does not know about several of the formats that Graphtage parses, and the types it
+    does know about vary between platforms. This adds the missing types without overriding any that the platform
+    already provides.
+    """
+    mimetypes.init()
+    if '.yml' not in mimetypes.types_map and '.yaml' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-yaml', '.yml')
+        mimetypes.suffix_map['.yaml'] = '.yml'
+    elif '.yml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yml'] = '.yaml'
+    elif '.yaml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yaml'] = '.yml'
+    if '.json5' not in mimetypes.types_map:
+        mimetypes.add_type('application/json5', '.json5')
+    if '.toml' not in mimetypes.types_map:
+        mimetypes.add_type('application/toml', '.toml')
+    if '.plist' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-plist', '.plist')
+    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-python-pickle', '.pkl')
+        mimetypes.suffix_map['.pickle'] = '.pkl'
 
 
 def main(argv=None) -> int:
@@ -172,7 +207,7 @@ def main(argv=None) -> int:
         numeric_log_level = getattr(logging, args.log_level.upper(), None)
         if not isinstance(numeric_log_level, int):
             sys.stderr.write(f'Invalid log level: {args.log_level}')
-            exit(1)
+            exit(EXIT_ERROR)
 
     if args.dumpversion:
         print(' '.join(map(str, version.__version__)))
@@ -215,23 +250,7 @@ def main(argv=None) -> int:
         quiet=args.no_status or args.quiet,
     ))
 
-    mimetypes.init()
-    if '.yml' not in mimetypes.types_map and '.yaml' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-yaml', '.yml')
-        mimetypes.suffix_map['.yaml'] = '.yml'
-    elif '.yml' not in mimetypes.types_map:
-        mimetypes.suffix_map['.yml'] = '.yaml'
-    elif '.yaml' not in mimetypes.types_map:
-        mimetypes.suffix_map['.yaml'] = '.yml'
-    if '.json5' not in mimetypes.types_map:
-        mimetypes.add_type('application/json5', '.json5')
-    if '.toml' not in mimetypes.types_map:
-        mimetypes.add_type('application/toml', '.toml')
-    if '.plist' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-plist', '.plist')
-    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-python-pickle', '.pkl')
-        mimetypes.suffix_map['.pickle'] = '.pkl'
+    register_mimetypes()
 
     if args.from_mime is not None:
         from_mime = args.from_mime
@@ -243,8 +262,8 @@ def main(argv=None) -> int:
         else:
             from_mime = None
 
-    if args.from_mime is not None:
-        to_mime = args.from_mime
+    if args.to_mime is not None:
+        to_mime = args.to_mime
     else:
         for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             to_mime = getattr(args, f'to_{typename}')
@@ -292,7 +311,7 @@ def main(argv=None) -> int:
                         to_format = graphtage.get_filetype(to_path, to_mime)
                     except ValueError as e:
                         sys.stderr.write(f"Error: {e!s}\n\n")
-                        return 1
+                        return EXIT_ERROR
                     with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
                         from_tree = from_format.build_tree_handling_errors(from_path, options)
                         t.desc = f"Loading {to_path!s}"
@@ -300,13 +319,13 @@ def main(argv=None) -> int:
                         if isinstance(from_tree, str):
                             sys.stderr.write(from_tree)
                             sys.stderr.write('\n\n')
-                            return 1
+                            return EXIT_ERROR
                         to_tree = to_format.build_tree_handling_errors(to_path, options)
                         t.update(1)
                         if isinstance(to_tree, str):
                             sys.stderr.write(to_tree)
                             sys.stderr.write('\n\n')
-                            return 1
+                            return EXIT_ERROR
                     if match_if is not None or match_unless is not None:
                         for node in from_tree.dfs():
                             if match_if is not None:
@@ -349,9 +368,9 @@ def main(argv=None) -> int:
     finally:
         printer.close()
     if had_edits:
-        return 1
+        return EXIT_DIFFERENCES_FOUND
     else:
-        return 0
+        return EXIT_SUCCESS
 
 
 if __name__ == '__main__':
