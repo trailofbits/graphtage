@@ -442,6 +442,24 @@ class NullANSIContext:
 ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
+def enable_ansi_support(force_color: bool = False):
+    """Prepares :attr:`sys.stdout` and :attr:`sys.stderr` to receive ANSI escape sequences.
+
+    On a legacy Windows console, :mod:`colorama` replaces both streams with wrappers that translate the escape
+    sequences into Win32 console calls. A :class:`Printer` captures its output stream when it is constructed, so call
+    this function first; a printer constructed beforehand writes past the wrapper and its color is lost.
+
+    This function mutates global state, so call it from an application entry point rather than from library code.
+
+    Args:
+        force_color: If :const:`True`, keep the escape sequences even when the output stream is not a terminal.
+            :mod:`colorama` strips them in that case by default, which would discard color that the user explicitly
+            requested.
+
+    """
+    colorama.init(strip=False if force_color else None)
+
+
 class Printer(StatusWriter, RawWriter):
     """An ANSI color and status printer."""
 
@@ -478,8 +496,6 @@ class Printer(StatusWriter, RawWriter):
         """The string used for each indent step (default is four spaces)."""
         self._ansi_color = None
         self.ansi_color = ansi_color
-        if self.ansi_color:
-            colorama.init()
         self._strikethrough = False
         self._plusthrough = False
         if options is not None:
@@ -659,7 +675,7 @@ class NullWriter(Writer):
         return 0
 
     def isatty(self) -> bool:
-        return True
+        return False
 
     def flush(self):
         pass
