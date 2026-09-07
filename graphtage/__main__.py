@@ -37,6 +37,32 @@ class PathOrStdin:
             return self._tempfile.__exit__(*args, **kwargs)
 
 
+def register_mimetypes():
+    """Registers the MIME types of the file formats that Graphtage supports.
+
+    :func:`mimetypes.guess_type` does not know about several of the formats that Graphtage parses, and the types it
+    does know about vary between platforms. This adds the missing types without overriding any that the platform
+    already provides.
+    """
+    mimetypes.init()
+    if '.yml' not in mimetypes.types_map and '.yaml' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-yaml', '.yml')
+        mimetypes.suffix_map['.yaml'] = '.yml'
+    elif '.yml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yml'] = '.yaml'
+    elif '.yaml' not in mimetypes.types_map:
+        mimetypes.suffix_map['.yaml'] = '.yml'
+    if '.json5' not in mimetypes.types_map:
+        mimetypes.add_type('application/json5', '.json5')
+    if '.toml' not in mimetypes.types_map:
+        mimetypes.add_type('application/toml', '.toml')
+    if '.plist' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-plist', '.plist')
+    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
+        mimetypes.add_type('application/x-python-pickle', '.pkl')
+        mimetypes.suffix_map['.pickle'] = '.pkl'
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
@@ -215,23 +241,7 @@ def main(argv=None) -> int:
         quiet=args.no_status or args.quiet,
     ))
 
-    mimetypes.init()
-    if '.yml' not in mimetypes.types_map and '.yaml' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-yaml', '.yml')
-        mimetypes.suffix_map['.yaml'] = '.yml'
-    elif '.yml' not in mimetypes.types_map:
-        mimetypes.suffix_map['.yml'] = '.yaml'
-    elif '.yaml' not in mimetypes.types_map:
-        mimetypes.suffix_map['.yaml'] = '.yml'
-    if '.json5' not in mimetypes.types_map:
-        mimetypes.add_type('application/json5', '.json5')
-    if '.toml' not in mimetypes.types_map:
-        mimetypes.add_type('application/toml', '.toml')
-    if '.plist' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-plist', '.plist')
-    if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
-        mimetypes.add_type('application/x-python-pickle', '.pkl')
-        mimetypes.suffix_map['.pickle'] = '.pkl'
+    register_mimetypes()
 
     if args.from_mime is not None:
         from_mime = args.from_mime
