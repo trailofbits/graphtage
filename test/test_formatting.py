@@ -60,7 +60,7 @@ RUN_SEED: int = _resolve_run_seed()
 """The seed for this run. Every random document is derived from it, so setting it replays the whole run."""
 
 
-def _resolve_filetype(name: str) -> Tuple[str, graphtage.Filetype]:
+def _resolve_filetype(name: str) -> graphtage.Filetype:
     """Returns the filetype that a test function named ``test_<filetype>_formatting`` exercises."""
     if not name.startswith(FILETYPE_TEST_PREFIX):
         raise ValueError(f'@filetype_test {name} must start with "{FILETYPE_TEST_PREFIX}"')
@@ -71,12 +71,12 @@ def _resolve_filetype(name: str) -> Tuple[str, graphtage.Filetype]:
         raise ValueError(
             f'Filetype "{filetype_name}" for @filetype_test {name} not found in graphtage.FILETYPES_BY_TYPENAME'
         )
-    return filetype_name, graphtage.FILETYPES_BY_TYPENAME[filetype_name]
+    return graphtage.FILETYPES_BY_TYPENAME[filetype_name]
 
 
-def _round_trip(self: 'TestFormatting', filetype, formatter, test_func, *, test_equality: bool):
+def _round_trip(test_case: 'TestFormatting', filetype, formatter, test_func, *, test_equality: bool):
     """Builds one random document, formats it, reparses the result, and checks that nothing was lost."""
-    orig_obj, representation = test_func(self)
+    orig_obj, representation = test_func(test_case)
     if isinstance(representation, str):
         representation = representation.encode("utf-8")
     with graphtage.utils.Tempfile(representation) as t:
@@ -89,14 +89,14 @@ def _round_trip(self: 'TestFormatting', filetype, formatter, test_func, *, test_
         try:
             new_obj = filetype.build_tree(t)
         except Exception as e:
-            self.fail(f"""{filetype.name.upper()} decode error {e}: Original object:
+            test_case.fail(f"""{filetype.name.upper()} decode error {e}: Original object:
 {orig_obj!r}
 Expected format:
 {representation.decode("utf-8")}
 Actual format:
 {formatted_str!s}""")
     if test_equality:
-        self.assertEqual(tree, new_obj)
+        test_case.assertEqual(tree, new_obj)
 
 
 def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int = 1000):
@@ -105,12 +105,12 @@ def filetype_test(test_func=None, *, test_equality: bool = True, iterations: int
 
     @wraps(test_func)
     def wrapper(self: 'TestFormatting'):
-        filetype_name, filetype = _resolve_filetype(test_func.__name__)
+        filetype = _resolve_filetype(test_func.__name__)
         formatter = filetype.get_default_formatter()
         print(f'{test_func.__name__}: {SEED_ENVIRONMENT_VARIABLE}={RUN_SEED}')
 
         for iteration in trange(iterations):
-            random.seed(f'{RUN_SEED}:{filetype_name}:{iteration}')
+            random.seed(f'{RUN_SEED}:{filetype.name}:{iteration}')
             try:
                 with run_with_time_limit(ITERATION_TIME_LIMIT_SECONDS):
                     _round_trip(self, filetype, formatter, test_func, test_equality=test_equality)
