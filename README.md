@@ -131,6 +131,95 @@ By default, Graphtage prints status messages and a progress bar to STDERR. To su
 option. To additionally suppress all but critical log messages, use `--quiet`. Fine-grained control of log messages is
 via the `--log-level` option.
 
+### Git Integration
+Graphtage installs a `graphtage-git-diff` command that implements git's external diff interface, so `git diff` can
+render changes to structured files semantically.
+
+Git passes a diff driver seven arguments: the path of the file in the repository, followed by the two revisions to
+compare along with their hashes and modes. At least one of those revisions is a temporary copy whose name does not
+necessarily carry the original file extension, and Graphtage detects file types from extensions, so
+`graphtage-git-diff` takes the file type from the repository path rather than from the files it compares.
+
+To set the driver up, define it in your git configuration:
+```console
+$ git config --global diff.graphtage.command graphtage-git-diff
+```
+Then assign it in `.gitattributes` to the file types you want Graphtage to handle:
+```console
+$ cat .gitattributes
+```
+```gitattributes
+*.json diff=graphtage
+*.yaml diff=graphtage
+```
+`git diff` now formats changes to those files with Graphtage:
+```console
+$ git diff
+```
+```json
+original.json
+{
+    "foo": [
+        ~~1~~,
+        2,
+        3,
+        4,
+        ++5++
+    ],
+    "++z++~~b~~a++b++~~r~~": "testing",
+    ++"woo": [
+        "foobar"
+    ]++
+}
+```
+```console
+$ git diff -- deploy.yaml
+```
+```yaml
+deploy.yaml
+name: graphtage
+ports: 
+- 8080
+- ++8443++
+replicas: 2 -> 5
+```
+
+Assign the driver only to extensions that Graphtage supports. Git stops a diff at the first file its driver fails on,
+so a driver assigned to every file fails as soon as it reaches one whose type Graphtage does not recognize.
+
+To try the driver without changing any configuration, set `GIT_EXTERNAL_DIFF` for a single command:
+```console
+$ GIT_EXTERNAL_DIFF=graphtage-git-diff git diff
+```
+
+`git log` and `git show` do not run external diff drivers unless you pass `--ext-diff`:
+```console
+$ git log --patch --ext-diff
+```
+
+To pass Graphtage options through the driver, add them to the command. Spell the value of each option with an equals
+sign, because git appends its own arguments and a value passed as a separate argument is indistinguishable from the
+first of them:
+```console
+$ git config --global diff.graphtage.command 'graphtage-git-diff --color --format=yaml'
+```
+Use `--color` or `-c` when git sends the diff to a pager. Graphtage suppresses the Unicode marks that distinguish
+the two sides of a change when its output is not a terminal, and a pager reads from a pipe. The marks survive the
+pipe, but the ANSI colors do not.
+
+Git stops the whole diff when a driver exits with a non-zero status, so `graphtage-git-diff` exits with a status of
+zero whether or not it finds differences. It reserves a non-zero status for failures that leave it with nothing to
+print, such as an unsupported file type or a file that does not parse. Graphtage compares two revisions, so the
+driver reports a file that a commit adds or deletes instead of diffing it.
+
+You can also run Graphtage from `git difftool`, which supplies the path of the file in `$MERGED` and the two
+revisions in `$LOCAL` and `$REMOTE`. `graphtage-git-diff` ignores the hash and mode arguments, so a `.` stands in for
+each of them:
+```console
+$ git config --global difftool.graphtage.cmd 'graphtage-git-diff "$MERGED" "$LOCAL" . . "$REMOTE" . .'
+$ git difftool --no-prompt --tool=graphtage
+```
+
 ## Why does Graphtage exist?
 
 Diffing tree-like structures with unordered elements is tough. Say you want to compare two JSON files.
