@@ -243,8 +243,8 @@ def main(argv=None) -> int:
         else:
             from_mime = None
 
-    if args.from_mime is not None:
-        to_mime = args.from_mime
+    if args.to_mime is not None:
+        to_mime = args.to_mime
     else:
         for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
             to_mime = getattr(args, f'to_{typename}')
