@@ -1,7 +1,11 @@
 import sys
+from collections import Counter
 from unittest import TestCase
 
-from graphtage.utils import largest, smallest, SparseMatrix
+from graphtage.json import build_tree
+from graphtage.utils import HashableCounter, largest, smallest, SparseMatrix
+
+from .timing import run_with_time_limit
 
 
 class TestSparseMatrix(TestCase):
@@ -49,3 +53,30 @@ class TestSparseMatrix(TestCase):
             self.assertLess(1000 - 11, i)
         for i in largest(*list(range(1000)), n=10):
             self.assertLess(1000 - 11, i)
+
+
+class TestHashableCounter(TestCase):
+    def test_equality_matches_counter(self):
+        self.assertEqual(HashableCounter('aab'), Counter('aab'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('ab'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('aabc'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('abb'))
+        self.assertNotEqual(HashableCounter('aab'), 'aab')
+        self.assertEqual(HashableCounter(), Counter())
+        # collections.Counter treats a missing count and a zero count as the same:
+        self.assertEqual(HashableCounter({'a': 1, 'b': 0}), Counter({'a': 1}))
+        self.assertEqual(HashableCounter({'a': 1}), Counter({'a': 1, 'b': 0}))
+
+    def test_nested_equality_is_not_exponential(self):
+        """Comparing deeply nested dictionaries must not be exponential in the nesting depth.
+
+        :meth:`collections.Counter.__eq__` looks up every element in both counters, so each level of nesting
+        compares its children twice. Before :class:`graphtage.utils.HashableCounter` overrode it, comparing this
+        61-node document against itself doubled in cost for every level and took over half an hour.
+
+        """
+        obj = 'leaf'
+        for i in range(30):
+            obj = {f'key{i}': obj, f'other{i}': i}
+        with run_with_time_limit(seconds=5):
+            self.assertEqual(build_tree(obj), build_tree(obj))
