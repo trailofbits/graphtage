@@ -10,7 +10,7 @@ from typing_extensions import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
 from .formatter import Formatter, FORMATTERS
-from .printer import DEFAULT_PRINTER, Printer
+from .printer import get_default_printer, Printer
 
 log = logging.getLogger(__name__)
 
@@ -542,7 +542,7 @@ class TreeNode(metaclass=TreeNodeMeta):
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
-        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+        with get_default_printer().tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
             while edit.valid and not edit.is_complete() and edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
@@ -592,7 +592,7 @@ class TreeNode(metaclass=TreeNodeMeta):
         prev_bounds = edit.bounds()
         total_range = prev_bounds.upper_bound - prev_bounds.lower_bound
         prev_range = total_range
-        with DEFAULT_PRINTER.tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
+        with get_default_printer().tqdm(leave=False, initial=0, total=total_range, desc='Diffing') as t:
             while edit.valid and not edit.is_complete() and edit.tighten_bounds():
                 new_bounds = edit.bounds()
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
