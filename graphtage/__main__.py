@@ -141,6 +141,13 @@ def main(argv=None) -> int:
         action='store_true',
         help='do not consider removal and insertion when comparing lists that are the same length'
     )
+    list_edit_group.add_argument(
+        '--ignore-list-order',
+        action='store_true',
+        help='match the elements of a list as an unordered collection, so reordering a list is not an edit; '
+             'duplicate elements still count, and matching two lists that differ can be much slower than the '
+             'default'
+    )
     parser.add_argument(
         '--no-status',
         action='store_true',
@@ -279,7 +286,8 @@ def main(argv=None) -> int:
         allow_key_edits=allow_key_edits,
         auto_match_keys=auto_match_keys,
         allow_list_edits=not args.no_list_edits,
-        allow_list_edits_when_same_length=not args.no_list_edits_when_same_length
+        allow_list_edits_when_same_length=not args.no_list_edits_when_same_length,
+        ignore_list_order=args.ignore_list_order
     )
 
     try:

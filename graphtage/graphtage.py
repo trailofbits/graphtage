@@ -1045,9 +1045,10 @@ class BuildOptions:
         :class:`UnorderedListNode` instead of :class:`ListNode`. Duplicate elements still count, so ``[1, 1, 2]``
         matches ``[2, 1, 1]`` but not ``[1, 2, 2]``.
 
-        Two lists whose elements are all equal match immediately, however long they are. Matching two lists that
-        differ is a bipartite matching over their symmetric difference, which grows much faster than the ordered
-        comparison: 30 dictionaries of which none match takes about 22 seconds, against 0.12 seconds by default.
+        Two lists whose elements are all equal match immediately, however long they are: a shuffle of 2000 integers
+        takes about 0.01 seconds. Matching two lists that differ is a bipartite matching over their symmetric
+        difference, which grows much faster than the ordered comparison: 30 dictionaries of which none match took
+        about 30 seconds in one measurement, against 0.7 seconds by default.
 
         This applies to every format that builds its lists through :func:`graphtage.json.build_tree`, which is all
         of them except the rows of a CSV file and the children of an XML element.
