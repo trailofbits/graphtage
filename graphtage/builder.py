@@ -6,9 +6,10 @@ from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Type, T
 
 from . import (
     BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, LeafNode, ListNode, MultiSetNode,
-    NullNode, StringNode, TreeNode
+    NullNode, StringNode, TreeNode, UnorderedListNode
 )
 from .object_set import IdentityHash
+from .sequences import SequenceNode
 
 C = TypeVar("C")
 T = TypeVar("T")
@@ -234,7 +235,9 @@ class BasicBuilder(Builder):
 
     @Builder.builder(list)
     @Builder.builder(tuple)
-    def build_list(self, obj, children: List[TreeNode]) -> ListNode:
+    def build_list(self, obj, children: List[TreeNode]) -> SequenceNode:
+        if self.options.ignore_list_order:
+            return UnorderedListNode(children, auto_match_keys=self.options.auto_match_keys)
         return ListNode(
             children,
             allow_list_edits=self.options.allow_list_edits,
