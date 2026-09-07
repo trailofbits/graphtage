@@ -198,6 +198,36 @@ class TestFormatting(TestCase):
             if not hasattr(self, f'test_{name}_formatting'):
                 self.fail(f"Filetype {name} is missing a `test_{name}_formatting` test function")
 
+    @staticmethod
+    def render(formatter: graphtage.GraphtageFormatter, node: graphtage.TreeNode) -> str:
+        stream = StringIO()
+        printer = graphtage.printer.Printer(out_stream=stream, ansi_color=False)
+        formatter.print(printer, node)
+        return stream.getvalue()
+
+    def test_unordered_list_renders_like_a_list(self):
+        """An :class:`graphtage.UnorderedListNode` must print exactly as the equivalent list in every format.
+
+        It is a :class:`graphtage.MultiSetNode`, so without a `print_UnorderedListNode` on each format's list
+        formatter it resolves to that format's dictionary formatter instead.
+
+        """
+        def make(node_type):
+            return node_type([graphtage.IntegerNode(i) for i in (1, 2, 3)])
+
+        for name, filetype in graphtage.FILETYPES_BY_TYPENAME.items():
+            formatter = filetype.get_default_formatter()
+            self.assertEqual(
+                self.render(formatter, make(graphtage.ListNode)),
+                self.render(formatter, make(graphtage.UnorderedListNode)),
+                f"{name} renders an UnorderedListNode differently from a ListNode"
+            )
+
+    def test_unordered_list_yaml_round_trip(self):
+        formatter = graphtage.FILETYPES_BY_TYPENAME["yaml"].get_default_formatter()
+        rendered = self.render(formatter, graphtage.UnorderedListNode([graphtage.IntegerNode(i) for i in (1, 2, 3)]))
+        self.assertEqual([1, 2, 3], yaml.safe_load(rendered))
+
     @filetype_test
     def test_json_formatting(self):
         orig_obj = TestFormatting.make_random_obj(force_string_keys=True)
