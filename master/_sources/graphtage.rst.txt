@@ -330,6 +330,15 @@ TreeNodeMeta
    :inherited-members:
    :show-inheritance:
 
+UnorderedListNode
+*****************
+
+.. autoclass:: UnorderedListNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 graphtage functions
 -------------------
 

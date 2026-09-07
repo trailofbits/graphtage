@@ -88,6 +88,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#stringnode">StringNode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#treenode">TreeNode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#treenodemeta">TreeNodeMeta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unorderedlistnode">UnorderedListNode</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#graphtage-functions">graphtage functions</a><ul>
@@ -782,7 +783,7 @@ printed.</p>
 <h3>BuildOptions<a class="headerlink" href="#buildoptions" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.BuildOptions">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">BuildOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_key_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_for_cyces=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_cycles=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;graphtage.printer.Printer</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">BuildOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_key_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_list_order=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_for_cyces=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_cycles=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;graphtage.printer.Printer</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class for passing options to tree building functions in <a class="reference internal" href="#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filetype</span></code></a></p>
 <dl class="py method">
@@ -793,7 +794,7 @@ printed.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.BuildOptions.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_key_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_for_cyces=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_cycles=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;graphtage.printer.Printer</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_key_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_list_edits_when_same_length=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_list_order=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_for_cyces=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_cycles=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer=&lt;graphtage.printer.Printer</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.BuildOptions.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initializes the options. All keyword values will be set as attributes of this class.</p>
 <p>Options not specified will default to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd></dl>
@@ -7380,6 +7381,292 @@ Its constructor accepts a <a class="reference internal" href="#graphtage.TreeNod
 <span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subclass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.TreeNodeMeta.register" title="Link to this definition"></a></dt>
 <dd><p>Register a virtual subclass of an ABC.</p>
 <p>Returns the subclass, to allow usage as a class decorator.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="unorderedlistnode">
+<h3>UnorderedListNode<a class="headerlink" href="#unorderedlistnode" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">UnorderedListNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSetNode</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generic" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code>]</p>
+<p>A list whose elements are matched as an unordered collection.</p>
+<p>This is the node type that <code class="xref py py-attr docutils literal notranslate"><span class="pre">BuildOptions.ignore_list_order</span></code> builds in place of <a class="reference internal" href="#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListNode</span></code></a>. It keeps
+the rendering of a list in every output format while inheriting the matching semantics of <a class="reference internal" href="#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiSetNode</span></code></a>,
+so reordering a list costs nothing. Duplicate elements still count: <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">2]</span></code> matches <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">1,</span> <span class="pre">1]</span></code> for free,
+but not <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">2]</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_match_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes a sequence node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>children</strong> – A sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNodes</span></code>.
+This is assigned to the protected member <code class="xref py py-attr docutils literal notranslate"><span class="pre">SequenceNode._children</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.add_edit_modifier">
+<span class="sig-name descname"><span class="pre">add_edit_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.add_edit_modifier" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.all_children_are_leaves">
+<span class="sig-name descname"><span class="pre">all_children_are_leaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.all_children_are_leaves" title="Link to this definition"></a></dt>
+<dd><p>Tests whether all of the children of this container are leaves.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_leaf</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if all children are leaves.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.calculate_total_size">
+<span class="sig-name descname"><span class="pre">calculate_total_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.calculate_total_size" title="Link to this definition"></a></dt>
+<dd><p>Calculates the total size of this sequence.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">total_size</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.children">
+<span class="sig-name descname"><span class="pre">children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.children" title="Link to this definition"></a></dt>
+<dd><p>The children of this node.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.container_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">container_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.14)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.utils.html#graphtage.utils.HashableCounter" title="graphtage.utils.HashableCounter"><span class="pre">HashableCounter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.UnorderedListNode.container_type" title="Link to this definition"></a></dt>
+<dd><p>Returns the container type used to store <code class="xref py py-attr docutils literal notranslate"><span class="pre">SequenceNode._children</span></code>.</p>
+<p>This is used for performing a deep copy of this node in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">SequenceNode.editable_dict()</span></code> function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.copy" title="Link to this definition"></a></dt>
+<dd><p>Creates a deep copy of this node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.copy_from">
+<span class="sig-name descname"><span class="pre">copy_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.copy_from" title="Link to this definition"></a></dt>
+<dd><p>Constructs a new instance of this tree node from a list of its children</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.dfs">
+<span class="sig-name descname"><span class="pre">dfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.dfs" title="Link to this definition"></a></dt>
+<dd><p>Performs a depth-first traversal over all of this node’s descendants.</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">self</span></code> is always included and yielded first.</p>
+<p>This implementation is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+<span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="n">node</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">()))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.diff">
+<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.diff" title="Link to this definition"></a></dt>
+<dd><p>Performs a diff against the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node against which to perform the diff.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An edited version of this node with all edits being
+<a class="reference internal" href="#graphtage.Edit.is_complete" title="graphtage.Edit.is_complete"><code class="xref py py-meth docutils literal notranslate"><span class="pre">completed</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a>, T]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.editable_dict">
+<span class="sig-name descname"><span class="pre">editable_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.editable_dict" title="Link to this definition"></a></dt>
+<dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <a class="reference internal" href="#graphtage.TreeNode.editable_dict" title="graphtage.TreeNode.editable_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code></a> on all children.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+<span class="n">ret</span><span class="p">[</span><span class="s1">'_children'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+</div>
+<p>This is used by <code class="xref py py-meth docutils literal notranslate"><span class="pre">SequenceNode.make_edited()</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.edited">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edited</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.UnorderedListNode.edited" title="Link to this definition"></a></dt>
+<dd><p>Returns whether this node has been edited.</p>
+<p>The default implementation returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, whereas <a class="reference internal" href="#graphtage.EditedTreeNode.edited" title="graphtage.EditedTreeNode.edited"><code class="xref py py-meth docutils literal notranslate"><span class="pre">EditedTreeNode.edited()</span></code></a> returns <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.edits">
+<span class="sig-name descname"><span class="pre">edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.edits" title="Link to this definition"></a></dt>
+<dd><p>Calculates the best edit to transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The best possible edit.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">Edit</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.get_all_edit_contexts">
+<span class="sig-name descname"><span class="pre">get_all_edit_contexts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.get_all_edit_contexts" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator over all edit contexts that will transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
+node, as well as its edit. Note that this iterator will automatically
+<a class="reference internal" href="#graphtage.explode_edits" title="graphtage.explode_edits"><code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code></a> any <a class="reference internal" href="#graphtage.CompoundEdit" title="graphtage.CompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code></a> in the sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.get_all_edits">
+<span class="sig-name descname"><span class="pre">get_all_edits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.get_all_edits" title="Link to this definition"></a></dt>
+<dd><p>Returns an iterator over all edits that will transform this node into the provided node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator over edits. Note that this iterator will automatically
+<a class="reference internal" href="#graphtage.explode_edits" title="graphtage.explode_edits"><code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code></a> any <a class="reference internal" href="#graphtage.CompoundEdit" title="graphtage.CompoundEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code></a> in the sequence.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator[<a class="reference internal" href="#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.is_leaf">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_leaf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="headerlink" href="#graphtage.UnorderedListNode.is_leaf" title="Link to this definition"></a></dt>
+<dd><p>Container nodes are never leaves, even if they have no children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.make_edited">
+<span class="sig-name descname"><span class="pre">make_edited</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><span class="pre">EditedTreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">T</span></span></span><a class="headerlink" href="#graphtage.UnorderedListNode.make_edited" title="Link to this definition"></a></dt>
+<dd><p>Returns a new, copied instance of this node that is also an instance of <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a>.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">edited_type</span><span class="p">()(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A copied version of this node that is also an instance of <a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code></a>
+and thereby mutable.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[<a class="reference internal" href="#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode">EditedTreeNode</a>, T]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.parent">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#graphtage.UnorderedListNode.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent node of this node, or <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if it has no parent.</p>
+<p>The setter for this property should only be called by the parent node setting itself as the parent of its child.</p>
+<p><a class="reference internal" href="#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code></a> subclasses automatically set this property for all of their children. However, if
+you define a subclass of <a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">TreeNode</span></code></a> <em>does not</em> extend off of <a class="reference internal" href="#graphtage.ContainerNode" title="graphtage.ContainerNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContainerNode</span></code></a> and for which
+<code class="docutils literal notranslate"><span class="pre">len(self.children())</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>, then each child’s parent must be set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.print" title="Link to this definition"></a></dt>
+<dd><p>Prints a sequence node.</p>
+<p>By default, sequence nodes are printed like lists:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">'['</span><span class="p">,</span> <span class="s1">']'</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.print_parent_context">
+<span class="sig-name descname"><span class="pre">print_parent_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">for_child</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.print_parent_context" title="Link to this definition"></a></dt>
+<dd><p>Prints the context for the given child node.</p>
+<p>For example, if this node represents a list and the child is the element at index 3, then “[3]” might be
+printed.</p>
+<p>The child is expected to be one of this node’s children, but this is not validated.</p>
+<p>The default implementation prints nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.to_obj">
+<span class="sig-name descname"><span class="pre">to_obj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.UnorderedListNode.to_obj" title="Link to this definition"></a></dt>
+<dd><p>Returns a pure Python representation of this node.</p>
+<p>For example, a node representing a list, like <a class="reference internal" href="#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
+A node representing a mapping, like <a class="reference internal" href="#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
+Container nodes should recursively call <a class="reference internal" href="#graphtage.TreeNode.to_obj" title="graphtage.TreeNode.to_obj"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.to_obj()</span></code></a> on all of their children.</p>
+<p>This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
+options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.UnorderedListNode.total_size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#graphtage.UnorderedListNode.total_size" title="Link to this definition"></a></dt>
+<dd><p>The size of this node.</p>
+<p>This is an arbitrary, immutable value that is used to calculate the bounded costs of edits on this node.</p>
+<p>The first time this property is called, its value will be set and memoized by calling
+<a class="reference internal" href="#graphtage.TreeNode.calculate_total_size" title="graphtage.TreeNode.calculate_total_size"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.calculate_total_size()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An arbitrary integer representing the size of this node.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
