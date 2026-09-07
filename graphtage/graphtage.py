@@ -217,9 +217,7 @@ class KeyValuePairNode(ContainerNode):
         return self.key, self.value
 
     def edits(self, node: TreeNode) -> Edit:
-        if not isinstance(node, KeyValuePairNode):
-            raise RuntimeError("KeyValuePairNode.edits() should only ever be called with another KeyValuePair object!")
-        if self.allow_key_edits or self.key == node.key:
+        if isinstance(node, KeyValuePairNode) and (self.allow_key_edits or self.key == node.key):
             return KeyValuePairEdit(self, node)
         else:
             return Replace(self, node)
