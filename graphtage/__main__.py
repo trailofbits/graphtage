@@ -11,7 +11,7 @@ from . import graphtage
 from . import printer as printermodule
 from . import version
 from .constraints import MatchIf, MatchUnless
-from .printer import HTMLPrinter, Printer
+from .printer import HTMLPrinter, Printer, enable_ansi_support
 from .utils import Tempfile
 
 
@@ -224,6 +224,8 @@ def main(argv=None) -> int:
         ansi_color = True
     else:
         ansi_color = None
+
+    enable_ansi_support(force_color=bool(args.color))
 
     if args.html:
         from_file = os.path.basename(args.FROM_PATH)
