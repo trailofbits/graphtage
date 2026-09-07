@@ -50,6 +50,7 @@ dev = [
 
 [project.scripts]
 graphtage = "graphtage.__main__:main"
+graphtage-git-diff = "graphtage.git:main"
 
 [project.urls]
 Homepage = "https://github.com/trailofbits/graphtage"
