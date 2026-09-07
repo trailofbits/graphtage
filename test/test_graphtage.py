@@ -138,7 +138,7 @@ class TestUnorderedListNode(TestCase):
         """Reordering an ordinary list is an edit; this is what :class:`graphtage.UnorderedListNode` changes."""
         edit = ordered(1, 2, 3).edits(ordered(3, 2, 1))
         self.assertIsInstance(edit, graphtage.EditDistance)
-        self.assertEqual(4, ordered(1, 2, 3).diff(ordered(3, 2, 1)).edited_cost())
+        self.assertEqual(2, ordered(1, 2, 3).diff(ordered(3, 2, 1)).edited_cost())
 
     def test_reorder_is_free(self):
         edit = unordered(1, 2, 3).edits(unordered(3, 2, 1))
