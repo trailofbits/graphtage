@@ -20,7 +20,7 @@ from typing import Iterator, List, Optional, Sequence, Tuple
 
 import numpy as np
 
-from .bounds import make_distinct, Range
+from .bounds import Range
 from .edits import Insert, Match, Remove
 from .fibonacci import FibonacciHeap
 from .printer import DEFAULT_PRINTER
@@ -212,31 +212,69 @@ class EditDistance(SequenceEdit):
         """An edit distance edit is only complete once its Levenshtein edit matrix has been fully constructed."""
         return self.edit_matrix is None or self.edit_matrix[-1][-1] is not None
 
+    @staticmethod
+    def _exact_cost(edit: Edit) -> int:
+        """Tightens an edit until its bounds are definitive and returns its exact cost.
+
+        Args:
+            edit: The edit to price.
+
+        Returns:
+            int: The exact cost of the edit.
+
+        Raises:
+            ValueError: If the edit cannot be tightened to a definitive bound.
+
+        """
+        while not edit.bounds().definitive() and edit.tighten_bounds():
+            pass
+        bounds = edit.bounds()
+        if not bounds.definitive():
+            raise ValueError(f"Could not tighten {edit!r} to a definitive bound; got {bounds!r}")
+        return bounds.upper_bound
+
     def _best_match(self, row: int, col: int) -> Tuple[int, int, Edit]:
+        """Selects the predecessor cell that reaches this cell of the Levenshtein matrix most cheaply.
+
+        Each candidate is scored by the accumulated cost of its predecessor plus the cost of the edit that
+        transitions from that predecessor to this cell. The number of edits along the path is the secondary
+        key, which prefers a single substitution over an insertion paired with a removal of equal total cost.
+
+        Ties on both keys are broken by direction, in this fixed order: the diagonal (a substitution) wins over
+        both borders, and the border insertion wins over the border removal. Reconstruction walks the matrix
+        backwards, so preferring the insertion here places the removal earlier in the forward edit sequence,
+        matching the convention of listing deletions before additions. This order is part of the output
+        contract: changing it changes the edit sequence for inputs that have several optimal alignments.
+
+        Args:
+            row: The row of the cell, indexing :attr:`EditDistance.to_seq`.
+            col: The column of the cell, indexing :attr:`EditDistance.from_seq`.
+
+        Returns:
+            Tuple[int, int, Edit]: The row and column of the chosen predecessor, and the transition edit.
+
+        """
         if row == 0:
             assert col > 0
             return 0, col - 1, self.edit_matrix[0][col]
         elif col == 0:
             assert row > 0
             return row - 1, col, self.edit_matrix[row][0]
-        else:
-            dcost = (self.costs[row - 1][col - 1], self.path_costs[row - 1][col - 1])
-            lcost = (self.costs[row][col - 1], self.path_costs[row][col - 1])
-            ucost = (self.costs[row - 1][col], self.path_costs[row - 1][col])
-            diag_is_best = dcost <= lcost and dcost <= ucost
-            if diag_is_best:
-                make_distinct(self.edit_matrix[row][col], self.edit_matrix[row][0], self.edit_matrix[0][col])
-            if diag_is_best and \
-                    self.edit_matrix[row][col].bounds() < self.edit_matrix[row][0].bounds() and \
-                    self.edit_matrix[row][col].bounds() < self.edit_matrix[0][col].bounds():
-                brow, bcol, edit = row - 1, col - 1, self.edit_matrix[row][col]
-            elif ucost <= dcost:
-                brow, bcol, edit = row - 1, col, self.edit_matrix[row][0]
-            else:
-                brow, bcol, edit = row, col - 1, self.edit_matrix[0][col]
-            self.path_costs[row][col] = self.path_costs[brow][bcol] + 1
-            self.costs[row][col] = self.costs[brow][bcol] + edit.bounds().upper_bound
-            return brow, bcol, edit
+        best_key: Optional[Tuple[int, int]] = None
+        best: Optional[Tuple[int, int, Edit]] = None
+        for prev_row, prev_col, edit in (
+                (row - 1, col - 1, self.edit_matrix[row][col]),
+                (row - 1, col, self.edit_matrix[row][0]),
+                (row, col - 1, self.edit_matrix[0][col]),
+        ):
+            key = (
+                int(self.costs[prev_row][prev_col]) + self._exact_cost(edit),
+                int(self.path_costs[prev_row][prev_col]) + 1,
+            )
+            if best_key is None or key < best_key:
+                best_key, best = key, (prev_row, prev_col, edit)
+        self.costs[row][col], self.path_costs[row][col] = best_key
+        return best
 
     def tighten_bounds(self) -> bool:
         """Tightens the bounds of this edit, if possible.
