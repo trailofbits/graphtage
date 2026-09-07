@@ -263,7 +263,11 @@ class TestFormatting(TestCase):
         """A pathological document must fail with the seed that produced it, not stall the job."""
         @filetype_test(iterations=1)
         def test_json_formatting(_):
-            time.sleep(2)
+            # Busy-wait rather than sleep, so that this exercises the same interruption path as a pathological
+            # document. The deadline only keeps the test from hanging if the budget fails to interrupt it.
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                pass
 
         with patch(f'{__name__}.ITERATION_TIME_LIMIT_SECONDS', 1), self.assertRaises(AssertionError) as failure:
             test_json_formatting(self)
