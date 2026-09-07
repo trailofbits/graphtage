@@ -17,6 +17,15 @@ from .utils import Tempfile
 
 log = logging.getLogger('graphtage')
 
+EXIT_SUCCESS = 0
+"""The exit status used when the two inputs are semantically identical."""
+
+EXIT_DIFFERENCES_FOUND = 1
+"""The exit status used when the two inputs differ."""
+
+EXIT_ERROR = 2
+"""The exit status used when Graphtage could not compute a diff."""
+
 
 class PathOrStdin:
     def __init__(self, path):
@@ -198,7 +207,7 @@ def main(argv=None) -> int:
         numeric_log_level = getattr(logging, args.log_level.upper(), None)
         if not isinstance(numeric_log_level, int):
             sys.stderr.write(f'Invalid log level: {args.log_level}')
-            exit(1)
+            exit(EXIT_ERROR)
 
     if args.dumpversion:
         print(' '.join(map(str, version.__version__)))
@@ -302,7 +311,7 @@ def main(argv=None) -> int:
                         to_format = graphtage.get_filetype(to_path, to_mime)
                     except ValueError as e:
                         sys.stderr.write(f"Error: {e!s}\n\n")
-                        return 1
+                        return EXIT_ERROR
                     with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
                         from_tree = from_format.build_tree_handling_errors(from_path, options)
                         t.desc = f"Loading {to_path!s}"
@@ -310,13 +319,13 @@ def main(argv=None) -> int:
                         if isinstance(from_tree, str):
                             sys.stderr.write(from_tree)
                             sys.stderr.write('\n\n')
-                            return 1
+                            return EXIT_ERROR
                         to_tree = to_format.build_tree_handling_errors(to_path, options)
                         t.update(1)
                         if isinstance(to_tree, str):
                             sys.stderr.write(to_tree)
                             sys.stderr.write('\n\n')
-                            return 1
+                            return EXIT_ERROR
                     if match_if is not None or match_unless is not None:
                         for node in from_tree.dfs():
                             if match_if is not None:
@@ -359,9 +368,9 @@ def main(argv=None) -> int:
     finally:
         printer.close()
     if had_edits:
-        return 1
+        return EXIT_DIFFERENCES_FOUND
     else:
-        return 0
+        return EXIT_SUCCESS
 
 
 if __name__ == '__main__':
