@@ -57,7 +57,7 @@ class MultiSetEdit(SequenceEdit):
                 if not isinstance(f, graphtage.KeyValuePairNode):
                     continue
                 for t in to_set.keys():
-                    if not isinstance(f, graphtage.KeyValuePairNode):
+                    if not isinstance(t, graphtage.KeyValuePairNode):
                         continue
                     if f.key == t.key:
                         num_matched = min(from_set[f], to_set[t])
