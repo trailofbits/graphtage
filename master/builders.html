@@ -116,17 +116,17 @@ There are various predefined specializations of tree nodes, such as <a class="re
 <span class="k">class</span><span class="w"> </span><span class="nc">CustomBuilder</span><span class="p">(</span><span class="n">Builder</span><span class="p">):</span>
     <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="n">Foo</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Foo</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">"foo"</span><span class="p">)</span>
 
     <span class="nd">@Build</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="n">Bar</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Bar</span><span class="p">,</span> <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TreeNode</span><span class="p">]):</span>
-        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StringNode</span><span class="p">(</span><span class="s2">"bar"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">Foo</span><span class="p">())</span>
-<span class="go">StringNode(&quot;foo&quot;)</span>
+<span class="go">StringNode("foo")</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CustomBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">build_tree</span><span class="p">(</span><span class="n">Bar</span><span class="p">())</span>
-<span class="go">StringNode(&quot;bar&quot;)</span>
+<span class="go">StringNode("bar")</span>
 </pre></div>
 </div>
 <section id="expanding-children">
@@ -138,7 +138,7 @@ What if a node has children, like a list? We can handle this using the <code cla
 
     <span class="nd">@Builder</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">expand_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an iterable over the node&#39;s children&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns an iterable over the node's children"""</span>
         <span class="k">yield from</span> <span class="n">node</span>
 
     <span class="nd">@Builder</span><span class="o">.</span><span class="n">builder</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -167,7 +167,7 @@ What if a node has children, like a list? We can handle this using the <code cla
 </pre></div>
 </div>
 <p>This will automatically build a node type that has three children: a string, an integer, and a list.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">StringNode</span><span class="p">(</span><span class="s2">&quot;the name&quot;</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1337</span><span class="p">),</span> <span class="n">attributes</span><span class="o">=</span><span class="n">ListNode</span><span class="p">((</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">3</span><span class="p">))))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CustomNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">StringNode</span><span class="p">(</span><span class="s2">"the name"</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1337</span><span class="p">),</span> <span class="n">attributes</span><span class="o">=</span><span class="n">ListNode</span><span class="p">((</span><span class="n">IntegerNode</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">IntegerNode</span><span class="p">(</span><span class="mi">3</span><span class="p">))))</span>
 </pre></div>
 </div>
 <p>Let’s say you have another, non-graphtage class that corresponds to <code class="xref py py-class docutils literal notranslate"><span class="pre">CustomNode</span></code>:</p>

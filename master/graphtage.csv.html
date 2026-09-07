@@ -433,7 +433,7 @@ another list of the same length.</p></li>
 <dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on all children.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-<span class="n">ret</span><span class="p">[</span><span class="s1">&#39;_children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+<span class="n">ret</span><span class="p">[</span><span class="s1">'_children'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
 <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
@@ -549,7 +549,7 @@ you define a subclass of <code class="xref py py-class docutils literal notransl
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.print" title="Link to this definition"></a></dt>
 <dd><p>Prints a sequence node.</p>
 <p>By default, sequence nodes are printed like lists:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">'['</span><span class="p">,</span> <span class="s1">']'</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -746,7 +746,7 @@ another list of the same length.</p></li>
 <dd><p>Copies <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.__dict__</span></code>, calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.editable_dict()</span></code> on all children.</p>
 <p>This is equivalent to:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
-<span class="n">ret</span><span class="p">[</span><span class="s1">&#39;_children&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+<span class="n">ret</span><span class="p">[</span><span class="s1">'_children'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_type</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">make_edited</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
 <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
@@ -862,7 +862,7 @@ you define a subclass of <code class="xref py py-class docutils literal notransl
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.print" title="Link to this definition"></a></dt>
 <dd><p>Prints a sequence node.</p>
 <p>By default, sequence nodes are printed like lists:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SequenceFormatter</span><span class="p">(</span><span class="s1">'['</span><span class="p">,</span> <span class="s1">']'</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -926,7 +926,7 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRowFormatter.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initializes the formatter.</p>
 <p>Equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1092,7 +1092,7 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRows.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initializes the formatter.</p>
 <p>Equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

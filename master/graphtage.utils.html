@@ -139,8 +139,8 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__add__">
 <span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__add__" title="Link to this definition"></a></dt>
 <dd><p>Add counts from two counters.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 4, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -149,8 +149,8 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__and__">
 <span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__and__" title="Link to this definition"></a></dt>
 <dd><p>Intersection is the minimum of corresponding counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -183,10 +183,10 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__iadd__">
 <span class="sig-name descname"><span class="pre">__iadd__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__iadd__" title="Link to this definition"></a></dt>
 <dd><p>Inplace add from another counter, keeping only positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 4, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -195,10 +195,10 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__iand__">
 <span class="sig-name descname"><span class="pre">__iand__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__iand__" title="Link to this definition"></a></dt>
 <dd><p>Inplace intersection is the minimum of corresponding counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 1})</span>
+<span class="go">Counter({'b': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -212,10 +212,10 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__ior__">
 <span class="sig-name descname"><span class="pre">__ior__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__ior__" title="Link to this definition"></a></dt>
 <dd><p>Inplace union is the maximum of value from either counter.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 3, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -224,10 +224,10 @@
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__isub__">
 <span class="sig-name descname"><span class="pre">__isub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__isub__" title="Link to this definition"></a></dt>
 <dd><p>Inplace subtract counter, but keep only results with positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbbc'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bccd'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -267,8 +267,8 @@ and flips the sign on negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__or__">
 <span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__or__" title="Link to this definition"></a></dt>
 <dd><p>Union is the maximum of value in either of the input counters.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 3, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -283,8 +283,8 @@ and flips the sign on negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__sub__">
 <span class="sig-name descname"><span class="pre">__sub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__sub__" title="Link to this definition"></a></dt>
 <dd><p>Subtract count, but keep only results with positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbbc'</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bccd'</span><span class="p">)</span>
+<span class="go">Counter({'b': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -311,11 +311,11 @@ and flips the sign on negative counts.</p>
 <span class="sig-name descname"><span class="pre">elements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a></span></span><a class="headerlink" href="#graphtage.utils.HashableCounter.elements" title="Link to this definition"></a></dt>
 <dd><p>Iterator over elements repeating each as many times as its count.</p>
 <p>Examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;ABCABC&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'ABCABC'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span>
-<span class="go">[&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;C&#39;, &#39;C&#39;]</span>
+<span class="go">['A', 'A', 'B', 'B', 'C', 'C']</span>
 
-<span class="go"># Knuth&#39;s example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
+<span class="go"># Knuth's example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prime_factors</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">product</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">prime_factors</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>     <span class="c1"># loop over factors</span>
@@ -357,8 +357,8 @@ and flips the sign on negative counts.</p>
 <span class="sig-name descname"><span class="pre">most_common</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.most_common" title="Link to this definition"></a></dt>
 <dd><p>List the n most common elements and their counts from the most
 common to the least.  If n is None, then list all element counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abracadabra&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">[(&#39;a&#39;, 5), (&#39;b&#39;, 2), (&#39;r&#39;, 2)]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abracadabra'</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[('a', 5), ('b', 2), ('r', 2)]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -392,12 +392,12 @@ Raises KeyError if the dict is empty.</p>
 Counts can be reduced below zero.  Both the inputs and outputs are
 allowed to contain zero and negative counts.</p>
 <p>Source can be an iterable, a dictionary, or another Counter instance.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'which'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">'witch'</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">'watch'</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'h'</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
 <span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'w'</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
 <span class="go">-1</span>
 </pre></div>
 </div>
@@ -414,11 +414,11 @@ allowed to contain zero and negative counts.</p>
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.update" title="Link to this definition"></a></dt>
 <dd><p>Like dict.update() but add counts instead of replacing them.</p>
 <p>Source can be an iterable, a dictionary, or another Counter instance.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'which'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">'witch'</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'watch'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                 <span class="c1"># add elements from another counter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                      <span class="c1"># four &#39;h&#39; in which, witch, and watch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'h'</span><span class="p">]</span>                      <span class="c1"># four 'h' in which, witch, and watch</span>
 <span class="go">4</span>
 </pre></div>
 </div>
@@ -443,8 +443,8 @@ allowed to contain zero and negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__add__">
 <span class="sig-name descname"><span class="pre">__add__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__add__" title="Link to this definition"></a></dt>
 <dd><p>Add counts from two counters.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">+</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 4, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -453,8 +453,8 @@ allowed to contain zero and negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__and__">
 <span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__and__" title="Link to this definition"></a></dt>
 <dd><p>Intersection is the minimum of corresponding counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -487,10 +487,10 @@ allowed to contain zero and negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__iadd__">
 <span class="sig-name descname"><span class="pre">__iadd__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__iadd__" title="Link to this definition"></a></dt>
 <dd><p>Inplace add from another counter, keeping only positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">+=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 4, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 4, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -499,10 +499,10 @@ allowed to contain zero and negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__iand__">
 <span class="sig-name descname"><span class="pre">__iand__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__iand__" title="Link to this definition"></a></dt>
 <dd><p>Inplace intersection is the minimum of corresponding counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">&amp;=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 1})</span>
+<span class="go">Counter({'b': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -514,8 +514,8 @@ allowed to contain zero and negative counts.</p>
 from an input iterable.  Or, initialize the count from another mapping
 of elements to their counts.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>                           <span class="c1"># a new, empty counter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;gallahad&#39;</span><span class="p">)</span>                 <span class="c1"># a new counter from an iterable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>           <span class="c1"># a new counter from a mapping</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'gallahad'</span><span class="p">)</span>                 <span class="c1"># a new counter from an iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">'a'</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>           <span class="c1"># a new counter from a mapping</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>                   <span class="c1"># a new counter from keyword args</span>
 </pre></div>
 </div>
@@ -525,10 +525,10 @@ of elements to their counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__ior__">
 <span class="sig-name descname"><span class="pre">__ior__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__ior__" title="Link to this definition"></a></dt>
 <dd><p>Inplace union is the maximum of value from either counter.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">|=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 3, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -537,10 +537,10 @@ of elements to their counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__isub__">
 <span class="sig-name descname"><span class="pre">__isub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__isub__" title="Link to this definition"></a></dt>
 <dd><p>Inplace subtract counter, but keep only results with positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'abbbc'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">-=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bccd'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span>
-<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+<span class="go">Counter({'b': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -580,8 +580,8 @@ and flips the sign on negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__or__">
 <span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__or__" title="Link to this definition"></a></dt>
 <dd><p>Union is the maximum of value in either of the input counters.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbb&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bcc&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 3, &#39;c&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbb'</span><span class="p">)</span> <span class="o">|</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bcc'</span><span class="p">)</span>
+<span class="go">Counter({'b': 3, 'c': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -596,8 +596,8 @@ and flips the sign on negative counts.</p>
 <dt class="sig sig-object py" id="graphtage.utils.OrderedCounter.__sub__">
 <span class="sig-name descname"><span class="pre">__sub__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.__sub__" title="Link to this definition"></a></dt>
 <dd><p>Subtract count, but keep only results with positive counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abbbc&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;bccd&#39;</span><span class="p">)</span>
-<span class="go">Counter({&#39;b&#39;: 2, &#39;a&#39;: 1})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abbbc'</span><span class="p">)</span> <span class="o">-</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'bccd'</span><span class="p">)</span>
+<span class="go">Counter({'b': 2, 'a': 1})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -624,11 +624,11 @@ and flips the sign on negative counts.</p>
 <span class="sig-name descname"><span class="pre">elements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a></span></span><a class="headerlink" href="#graphtage.utils.OrderedCounter.elements" title="Link to this definition"></a></dt>
 <dd><p>Iterator over elements repeating each as many times as its count.</p>
 <p>Examples:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;ABCABC&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'ABCABC'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span>
-<span class="go">[&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;C&#39;, &#39;C&#39;]</span>
+<span class="go">['A', 'A', 'B', 'B', 'C', 'C']</span>
 
-<span class="go"># Knuth&#39;s example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
+<span class="go"># Knuth's example for prime factors of 1836:  2**2 * 3**3 * 17**1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">prime_factors</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">({</span><span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">17</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">product</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">factor</span> <span class="ow">in</span> <span class="n">prime_factors</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>     <span class="c1"># loop over factors</span>
@@ -670,8 +670,8 @@ and flips the sign on negative counts.</p>
 <span class="sig-name descname"><span class="pre">most_common</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.most_common" title="Link to this definition"></a></dt>
 <dd><p>List the n most common elements and their counts from the most
 common to the least.  If n is None, then list all element counts.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;abracadabra&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">[(&#39;a&#39;, 5), (&#39;b&#39;, 2), (&#39;r&#39;, 2)]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Counter</span><span class="p">(</span><span class="s1">'abracadabra'</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">[('a', 5), ('b', 2), ('r', 2)]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -711,12 +711,12 @@ raise a KeyError.</p>
 Counts can be reduced below zero.  Both the inputs and outputs are
 allowed to contain zero and negative counts.</p>
 <p>Source can be an iterable, a dictionary, or another Counter instance.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'which'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="s1">'witch'</span><span class="p">)</span>             <span class="c1"># subtract elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">'watch'</span><span class="p">))</span>    <span class="c1"># subtract elements from another counter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'h'</span><span class="p">]</span>                          <span class="c1"># 2 in which, minus 1 in witch, minus 1 in watch</span>
 <span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'w'</span><span class="p">]</span>                          <span class="c1"># 1 in which, minus 1 in witch, minus 1 in watch</span>
 <span class="go">-1</span>
 </pre></div>
 </div>
@@ -733,11 +733,11 @@ allowed to contain zero and negative counts.</p>
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.OrderedCounter.update" title="Link to this definition"></a></dt>
 <dd><p>Like dict.update() but add counts instead of replacing them.</p>
 <p>Source can be an iterable, a dictionary, or another Counter instance.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;which&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;witch&#39;</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;watch&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'which'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">'witch'</span><span class="p">)</span>           <span class="c1"># add elements from another iterable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">'watch'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                 <span class="c1"># add elements from another counter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span>                      <span class="c1"># four &#39;h&#39; in which, witch, and watch</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="p">[</span><span class="s1">'h'</span><span class="p">]</span>                      <span class="c1"># four 'h' in which, witch, and watch</span>
 <span class="go">4</span>
 </pre></div>
 </div>
@@ -1064,11 +1064,11 @@ cell that has been set, plus one.</p>
 libraries that only accept a path and not a stream object.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tempfile</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">"foo"</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
 <span class="go">/var/folders/bs/hrvzrctx6tg2_j17gb6wckph0000gn/T/tmpkza5fvr_</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">Tempfile</span><span class="p">(</span><span class="sa">b</span><span class="s2">"foo"</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 <span class="go">foo</span>
 </pre></div>
@@ -1114,7 +1114,7 @@ libraries that only accept a path and not a stream object.</p>
 <dd><p>A function to calculate the memory footprint of an object.</p>
 <p>If the object implements the <a class="reference internal" href="#graphtage.utils.Sized" title="graphtage.utils.Sized"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sized</span></code></a> protocol (<em>i.e.</em>, if it implements a <code class="docutils literal notranslate"><span class="pre">getsizeof</span></code> method), then this is
 used:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;getsizeof&#39;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">'getsizeof'</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">()</span>
 </pre></div>
 </div>

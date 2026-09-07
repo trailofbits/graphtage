@@ -96,22 +96,22 @@ structures of the original file format. This allows Graphtage to have generic co
 <p>Therefore, the first step is to convert the files being diffed into Graphtage’s intermediate representation. The JSON
 filetype has a function to convert arbitrary Python objects (comprised of standard Python types) into Graphtage trees:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">json</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">from_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">"foo"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">from_tree</span>
-<span class="go">DictNode([KeyValuePairNode(key=StringNode(&#39;foo&#39;), value=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
+<span class="go">DictNode([KeyValuePairNode(key=StringNode('foo'), value=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
 </pre></div>
 </div>
 </section>
 <section id="transforming-nodes-with-edits">
 <h2>Transforming Nodes with Edits<a class="headerlink" href="#transforming-nodes-with-edits" title="Link to this heading"></a></h2>
 <p>To see the sequence of edits to transform this tree to another, we call <a class="reference internal" href="graphtage.html#graphtage.TreeNode.get_all_edits" title="graphtage.TreeNode.get_all_edits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.get_all_edits()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">to_tree</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">({</span><span class="s2">"bar"</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">to_tree</span>
-<span class="go">DictNode([KeyValuePairNode(key=StringNode(&#39;bar&#39;), value=ListNode((IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
+<span class="go">DictNode([KeyValuePairNode(key=StringNode('bar'), value=ListNode((IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">from_tree</span><span class="o">.</span><span class="n">get_all_edits</span><span class="p">(</span><span class="n">to_tree</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">edit</span><span class="p">)</span>
 <span class="go">Remove(IntegerNode(1), remove_from=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))</span>
-<span class="go">StringEdit(from_node=StringNode(&#39;foo&#39;), to_node=StringNode(&#39;bar&#39;))</span>
+<span class="go">StringEdit(from_node=StringNode('foo'), to_node=StringNode('bar'))</span>
 </pre></div>
 </div>
 </section>
@@ -125,7 +125,7 @@ characteristics of the source nodes—including their source node class types—
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">from_node</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_node</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">from_tree</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_tree</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span>
-<span class="go">EditedDictNode([EditedKeyValuePairNode(key=EditedStringNode(&#39;foo&#39;), value=EditedListNode((EditedIntegerNode(1), EditedIntegerNode(2), EditedIntegerNode(3), EditedIntegerNode(4))))])</span>
+<span class="go">EditedDictNode([EditedKeyValuePairNode(key=EditedStringNode('foo'), value=EditedListNode((EditedIntegerNode(1), EditedIntegerNode(2), EditedIntegerNode(3), EditedIntegerNode(4))))])</span>
 </pre></div>
 </div>
 <p>As you can see, the tree was reconstructed with edited versions of each node. Each node will have a new member variable,
@@ -143,7 +143,7 @@ to a stream. For example, to print our diff in JSON format to the default printe
 <span class="gp">... </span>    <span class="n">json</span><span class="o">.</span><span class="n">JSONFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="go">{</span>
-<span class="go">    &quot;++bar++~~foo~~&quot;: [</span>
+<span class="go">    "++bar++~~foo~~": [</span>
 <span class="go">        ~~1~~,</span>
 <span class="go">        2,</span>
 <span class="go">        3,</span>
@@ -172,10 +172,10 @@ just as easily output the diff in another format, like YAML:</p>
 for example, to quickly determine the difference between two Python objects that cause a differential.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_diff</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">obj1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;three&quot;</span><span class="p">},</span> <span class="mi">4</span><span class="p">]</span>
-<span class="gp">... </span>    <span class="n">obj2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s2">&quot;four&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">obj1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s2">"three"</span><span class="p">},</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">obj2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s2">"four"</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
-<span class="go">[1,2,{3: &quot;three&quot; -&gt; 3},++&quot;four&quot;++~~4~~]</span>
+<span class="go">[1,2,{3: "three" -&gt; 3},++"four"++~~4~~]</span>
 </pre></div>
 </div>
 <p>Python object diffing also works with custom classes:</p>
@@ -184,8 +184,8 @@ for example, to quickly determine the difference between two Python objects that
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">baz</span> <span class="o">=</span> <span class="n">baz</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">),</span> <span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;bak&quot;</span><span class="p">),</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
-<span class="go">Foo(bar=&quot;bar&quot;, baz=&quot;ba++k++~~z~~&quot;)</span>
+<span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">Foo</span><span class="p">(</span><span class="s2">"bar"</span><span class="p">,</span> <span class="s2">"baz"</span><span class="p">),</span> <span class="n">Foo</span><span class="p">(</span><span class="s2">"bar"</span><span class="p">,</span> <span class="s2">"bak"</span><span class="p">),</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+<span class="go">Foo(bar="bar", baz="ba++k++~~z~~")</span>
 </pre></div>
 </div>
 </section>

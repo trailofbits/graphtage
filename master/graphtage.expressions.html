@@ -153,19 +153,19 @@ It supports function calls, member lookup (<code class="xref py py-func docutils
 a programmer-defined set of variables. By default, it also disallows access to protected and private member variables.</p>
 <p class="rubric">Example</p>
 <p>Here is an example of its usage:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parsed</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">&#39;foo[(bar + 10) * 2]&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parsed</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="s1">'foo[(bar + 10) * 2]'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parsed</span>
-<span class="go">Expression(rpn=(IdentifierToken(&#39;foo&#39;), IdentifierToken(&#39;bar&#39;), IntegerToken(raw_str=&#39;10&#39;, value=10), OperatorToken(op=&lt;Operator.ADDITION: (&#39;+&#39;, 5, &lt;function Operator.&lt;lambda&gt; at 0x135057f80&gt;)&gt;), IntegerToken(raw_str=&#39;2&#39;, value=2), OperatorToken(op=&lt;Operator.MULTIPLICATION: (&#39;*&#39;, 4, &lt;function Operator.&lt;lambda&gt; at 0x135057d40&gt;)&gt;), OpenBracket()))</span>
+<span class="go">Expression(rpn=(IdentifierToken('foo'), IdentifierToken('bar'), IntegerToken(raw_str='10', value=10), OperatorToken(op=&lt;Operator.ADDITION: ('+', 5, &lt;function Operator.&lt;lambda&gt; at 0x135057f80&gt;)&gt;), IntegerToken(raw_str='2', value=2), OperatorToken(op=&lt;Operator.MULTIPLICATION: ('*', 4, &lt;function Operator.&lt;lambda&gt; at 0x135057d40&gt;)&gt;), OpenBracket()))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parsed</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="nb">locals</span><span class="o">=</span><span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">'foo'</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">... </span>        <span class="mi">40</span><span class="p">:</span> <span class="mi">1234</span>
 <span class="gp">... </span>    <span class="p">},</span>
-<span class="gp">... </span>    <span class="s1">&#39;bar&#39;</span><span class="p">:</span> <span class="mi">10</span>
+<span class="gp">... </span>    <span class="s1">'bar'</span><span class="p">:</span> <span class="mi">10</span>
 <span class="gp">... </span><span class="p">})</span>
 <span class="go">1234</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;parsed.__dict__&#39;</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">locals</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parse</span><span class="p">(</span><span class="s1">'parsed.__dict__'</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">locals</span><span class="p">())</span>
 <span class="go"># Elided stack trace</span>
-<span class="go">graphtage.expressions.ParseError: Cannot read protected and private member variables: Expression(rpn=(IdentifierToken(&#39;foo&#39;), IdentifierToken(&#39;bar&#39;), IntegerToken(raw_str=&#39;10&#39;, value=10), OperatorToken(op=&lt;Operator.ADDITION: (&#39;+&#39;, 5, &lt;function Operator.&lt;lambda&gt; at 0x127808170&gt;)&gt;), IntegerToken(raw_str=&#39;2&#39;, value=2), OperatorToken(op=&lt;Operator.MULTIPLICATION: (&#39;*&#39;, 4, &lt;function Operator.&lt;lambda&gt; at 0x127805ef0&gt;)&gt;), OpenBracket())).__dict__ at offset 15</span>
+<span class="go">graphtage.expressions.ParseError: Cannot read protected and private member variables: Expression(rpn=(IdentifierToken('foo'), IdentifierToken('bar'), IntegerToken(raw_str='10', value=10), OperatorToken(op=&lt;Operator.ADDITION: ('+', 5, &lt;function Operator.&lt;lambda&gt; at 0x127808170&gt;)&gt;), IntegerToken(raw_str='2', value=2), OperatorToken(op=&lt;Operator.MULTIPLICATION: ('*', 4, &lt;function Operator.&lt;lambda&gt; at 0x127805ef0&gt;)&gt;), OpenBracket())).__dict__ at offset 15</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -1384,7 +1384,7 @@ or <code class="xref py py-const docutils literal notranslate"><span class="pre"
 </pre></div>
 </div>
 <p>However, this implementation will not permit retrieving members that start with an underscore:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'_'</span><span class="p">):</span>
     <span class="k">raise</span> <span class="n">ParseError</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
