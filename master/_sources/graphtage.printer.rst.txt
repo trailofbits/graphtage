@@ -104,7 +104,17 @@ enable_ansi_support
 
 .. autofunction:: enable_ansi_support
 
+get_default_printer
+*******************
+
+.. autofunction:: get_default_printer
+
 only_ansi
 *********
 
 .. autofunction:: only_ansi
+
+set_default_printer
+*******************
+
+.. autofunction:: set_default_printer

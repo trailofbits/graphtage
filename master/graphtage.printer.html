@@ -85,7 +85,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#printer-functions">printer functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#enable-ansi-support">enable_ansi_support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-default-printer">get_default_printer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#only-ansi">only_ansi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#set-default-printer">set_default_printer</a></li>
 </ul>
 </li>
 </ul>
@@ -142,7 +144,8 @@ the command line).</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.printer.DEFAULT_PRINTER">
 <span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_PRINTER</span></span><a class="headerlink" href="#graphtage.printer.DEFAULT_PRINTER" title="Link to this definition"></a></dt>
-<dd><p>A default <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> instance printing to <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>.</p>
+<dd><p>A default <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> instance printing to <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>. Read it through
+<a class="reference internal" href="#graphtage.printer.get_default_printer" title="graphtage.printer.get_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_default_printer()</span></code></a> rather than importing the name, because <a class="reference internal" href="#graphtage.printer.set_default_printer" title="graphtage.printer.set_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_default_printer()</span></code></a> replaces it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer">Printer</a></p>
@@ -1165,6 +1168,27 @@ requested.</p>
 </dd></dl>
 
 </section>
+<section id="get-default-printer">
+<h3>get_default_printer<a class="headerlink" href="#get-default-printer" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.printer.get_default_printer">
+<span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">get_default_printer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></span><a class="headerlink" href="#graphtage.printer.get_default_printer" title="Link to this definition"></a></dt>
+<dd><p>Returns the printer that library code uses when the caller does not supply one.</p>
+<p>Call this instead of importing <a class="reference internal" href="#graphtage.printer.DEFAULT_PRINTER" title="graphtage.printer.DEFAULT_PRINTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_PRINTER</span></code></a> by name. <a class="reference internal" href="#graphtage.printer.set_default_printer" title="graphtage.printer.set_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_default_printer()</span></code></a> rebinds the module
+attribute, which a name bound by <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">.printer</span> <span class="pre">import</span> <span class="pre">DEFAULT_PRINTER</span></code> never observes: such a name keeps
+referring to the printer that was current when the importing module was first loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The printer most recently passed to <a class="reference internal" href="#graphtage.printer.set_default_printer" title="graphtage.printer.set_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_default_printer()</span></code></a>, or <a class="reference internal" href="#graphtage.printer.DEFAULT_PRINTER" title="graphtage.printer.DEFAULT_PRINTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DEFAULT_PRINTER</span></code></a> if that
+function was never called.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer">Printer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="only-ansi">
 <h3>only_ansi<a class="headerlink" href="#only-ansi" title="Link to this heading"></a></h3>
 <dl class="py function">
@@ -1173,6 +1197,21 @@ requested.</p>
 <dd><p>A decorator for <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> methods that specifies it should only be called when outputting in color.</p>
 <p>If the <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> implementing the decorated method has <a class="reference internal" href="#graphtage.printer.Printer.ansi_color" title="graphtage.printer.Printer.ansi_color"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Printer.ansi_color</span></code></a> set to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>,
 then this decorator will have the method automatically return a <a class="reference internal" href="#graphtage.printer.NullANSIContext" title="graphtage.printer.NullANSIContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullANSIContext</span></code></a>.</p>
+</dd></dl>
+
+</section>
+<section id="set-default-printer">
+<h3>set_default_printer<a class="headerlink" href="#set-default-printer" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.printer.set_default_printer">
+<span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">set_default_printer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.printer.set_default_printer" title="Link to this definition"></a></dt>
+<dd><p>Installs <code class="xref py py-obj docutils literal notranslate"><span class="pre">printer</span></code> as the printer returned by <a class="reference internal" href="#graphtage.printer.get_default_printer" title="graphtage.printer.get_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_default_printer()</span></code></a>.</p>
+<p>This mutates global state, so call it from an application entry point rather than from library code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>printer</strong> – The printer to install.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
