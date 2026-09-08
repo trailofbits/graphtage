@@ -105,8 +105,9 @@ iterating a node's children directly silently drops them. Only one formatter may
 given type, so distinguish nesting levels in the key/value formatter rather than by node type (see
 `graphtage/yaml.py` and `graphtage/ini.py`).
 
-Python 3.8 compatibility is required. Do not use PEP 585 builtin generics (`list[...]`, `dict[...]`) in
-runtime-evaluated positions such as annotated class attributes; use `typing.List` or drop the annotation.
+Python 3.10 is the minimum supported version. Check `requires-python` in `pyproject.toml` and the CI matrix in
+`.github/workflows/pythonpackage.yml` before using a feature from a newer release; a runtime-evaluated annotation
+that the floor does not support fails at import, which takes down the whole package.
 
 ### Working with Edits
 - Edit costs are computed lazily via `bounds()` method
@@ -122,7 +123,7 @@ The printing system is extensible:
 ## Key Conventions
 
 - Line length: 120 characters (configured in ruff)
-- Python version: 3.8+ compatibility required
+- Python version: 3.10+ compatibility required; CI covers 3.10 through 3.14
 - Type hints: Use typing_extensions for Protocol support
 - Docstrings: Google style for public APIs
 - Tests: Mirror package structure in test/ directory
