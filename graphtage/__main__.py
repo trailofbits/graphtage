@@ -76,7 +76,8 @@ def register_mimetypes():
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
-        description='A diff utility for tree-like files such as JSON, XML, HTML, YAML, and CSV.'
+        description='A diff utility for tree-like files such as JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, '
+                    'and Python pickle.'
     )
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
                         help='the source file to diff; pass \'-\' to read from STDIN')
