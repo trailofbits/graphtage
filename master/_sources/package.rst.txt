@@ -15,6 +15,7 @@ Graphtage API
    graphtage.expressions
    graphtage.fibonacci
    graphtage.formatter
+   graphtage.ini
    graphtage.json
    graphtage.levenshtein
    graphtage.matching

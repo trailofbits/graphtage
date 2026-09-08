@@ -1,0 +1,69 @@
+graphtage.ini
+=============
+
+.. automodule:: graphtage.ini
+
+ini classes
+-----------
+
+INI
+***
+
+.. autoclass:: INI
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+INIFormatter
+************
+
+.. autoclass:: INIFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+INIListFormatter
+****************
+
+.. autoclass:: INIListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+INIMappingFormatter
+*******************
+
+.. autoclass:: INIMappingFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+INIOptionFormatter
+******************
+
+.. autoclass:: INIOptionFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+INIStringFormatter
+******************
+
+.. autoclass:: INIStringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ini functions
+-------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree
