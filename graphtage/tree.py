@@ -1,6 +1,5 @@
 import itertools
 import logging
-import sys
 from abc import abstractmethod, ABC, ABCMeta
 from functools import wraps
 from typing import (
@@ -15,11 +14,7 @@ from .printer import get_default_printer, Printer
 log = logging.getLogger(__name__)
 
 
-if sys.version_info.major == 3 and sys.version_info.minor < 7:
-    # For some reason, the type checker breaks on the generic argument in Py3.6 and earlier
-    FormatterType = Formatter
-else:
-    FormatterType = Formatter[Union['TreeNode', 'Edit']]
+FormatterType = Formatter[Union['TreeNode', 'Edit']]
 
 
 class GraphtageFormatter(FormatterType):

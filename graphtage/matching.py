@@ -34,7 +34,6 @@ Example:
 """
 
 import itertools
-import sys
 from abc import ABCMeta, abstractmethod
 from collections.abc import Set as SetCollection
 from typing import Callable, Dict, Generic, Iterable, Iterator, List
@@ -201,14 +200,7 @@ class MatchingToNode(Generic[T], MatchingNode[T]):
         return f"\u21A3{self.node!r}"
 
 
-if sys.version_info.major < 3 or sys.version_info.minor < 7:
-    # This is to satisfy Python 3.6's MRO
-    SetType = object
-else:
-    SetType = Set[Edge[T]]
-
-
-class Matching(Generic[T], SetCollection, Bounded, SetType):
+class Matching(SetCollection, Bounded, set[Edge[T]], Generic[T]):
     """An abstract base class used by the partial implementation of [Karp78]_."""
     def __init__(self):
         super().__init__()

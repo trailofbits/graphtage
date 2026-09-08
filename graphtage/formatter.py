@@ -176,17 +176,8 @@ Examples:
 
 import inspect
 import logging
-import sys
 from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
-
-if sys.version_info.major == 3 and sys.version_info.minor < 7:
-    # Backward compatibility for pre-Python3.7
-    from typing import GenericMeta
-else:
-    # Create a dummy type for GenericMeta since it was removed in Python3.7
-    # It was a subclass of ABCMeta in Python3.6, anyway
-    GenericMeta = ABCMeta
 
 from .printer import Printer
 
@@ -198,7 +189,7 @@ FORMATTERS: Sequence['Formatter[Any]'] = []
 """A list of default instances of non-partial formatters that have subclassed :class:`Formatter`."""
 
 
-class FormatterChecker(GenericMeta):
+class FormatterChecker(ABCMeta):
     """The metaclass for :class:`Formatter`.
 
     For every class that subclasses :class:`Formatter`, if :attr:`Formatter.is_partial` is :const:`False` (the default)
@@ -364,14 +355,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         raise NotImplementedError()
 
 
-if sys.version_info.major == 3 and sys.version_info.minor < 7:
-    # Backward compatibility for pre-Python3.7
-    basic_formatter_types = (Formatter,)
-else:
-    basic_formatter_types = (Generic[T], Formatter[T])
-
-
-class BasicFormatter(*basic_formatter_types):
+class BasicFormatter(Generic[T], Formatter[T]):
     """A basic formatter that falls back on an item's natural string representation if no formatter is found."""
 
     def print(self, printer: Printer, item: T):
