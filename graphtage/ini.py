@@ -110,7 +110,7 @@ class INIListFormatter(SequenceFormatter):
 class INIMappingFormatter(SequenceFormatter):
     """A formatter for an INI document and for each of its section bodies."""
     is_partial = True
-    sub_format_types = [INIOptionFormatter]
+    sub_format_types = (INIOptionFormatter,)
 
     def __init__(self):
         super().__init__("", "", "")
@@ -134,7 +134,7 @@ class INIMappingFormatter(SequenceFormatter):
 
 class INIFormatter(GraphtageFormatter):
     """A formatter for INI files."""
-    sub_format_types = [INIMappingFormatter, INIListFormatter, INIStringFormatter]
+    sub_format_types = (INIMappingFormatter, INIListFormatter, INIStringFormatter)
 
     def print(self, printer: Printer, *args, **kwargs):
         if args and isinstance(args[0], TreeNode) and args[0].parent is None:

@@ -31,7 +31,7 @@ class MultiSetEdit(SequenceEdit):
 
     """
 
-    __slots__ = ('_matched_kvp_edits', 'to_insert', 'to_remove', '_edits', '_matcher')
+    __slots__ = ('_edits', '_matched_kvp_edits', '_matcher', 'to_insert', 'to_remove')
 
     def __init__(
             self,
@@ -60,10 +60,10 @@ class MultiSetEdit(SequenceEdit):
             to_set = HashableCounter(to_set)
             from_set = HashableCounter(from_set)
             to_remove_from = []
-            for f in from_set.keys():
+            for f in from_set:
                 if not isinstance(f, graphtage.KeyValuePairNode):
                     continue
-                for t in to_set.keys():
+                for t in to_set:
                     if not isinstance(t, graphtage.KeyValuePairNode):
                         continue
                     if f.key == t.key:

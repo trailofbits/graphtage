@@ -42,15 +42,15 @@ class StatusWriter(IO[str]):
                     out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
             )
             """If :const:`True`, this writer *will not* buffer output and use :func:`tqdm.write`.
-            
+
             This defaults to::
-            
+
                 self.write_raw = self.quiet or (
                     out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
                 )
-            
+
             """
-        except io.UnsupportedOperation as e:
+        except io.UnsupportedOperation:
             self.write_raw = True
 
     def tqdm(self, *args, **kwargs) -> tqdm:

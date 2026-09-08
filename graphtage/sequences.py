@@ -37,7 +37,7 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
         """
         if not isinstance(from_node, SequenceNode):
             raise ValueError(f"from_node must be a SequenceNode, but {from_node!r} is {type(from_node)}!")
-        super().__init__(from_node=from_node, *args, **kwargs)
+        super().__init__(*args, from_node=from_node, **kwargs)
 
     @property
     def sequence(self) -> 'SequenceNode':
@@ -64,14 +64,18 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
 class FixedLengthSequenceEdit(SequenceEdit):
     """An edit for sequences that does not consider interleaving."""
 
-    __slots__ = ('_sub_edits', 'to_remove', 'to_insert')
+    __slots__ = ('_sub_edits', 'to_insert', 'to_remove')
 
     def __init__(
             self,
             from_node: 'SequenceNode',
             to_node: 'SequenceNode'
     ):
-        self._sub_edits: list[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
+        # Not strict: the sequences may differ in length, and the surplus is handled just below
+        # as to_remove or to_insert.
+        self._sub_edits: list[Edit] = [
+            from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node, strict=False)
+        ]
 
         if len(from_node) > len(to_node):
             self.to_remove: Sequence[TreeNode] = from_node.children()[-len(from_node) - len(to_node):]
@@ -137,7 +141,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         }
 
     def children(self) -> Sequence[TreeNode]:
-        if isinstance(self._children, list) or isinstance(self._children, tuple):
+        if isinstance(self._children, (list, tuple)):
             return self._children
         else:
             return super().children()

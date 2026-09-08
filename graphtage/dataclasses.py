@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from typing import get_origin
 
 from . import AbstractCompoundEdit, Edit, Range, Replace
 from .printer import Fore, Printer
@@ -27,10 +28,7 @@ class DataClassEdit(AbstractCompoundEdit):
         yield from self.slot_edits
 
     def tighten_bounds(self) -> bool:
-        for edit in self.slot_edits:
-            if edit.tighten_bounds():
-                return True
-        return False
+        return any(edit.tighten_bounds() for edit in self.slot_edits)
 
 
 class DataClassNode(ContainerNode):
@@ -106,7 +104,11 @@ class DataClassNode(ContainerNode):
         else:
             cls._SLOT_ANNOTATIONS = dict(cls._SLOT_ANNOTATIONS)
         new_slots = []
-        for i, (name, slot_type) in enumerate(cls.__annotations__.items()):
+        for name, slot_type in cls.__annotations__.items():
+            # get_origin() screens out subscripted generics before issubclass() sees them. On Python
+            # 3.10 isinstance(list[int], type) is True, so issubclass() would raise there.
+            if get_origin(slot_type) is not None:
+                continue
             if not isinstance(slot_type, type) or not issubclass(slot_type, TreeNode):
                 continue
             if name in ancestor_slot_names:

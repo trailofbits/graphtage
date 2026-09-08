@@ -157,7 +157,7 @@ class Operator(Enum):
             raise ValueError("Operators of length greater than three are currently not supported by the tokenizer.")
         self.token: str = token
         """The token string associated with this operator. It is used for automatically parsing the operators.
-        
+
         Tokens must be unique. There is no programmatic check to ensure this.
         """
         self.priority: int = priority
@@ -481,8 +481,9 @@ class Tokenizer:
 
                 # An opening bracket indicates creating a list (rather than a getitem) if it follows a comma
                 # or '[' or '(' or an operator
-                is_list = self.prev_token is None or isinstance(self.prev_token, Comma) \
-                          or isinstance(self.prev_token, PairedStartToken) or isinstance(self.prev_token, OperatorToken)
+                is_list = self.prev_token is None or isinstance(
+                    self.prev_token, (Comma, PairedStartToken, OperatorToken)
+                )
                 ret = OpenBracket(self._offset, is_list=is_list)
             elif c[0] == ',':
                 # we also have to check this before the operators for the same reason as '[' above:
@@ -505,8 +506,7 @@ class Tokenizer:
                 else:
                     ret = OperatorToken(c[0], self._offset)
             elif c[0] == '(':
-                if isinstance(self.prev_token, IdentifierToken) \
-                        or isinstance(self.prev_token, PairedEndToken):
+                if isinstance(self.prev_token, (IdentifierToken, PairedEndToken)):
                     # Inject a function call before the parenthesis
                     # We will emit the OpenParen token on the next call to peek()
                     ret = FunctionCall(self._offset)
@@ -755,15 +755,15 @@ class Expression:
                 args = [
                     self.get_value(arg, locals, globals) for arg in values[-t.size:]
                 ]
-                values = values[:-t.size] + [t.container_type(args)]
+                values = [*values[:-t.size], t.container_type(args)]
             elif isinstance(t, OperatorToken):
                 args = []
-                for expand, v in zip(t.op.expand, values[-t.op.arity:]):
+                for expand, v in zip(t.op.expand, values[-t.op.arity:], strict=True):
                     if expand:
                         args.append(self.get_value(v, locals, globals))
                     else:
                         args.append(v)
-                values = values[:-t.op.arity] + [t.op.execute(*args)]
+                values = [*values[:-t.op.arity], t.op.execute(*args)]
             else:
                 values.append(t)
         if len(values) != 1:

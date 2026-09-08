@@ -55,7 +55,7 @@ def getsizeof(obj) -> int:
     """
     if hasattr(obj, 'getsizeof'):
         return obj.getsizeof()
-    elif isinstance(obj, list) or isinstance(obj, tuple):
+    elif isinstance(obj, (list, tuple)):
         return sys.getsizeof(obj) + sum(getsizeof(i) for i in obj)
     elif isinstance(obj, dict):
         return sys.getsizeof(obj) + sum(getsizeof(key) + getsizeof(value) for key, value in obj.items())
@@ -137,7 +137,7 @@ class OrderedCounter(Counter, OrderedDict):
         return h
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, OrderedDict(self))
+        return f'{self.__class__.__name__}({OrderedDict(self)!r})'
 
     def __reduce__(self):
         return self.__class__, (OrderedDict(self),)

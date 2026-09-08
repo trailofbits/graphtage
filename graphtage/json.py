@@ -65,7 +65,7 @@ def build_tree(
         return StringNode(python_obj.decode('utf-8'))
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
-    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
+    elif isinstance(python_obj, (list, tuple)):
         children = [
             build_tree(n, options=options) for n in
             get_default_printer().tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)
@@ -219,7 +219,7 @@ class JSONStringFormatter(StringFormatter):
 
 class JSONFormatter(GraphtageFormatter):
     """The default JSON formatter."""
-    sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
+    sub_format_types = (JSONStringFormatter, JSONListFormatter, JSONDictFormatter)
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         """Prints a :class:`graphtage.LeafNode`.

@@ -104,6 +104,9 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "B904",  # raise without from inside except
     "SIM108", # use ternary operator instead of if-else block
+    # Collapsing an if/elif chain whose arms are identical turns short, readable branches into
+    # one long unparenthesized and/or expression. Several of these run past 150 characters.
+    "SIM114", # if-with-same-arms
 ]
 
 [tool.ruff.lint.per-file-ignores]

@@ -5,7 +5,14 @@ from unittest import TestCase
 import numpy as np
 from tqdm import tqdm, trange
 
-from graphtage.matching import WeightedBipartiteMatcher, get_dtype, min_weight_bipartite_matching
+from graphtage.bounds import Range
+from graphtage.matching import (
+    MatchingFromNode,
+    MatchingToNode,
+    WeightedBipartiteMatcher,
+    get_dtype,
+    min_weight_bipartite_matching,
+)
 
 from .test_bounds import RandomDecreasingRange
 
@@ -23,7 +30,8 @@ class TestWeightedBipartiteMatcher(TestCase):
             matcher = WeightedBipartiteMatcher(
                 from_nodes=from_nodes,
                 to_nodes=to_nodes,
-                get_edge=lambda n1, n2: edges[n1][n2]
+                # `edges` is bound as a default so the closure captures this iteration's matrix.
+                get_edge=lambda n1, n2, edges=edges: edges[n1][n2]
             )
             initial_bounds = matcher.bounds()
             prev_diff = initial_bounds.upper_bound - initial_bounds.lower_bound
@@ -57,7 +65,7 @@ class TestWeightedBipartiteMatcher(TestCase):
                 if (i, j) not in edges and random.random() < edge_probability
             })
 
-            def get_edge(f, t):
+            def get_edge(f, t, edges=edges):
                 if (f, t) in edges:
                     return edges[(f, t)]
                 else:
@@ -77,3 +85,36 @@ class TestWeightedBipartiteMatcher(TestCase):
         ):
             actual = get_dtype(min_range, max_range)
             self.assertEqual(np.dtype(expected), actual)
+
+
+class TestMatchingNode(TestCase):
+    """MatchingNode caches its edges lazily, and every accessor has to trigger that."""
+
+    class StubMatcher:
+        """The smallest thing MatchingNode.construct_edges needs from a matcher."""
+
+        def __init__(self):
+            self.from_nodes = []
+            self.to_nodes = []
+
+        @staticmethod
+        def get_edge(from_node, to_node):
+            return Range(0, 1)
+
+    def setUp(self):
+        self.matcher = TestMatchingNode.StubMatcher()
+        self.from_node = MatchingFromNode(self.matcher, 'f')
+        self.to_node = MatchingToNode(self.matcher, 't')
+        self.matcher.from_nodes.append(self.from_node)
+        self.matcher.to_nodes.append(self.to_node)
+
+    def test_contains_populates_the_cache(self):
+        """__contains__ used to reference the `edges` method without calling it, leaving the cache empty."""
+        self.assertIn(self.to_node, self.from_node)
+
+    def test_getitem_populates_the_cache(self):
+        """__getitem__ had the same no-op, so it raised TypeError on a None cache."""
+        self.assertIsNotNone(self.from_node[self.to_node])
+
+    def test_edges_agrees_with_getitem(self):
+        self.assertEqual([self.from_node[self.to_node]], list(self.from_node.edges()))

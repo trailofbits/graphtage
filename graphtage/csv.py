@@ -92,7 +92,7 @@ class CSVRows(SequenceFormatter):
     """A sub formatter for printing the sequence of rows in a CSV file."""
     is_partial = True
 
-    sub_format_types = [CSVRowFormatter]
+    sub_format_types = (CSVRowFormatter,)
 
     def __init__(self):
         """Initializes the formatter.
@@ -126,7 +126,7 @@ class CSVRows(SequenceFormatter):
 
 class CSVFormatter(GraphtageFormatter):
     """Top-level formatter for CSV files."""
-    sub_format_types = [CSVRows, JSONFormatter]
+    sub_format_types = (CSVRows, JSONFormatter)
 
     def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):
         """Prints a leaf node, which should always be a column in a CSV row.

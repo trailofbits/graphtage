@@ -34,12 +34,12 @@ def build_tree(path: str, options: BuildOptions | None = None, *args, **kwargs) 
         document_stream = load_all(stream, Loader=Loader)
         documents = list(document_stream)
         if len(documents) == 0:
-            return json.build_tree(None, options=options, *args, **kwargs)
+            return json.build_tree(None, *args, options=options, **kwargs)
         elif len(documents) > 1:
-            return json.build_tree(documents, options=options, *args, **kwargs)
+            return json.build_tree(documents, *args, options=options, **kwargs)
         else:
             singleton = documents[0]
-            return json.build_tree(singleton, options=options, *args, **kwargs)
+            return json.build_tree(singleton, *args, options=options, **kwargs)
 
 
 class YAMLListFormatter(SequenceFormatter):
@@ -97,7 +97,7 @@ class YAMLKeyValuePairFormatter(GraphtageFormatter):
 
 class YAMLDictFormatter(SequenceFormatter):
     is_partial = True
-    sub_format_types = [YAMLKeyValuePairFormatter]
+    sub_format_types = (YAMLKeyValuePairFormatter,)
 
     def __init__(self):
         super().__init__('', '', '')
@@ -177,7 +177,7 @@ class YAMLStringFormatter(StringFormatter):
 
 
 class YAMLFormatter(GraphtageFormatter):
-    sub_format_types = [YAMLStringFormatter, YAMLDictFormatter, YAMLListFormatter]
+    sub_format_types = (YAMLStringFormatter, YAMLDictFormatter, YAMLListFormatter)
 
     def print(self, printer: Printer, *args, **kwargs):
         # YAML only gets a two-space indent

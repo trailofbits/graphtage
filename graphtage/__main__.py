@@ -190,11 +190,11 @@ def main(argv=None) -> int:
     )
     log_section = parser.add_argument_group(title='logging')
     log_group = log_section.add_mutually_exclusive_group()
-    log_group.add_argument('--log-level', type=str, default='INFO', choices=list(
+    log_group.add_argument('--log-level', type=str, default='INFO', choices=[
         logging.getLevelName(x)
         for x in range(1, 101)
         if not logging.getLevelName(x).startswith('Level')
-    ), help='sets the log level for Graphtage (default=INFO)')
+    ], help='sets the log level for Graphtage (default=INFO)')
     log_group.add_argument('--debug', action='store_true', help='equivalent to `--log-level=DEBUG`')
     log_group.add_argument('--quiet', action='store_true', help='equivalent to `--log-level=CRITICAL --no-status`')
     parser.add_argument('--version', '-v', action='store_true', help='print Graphtage\'s version information to STDERR')
@@ -239,7 +239,7 @@ def main(argv=None) -> int:
         to_file = os.path.basename(args.TO_PATH)
 
         def printer_type(*pos_args, **kwargs):
-            return HTMLPrinter(title=f"Graphtage Diff of {from_file} and {to_file}", *pos_args, **kwargs)
+            return HTMLPrinter(*pos_args, title=f"Graphtage Diff of {from_file} and {to_file}", **kwargs)
     else:
         printer_type = Printer
 
@@ -264,7 +264,7 @@ def main(argv=None) -> int:
     if args.from_mime is not None:
         from_mime = args.from_mime
     else:
-        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME:
             from_mime = getattr(args, f'from_{typename}')
             if from_mime is not None:
                 break
@@ -274,7 +274,7 @@ def main(argv=None) -> int:
     if args.to_mime is not None:
         to_mime = args.to_mime
     else:
-        for typename in graphtage.FILETYPES_BY_TYPENAME.keys():
+        for typename in graphtage.FILETYPES_BY_TYPENAME:
             to_mime = getattr(args, f'to_{typename}')
             if to_mime is not None:
                 break
@@ -314,64 +314,63 @@ def main(argv=None) -> int:
     try:
         with printer:
             options.printer = printer
-            with PathOrStdin(args.FROM_PATH) as from_path:
-                with PathOrStdin(args.TO_PATH) as to_path:
-                    try:
-                        from_format = graphtage.get_filetype(from_path, from_mime)
-                        to_format = graphtage.get_filetype(to_path, to_mime)
-                    except ValueError as e:
-                        sys.stderr.write(f"Error: {e!s}\n\n")
+            with PathOrStdin(args.FROM_PATH) as from_path, PathOrStdin(args.TO_PATH) as to_path:
+                try:
+                    from_format = graphtage.get_filetype(from_path, from_mime)
+                    to_format = graphtage.get_filetype(to_path, to_mime)
+                except ValueError as e:
+                    sys.stderr.write(f"Error: {e!s}\n\n")
+                    return EXIT_ERROR
+                with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
+                    from_tree = from_format.build_tree_handling_errors(from_path, options)
+                    t.desc = f"Loading {to_path!s}"
+                    t.update(1)
+                    if isinstance(from_tree, str):
+                        sys.stderr.write(from_tree)
+                        sys.stderr.write('\n\n')
                         return EXIT_ERROR
-                    with printer.tqdm(desc=f"Loading {from_path!s}", total=2, leave=False) as t:
-                        from_tree = from_format.build_tree_handling_errors(from_path, options)
-                        t.desc = f"Loading {to_path!s}"
-                        t.update(1)
-                        if isinstance(from_tree, str):
-                            sys.stderr.write(from_tree)
-                            sys.stderr.write('\n\n')
-                            return EXIT_ERROR
-                        to_tree = to_format.build_tree_handling_errors(to_path, options)
-                        t.update(1)
-                        if isinstance(to_tree, str):
-                            sys.stderr.write(to_tree)
-                            sys.stderr.write('\n\n')
-                            return EXIT_ERROR
-                    if match_if is not None or match_unless is not None:
-                        for node in from_tree.dfs():
-                            if match_if is not None:
-                                MatchIf.apply(node, match_if)
-                            if match_unless is not None:
-                                MatchUnless.apply(node, match_unless)
-                    had_edits = False
-                    if args.only_edits:
-                        for edit in from_tree.get_all_edits(to_tree):
-                            printer.write(str(edit))
-                            printer.newline()
-                            had_edits = had_edits or edit.has_non_zero_cost()
-                    elif args.edit_digest:
-                        if args.format is not None:
-                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
-                        else:
-                            formatter = from_format.get_default_formatter()
-
-                        for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
-                            for i, node in enumerate(ancestors):
-                                if node.parent is not None:
-                                    node.parent.print_parent_context(printer, for_child=node)
-                                if i == len(ancestors) - 1:
-                                    with printer.color(Fore.BLUE):
-                                        printer.write(" -> ")
-                                    formatter.print(printer, edit)
-                            printer.newline()
-                            had_edits = had_edits or edit.has_non_zero_cost()
+                    to_tree = to_format.build_tree_handling_errors(to_path, options)
+                    t.update(1)
+                    if isinstance(to_tree, str):
+                        sys.stderr.write(to_tree)
+                        sys.stderr.write('\n\n')
+                        return EXIT_ERROR
+                if match_if is not None or match_unless is not None:
+                    for node in from_tree.dfs():
+                        if match_if is not None:
+                            MatchIf.apply(node, match_if)
+                        if match_unless is not None:
+                            MatchUnless.apply(node, match_unless)
+                had_edits = False
+                if args.only_edits:
+                    for edit in from_tree.get_all_edits(to_tree):
+                        printer.write(str(edit))
+                        printer.newline()
+                        had_edits = had_edits or edit.has_non_zero_cost()
+                elif args.edit_digest:
+                    if args.format is not None:
+                        formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
                     else:
-                        diff = from_tree.diff(to_tree)
-                        if args.format is not None:
-                            formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
-                        else:
-                            formatter = from_format.get_default_formatter()
-                        formatter.print(printer, diff)
-                        had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
+                        formatter = from_format.get_default_formatter()
+
+                    for ancestors, edit in from_tree.get_all_edit_contexts(to_tree):
+                        for i, node in enumerate(ancestors):
+                            if node.parent is not None:
+                                node.parent.print_parent_context(printer, for_child=node)
+                            if i == len(ancestors) - 1:
+                                with printer.color(Fore.BLUE):
+                                    printer.write(" -> ")
+                                formatter.print(printer, edit)
+                        printer.newline()
+                        had_edits = had_edits or edit.has_non_zero_cost()
+                else:
+                    diff = from_tree.diff(to_tree)
+                    if args.format is not None:
+                        formatter = graphtage.FILETYPES_BY_TYPENAME[args.format].get_default_formatter()
+                    else:
+                        formatter = from_format.get_default_formatter()
+                    formatter.print(printer, diff)
+                    had_edits = any(any(e.has_non_zero_cost() for e in n.edit_list) for n in diff.dfs())
             printer.write('\n')
     except KeyboardInterrupt:
         return -2  # SIGINT

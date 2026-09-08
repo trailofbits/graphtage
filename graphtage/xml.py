@@ -89,10 +89,7 @@ class XMLElementEdit(AbstractCompoundEdit):
             return True
         elif self.attrib_edit.tighten_bounds():
             return True
-        elif self.child_edit.tighten_bounds():
-            return True
-        else:
-            return False
+        return bool(self.child_edit.tighten_bounds())
 
 
 class XMLElementObj:
@@ -217,9 +214,9 @@ class XMLElement(ContainerNode):
     def children(self) -> Collection[TreeNode]:
         ret = (self.tag, self.attrib)
         if self.text is not None:
-            return ret + (self.text, self._children)
+            return (*ret, self.text, self._children)
         else:
-            return ret + (self._children,)
+            return (*ret, self._children)
 
     def __iter__(self) -> Iterator[TreeNode]:
         return iter(self.children())
@@ -370,7 +367,7 @@ class XMLStringFormatter(StringFormatter):
 
 
 class XMLFormatter(GraphtageFormatter):
-    sub_format_types = [XMLStringFormatter, XMLChildFormatter, XMLElementAttribFormatter]
+    sub_format_types = (XMLStringFormatter, XMLChildFormatter, XMLElementAttribFormatter)
 
     def _print_text(self, element: XMLElement, printer: Printer):
         if element.text is None:
@@ -472,4 +469,4 @@ def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLEleme
     self.print(printer, DictNode(kvps))
 
 
-setattr(JSONFormatter, "print_XMLElement", _json_print_XMLElement)
+JSONFormatter.print_XMLElement = _json_print_XMLElement

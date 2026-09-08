@@ -134,7 +134,7 @@ Examples:
         ...         printer.newline()
         ...
         >>> class BarFormatter(BasicFormatter[Bar]):
-        ...     sub_format_types = [BarStringFormatter]
+        ...     sub_format_types = (BarStringFormatter,)
         ...     def print_Bar(self, printer: Printer, item: Bar):
         ...         printer.write("BarFormatter: ")
         ...         self.print(printer, item.bar)
@@ -228,9 +228,9 @@ class FormatterChecker(ABCMeta):
                             if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
                                     and not issubclass(Printer, a):
                                 raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
-                if not instance.is_partial and not cls.__name__ == 'BasicFormatter':
+                if not instance.is_partial and cls.__name__ != 'BasicFormatter':
                     FORMATTERS.append(instance)
-                setattr(cls, 'DEFAULT_INSTANCE', instance)
+                cls.DEFAULT_INSTANCE = instance
         super().__init__(name, bases, clsdict)
 
 
@@ -253,7 +253,7 @@ def _get_formatter(
                         return getattr(sub_formatter, f'print_{c.__name__}')
                     grandchildren.extend(sub_formatter.sub_formatters)
         tested.add(base_formatter.__class__)
-        tested |= set(s.__class__ for s in base_formatter.sub_formatters)
+        tested |= {s.__class__ for s in base_formatter.sub_formatters}
         for grandchild in grandchildren:
             ret = _get_formatter(node_type, grandchild, tested)
             if ret is not None:
@@ -298,15 +298,17 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
     """A default instance of this formatter, automatically instantiated by the :class:`FormatterChecker` metaclass."""
     sub_format_types: Sequence[type['Formatter[T]']] = ()
     """A list of formatter types that should be used as sub-formatters in the :ref:`Formatting Protocol`."""
-    sub_formatters: list['Formatter[T]'] = []
+    # Not a ClassVar: Formatter.__new__ gives every instance its own list. The class-level empty
+    # list is only a default for classes that are never instantiated.
+    sub_formatters: list['Formatter[T]'] = []  # noqa: RUF012
     """The list of instantiated formatters corresponding to :attr:`Formatter.sub_format_types`.
-    
+
     This list is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
-    
+
     """
     parent: Optional['Formatter[T]'] = None
     """The parent formatter for this formatter instance.
-    
+
     This is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
 
     """
@@ -328,7 +330,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
         """
         ret: Formatter[T] = super().__new__(cls)
-        setattr(ret, 'sub_formatters', [])
+        ret.sub_formatters = []
         for sub_formatter in ret.sub_format_types:
             ret.sub_formatters.append(sub_formatter())
             ret.sub_formatters[-1].parent = ret

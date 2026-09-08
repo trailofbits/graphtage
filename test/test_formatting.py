@@ -194,9 +194,9 @@ class TestFormatting(TestCase):
         obj_stack = []
         ret = TestFormatting._make_random_obj(
             obj_stack,
+            *args,
             force_container_type=force_outer_container_type,
             allow_non_container=force_outer_container_type is None,
-            *args,
             **kwargs
         )
 
@@ -222,12 +222,12 @@ class TestFormatting(TestCase):
                         if force_string_keys:
                             expanding[TestFormatting.make_random_str(*args, **kwargs)] = \
                                 TestFormatting._make_random_obj(
-                                    obj_stack, force_container_type=force_container_type, *args, **kwargs
+                                    obj_stack, *args, force_container_type=force_container_type, **kwargs
                                 )
                         else:
                             expanding[TestFormatting.make_random_non_container(*args, **kwargs)] = \
                                 TestFormatting._make_random_obj(
-                                    obj_stack, force_container_type=force_container_type, *args, **kwargs
+                                    obj_stack, *args, force_container_type=force_container_type, **kwargs
                                 )
             else:
                 if size == 0 and not allow_empty_containers:
@@ -241,12 +241,12 @@ class TestFormatting(TestCase):
                         force_container_type = None
                     for _ in range(size):
                         expanding.append(TestFormatting._make_random_obj(
-                            obj_stack, force_container_type=force_container_type, *args, **kwargs
+                            obj_stack, *args, force_container_type=force_container_type, **kwargs
                         ))
         return ret
 
     def test_formatter_coverage(self):
-        for name in graphtage.FILETYPES_BY_TYPENAME.keys():
+        for name in graphtage.FILETYPES_BY_TYPENAME:
             if not hasattr(self, f'test_{name}_formatting'):
                 self.fail(f"Filetype {name} is missing a `test_{name}_formatting` test function")
 

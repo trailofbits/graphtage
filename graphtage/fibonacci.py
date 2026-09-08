@@ -46,9 +46,9 @@ class HeapNode(Generic[T, Key]):
         """The node's marked state."""
         self.deleted: bool = False
         """Whether the node has been deleted.
-        
+
         This is to prevent nodes from being manipulated after they have been removed from a heap.
-        
+
         Warning:
             Do not set :attr:`HeapNode.deleted` to :const:`True` unless the node has already been removed from the heap.
 
@@ -322,9 +322,8 @@ class FibonacciHeap(Generic[T, Key]):
                 d += 1
             a[d] = x
         for i in range(0, len(a)):
-            if a[i] is not None:
-                if a[i] <= self._min:
-                    self._min = a[i]
+            if a[i] is not None and a[i] <= self._min:
+                self._min = a[i]
 
     def _link(self, y: HeapNode[T, Key], x: HeapNode[T, Key]):
         self._remove_root(y)

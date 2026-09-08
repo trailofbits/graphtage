@@ -14,8 +14,13 @@ class AbstractEdit(Debuggable, Edit, ABC):
     """Abstract base class for the :class:`Edit` protocol."""
 
     __slots__ = (
-        'from_node', 'to_node', '_constant_cost', '_cost_upper_bound',
-        '_valid', 'initial_bounds', '_checking_bounds'
+        '_checking_bounds',
+        '_constant_cost',
+        '_cost_upper_bound',
+        '_valid',
+        'from_node',
+        'initial_bounds',
+        'to_node'
     )
 
     def __init__(self,
@@ -42,9 +47,9 @@ class AbstractEdit(Debuggable, Edit, ABC):
         self._cached_bounds: Range | None = None
         self.initial_bounds = self.bounds()
         """The initial bounds of this edit.
-         
+
          This is automatically set by calling :meth:`self.bounds()<AbstractEdit.bounds>` during initialization.
-         
+
          """
 
     def _debug_tighten_bounds(self) -> bool:
@@ -71,19 +76,19 @@ class AbstractEdit(Debuggable, Edit, ABC):
         if name in ("bounds", "__getattribute__", "tighten_bounds", "_original_tighten_bounds", "_checking_bounds") \
                 or (hasattr(self, "_checking_bounds") and self._checking_bounds):
             checking_before = hasattr(self, "_checking_bounds") and self._checking_bounds
-            setattr(self, "_checking_bounds", True)
+            self._checking_bounds = True
             try:
                 return method(*args, **kwargs)
             finally:
-                setattr(self, "_checking_bounds", checking_before)
+                self._checking_bounds = checking_before
 
-        setattr(self, "_checking_bounds", True)
+        self._checking_bounds = True
         try:
             bounds_before = self.bounds()
             new_result = method(*args, **kwargs)
             new_bounds = self.bounds()
         finally:
-            setattr(self, "_checking_bounds", False)
+            self._checking_bounds = False
         if new_bounds != bounds_before:
             print(f"Error: Bounds before calling {self!r}.{name}(*{args!r}, **{kwargs!r}) were {bounds_before!s} "
                   f"but {new_bounds!s} after")
@@ -307,14 +312,12 @@ class Match(ConstantCostEdit):
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         if self.bounds() > Range(0, 0):
-            with printer.bright().background(Back.RED).color(Fore.WHITE):
-                with printer.strike():
-                    formatter.print(printer=printer, node_or_edit=self.from_node, with_edits=False)
+            with printer.bright().background(Back.RED).color(Fore.WHITE), printer.strike():
+                formatter.print(printer=printer, node_or_edit=self.from_node, with_edits=False)
             with printer.color(Fore.CYAN):
                 printer.write(' -> ')
-            with printer.bright().background(Back.GREEN).color(Fore.WHITE):
-                with printer.under_plus():
-                    formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
+            with printer.bright().background(Back.GREEN).color(Fore.WHITE), printer.under_plus():
+                formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
         else:
             formatter.print(printer=printer, node_or_edit=self.to_node, with_edits=False)
 
@@ -371,16 +374,14 @@ class Remove(ConstantCostEdit):
         from_node.removed = True
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
-        with printer.bright():
-            with printer.background(Back.RED):
-                with printer.color(Fore.WHITE):
-                    if not printer.ansi_color:
-                        printer.write(self.REMOVE_STRING)
-                        formatter.print(printer, self.from_node, False)
-                        printer.write(self.REMOVE_STRING)
-                    else:
-                        with printer.strike():
-                            formatter.print(printer, self.from_node, False)
+        with printer.bright(), printer.background(Back.RED), printer.color(Fore.WHITE):
+            if not printer.ansi_color:
+                printer.write(self.REMOVE_STRING)
+                formatter.print(printer, self.from_node, False)
+                printer.write(self.REMOVE_STRING)
+            else:
+                with printer.strike():
+                    formatter.print(printer, self.from_node, False)
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.from_node!r}, remove_from={self.to_node!r})"
@@ -433,7 +434,7 @@ C = TypeVar('C', bound=Collection)
 class EditCollection(AbstractCompoundEdit, Generic[C]):
     """An edit comprised of one or more sub-edits."""
 
-    __slots__ = ('_edit_iter', '_sub_edits', '_cost', 'explode_edits', '_add')
+    __slots__ = ('_add', '_cost', '_edit_iter', '_sub_edits', 'explode_edits')
 
     def __init__(
             self,

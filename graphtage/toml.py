@@ -98,7 +98,7 @@ class TOMLMapping:
         if self.parent is None:
             return ()
         else:
-            return self.parent.name_segments + (self.parent_name,)
+            return (*self.parent.name_segments, self.parent_name)
 
     def items(self) -> Iterator[KeyValuePairNode]:
         inserted = ()
@@ -129,7 +129,7 @@ class TOMLMapping:
 
 
 class TOMLFormatter(GraphtageFormatter):
-    sub_format_types = [TOMLListFormatter, TOMLStringFormatter]
+    sub_format_types = (TOMLListFormatter, TOMLStringFormatter)
 
     def print(self, printer: Printer, *args, **kwargs):
         # TOML has optional indentation; make it only two spaces, if we use it:

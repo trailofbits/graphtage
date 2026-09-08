@@ -848,17 +848,15 @@ class StringFormatter(GraphtageFormatter):
                     remove_seq.append(to_remove)
                     add_seq.append(to_add)
                 else:
-                    with printer.color(Fore.WHITE).background(Back.RED).bright():
-                        with printer.strike():
-                            for rm in remove_seq:
-                                self.write_char(p, rm, index, num_edits, removed=True)
-                                index += 1
+                    with printer.color(Fore.WHITE).background(Back.RED).bright(), printer.strike():
+                        for rm in remove_seq:
+                            self.write_char(p, rm, index, num_edits, removed=True)
+                            index += 1
                     remove_seq = []
-                    with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                        with printer.under_plus():
-                            for add in add_seq:
-                                self.write_char(p, add, index, num_edits, inserted=True)
-                                index += 1
+                    with printer.color(Fore.WHITE).background(Back.GREEN).bright(), printer.under_plus():
+                        for add in add_seq:
+                            self.write_char(p, add, index, num_edits, inserted=True)
+                            index += 1
                     add_seq = []
                     if to_remove is not None:
                         remove_seq.append(to_remove)
@@ -867,16 +865,14 @@ class StringFormatter(GraphtageFormatter):
                     if matched is not None:
                         self.write_char(p, matched, index, num_edits)
                         index += 1
-            with printer.color(Fore.WHITE).background(Back.RED).bright():
-                with printer.strike():
-                    for j, rm in enumerate(remove_seq):
-                        self.write_char(p, rm, index, num_edits, removed=True)
-                        index += 1
-            with printer.color(Fore.WHITE).background(Back.GREEN).bright():
-                with printer.under_plus():
-                    for add in add_seq:
-                        self.write_char(p, add, index, num_edits, inserted=True)
-                        index += 1
+            with printer.color(Fore.WHITE).background(Back.RED).bright(), printer.strike():
+                for rm in remove_seq:
+                    self.write_char(p, rm, index, num_edits, removed=True)
+                    index += 1
+            with printer.color(Fore.WHITE).background(Back.GREEN).bright(), printer.under_plus():
+                for add in add_seq:
+                    self.write_char(p, add, index, num_edits, inserted=True)
+                    index += 1
             if self._last_was_inserted:
                 printer.write(Insert.INSERT_STRING)
                 self._last_was_inserted = False
@@ -954,10 +950,7 @@ class NullNode(LeafNode):
             return Replace(self, node)
 
     def __lt__(self, other):
-        if isinstance(other, NullNode):
-            return False
-        else:
-            return True
+        return not isinstance(other, NullNode)
 
     def __eq__(self, other):
         return isinstance(other, NullNode)
@@ -1008,7 +1001,7 @@ class FiletypeWatcher(ABCMeta):
             instance = cls()
             assert instance.name in FILETYPES_BY_TYPENAME
             assert instance.default_mimetype in FILETYPES_BY_MIME
-            setattr(cls, "default_instance", instance)
+            cls.default_instance = instance
         super().__init__(name, bases, clsdict)
 
 
@@ -1057,10 +1050,10 @@ class BuildOptions:
         """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
         self.check_for_cycles = check_for_cyces
         """If possible, check for cycles in the input
-        
+
         If `True` and if `ignore_cycles` is `False`, then a :class:`ValueError` will be raised if a cycle is detected
         while constructing the Graphtage tree.
-        
+
         """
         self.ignore_cycles = ignore_cycles
         """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
@@ -1104,7 +1097,7 @@ class Filetype(metaclass=FiletypeWatcher):
         """
         self.name = type_name
         self.default_mimetype: str = default_mimetype
-        self.mimetypes: tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
+        self.mimetypes: tuple[str, ...] = (default_mimetype, *mimetypes)
         for mime_type in self.mimetypes:
             if mime_type in FILETYPES_BY_MIME:
                 raise ValueError(f"MIME type {mime_type} is already assigned to {FILETYPES_BY_MIME[mime_type]}")

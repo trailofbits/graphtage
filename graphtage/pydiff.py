@@ -167,7 +167,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.expander(ast.Assign)
     def expand_assign(self, node: ast.Assign):
-        return node.targets + [node.value]
+        return [*node.targets, node.value]
 
     @Builder.builder(ast.Assign)
     def build_assign(self, _, children):
@@ -191,7 +191,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.expander(ast.Call)
     def expand_call(self, node: ast.Call):
-        return [node.func] + node.args
+        return [node.func, *node.args]
 
     @Builder.builder(ast.Call)
     def build_call(self, _, children: list[TreeNode]):
@@ -278,11 +278,8 @@ class PyObjBuilder(BasicBuilder):
         assert isinstance(name, StringNode)
         name.quoted = False
         assert (len(children) - 1) % 2 == 0
-        members = {
-            attr: value
-            for attr, value in zip(children[1::2], children[2::2])
-        }
-        for attr in members.keys():
+        members = dict(zip(children[1::2], children[2::2], strict=True))
+        for attr in members:
             assert isinstance(attr, StringNode)
             attr.quoted = False
         if self.options.allow_key_edits:
@@ -327,7 +324,7 @@ class PyDictFormatter(JSONDictFormatter):
 class PyImportFormatter(SequenceFormatter):
     is_partial = True
 
-    sub_format_types = [PyListFormatter]
+    sub_format_types = (PyListFormatter,)
 
     def __init__(self):
         super().__init__('', '', ', ')
@@ -354,7 +351,7 @@ class PyImportFormatter(SequenceFormatter):
 class PyObjFormatter(SequenceFormatter):
     is_partial = True
 
-    sub_format_types = [PyListFormatter, PyDictFormatter]
+    sub_format_types = (PyListFormatter, PyDictFormatter)
 
     def __init__(self):
         super().__init__('(', ')', ', ')
@@ -404,14 +401,14 @@ class PyObjFormatter(SequenceFormatter):
 class PyModuleFormatter(SequenceFormatter):
     is_partial = True
 
-    sub_format_types = [PyListFormatter]
+    sub_format_types = (PyListFormatter,)
 
     def __init__(self):
         super().__init__('', '', '')
 
     def items_indent(self, printer: Printer) -> Printer:
         return printer
-    
+
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
         if not is_first:
             printer.newline()
@@ -421,7 +418,7 @@ class PyModuleFormatter(SequenceFormatter):
 
 
 class PyDiffFormatter(GraphtageFormatter):
-    sub_format_types = [PyObjFormatter, PyImportFormatter, PyModuleFormatter, PyListFormatter, PyDictFormatter]
+    sub_format_types = (PyObjFormatter, PyImportFormatter, PyModuleFormatter, PyListFormatter, PyDictFormatter)
 
     def print_PyAlias(self, printer: Printer, node: PyAlias):
         self.print(printer, node.name)

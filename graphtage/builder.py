@@ -54,9 +54,9 @@ class Builder(ABC):
     def expander(node_type: type[T]):
         def wrapper(func: Callable[[C, T], Iterable[Any]]) -> Callable[[C, T], Iterable[Any]]:
             if hasattr(func, "_visitor_expander_for_type"):
-                func._visitor_expander_for_type = func._visitor_expander_for_type + (node_type,)
+                func._visitor_expander_for_type = (*func._visitor_expander_for_type, node_type)
             else:
-                setattr(func, "_visitor_expander_for_type", (node_type,))
+                func._visitor_expander_for_type = (node_type,)
             return func
 
         return wrapper
@@ -65,9 +65,9 @@ class Builder(ABC):
     def builder(node_type: type[T]):
         def wrapper(func: Callable[[C, T, list[TreeNode]], TreeNode]) -> Callable[[C, T, list[TreeNode]], TreeNode]:
             if hasattr(func, "_visitor_builder_for_type"):
-                func._visitor_builder_for_type = func._visitor_builder_for_type + (node_type,)
+                func._visitor_builder_for_type = (*func._visitor_builder_for_type, node_type)
             else:
-                setattr(func, "_visitor_builder_for_type", (node_type,))
+                func._visitor_builder_for_type = (node_type,)
             return func
 
         return wrapper
@@ -75,18 +75,18 @@ class Builder(ABC):
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         if not hasattr(cls, "EXPANDERS") or cls.EXPANDERS is None:
-            setattr(cls, "EXPANDERS", {})
+            cls.EXPANDERS = {}
         else:
-            setattr(cls, "EXPANDERS", dict(cls.EXPANDERS))
+            cls.EXPANDERS = dict(cls.EXPANDERS)
         if not hasattr(cls, "BUILDERS") or cls.BUILDERS is None:
-            setattr(cls, "BUILDERS", {})
+            cls.BUILDERS = {}
         else:
-            setattr(cls, "BUILDERS", dict(cls.BUILDERS))
+            cls.BUILDERS = dict(cls.BUILDERS)
         new_expanders = {}
         new_builders = {}
         for member_name, member in cls.__dict__.items():
             if hasattr(member, "_visitor_expander_for_type"):
-                for expander_type in getattr(member, "_visitor_expander_for_type"):
+                for expander_type in member._visitor_expander_for_type:
                     if not isinstance(expander_type, type):
                         raise TypeError(f"{cls.__name__}.{member_name} was registered as an expander for "
                                         f"{expander_type!r}, which is not a type")
@@ -100,7 +100,7 @@ class Builder(ABC):
                                         f"{cls.__name__}.{member_name}")
                     new_expanders[expander_type] = member
             if hasattr(member, "_visitor_builder_for_type"):
-                for builder_type in getattr(member, "_visitor_builder_for_type"):
+                for builder_type in member._visitor_builder_for_type:
                     if not isinstance(builder_type, type):
                         raise TypeError(f"{cls.__name__}.{member_name} was registered as an builder for "
                                         f"{builder_type!r}, which is not a type")
@@ -164,7 +164,6 @@ class Builder(ABC):
     def build_tree(self, root_obj) -> TreeNode:
         children = self.expand(root_obj)
         work: list[tuple[Any, list[TreeNode], list[Any]]] = [(root_obj, [], list(reversed(list(children))))]
-        basic_builder = BasicBuilder(self.options)
         with self.options.printer.tqdm(
                 desc="Walking the Tree", leave=False, delay=2.0, unit=" nodes", total=1 + len(work[-1][-1])
         ) as t:
@@ -271,10 +270,7 @@ class BasicBuilder(Builder):
         n = len(children) // 2
         keys = children[:n]
         values = children[n:]
-        dict_items = {
-            k: v
-            for k, v in zip(keys, values)
-        }
+        dict_items = dict(zip(keys, values, strict=True))
         if self.options.allow_key_edits:
             dict_node = DictNode.from_dict(dict_items)
             dict_node.auto_match_keys = self.options.auto_match_keys

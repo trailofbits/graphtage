@@ -83,9 +83,18 @@ class EditDistance(SequenceEdit):
     """
 
     __slots__ = (
-        'penalty', 'shared_prefix', 'reversed_shared_suffix', 'from_seq', 'to_seq',
-        'edit_matrix', 'path_costs', 'costs', '_fringe_row', '_fringe_col',
-        '_last_fringe', '_EditDistance__edits'
+        '_EditDistance__edits',
+        '_fringe_col',
+        '_fringe_row',
+        '_last_fringe',
+        'costs',
+        'edit_matrix',
+        'from_seq',
+        'path_costs',
+        'penalty',
+        'reversed_shared_suffix',
+        'shared_prefix',
+        'to_seq'
     )
 
     def __init__(
@@ -110,7 +119,7 @@ class EditDistance(SequenceEdit):
         # Optimization: See if the sequences trivially share a common prefix or suffix.
         # If so, this will quadratically reduce the size of the Levenshtein matrix
         self.shared_prefix: list[tuple[TreeNode, TreeNode]] = []
-        for fn, tn in zip(from_seq, to_seq):
+        for fn, tn in zip(from_seq, to_seq, strict=False):
             if fn == tn:
                 self.shared_prefix.append((fn, tn))
             else:
@@ -118,7 +127,8 @@ class EditDistance(SequenceEdit):
         self.reversed_shared_suffix: list[tuple[TreeNode, TreeNode]] = []
         for fn, tn in zip(
                 reversed(from_seq[len(self.shared_prefix):]),
-                reversed(to_seq[len(self.shared_prefix):])
+                reversed(to_seq[len(self.shared_prefix):]),
+                strict=False
         ):
             if fn == tn:
                 self.reversed_shared_suffix.append((fn, tn))
@@ -199,12 +209,9 @@ class EditDistance(SequenceEdit):
         for row, col in self._fringe_diagonal():
             self._add_node(row, col)
         if self._fringe_col >= len(self.from_seq):
-            if self._fringe_row < len(self.to_seq):
-                # This is an edge case when the string we are matching from is shorter than the one we are matching to
-                return True
-            return False
-        else:
-            return True
+            # This is an edge case when the string we are matching from is shorter than the one we are matching to
+            return self._fringe_row < len(self.to_seq)
+        return True
 
     def is_complete(self) -> bool:
         """An edit distance edit is only complete once its Levenshtein edit matrix has been fully constructed."""

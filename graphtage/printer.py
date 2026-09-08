@@ -376,11 +376,11 @@ class HTMLANSIContext(ANSIContext):
             style += f"background-color: {self.get_back(self._back)};"
         if self._style is not None and (self._parent is None or self._style != self.parent.style):
             if self._style == Style.BRIGHT:
-                style += f"font-weight: bold; opacity: 1.0;"
+                style += "font-weight: bold; opacity: 1.0;"
             elif self._style == Style.DIM:
-                style += f"opacity: 0.6; font-weight: normal;"
+                style += "opacity: 0.6; font-weight: normal;"
             else:
-                style += f"font-weight: normal; opacity: 1.0;"
+                style += "font-weight: normal; opacity: 1.0;"
 
         if style:
             self._start_code = f'{self._start_code}<span style="{style}">'

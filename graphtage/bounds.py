@@ -173,7 +173,7 @@ class Range:
         return hash((self.lower_bound, self.upper_bound))
 
     def __add__(self, other):
-        if isinstance(other, int) or isinstance(other, Infinity):
+        if isinstance(other, (int, Infinity)):
             return Range(self.lower_bound + other, self.upper_bound + other)
         else:
             return Range(self.lower_bound + other.lower_bound, self.upper_bound + other.upper_bound)
@@ -182,7 +182,7 @@ class Range:
         return self + other
 
     def __sub__(self, other):
-        if isinstance(other, int) or isinstance(other, Infinity):
+        if isinstance(other, (int, Infinity)):
             return Range(self.lower_bound - other, self.upper_bound - other)
         else:
             return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)

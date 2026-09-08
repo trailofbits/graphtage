@@ -104,23 +104,22 @@ class MatchingNode(Generic[T], metaclass=ABCMeta):
     def construct_edges(self) -> dict['MatchingNode[T]', Edge[T]]:
         pass
 
-    def edges(self) -> Iterable[Edge[T]]:
+    def _edge_map(self) -> dict['MatchingNode[T]', Edge[T]]:
         if self._edges is None:
             self._edges = self.construct_edges()
-        return self._edges.values()
+        return self._edges
+
+    def edges(self) -> Iterable[Edge[T]]:
+        return self._edge_map().values()
 
     def __repr__(self):
         return repr(self.node)
 
     def __getitem__(self, neighbor: 'MatchingNode[T]') -> Edge[T]:
-        if self._edges is None:
-            self.edges
-        return self._edges[neighbor]
+        return self._edge_map()[neighbor]
 
     def __contains__(self, node):
-        if self._edges is None:
-            self.edges
-        return node in self._edges
+        return node in self._edge_map()
 
     def __hash__(self):
         return hash(self.node)
@@ -242,10 +241,7 @@ class Matching(SetCollection, Bounded, set[Edge[T]], Generic[T]):
         self._edges_by_node[edge.to_node] = edge
 
     def tighten_bounds(self) -> bool:
-        for edge in self:
-            if edge.weight.tighten_bounds():
-                return True
-        return False
+        return any(edge.weight.tighten_bounds() for edge in self)
 
     def bounds(self) -> Range:
         return sum(edge.weight.bounds() for edge in self._edges)
@@ -537,7 +533,7 @@ def min_weight_bipartite_matching(
         dtype = bool
     elif edge_type is float:
         dtype = float
-    elif not edge_type is int:
+    elif edge_type is not int:
         raise ValueError(f"Unexpected edge type: {edge_type}")
     else:
         dtype = get_dtype(min_edge, max_edge)
@@ -551,7 +547,7 @@ def min_weight_bipartite_matching(
     left_matches = linear_sum_assignment(np.array(weights, dtype=dtype), maximize=False)
     return {
         from_index: (to_index, weights[from_index][to_index])
-        for from_index, to_index in zip(*left_matches)
+        for from_index, to_index in zip(*left_matches, strict=True)
         if not has_null_edges or weights[from_index][to_index] < null_edge_value
     }
 
@@ -698,7 +694,4 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 return True
             _ = self.matching     # This computes the minimum weight matching
             return True
-        for (_, (_, edge)) in self.matching.items():
-            if edge.tighten_bounds():
-                return True
-        return False
+        return any(edge.tighten_bounds() for _, (_, edge) in self.matching.items())

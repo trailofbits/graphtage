@@ -52,7 +52,7 @@ def build_tree(path: str, options: BuildOptions | None = None, *args, **kwargs) 
     """Constructs a PLIST tree from an PLIST file."""
     with open(path, "rb") as stream:
         data = load(stream)
-        return PLISTNode(json.build_tree(data, options=options, *args, **kwargs))
+        return PLISTNode(json.build_tree(data, *args, options=options, **kwargs))
 
 
 class PLISTSequenceFormatter(SequenceFormatter):
@@ -105,7 +105,7 @@ PLIST_HEADER, PLIST_FOOTER = _plist_header_footer()
 
 
 class PLISTFormatter(GraphtageFormatter):
-    sub_format_types = [PLISTSequenceFormatter]
+    sub_format_types = (PLISTSequenceFormatter,)
 
     def print(self, printer: Printer, *args, **kwargs):
         # PLIST uses an eight-space indent

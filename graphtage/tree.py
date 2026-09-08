@@ -553,7 +553,7 @@ class TreeNode(metaclass=TreeNodeMeta):
             ancestors, edit = edit_stack.pop()
             if isinstance(edit, CompoundEdit):
                 for sub_edit in reversed(list(edit.edits())):
-                    edit_stack.append((ancestors + (sub_edit.from_node,), sub_edit))
+                    edit_stack.append(((*ancestors, sub_edit.from_node), sub_edit))
             else:
                 while edit.bounds().lower_bound == 0 and not edit.bounds().definitive() and edit.tighten_bounds():
                     pass
@@ -661,14 +661,14 @@ class ContainerNode(TreeNode, Sized, ABC):
         super().__init_subclass__(**kwargs)
         # wrap the subclass's __init__ function to auto-set the parents of its children
         if "__init__" in cls.__dict__ and cls.__init__ is not object.__init__:
-            orig_init = getattr(cls, "__init__")
+            orig_init = cls.__init__
 
             @wraps(orig_init)
             def wrapped(self: ContainerNode, *args, **kw):
                 if hasattr(self, "_container_initializing") and self._container_initializing:
                     first_init = False
                 else:
-                    setattr(self, "_container_initializing", True)
+                    self._container_initializing = True
                     first_init = True
                 ret = orig_init(self, *args, **kw)
                 if first_init:

@@ -67,7 +67,7 @@ class TestBounds(TestCase):
         for _ in trange(100):
             ranges = [RandomDecreasingRange() for _ in range(100)]
             sorted_ranges = sorted(ranges, key=lambda r: r.final_value)
-            for expected, actual in zip(sorted_ranges, sort(ranges)):
+            for expected, actual in zip(sorted_ranges, sort(ranges), strict=True):
                 self.assertEqual(expected.final_value, actual.final_value)
 
     def test_make_distinct(self):
