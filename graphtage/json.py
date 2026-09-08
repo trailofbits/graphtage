@@ -296,7 +296,7 @@ class JSON5(Filetype):
         try:
             return self.build_tree(path=path, options=options)
         except ValueError as ve:
-            return f'Error parsing {os.path.basename(path)}: {ve:!s}'
+            return f'Error parsing {os.path.basename(path)}: {ve!s}'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE
