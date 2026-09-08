@@ -31,7 +31,7 @@ jobs:
 
       # The ruff version comes from the dev extra in pyproject.toml.
       - name: Lint with ruff
-        run: uv run --frozen --extra dev ruff check graphtage test
+        run: uv run --frozen --extra dev ruff check graphtage test docs bindist
 
       - name: Check that uv.lock matches pyproject.toml
         run: uv lock --check

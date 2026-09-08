@@ -30,7 +30,7 @@ def get_version_string():
 # -- Project information -----------------------------------------------------
 
 project = 'Graphtage'
-copyright = '2020, Trail of Bits'
+copyright = '2020-2026, Trail of Bits'
 author = 'Evan Sultanik'
 
 # The full version, including alpha/beta/rc tags
@@ -73,10 +73,15 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #html_theme = 'classic'
 html_theme = 'sphinx_rtd_theme'
 
+# Replaces the theme's deprecated canonical_url option.
+html_baseurl = 'https://trailofbits.github.io/graphtage/latest/'
+
 html_theme_options = {
-    'canonical_url': f'https://trailofbits.github.io/graphtage/latest/',
     'logo_only': False,
-    'display_version': False,   # This manually configured in our custom templates
+    # sphinx_rtd_theme 3.0 replaced display_version with these two. The version picker is
+    # built by hand in _templates/layout.html.
+    'version_selector': False,
+    'language_selector': False,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': True,
     #'vcs_pageview_mode': '',
@@ -110,13 +115,12 @@ def skip(app, what, name, obj, would_skip, options):
 
 
 def docstring_callback(app, what, name, obj, options, lines: list):
-    if what == 'class' or what == 'function':
-        if lines and lines[0].strip():
-            lines.insert(1, '')
-            lines.insert(2, name)
-            lines.insert(3, '*' * len(name))
-            if len(lines) == 4:
-                lines.append('')
+    if what in ('class', 'function') and lines and lines[0].strip():
+        lines.insert(1, '')
+        lines.insert(2, name)
+        lines.insert(3, '*' * len(name))
+        if len(lines) == 4:
+            lines.append('')
 
 
 def setup(app):
