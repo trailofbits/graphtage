@@ -71,6 +71,8 @@ class PLISTSequenceFormatter(SequenceFormatter):
         super().print_SequenceNode(printer, *args, **kwargs)
         printer.write("</array>")
 
+    print_UnorderedListNode = print_ListNode
+
     def print_MultiSetNode(self, printer: Printer, *args, **kwargs):
         printer.write("<dict>")
         super().print_SequenceNode(printer, *args, **kwargs)

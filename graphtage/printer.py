@@ -9,7 +9,8 @@ There are several reasons for using this abstraction when printing in Graphtage:
    the command line).
 
 Attributes:
-    DEFAULT_PRINTER (Printer): A default :class:`Printer` instance printing to :attr:`sys.stdout`.
+    DEFAULT_PRINTER (Printer): A default :class:`Printer` instance printing to :attr:`sys.stdout`. Read it through
+        :func:`get_default_printer` rather than importing the name, because :func:`set_default_printer` replaces it.
 
 """
 
@@ -442,6 +443,24 @@ class NullANSIContext:
 ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
 
 
+def enable_ansi_support(force_color: bool = False):
+    """Prepares :attr:`sys.stdout` and :attr:`sys.stderr` to receive ANSI escape sequences.
+
+    On a legacy Windows console, :mod:`colorama` replaces both streams with wrappers that translate the escape
+    sequences into Win32 console calls. A :class:`Printer` captures its output stream when it is constructed, so call
+    this function first; a printer constructed beforehand writes past the wrapper and its color is lost.
+
+    This function mutates global state, so call it from an application entry point rather than from library code.
+
+    Args:
+        force_color: If :const:`True`, keep the escape sequences even when the output stream is not a terminal.
+            :mod:`colorama` strips them in that case by default, which would discard color that the user explicitly
+            requested.
+
+    """
+    colorama.init(strip=False if force_color else None)
+
+
 class Printer(StatusWriter, RawWriter):
     """An ANSI color and status printer."""
 
@@ -478,8 +497,6 @@ class Printer(StatusWriter, RawWriter):
         """The string used for each indent step (default is four spaces)."""
         self._ansi_color = None
         self.ansi_color = ansi_color
-        if self.ansi_color:
-            colorama.init()
         self._strikethrough = False
         self._plusthrough = False
         if options is not None:
@@ -654,12 +671,40 @@ class HTMLPrinter(Printer):
 DEFAULT_PRINTER: Printer = Printer()
 
 
+def get_default_printer() -> Printer:
+    """Returns the printer that library code uses when the caller does not supply one.
+
+    Call this instead of importing :attr:`DEFAULT_PRINTER` by name. :func:`set_default_printer` rebinds the module
+    attribute, which a name bound by ``from .printer import DEFAULT_PRINTER`` never observes: such a name keeps
+    referring to the printer that was current when the importing module was first loaded.
+
+    Returns:
+        Printer: The printer most recently passed to :func:`set_default_printer`, or :attr:`DEFAULT_PRINTER` if that
+        function was never called.
+
+    """
+    return DEFAULT_PRINTER
+
+
+def set_default_printer(printer: Printer):
+    """Installs :obj:`printer` as the printer returned by :func:`get_default_printer`.
+
+    This mutates global state, so call it from an application entry point rather than from library code.
+
+    Args:
+        printer: The printer to install.
+
+    """
+    global DEFAULT_PRINTER
+    DEFAULT_PRINTER = printer
+
+
 class NullWriter(Writer):
     def write(self, s: str) -> int:
         return 0
 
     def isatty(self) -> bool:
-        return True
+        return False
 
     def flush(self):
         pass

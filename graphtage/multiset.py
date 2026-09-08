@@ -5,6 +5,7 @@ This is used by :class:`graphtage.MultiSetNode` and :class:`graphtage.DictNode`,
 
 """
 
+import logging
 from typing import Iterator, List
 
 import graphtage
@@ -14,6 +15,11 @@ from .matching import WeightedBipartiteMatcher
 from .sequences import SequenceEdit, SequenceNode
 from .tree import Edit, TreeNode
 from .utils import HashableCounter, largest
+
+log = logging.getLogger(__name__)
+
+MATCHING_SIZE_WARNING_THRESHOLD = 400
+"""The number of candidate pairs above which matching two unordered collections is reported as slow."""
 
 
 class MultiSetEdit(SequenceEdit):
@@ -57,7 +63,7 @@ class MultiSetEdit(SequenceEdit):
                 if not isinstance(f, graphtage.KeyValuePairNode):
                     continue
                 for t in to_set.keys():
-                    if not isinstance(f, graphtage.KeyValuePairNode):
+                    if not isinstance(t, graphtage.KeyValuePairNode):
                         continue
                     if f.key == t.key:
                         num_matched = min(from_set[f], to_set[t])
@@ -75,6 +81,12 @@ class MultiSetEdit(SequenceEdit):
         self.to_remove = from_set - to_set
         """The set of nodes in :obj:`from_set` that do not exist in :obj:`to_set`."""
         to_match = from_set & to_set
+        num_pairs = sum(self.to_remove.values()) * sum(self.to_insert.values())
+        if num_pairs > MATCHING_SIZE_WARNING_THRESHOLD:
+            log.warning(
+                "Matching %d unordered elements against %d requires costing %d pairs, which can take a long time",
+                sum(self.to_remove.values()), sum(self.to_insert.values()), num_pairs
+            )
         self._edits: List[Edit] = [Match(n, n, 0) for n in to_match.elements()]
         self._matcher = WeightedBipartiteMatcher(
             from_nodes=self.to_remove.elements(),

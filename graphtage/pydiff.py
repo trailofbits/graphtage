@@ -147,7 +147,16 @@ class ASTBuilder(BasicBuilder):
     @Builder.builder(ast.List)
     @Builder.builder(ast.Tuple)
     def build_ast_list(self, node: ast.List, children):
-        return self.build_list(node, children)
+        """Builds an ordered list, ignoring :attr:`BuildOptions.ignore_list_order`.
+
+        The elements of a Python list or tuple literal are positional, so reordering them is a change to the source.
+
+        """
+        return ListNode(
+            children,
+            allow_list_edits=self.options.allow_list_edits,
+            allow_list_edits_when_same_length=self.options.allow_list_edits_when_same_length
+        )
 
     @Builder.expander(ast.Assign)
     def expand_assign(self, node: ast.Assign):

@@ -43,6 +43,8 @@ class TOMLListFormatter(SequenceFormatter):
         """
         super().print_SequenceNode(*args, **kwargs)
 
+    print_UnorderedListNode = print_ListNode
+
     def print_SequenceNode(self, *args, **kwargs):
         """Prints a non-List sequence.
 

@@ -71,6 +71,32 @@ class HashableCounter(Generic[T], typing.Counter[T], Counter):
             h ^= hash((key, value))
         return h
 
+    def __eq__(self, other):
+        """Tests multiset equality with a single lookup per element.
+
+        :meth:`collections.Counter.__eq__` iterates over the elements of *both* counters, so it looks up every
+        element once in each direction. When the elements are themselves trees whose equality recurses into
+        nested counters, each level of nesting compares its children twice, which makes the comparison
+        exponential in the nesting depth. Probing only one side is linear in the total number of elements.
+
+        Args:
+            other: The object to compare against.
+
+        Returns:
+            bool: :const:`True` if every element has the same count in both counters, treating missing counts as
+            zero, exactly as :class:`collections.Counter` does.
+
+        """
+        if self is other:
+            return True
+        elif not isinstance(other, Counter):
+            return NotImplemented
+        our_elements = sum(1 for count in self.values() if count)
+        their_elements = sum(1 for count in other.values() if count)
+        if our_elements != their_elements:
+            return False
+        return all(other.get(element, 0) == count for element, count in self.items() if count)
+
     def elements(self) -> Iterator:
         """Iterator over elements repeating each as many times as its count.
 

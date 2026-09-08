@@ -45,6 +45,8 @@ class YAMLListFormatter(SequenceFormatter):
         printer.newline()
         super().print_SequenceNode(printer, *args, **kwargs)
 
+    print_UnorderedListNode = print_ListNode
+
     def edit_print(self, printer: Printer, edit: Edit):
         printer.indents += 1
         self.print(printer, edit)

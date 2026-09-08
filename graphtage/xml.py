@@ -309,6 +309,8 @@ class XMLChildFormatter(SequenceFormatter):
     def print_ListNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
 
+    print_UnorderedListNode = print_ListNode
+
 
 class XMLElementAttribFormatter(SequenceFormatter):
     is_partial = True
