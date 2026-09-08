@@ -227,6 +227,8 @@ def main(argv=None) -> int:
         mimetypes.add_type('application/json5', '.json5')
     if '.toml' not in mimetypes.types_map:
         mimetypes.add_type('application/toml', '.toml')
+    if '.ini' not in mimetypes.types_map:
+        mimetypes.add_type('text/ini', '.ini')
     if '.plist' not in mimetypes.types_map:
         mimetypes.add_type('application/x-plist', '.plist')
     if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
