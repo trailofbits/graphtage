@@ -9,7 +9,8 @@ There are several reasons for using this abstraction when printing in Graphtage:
    the command line).
 
 Attributes:
-    DEFAULT_PRINTER (Printer): A default :class:`Printer` instance printing to :attr:`sys.stdout`.
+    DEFAULT_PRINTER (Printer): A default :class:`Printer` instance printing to :attr:`sys.stdout`. Read it through
+        :func:`get_default_printer` rather than importing the name, because :func:`set_default_printer` replaces it.
 
 """
 
@@ -668,6 +669,34 @@ class HTMLPrinter(Printer):
 
 
 DEFAULT_PRINTER: Printer = Printer()
+
+
+def get_default_printer() -> Printer:
+    """Returns the printer that library code uses when the caller does not supply one.
+
+    Call this instead of importing :attr:`DEFAULT_PRINTER` by name. :func:`set_default_printer` rebinds the module
+    attribute, which a name bound by ``from .printer import DEFAULT_PRINTER`` never observes: such a name keeps
+    referring to the printer that was current when the importing module was first loaded.
+
+    Returns:
+        Printer: The printer most recently passed to :func:`set_default_printer`, or :attr:`DEFAULT_PRINTER` if that
+        function was never called.
+
+    """
+    return DEFAULT_PRINTER
+
+
+def set_default_printer(printer: Printer):
+    """Installs :obj:`printer` as the printer returned by :func:`get_default_printer`.
+
+    This mutates global state, so call it from an application entry point rather than from library code.
+
+    Args:
+        printer: The printer to install.
+
+    """
+    global DEFAULT_PRINTER
+    DEFAULT_PRINTER = printer
 
 
 class NullWriter(Writer):

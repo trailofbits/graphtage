@@ -252,7 +252,7 @@ def main(argv=None) -> int:
             'join_dict_items': args.condensed or args.join_dict_items
         }
     )
-    printermodule.DEFAULT_PRINTER = printer
+    printermodule.set_default_printer(printer)
 
     logging.basicConfig(level=numeric_log_level, stream=Printer(
         sys.stderr,

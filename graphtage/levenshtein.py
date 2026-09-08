@@ -23,7 +23,7 @@ import numpy as np
 from .bounds import Range
 from .edits import Insert, Match, Remove
 from .fibonacci import FibonacciHeap
-from .printer import DEFAULT_PRINTER
+from .printer import get_default_printer
 from .sequences import SequenceEdit
 from .tree import Edit, TreeNode
 
@@ -308,8 +308,9 @@ class EditDistance(SequenceEdit):
                 fringe_ranges = {}
                 fringe_total = 0
                 num_diagonals = 0
+                printer = get_default_printer()
 
-                if not DEFAULT_PRINTER.quiet:
+                if not printer.quiet:
                     fringe_ranges = {
                         (row, col): (
                             self.edit_matrix[row][col].bounds().upper_bound
@@ -320,7 +321,7 @@ class EditDistance(SequenceEdit):
                     fringe_total = sum(fringe_ranges.values())
                     num_diagonals = len(self.from_seq) + len(self.to_seq)
 
-                with DEFAULT_PRINTER.tqdm(
+                with printer.tqdm(
                         total=fringe_total,
                         initial=0,
                         desc=f"Tightening Fringe Diagonal {self._fringe_row + self._fringe_col} of {num_diagonals}",

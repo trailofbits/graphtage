@@ -13,7 +13,7 @@ from typing import Optional, Union
 from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
     FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode, \
     UnorderedListNode
-from .printer import DEFAULT_PRINTER, Fore, Printer
+from .printer import Fore, get_default_printer, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
@@ -55,7 +55,7 @@ def build_tree(
     elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
         children = [
             build_tree(n, options=options) for n in
-            DEFAULT_PRINTER.tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)
+            get_default_printer().tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)
         ]
         if options.ignore_list_order:
             return UnorderedListNode(children, auto_match_keys=options.auto_match_keys)
@@ -68,7 +68,7 @@ def build_tree(
         dict_items = {
             build_tree(k, options=options, force_leaf_node=True):
                 build_tree(v, options=options) for k, v in
-            DEFAULT_PRINTER.tqdm(python_obj.items(), delay=2.0, desc="Loading JSON Dict", leave=False)
+            get_default_printer().tqdm(python_obj.items(), delay=2.0, desc="Loading JSON Dict", leave=False)
         }
         if options.allow_key_edits:
             dict_node = DictNode.from_dict(dict_items)
