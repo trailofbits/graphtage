@@ -6,7 +6,7 @@ from functools import wraps
 from typing import (
     Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
 )
-from typing_extensions import Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
 from .formatter import Formatter, FORMATTERS

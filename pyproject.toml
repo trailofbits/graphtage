@@ -34,7 +34,10 @@ dependencies = [
     "scipy>=1.4.0",
     "toml>=0.10.2",
     "tqdm",
-    "typing_extensions>=3.7.4.3",
+    # Graphtage itself needs nothing from typing_extensions. fickling does: fickle.py imports
+    # typing_extensions.Buffer on Python < 3.12 without declaring the dependency, so importing
+    # graphtage.pickle fails on 3.10 and 3.11 unless something else installs it.
+    "typing_extensions; python_version < '3.12'",
 ]
 dynamic = ["version"]
 

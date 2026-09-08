@@ -24,8 +24,7 @@ Attributes:
 
 import logging
 from functools import wraps
-from typing import Iterable, Iterator, List, Optional, Tuple, TypeVar, Union
-from typing_extensions import Protocol
+from typing import Iterable, Iterator, List, Optional, Protocol, Tuple, TypeVar, Union
 
 from intervaltree import Interval, IntervalTree
 

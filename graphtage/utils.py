@@ -6,9 +6,11 @@ import tempfile as tf
 from collections import Counter, OrderedDict
 from collections.abc import Iterable
 from collections.abc import Sized as AbstractSized
-from typing import Any, Callable, Dict, Generic, Optional, IO, Iterator, Mapping, MutableMapping, Tuple, TypeVar, Union
+from typing import (
+    Any, Callable, Dict, Generic, IO, Iterator, Mapping, MutableMapping, Optional, Protocol, Tuple, TypeVar,
+    Union
+)
 from typing import Iterable as IterableType
-from typing_extensions import Protocol
 import typing
 
 from .fibonacci import FibonacciHeap, MaxFibonacciHeap
