@@ -6,8 +6,8 @@ title: Graphtage
 message: >-
   Graphtage is a command-line utility and underlying library
   for semantically comparing and merging tree-like
-  structures, such as JSON, XML, HTML, YAML, plist, and CSS
-  files.
+  structures, such as JSON, JSON5, XML, HTML, YAML, TOML, INI,
+  CSV, plist, and Python pickle files.
 type: software
 authors:
   - given-names: Evan
@@ -20,8 +20,8 @@ url: 'https://trailofbits.github.io/graphtage/'
 abstract: >-
   Graphtage is a command-line utility and underlying library
   for semantically comparing and merging tree-like
-  structures, such as JSON, XML, HTML, YAML, plist, and CSS
-  files. Its name is a portmanteau of “graph” and
+  structures, such as JSON, JSON5, XML, HTML, YAML, TOML, INI,
+  CSV, plist, and Python pickle files. Its name is a portmanteau of “graph” and
   “graftage”—the latter being the horticultural practice of
   joining two trees together such that they grow as one.
 keywords:

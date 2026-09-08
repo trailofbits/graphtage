@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Graphtage is a semantic diff/merge utility for tree-like structured data formats (JSON, XML, HTML, YAML, plist, CSS, CSV). It works as both a command-line tool and Python library.
+Graphtage is a semantic diff/merge utility for tree-like structured data formats (JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, Python pickle). It works as both a command-line tool and Python library.
 
 Key capabilities:
 - Semantic understanding of tree structures (recognizes key vs value changes)
@@ -39,7 +39,7 @@ Key capabilities:
 
 ### File Format Modules
 Each format implements its own TreeNode subclasses and parser:
-- json.py, yaml.py, xml.py, csv.py, plist.py, pickle.py
+- json.py, yaml.py, xml.py, csv.py, toml.py, ini.py, plist.py, pickle.py
 
 ## Development Setup
 
@@ -78,11 +78,35 @@ cd docs && make html
 ## Code Patterns
 
 ### Adding a New File Format
-1. Create `graphtage/newformat.py`
-2. Define TreeNode subclasses for format-specific structures
-3. Implement a `build_tree(content: str) -> TreeNode` function
-4. Register the filetype in `graphtage/__init__.py`
-5. Add tests in `test/test_newformat.py`
+1. Create `graphtage/newformat.py`.
+2. Define a `Filetype` subclass with a zero-argument `__init__`. `FiletypeWatcher` instantiates it at
+   class-definition time, so it must implement `build_tree`, `build_tree_handling_errors`, and
+   `get_default_formatter`. Registration into `FILETYPES_BY_TYPENAME` and `FILETYPES_BY_MIME` is automatic, and
+   that is what generates the `--from-*`, `--to-*`, and `--format` CLI flags.
+3. Implement `build_tree(path: str, options: Optional[BuildOptions] = None) -> TreeNode`. Reusing
+   `graphtage.json.build_tree` on a plain Python object gets you the whole `TreeNode` contract for free.
+4. Add the module to the `from . import ...` line in `graphtage/__init__.py`. Nothing registers without it, and
+   `docs/build_api.py` discovers API pages from this import.
+5. Add the extension to `register_mimetypes()` in `graphtage/__main__.py`. `mimetypes` does not know most of these,
+   and format detection is extension-based, so without this every diff fails with "Could not determine the filetype".
+6. Add a `test_<typename>_formatting` method to `test/test_formatting.py`, or `test_formatter_coverage` fails. Note
+   that `@filetype_test` only round-trips *unedited* trees, so it cannot catch a formatter that mishandles edits —
+   add a separate diff-level test for insertions and removals.
+7. Give the formatter `print_UnorderedListNode = print_ListNode`, or `test_unordered_list_renders_like_a_list`
+   fails. A formatter that cannot resolve a node type bounces to `self.parent.print(...)` and recurses forever.
+8. Mark helper formatters `is_partial = True` so they stay out of the global `FORMATTERS` list, where they could
+   change how unrelated formats resolve node types.
+9. Update the format lists in `README.md`, `docs/index.rst`, `CITATION.cff`, `pyproject.toml`, the `--help`
+   description in `graphtage/__main__.py`, and this file.
+10. Add a dependency to `pyproject.toml` only if the parser is third-party, and regenerate `uv.lock`.
+
+Route printing through `SequenceFormatter.print_SequenceNode`, which is where insert and remove edits are applied;
+iterating a node's children directly silently drops them. Only one formatter may define `print_<NodeType>` for a
+given type, so distinguish nesting levels in the key/value formatter rather than by node type (see
+`graphtage/yaml.py` and `graphtage/ini.py`).
+
+Python 3.8 compatibility is required. Do not use PEP 585 builtin generics (`list[...]`, `dict[...]`) in
+runtime-evaluated positions such as annotated class attributes; use `typing.List` or drop the annotation.
 
 ### Working with Edits
 - Edit costs are computed lazily via `bounds()` method
