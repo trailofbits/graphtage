@@ -1133,7 +1133,7 @@ class Filetype(metaclass=FiletypeWatcher):
             options: An optional set of options for building the tree
 
         Returns:
-            Union[str, TreeNode]: On success, the root tree node, or a string containing the error message on failure.
+            str | TreeNode: On success, the root tree node, or a string containing the error message on failure.
 
         """
         raise NotImplementedError()

@@ -437,7 +437,7 @@ class Tokenizer:
         This function actually computes and caches the next token if it has not already been cached.
 
         Returns:
-            Optional[Token]: The next token that would be returned from a call to :meth:`Tokenizer.next`,
+            Token | None: The next token that would be returned from a call to :meth:`Tokenizer.next`,
             or :const:`None` if there are no more tokens.
 
         """
@@ -576,7 +576,7 @@ class Tokenizer:
         """Returns the next token in the stream.
 
         Returns:
-            Optional[Token]: The next token, or :const:`None` if there are no more tokens.
+            Token | None: The next token, or :const:`None` if there are no more tokens.
 
         """
         ret = self.peek()

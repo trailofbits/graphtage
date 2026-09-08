@@ -67,7 +67,7 @@ class IterativeTighteningSearch(Bounded, Generic[B]):
         """Returns the best solution the search has thus found.
 
          Returns:
-            Optional[B]: The best solution the search has thus found, or :const:`None` if it has not yet found a
+            B | None: The best solution the search has thus found, or :const:`None` if it has not yet found a
             feasible solution.
 
         """

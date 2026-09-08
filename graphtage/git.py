@@ -93,7 +93,7 @@ def absent_revision(from_path: str, to_path: str) -> str | None:
         to_path: The new revision, which git passes as its fifth argument.
 
     Returns:
-        Optional[str]: ``'added'`` or ``'deleted'`` if one of the revisions is missing, and :const:`None` if both
+        str | None: ``'added'`` or ``'deleted'`` if one of the revisions is missing, and :const:`None` if both
         of them exist.
     """
     if from_path in ABSENT_FILE_NAMES:

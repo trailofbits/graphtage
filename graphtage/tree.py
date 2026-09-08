@@ -308,7 +308,7 @@ class TreeNodeMeta(ABCMeta):
             new_node.__dict__ = dict(wrapped_tree_node.editable_dict())
 
         Returns:
-            Type[Union[EditedTreeNode, T]]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
+            type[EditedTreeNode | T]: A class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
             Its constructor accepts a :class:`TreeNode` that it will wrap.
 
         """
@@ -492,7 +492,7 @@ class TreeNode(metaclass=TreeNodeMeta):
             return self.__class__.edited_type()(self)
 
         Returns:
-            Union[EditedTreeNode, T]: A copied version of this node that is also an instance of :class:`EditedTreeNode`
+            EditedTreeNode | T: A copied version of this node that is also an instance of :class:`EditedTreeNode`
             and thereby mutable.
 
         """
@@ -581,7 +581,7 @@ class TreeNode(metaclass=TreeNodeMeta):
             node: The node against which to perform the diff.
 
         Returns:
-            Union[EditedTreeNode, T]: An edited version of this node with all edits being
+            EditedTreeNode | T: An edited version of this node with all edits being
             :meth:`completed <Edit.is_complete>`.
 
         """

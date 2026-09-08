@@ -252,7 +252,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, T | None]
                 col: The index of the column to get.
 
             Returns:
-                Optional[T]: The value of the column, or the default value if it has not yet been set.
+                T | None: The value of the column, or the default value if it has not yet been set.
 
             Raises:
                 IndexError: If :attr:`self.num_cols <SparseMatrixRow.num_cols>` is not :const:`None` and :obj:`col` is
@@ -312,7 +312,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, T | None]
             row: The index of the row to get.
 
         Returns:
-            MutableMapping[int, Optional[T]]: The contents of the row.
+            MutableMapping[int, T | None]: The contents of the row.
 
         Raises:
             IndexError: If :attr:`self.num_rows <SparseMatrix.num_rows>` is not :const:`None` and :obj:`row` is
