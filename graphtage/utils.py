@@ -3,7 +3,6 @@
 import os
 import sys
 import tempfile as tf
-import typing
 from collections import Counter, OrderedDict
 from collections.abc import Callable, Iterable, Iterator, Mapping, MutableMapping
 from collections.abc import Sized as AbstractSized
@@ -64,7 +63,7 @@ def getsizeof(obj) -> int:
         return sys.getsizeof(obj)
 
 
-class HashableCounter(Generic[T], typing.Counter[T], Counter):
+class HashableCounter(Generic[T], Counter[T]):
     """A :class:`Counter` that supports being hashed even though it is mutable."""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
