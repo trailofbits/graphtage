@@ -5,3 +5,17 @@ updates:
     directory: /
     schedule:
       interval: daily
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # uv.lock is committed and CI installs from it, so it needs updates of its own.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: daily
+    groups:
+      python:
+        patterns:
+          - "*"
