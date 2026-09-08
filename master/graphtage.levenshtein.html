@@ -179,9 +179,57 @@ bound.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance._best_match">
+<span class="sig-name descname"><span class="pre">_best_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance._best_match" title="Link to this definition"></a></dt>
+<dd><p>Selects the predecessor cell that reaches this cell of the Levenshtein matrix most cheaply.</p>
+<p>Each candidate is scored by the accumulated cost of its predecessor plus the cost of the edit that
+transitions from that predecessor to this cell. The number of edits along the path is the secondary
+key, which prefers a single substitution over an insertion paired with a removal of equal total cost.</p>
+<p>Ties on both keys are broken by direction, in this fixed order: the diagonal (a substitution) wins over
+both borders, and the border insertion wins over the border removal. Reconstruction walks the matrix
+backwards, so preferring the insertion here places the removal earlier in the forward edit sequence,
+matching the convention of listing deletions before additions. This order is part of the output
+contract: changing it changes the edit sequence for inputs that have several optimal alignments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> – The row of the cell, indexing <a class="reference internal" href="#graphtage.levenshtein.EditDistance.to_seq" title="graphtage.levenshtein.EditDistance.to_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">EditDistance.to_seq</span></code></a>.</p></li>
+<li><p><strong>col</strong> – The column of the cell, indexing <a class="reference internal" href="#graphtage.levenshtein.EditDistance.from_seq" title="graphtage.levenshtein.EditDistance.from_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">EditDistance.from_seq</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The row and column of the chosen predecessor, and the transition edit.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a>, <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance._debug_tighten_bounds">
 <span class="sig-name descname"><span class="pre">_debug_tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance._debug_tighten_bounds" title="Link to this definition"></a></dt>
 <dd><p>Adds debugging assertions when tightening bounds; for debugging only</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.levenshtein.EditDistance._exact_cost">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_exact_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.EditDistance._exact_cost" title="Link to this definition"></a></dt>
+<dd><p>Tightens an edit until its bounds are definitive and returns its exact cost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>edit</strong> – The edit to price.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The exact cost of the edit.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the edit cannot be tightened to a definitive bound.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
