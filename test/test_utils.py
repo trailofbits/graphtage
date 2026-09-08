@@ -1,7 +1,31 @@
 import sys
+from collections import Counter
 from unittest import TestCase
 
-from graphtage.utils import largest, smallest, SparseMatrix
+from graphtage.json import build_tree
+from graphtage.sequences import SequenceNode
+from graphtage.utils import HashableCounter, largest, smallest, SparseMatrix
+
+from .timing import run_with_time_limit
+
+
+def _count_comparisons(first, second) -> int:
+    """Returns the number of :meth:`SequenceNode.__eq__` calls that comparing `first` to `second` makes."""
+    original = SequenceNode.__eq__
+    calls = 0
+
+    def counted(self, other):
+        nonlocal calls
+        calls += 1
+        return original(self, other)
+
+    SequenceNode.__eq__ = counted
+    try:
+        if first != second:
+            raise AssertionError('the two trees must be equal for the comparison to traverse them')
+    finally:
+        SequenceNode.__eq__ = original
+    return calls
 
 
 class TestSparseMatrix(TestCase):
@@ -49,3 +73,37 @@ class TestSparseMatrix(TestCase):
             self.assertLess(1000 - 11, i)
         for i in largest(*list(range(1000)), n=10):
             self.assertLess(1000 - 11, i)
+
+
+class TestHashableCounter(TestCase):
+    def test_equality_matches_counter(self):
+        self.assertEqual(HashableCounter('aab'), Counter('aab'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('ab'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('aabc'))
+        self.assertNotEqual(HashableCounter('aab'), Counter('abb'))
+        self.assertNotEqual(HashableCounter('aab'), 'aab')
+        self.assertEqual(HashableCounter(), Counter())
+        # collections.Counter treats a missing count and a zero count as the same:
+        self.assertEqual(HashableCounter({'a': 1, 'b': 0}), Counter({'a': 1}))
+        self.assertEqual(HashableCounter({'a': 1}), Counter({'a': 1, 'b': 0}))
+
+    def test_nested_equality_is_not_exponential(self):
+        """Comparing deeply nested dictionaries must not be exponential in the nesting depth.
+
+        :meth:`collections.Counter.__eq__` looks up every element in both counters, so each level of nesting
+        compares its children twice and the whole comparison makes ``2 ** (depth + 1) - 1`` calls. Before
+        :class:`graphtage.utils.HashableCounter` overrode it, comparing this document against itself took over
+        half an hour.
+
+        The assertion counts comparisons rather than measuring elapsed time, so it does not depend on how fast
+        the machine is. The time limit is a backstop that stops a regression from hanging the suite: at this
+        depth the exponential version would make more than two billion calls.
+
+        """
+        depth = 30
+        obj = {'leaf': 'x'}
+        for i in range(depth):
+            obj = {f'k{i}': obj}
+        with run_with_time_limit(seconds=5):
+            calls = _count_comparisons(build_tree(obj), build_tree(obj))
+        self.assertLess(calls, 10 * depth, f'{calls} comparisons at depth {depth} is not linear')
