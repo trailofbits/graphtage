@@ -1,5 +1,4 @@
 import csv
-import configparser
 import json
 import os
 import plistlib
@@ -341,13 +340,13 @@ class TestFormatting(TestCase):
 
     @filetype_test(iterations=200)
     def test_ini_formatting(self):
-        config = configparser.ConfigParser(interpolation=None)
-        config.optionxform = str
+        # Build the writer from the reader's own configuration so the two cannot drift apart:
+        config = graphtage.ini._parser()
         excluded = frozenset('\t \\\'"\r:[]{}&\n()`|+%<>#*^$@!~_+-=.,;?/')
         orig_obj = {
             TestFormatting.make_random_str(exclude_bytes=excluded, allow_empty_strings=False): {
                 TestFormatting.make_random_str(exclude_bytes=excluded, allow_empty_strings=False):
-                    TestFormatting.make_random_str(exclude_bytes=frozenset('\n\r'), allow_empty_strings=True)
+                    TestFormatting.make_random_str(exclude_bytes=frozenset('\r'), allow_empty_strings=True)
                 for _ in range(random.randint(1, 5))
             }
             for _ in range(random.randint(1, 5))
