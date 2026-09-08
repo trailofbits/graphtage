@@ -164,7 +164,23 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.utils.HashableCounter.__eq__">
 <span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.utils.HashableCounter.__eq__" title="Link to this definition"></a></dt>
-<dd><p>True if all counts agree. Missing counts are treated as zero.</p>
+<dd><p>Tests multiset equality with a single lookup per element.</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">collections.Counter.__eq__()</span></code> iterates over the elements of <em>both</em> counters, so it looks up every
+element once in each direction. When the elements are themselves trees whose equality recurses into
+nested counters, each level of nesting compares its children twice, which makes the comparison
+exponential in the nesting depth. Probing only one side is linear in the total number of elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – The object to compare against.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if every element has the same count in both counters, treating missing counts as
+zero, exactly as <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.Counter" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.Counter</span></code></a> does.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
