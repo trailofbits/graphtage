@@ -1,24 +1,34 @@
 """A :class:`graphtage.Filetype` for parsing, diffing, and rendering YAML files."""
 import os
 from io import StringIO
-from typing import Optional, Union
 
-from yaml import dump, load_all, YAMLError
+from yaml import YAMLError, dump, load_all
+
 try:
-    from yaml import CLoader as Loader, CDumper as Dumper
+    from yaml import CDumper as Dumper
+    from yaml import CLoader as Loader
 except ImportError:
-    from yaml import Loader, Dumper
+    from yaml import Dumper, Loader
 
 from . import json
 from .edits import Insert, Match
-from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, ListNode, MappingNode, StringNode, \
-    StringEdit, StringFormatter
+from .graphtage import (
+    BuildOptions,
+    Filetype,
+    KeyValuePairNode,
+    LeafNode,
+    ListNode,
+    MappingNode,
+    StringEdit,
+    StringFormatter,
+    StringNode,
+)
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 
 
-def build_tree(path: str, options: Optional[BuildOptions] = None, *args, **kwargs) -> TreeNode:
+def build_tree(path: str, options: BuildOptions | None = None, *args, **kwargs) -> TreeNode:
     """Constructs a YAML tree from an YAML file."""
     with open(path, 'rb') as stream:
         document_stream = load_all(stream, Loader=Loader)
@@ -226,14 +236,14 @@ class YAML(Filetype):
             'text/vnd.yaml'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         tree = build_tree(path=path, options=options)
         for node in tree.dfs():
             if isinstance(node, StringNode):
                 node.quoted = False
         return tree
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except YAMLError as ye:

@@ -2,7 +2,6 @@ import subprocess
 import sys
 import tempfile
 from os.path import join
-from typing import List
 from unittest import TestCase
 
 FROM_JSON = '{"a": 1, "b": [1, 2, 3]}'
@@ -19,7 +18,7 @@ def run_graphtage(*args: str) -> bytes:
         for path, contents in ((from_path, FROM_JSON), (to_path, TO_JSON)):
             with open(path, "w") as f:
                 f.write(contents)
-        command: List[str] = [sys.executable, "-m", "graphtage", "--no-status"]
+        command: list[str] = [sys.executable, "-m", "graphtage", "--no-status"]
         command.extend(args)
         command.extend((from_path, to_path))
         result = subprocess.run(command, capture_output=True)

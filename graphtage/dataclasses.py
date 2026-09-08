@@ -1,4 +1,4 @@
-from typing import Dict, Iterator, List, Tuple, Type
+from collections.abc import Iterator
 
 from . import AbstractCompoundEdit, Edit, Range, Replace
 from .printer import Fore, Printer
@@ -11,7 +11,7 @@ class DataClassEdit(AbstractCompoundEdit):
         to_slots = dict(to_node.items())
         if from_slots.keys() != to_slots.keys():
             raise ValueError(f"Node {from_node!r} cannot be edited to {to_node!r} because they have incompatible slots")
-        self.slot_edits: List[Edit] = [
+        self.slot_edits: list[Edit] = [
             value.edits(to_slots[slot])
             for slot, value in from_slots.items()
         ]
@@ -36,9 +36,9 @@ class DataClassEdit(AbstractCompoundEdit):
 class DataClassNode(ContainerNode):
     """A container node that can be initialized similar to a Python :func:`dataclasses.dataclass`"""
 
-    _SLOTS: Tuple[str, ...]
-    _SLOT_ANNOTATIONS: Dict[str, Type[TreeNode]]
-    _DATA_CLASS_ANCESTORS: List[Type["DataClassNode"]]
+    _SLOTS: tuple[str, ...]
+    _SLOT_ANNOTATIONS: dict[str, type[TreeNode]]
+    _DATA_CLASS_ANCESTORS: list[type["DataClassNode"]]
 
     def __init__(self, *args, **kwargs):
         """Be careful extending __init__; consider using :func:`DataClassNode.post_init` instead."""
@@ -123,7 +123,7 @@ class DataClassNode(ContainerNode):
         for _, value in self.items():
             yield value
 
-    def items(self) -> Iterator[Tuple[str, TreeNode]]:
+    def items(self) -> Iterator[tuple[str, TreeNode]]:
         for slot in self._SLOTS:
             yield slot, getattr(self, slot)
 

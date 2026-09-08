@@ -13,9 +13,10 @@ smallest integer (*i.e.*, with the fewest possible tightenings).
 
 """
 
-from typing import Generic, Iterator, Optional, TypeVar
+from collections.abc import Iterator
+from typing import Generic, TypeVar
 
-from .bounds import Bounded, NEGATIVE_INFINITY, POSITIVE_INFINITY, Range
+from .bounds import NEGATIVE_INFINITY, POSITIVE_INFINITY, Bounded, Range
 from .fibonacci import FibonacciHeap, HeapNode
 
 B = TypeVar('B', bound=Bounded)
@@ -30,7 +31,7 @@ class IterativeTighteningSearch(Bounded, Generic[B]):
     """
     def __init__(self,
                  possibilities: Iterator[B],
-                 initial_bounds: Optional[Range] = None):
+                 initial_bounds: Range | None = None):
         """Initializes the search.
 
         Args:
@@ -62,7 +63,7 @@ class IterativeTighteningSearch(Bounded, Generic[B]):
         return bool(self._unprocessed or ((self._untightened or self._tightened) and not self.bounds().definitive()))
 
     @property
-    def best_match(self) -> Optional[B]:
+    def best_match(self) -> B | None:
         """Returns the best solution the search has thus found.
 
          Returns:
@@ -82,7 +83,7 @@ class IterativeTighteningSearch(Bounded, Generic[B]):
         else:
             return self._untightened.peek()
 
-    def remove_best(self) -> Optional[B]:
+    def remove_best(self) -> B | None:
         """Removes and returns the current best solution found by the search, if one exists.
 
         This enables one to iteratively sort the input sequence. However, this function is only guaranteed to return

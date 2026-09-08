@@ -10,12 +10,22 @@ accepted by this module.
 import html
 import os
 import xml.etree.ElementTree as ET
-from typing import Collection, Dict, Optional, Iterator, Sequence, Union
+from collections.abc import Collection, Iterator, Sequence
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
-from .graphtage import BuildOptions, ContainerNode, DictNode, Filetype, FixedKeyDictNode, KeyValuePairNode, LeafNode, \
-    ListNode, StringFormatter, StringNode
+from .graphtage import (
+    BuildOptions,
+    ContainerNode,
+    DictNode,
+    Filetype,
+    FixedKeyDictNode,
+    KeyValuePairNode,
+    LeafNode,
+    ListNode,
+    StringFormatter,
+    StringNode,
+)
 from .json import JSONFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
@@ -36,14 +46,14 @@ class XMLElementEdit(AbstractCompoundEdit):
         self.attrib_edit: Edit = from_node.attrib.edits(to_node.attrib)
         """The edit to transform this element's attributes."""
         if from_node.text is not None and to_node.text is not None:
-            self.text_edit: Optional[Edit] = from_node.text.edits(to_node.text)
+            self.text_edit: Edit | None = from_node.text.edits(to_node.text)
             """The edit to transform this element's text."""
         elif from_node.text is None and to_node.text is not None:
-            self.text_edit: Optional[Edit] = Insert(to_insert=to_node.text, insert_into=from_node)
+            self.text_edit: Edit | None = Insert(to_insert=to_node.text, insert_into=from_node)
         elif to_node.text is None and from_node.text is not None:
-            self.text_edit: Optional[Edit] = Remove(to_remove=from_node.text, remove_from=from_node)
+            self.text_edit: Edit | None = Remove(to_remove=from_node.text, remove_from=from_node)
         else:
-            self.text_edit: Optional[Edit] = None
+            self.text_edit: Edit | None = None
         self.child_edit: Edit = from_node._children.edits(to_node._children)
         """The edit to transform this node's children."""
         super().__init__(
@@ -90,9 +100,9 @@ class XMLElementObj:
     def __init__(
             self,
             tag: str,
-            attrib: Dict[str, str],
-            text: Optional[str] = None,
-            children: Optional[Sequence['XMLElementObj']] = ()
+            attrib: dict[str, str],
+            text: str | None = None,
+            children: Sequence['XMLElementObj'] | None = ()
     ):
         """Initializes an XML Element Object.
 
@@ -104,11 +114,11 @@ class XMLElementObj:
         """
         self.tag: str = tag
         """The tag of this element."""
-        self.attrib: Dict[str, str] = attrib
+        self.attrib: dict[str, str] = attrib
         """The attributes of this element."""
-        self.text: Optional[str] = text
+        self.text: str | None = text
         """The text of this element."""
-        self.children: Optional[Sequence['XMLElementObj']] = children
+        self.children: Sequence[XMLElementObj] | None = children
         """The children of this element."""
 
     def __repr__(self):
@@ -154,8 +164,8 @@ class XMLElement(ContainerNode):
     def __init__(
             self,
             tag: StringNode,
-            attrib: Optional[Dict[StringNode, StringNode]] = None,
-            text: Optional[StringNode] = None,
+            attrib: dict[StringNode, StringNode] | None = None,
+            text: StringNode | None = None,
             children: Sequence['XMLElement'] = (),
             allow_key_edits: bool = True,
             auto_match_keys: bool = True
@@ -184,7 +194,7 @@ class XMLElement(ContainerNode):
             self.attrib = self.attrib.make_edited()
         for key, _ in self.attrib.items():
             key.quoted = False
-        self.text: Optional[StringNode] = text
+        self.text: StringNode | None = text
         """The text of this element."""
         if self.text is not None:
             self.text.quoted = False
@@ -268,8 +278,8 @@ class XMLElement(ContainerNode):
 
 
 def build_tree(
-        path_or_element_tree: Union[str, ET.Element, ET.ElementTree],
-        options: Optional[BuildOptions] = None
+        path_or_element_tree: str | ET.Element | ET.ElementTree,
+        options: BuildOptions | None = None
 ) -> XMLElement:
     """Constructs an XML element node from an XML file."""
     if isinstance(path_or_element_tree, ET.Element):
@@ -420,10 +430,10 @@ class XML(Filetype):
             'text/xml'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         return build_tree(path, options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except ET.ParseError as pe:

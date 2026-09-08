@@ -15,16 +15,15 @@ Attributes:
 """
 
 import logging
-import os
 import sys
 from abc import abstractmethod
 from collections import defaultdict
 from functools import wraps
-from typing import Any, Dict, List, Optional, Protocol, Set, Type, Union
+from typing import Any, Optional, Protocol, Union
 
 import colorama
 from colorama import Back, Fore, Style
-from colorama.ansi import AnsiFore, AnsiBack, AnsiStyle
+from colorama.ansi import AnsiBack, AnsiFore, AnsiStyle
 
 from .progress import StatusWriter
 from .version import VERSION_STRING
@@ -84,7 +83,7 @@ class CombiningMarkWriter(RawWriter):
         """
         self.parent: RawWriter = parent
         """This writer's parent."""
-        self._marks: Set[str] = set()
+        self._marks: set[str] = set()
         self.enabled: bool = True
         """Whether or not combining marks will be added."""
 
@@ -101,7 +100,7 @@ class CombiningMarkWriter(RawWriter):
         return CombiningMarkContext(self, *combining_marks)
 
     @property
-    def marks(self) -> Set[str]:
+    def marks(self) -> set[str]:
         """Returns the set of combining marks in this writer."""
         return self._marks
 
@@ -143,8 +142,8 @@ class CombiningMarkContext:
     """A context returned by :meth:`CombiningMarkWriter.context`."""
     def __init__(self, writer: CombiningMarkWriter, *combining_marks: str):
         self.writer: CombiningMarkWriter = writer
-        self.marks: Set[str] = set(combining_marks)
-        self._state_before: Optional[Set[str]] = None
+        self.marks: set[str] = set(combining_marks)
+        self._state_before: set[str] | None = None
 
     def __enter__(self) -> CombiningMarkWriter:
         self._state_before = set(self.writer.marks)
@@ -163,9 +162,9 @@ class ANSIContext:
     def __init__(
             self,
             stream: Union[RawWriter, 'ANSIContext'],
-            fore: Optional[AnsiFore] = None,
-            back: Optional[AnsiBack] = None,
-            style: Optional[AnsiStyle] = None,
+            fore: AnsiFore | None = None,
+            back: AnsiBack | None = None,
+            style: AnsiStyle | None = None,
     ):
         """Initializes a context.
 
@@ -180,15 +179,15 @@ class ANSIContext:
         """
         if isinstance(stream, ANSIContext):
             self.stream: RawWriter = stream.stream
-            self._parent: Optional['ANSIContext'] = stream
+            self._parent: ANSIContext | None = stream
         else:
             self.stream: RawWriter = stream
-            self._parent: Optional['ANSIContext'] = None
-        self._fore: Optional[AnsiFore] = fore
-        self._back: Optional[AnsiBack] = back
-        self._style: Optional[AnsiStyle] = style
-        self._start_code: Optional[str] = None
-        self._end_code: Optional[str] = None
+            self._parent: ANSIContext | None = None
+        self._fore: AnsiFore | None = fore
+        self._back: AnsiBack | None = back
+        self._style: AnsiStyle | None = style
+        self._start_code: str | None = None
+        self._end_code: str | None = None
         self.is_applied: bool = False
         """Keeps track of whether this context's options have already been applied to the underlying stream."""
 
@@ -216,7 +215,7 @@ class ANSIContext:
         contexts = ANSI_CONTEXT_STACK[self.stream]
         if contexts:
             if self._parent is None:
-                self._parent: Optional['ANSIContext'] = contexts[-1]
+                self._parent: ANSIContext | None = contexts[-1]
             else:
                 if not self.root.is_applied:
                     self.root._parent = contexts[-1]
@@ -249,7 +248,7 @@ class ANSIContext:
         self._end_code += parent_end_code
 
     @property
-    def fore(self) -> Optional[AnsiFore]:
+    def fore(self) -> AnsiFore | None:
         """The computed foreground color of this context."""
         if self._fore is None and self._parent is not None:
             return self._parent.fore
@@ -257,7 +256,7 @@ class ANSIContext:
             return self._fore
 
     @property
-    def back(self) -> Optional[AnsiBack]:
+    def back(self) -> AnsiBack | None:
         """The computed background color of this context."""
         if self._back is None and self._parent is not None:
             return self._parent.back
@@ -265,7 +264,7 @@ class ANSIContext:
             return self._back
 
     @property
-    def style(self) -> Optional[AnsiStyle]:
+    def style(self) -> AnsiStyle | None:
         """The computed style of this context."""
         if self._style is None and self._parent is not None:
             return self._parent.style
@@ -360,7 +359,7 @@ class HTMLANSIContext(ANSIContext):
         contexts = ANSI_CONTEXT_STACK[self.stream]
         if contexts:
             if self._parent is None:
-                self._parent: Optional['ANSIContext'] = contexts[-1]
+                self._parent: ANSIContext | None = contexts[-1]
             else:
                 if not self.root.is_applied:
                     self.root._parent = contexts[-1]
@@ -392,7 +391,7 @@ class HTMLANSIContext(ANSIContext):
         self._end_code = f"{self._end_code}{parent_end_code}"
 
 
-ONLY_ANSI_FUNCS: Set[str] = set()
+ONLY_ANSI_FUNCS: set[str] = set()
 
 
 def only_ansi(func):
@@ -436,7 +435,7 @@ class NullANSIContext:
         return getattr(self._printer, item)
 
 
-ANSI_CONTEXT_STACK: Dict[Writer, List[ANSIContext]] = defaultdict(list)
+ANSI_CONTEXT_STACK: dict[Writer, list[ANSIContext]] = defaultdict(list)
 
 
 def enable_ansi_support(force_color: bool = False):
@@ -462,10 +461,10 @@ class Printer(StatusWriter, RawWriter):
 
     def __init__(
             self,
-            out_stream: Optional[Writer] = None,
-            ansi_color: Optional[bool] = None,
+            out_stream: Writer | None = None,
+            ansi_color: bool | None = None,
             quiet: bool = False,
-            options: Optional[Dict[str, Any]] = None
+            options: dict[str, Any] | None = None
     ):
         """Initializes a Printer.
 
@@ -484,7 +483,7 @@ class Printer(StatusWriter, RawWriter):
             out_stream=out_stream,
             quiet=quiet
         )
-        self._context_type: Type[ANSIContext] = ANSIContext
+        self._context_type: type[ANSIContext] = ANSIContext
         self.out_stream: CombiningMarkWriter = CombiningMarkWriter(self)
         """The stream wrapped by this printer."""
         self.indents: int = 0
@@ -508,7 +507,7 @@ class Printer(StatusWriter, RawWriter):
         return self._ansi_color
 
     @ansi_color.setter
-    def ansi_color(self, is_color: Optional[bool]):
+    def ansi_color(self, is_color: bool | None):
         if is_color is None:
             self._ansi_color = self.out_stream.isatty()
         else:
@@ -584,7 +583,7 @@ class Printer(StatusWriter, RawWriter):
 class HTMLPrinter(Printer):
     """A Printer that outputs in HTML."""
 
-    def __init__(self, *args, title: Optional[str] = None, **kwargs):
+    def __init__(self, *args, title: str | None = None, **kwargs):
         super().__init__(*args, **kwargs)
         self._context_type = HTMLANSIContext
         self.raw_write("<html>")

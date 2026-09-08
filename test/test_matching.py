@@ -5,7 +5,7 @@ from unittest import TestCase
 import numpy as np
 from tqdm import tqdm, trange
 
-from graphtage.matching import get_dtype, min_weight_bipartite_matching, WeightedBipartiteMatcher
+from graphtage.matching import WeightedBipartiteMatcher, get_dtype, min_weight_bipartite_matching
 
 from .test_bounds import RandomDecreasingRange
 

@@ -3,15 +3,17 @@
 import os
 import sys
 import tempfile as tf
+import typing
 from collections import Counter, OrderedDict
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable, Iterator, Mapping, MutableMapping
 from collections.abc import Sized as AbstractSized
 from typing import (
-    Any, Callable, Dict, Generic, IO, Iterator, Mapping, MutableMapping, Optional, Protocol, Tuple, TypeVar,
-    Union
+    IO,
+    Any,
+    Generic,
+    Protocol,
+    TypeVar,
 )
-from typing import Iterable as IterableType
-import typing
 
 from .fibonacci import FibonacciHeap, MaxFibonacciHeap
 
@@ -168,20 +170,20 @@ class OrderedCounter(Counter, OrderedDict):
         return super().elements()
 
 
-class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[T]]]):
+class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, T | None]]):
     """A sparse matrix that can store arbitrary Python objects.
 
     For sparse matrices storing homogeneous items and/or native types, it is more efficient to use an implementation
     like a `scipy sparse matrix <https://docs.scipy.org/doc/scipy/reference/sparse.html>`__.
 
     """
-    class SparseMatrixRow(Sized, MutableMapping[int, Optional[T]]):
+    class SparseMatrixRow(Sized, MutableMapping[int, T | None]):
         """A row of a sparse matrix."""
         def __init__(
                 self,
                 row_num: int,
-                num_cols: Optional[int] = None,
-                default_value: Optional[T] = None
+                num_cols: int | None = None,
+                default_value: T | None = None
         ):
             """Initializes a sparse matrix row.
 
@@ -193,11 +195,11 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
             """
             self.row_num: int = row_num
             """The index of this row."""
-            self.row: Dict[int, Optional[T]] = {}
+            self.row: dict[int, T | None] = {}
             """Data structure holding the contents of this row."""
-            self.num_cols: Optional[int] = num_cols
+            self.num_cols: int | None = num_cols
             """The number of columns in this row."""
-            self.default_value: Optional[T] = default_value
+            self.default_value: T | None = default_value
             """The default value for this row."""
 
         def shape(self) -> int:
@@ -244,7 +246,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
             """Iterates over the indexes of columns that have been set in this row."""
             return iter(self.row)
 
-        def __getitem__(self, col: int) -> Optional[T]:
+        def __getitem__(self, col: int) -> T | None:
             """Returns the value of the given column of this row.
 
             Args:
@@ -275,9 +277,9 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
 
     def __init__(
             self,
-            num_rows: Optional[int] = None,
-            num_cols: Optional[int] = None,
-            default_value: Optional[T] = None
+            num_rows: int | None = None,
+            num_cols: int | None = None,
+            default_value: T | None = None
     ):
         """Initializes a sparse matrix.
 
@@ -286,15 +288,15 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
             num_cols: An optional bound on the number of columns.
             default_value: An optional default value to return if cells are accessed before they are set.
         """
-        self.rows: Dict[int, SparseMatrix[T].SparseMatrixRow] = {}
+        self.rows: dict[int, SparseMatrix[T].SparseMatrixRow] = {}
         """The rows of this matrix."""
-        self.num_rows: Optional[int] = num_rows
+        self.num_rows: int | None = num_rows
         """The number of rows in this matrix, or :const:`None` if there is no bound."""
-        self.num_cols: Optional[int] = num_cols
+        self.num_cols: int | None = num_cols
         """The number of columns in this matrox, or :const:`None` if there is no bound."""
-        self.default_value: Optional[T] = default_value
+        self.default_value: T | None = default_value
         """The default value to return if cells are accessed before they are set."""
-        self._max_row: Optional[int] = None
+        self._max_row: int | None = None
 
     def clear(self):
         """Clears the contents of this matrix."""
@@ -304,7 +306,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
         """Calculates the approximate memory footprint of this matrix in bytes."""
         return sys.getsizeof(self) + getsizeof(self.rows)
 
-    def __getitem__(self, row: int) -> MutableMapping[int, Optional[T]]:
+    def __getitem__(self, row: int) -> MutableMapping[int, T | None]:
         """Returns the value of the given row of this matrix.
 
         Args:
@@ -344,7 +346,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
         else:
             return 0
 
-    def __iter__(self) -> Iterator[MutableMapping[int, Optional[T]]]:
+    def __iter__(self) -> Iterator[MutableMapping[int, T | None]]:
         for i in range(len(self)):
             yield self[i]
 
@@ -352,7 +354,7 @@ class SparseMatrix(Sized, Generic[T], Mapping[int, MutableMapping[int, Optional[
         """Counts the number of elements in this matrix that have been explicitly set."""
         return sum(len(row.row) for row in self.rows.values())
 
-    def shape(self) -> Tuple[int, int]:
+    def shape(self) -> tuple[int, int]:
         """Returns the (number of rows, number of columns) of this matrix."""
         if self.num_rows is None:
             if self.rows:
@@ -389,7 +391,7 @@ class Tempfile:
         foo
 
     """
-    def __init__(self, contents: bytes, prefix: Optional[str] = None, suffix: Optional[str] = None):
+    def __init__(self, contents: bytes, prefix: str | None = None, suffix: str | None = None):
         """Initializes a Tempfile
 
         Args:
@@ -397,10 +399,10 @@ class Tempfile:
             prefix: An optional prefix for the filename.
             suffix: An optional suffix for the filename.
         """
-        self._temp: Optional[IO] = None
+        self._temp: IO | None = None
         self._data: bytes = contents
-        self._prefix: Optional[str] = prefix
-        self._suffix: Optional[str] = suffix
+        self._prefix: str | None = prefix
+        self._suffix: str | None = suffix
 
     def __enter__(self) -> str:
         """Constructs a tempfile, returning the path to the file."""
@@ -417,7 +419,7 @@ class Tempfile:
             self._temp = None
 
 
-def smallest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Callable[[T], Any]] = None) -> Iterator[T]:
+def smallest(*sequence: T | Iterable[T], n: int = 1, key: Callable[[T], Any] | None = None) -> Iterator[T]:
     if len(sequence) == 1 and isinstance(sequence, Iterable):
         sequence = sequence[0]
 
@@ -436,7 +438,7 @@ def smallest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Cal
         yield heap.pop()
 
 
-def largest(*sequence: Union[T, IterableType[T]], n: int = 1, key: Optional[Callable[[T], Any]] = None) -> Iterator[T]:
+def largest(*sequence: T | Iterable[T], n: int = 1, key: Callable[[T], Any] | None = None) -> Iterator[T]:
     if len(sequence) == 1 and isinstance(sequence[0], Iterable):
         sequence = sequence[0]
 

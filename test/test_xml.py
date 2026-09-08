@@ -1,6 +1,5 @@
 import unittest
 
-
 from graphtage.utils import Tempfile
 from graphtage.xml import XML
 

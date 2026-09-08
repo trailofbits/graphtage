@@ -1,12 +1,24 @@
 """A module intended to simplify building Graphtage IR trees from other tree-like data structures."""
 
-from abc import ABC
 import logging
-from typing import Any, Callable, Dict, Iterable, List, Optional, Tuple, Type, TypeVar
+from abc import ABC
+from collections.abc import Callable, Iterable
+from typing import Any, TypeVar
 
 from . import (
-    BoolNode, BuildOptions, DictNode, FixedKeyDictNode, FloatNode, IntegerNode, LeafNode, ListNode, MultiSetNode,
-    NullNode, StringNode, TreeNode, UnorderedListNode
+    BoolNode,
+    BuildOptions,
+    DictNode,
+    FixedKeyDictNode,
+    FloatNode,
+    IntegerNode,
+    LeafNode,
+    ListNode,
+    MultiSetNode,
+    NullNode,
+    StringNode,
+    TreeNode,
+    UnorderedListNode,
 )
 from .object_set import IdentityHash
 from .sequences import SequenceNode
@@ -29,17 +41,17 @@ class CyclicReference(LeafNode):
 
 
 class Builder(ABC):
-    EXPANDERS: Dict[Type[Any], Callable[["Builder", Any], Optional[Iterable[Any]]]]
-    BUILDERS: Dict[Type[Any], Callable[["Builder", Any, List[TreeNode]], TreeNode]]
+    EXPANDERS: dict[type[Any], Callable[["Builder", Any], Iterable[Any] | None]]
+    BUILDERS: dict[type[Any], Callable[["Builder", Any, list[TreeNode]], TreeNode]]
 
-    def __init__(self, options: Optional[BuildOptions] = None):
+    def __init__(self, options: BuildOptions | None = None):
         if options is None:
             self.options: BuildOptions = BuildOptions()
         else:
             self.options = options
 
     @staticmethod
-    def expander(node_type: Type[T]):
+    def expander(node_type: type[T]):
         def wrapper(func: Callable[[C, T], Iterable[Any]]) -> Callable[[C, T], Iterable[Any]]:
             if hasattr(func, "_visitor_expander_for_type"):
                 func._visitor_expander_for_type = func._visitor_expander_for_type + (node_type,)
@@ -50,8 +62,8 @@ class Builder(ABC):
         return wrapper
 
     @staticmethod
-    def builder(node_type: Type[T]):
-        def wrapper(func: Callable[[C, T, List[TreeNode]], TreeNode]) -> Callable[[C, T, List[TreeNode]], TreeNode]:
+    def builder(node_type: type[T]):
+        def wrapper(func: Callable[[C, T, list[TreeNode]], TreeNode]) -> Callable[[C, T, list[TreeNode]], TreeNode]:
             if hasattr(func, "_visitor_builder_for_type"):
                 func._visitor_builder_for_type = func._visitor_builder_for_type + (node_type,)
             else:
@@ -107,11 +119,11 @@ class Builder(ABC):
     def default_expander(self, node: Any) -> Iterable[Any]:
         return ()
 
-    def default_builder(self, node: Any, children: List[TreeNode]) -> TreeNode:
+    def default_builder(self, node: Any, children: list[TreeNode]) -> TreeNode:
         raise NotImplementedError(f"A builder for type {node.__class__.__name__} is not defined for object {node!r}")
 
     @classmethod
-    def _resolve(cls, obj_type: Type[Any], choices: Dict[Type[Any], T]) -> Optional[T]:
+    def _resolve(cls, obj_type: type[Any], choices: dict[type[Any], T]) -> T | None:
         """Resolves the most specialized expander or builder for `obj_type`"""
         for t in obj_type.__mro__:
             if t in choices:
@@ -119,12 +131,12 @@ class Builder(ABC):
         return None
 
     @classmethod
-    def resolve_expander(cls, obj_type: Type[Any]) -> Optional[Callable[[Any], Optional[Iterable[Any]]]]:
+    def resolve_expander(cls, obj_type: type[Any]) -> Callable[[Any], Iterable[Any] | None] | None:
         """Resolves the most specialized expander for `obj_type`"""
         return cls._resolve(obj_type, cls.EXPANDERS)
 
     @classmethod
-    def resolve_builder(cls, obj_type: Type[Any]) -> Optional[Callable[[Any, List[TreeNode]], TreeNode]]:
+    def resolve_builder(cls, obj_type: type[Any]) -> Callable[[Any, list[TreeNode]], TreeNode] | None:
         """Resolves the most specialized builder for `obj_type`"""
         return cls._resolve(obj_type, cls.BUILDERS)
 
@@ -134,7 +146,7 @@ class Builder(ABC):
             return self.default_expander(node)
         return expander(self, node)
 
-    def build(self, node: Any, children: List[TreeNode]) -> TreeNode:
+    def build(self, node: Any, children: list[TreeNode]) -> TreeNode:
         builder = self.resolve_builder(type(node))
         if builder is None:
             result = self.default_builder(node, children)
@@ -151,7 +163,7 @@ class Builder(ABC):
 
     def build_tree(self, root_obj) -> TreeNode:
         children = self.expand(root_obj)
-        work: List[Tuple[Any, List[TreeNode], List[Any]]] = [(root_obj, [], list(reversed(list(children))))]
+        work: list[tuple[Any, list[TreeNode], list[Any]]] = [(root_obj, [], list(reversed(list(children))))]
         basic_builder = BasicBuilder(self.options)
         with self.options.printer.tqdm(
                 desc="Walking the Tree", leave=False, delay=2.0, unit=" nodes", total=1 + len(work[-1][-1])
@@ -235,7 +247,7 @@ class BasicBuilder(Builder):
 
     @Builder.builder(list)
     @Builder.builder(tuple)
-    def build_list(self, obj, children: List[TreeNode]) -> SequenceNode:
+    def build_list(self, obj, children: list[TreeNode]) -> SequenceNode:
         if self.options.ignore_list_order:
             return UnorderedListNode(children, auto_match_keys=self.options.auto_match_keys)
         return ListNode(
@@ -246,7 +258,7 @@ class BasicBuilder(Builder):
 
     @Builder.builder(set)
     @Builder.builder(frozenset)
-    def build_set(self, obj, children: List[TreeNode]) -> MultiSetNode:
+    def build_set(self, obj, children: list[TreeNode]) -> MultiSetNode:
         return MultiSetNode(children)
 
     @Builder.expander(dict)
@@ -255,7 +267,7 @@ class BasicBuilder(Builder):
         yield from obj.values()
 
     @Builder.builder(dict)
-    def build_dict(self, _, children: List[TreeNode]):
+    def build_dict(self, _, children: list[TreeNode]):
         n = len(children) // 2
         keys = children[:n]
         values = children[n:]

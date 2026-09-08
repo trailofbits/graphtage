@@ -1,20 +1,19 @@
 __docformat__ = "google"
 
+import copy as copy_module
 import mimetypes
 from abc import ABC, ABCMeta, abstractmethod
-import copy as copy_module
-from typing import Any, Collection, Dict, Generic, Iterable, Iterator, List, Optional, Tuple, Type, TypeVar, Union
+from collections.abc import Collection, Iterable, Iterator
+from typing import Any, Generic, TypeVar
 
 from .bounds import Range
-from .edits import AbstractEdit, EditCollection
-from .edits import Insert, Match, Remove, Replace, AbstractCompoundEdit
+from .edits import AbstractCompoundEdit, AbstractEdit, EditCollection, Insert, Match, Remove, Replace
 from .levenshtein import EditDistance, levenshtein_distance
 from .multiset import MultiSetEdit
-from .printer import Back, Fore, NullANSIContext, NULL_PRINTER, Printer
+from .printer import NULL_PRINTER, Back, Fore, NullANSIContext, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
 from .tree import ContainerNode, Edit, GraphtageFormatter, TreeNode
 from .utils import HashableCounter
-
 
 C = TypeVar("C", bound=TreeNode)
 T = TypeVar("T", bound=TreeNode)
@@ -207,13 +206,13 @@ class KeyValuePairNode(ContainerNode):
         with printer.color(Fore.BLUE):
             printer.write("]")
 
-    def editable_dict(self) -> Dict[str, Any]:
+    def editable_dict(self) -> dict[str, Any]:
         ret = dict(self.__dict__)
         ret["key"] = self.key.make_edited()
         ret["value"] = self.value.make_edited()
         return ret
 
-    def children(self) -> Tuple[LeafNode, TreeNode]:
+    def children(self) -> tuple[LeafNode, TreeNode]:
         return self.key, self.value
 
     def edits(self, node: TreeNode) -> Edit:
@@ -297,7 +296,7 @@ class KeyValuePairNode(ContainerNode):
         return f"{self.key!s}: {self.value!s}"
 
 
-class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
+class ListNode(SequenceNode[tuple[T, ...]], Generic[T]):
     """A node containing an ordered sequence of nodes."""
 
     def __init__(
@@ -324,7 +323,7 @@ class ListNode(SequenceNode[Tuple[T, ...]], Generic[T]):
         return [n.to_obj() for n in self]
 
     @property
-    def container_type(self) -> Type[Tuple[T, ...]]:
+    def container_type(self) -> type[tuple[T, ...]]:
         """The container type required by :class:`graphtage.sequences.SequenceNode`
 
         Returns:
@@ -376,7 +375,7 @@ class MultiSetNode(SequenceNode[HashableCounter[T]], Generic[T]):
         return HashableCounter(n.to_obj() for n in self)
 
     @property
-    def container_type(self) -> Type[HashableCounter[T]]:
+    def container_type(self) -> type[HashableCounter[T]]:
         return HashableCounter
 
     def edits(self, node: TreeNode) -> Edit:
@@ -439,7 +438,7 @@ class MappingNode(ContainerNode, ABC):
 
     @classmethod
     @abstractmethod
-    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
+    def from_dict(cls: type[T], source_dict: dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`MappingNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -451,7 +450,7 @@ class MappingNode(ContainerNode, ABC):
         """
         raise NotImplementedError()
 
-    def to_obj(self) -> Dict[Any, Any]:
+    def to_obj(self) -> dict[Any, Any]:
         return {
             k.to_obj(): v.to_obj() for k, v in self.items()
         }
@@ -460,7 +459,7 @@ class MappingNode(ContainerNode, ABC):
         # this is handled by KeyValuePairNode
         pass
 
-    def items(self) -> Iterator[Tuple[TreeNode, TreeNode]]:
+    def items(self) -> Iterator[tuple[TreeNode, TreeNode]]:
         """Iterates over the key/value pairs in this mapping, similar to :meth:`dict.items`.
 
         The implementation is equivalent to::
@@ -536,7 +535,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
     """
 
     @classmethod
-    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
+    def from_dict(cls: type[T], source_dict: dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`DictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -560,7 +559,7 @@ class DictNode(MappingNode, MultiSetNode[KeyValuePairNode]):
         yield from self._children.elements()
 
 
-class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
+class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[list]):
     """The edit type returned by :class:`FixedKeyDictNode`."""
 
     __slots__ = ()
@@ -581,7 +580,7 @@ class FixedKeyDictNodeEdit(SequenceEdit, EditCollection[List]):
         )
 
 
-class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode]]):
+class FixedKeyDictNode(MappingNode, SequenceNode[dict[LeafNode, KeyValuePairNode]]):
     """A dictionary that only attempts to match two :class:`KeyValuePairNode` objects if they share the same key.
 
     This is the most efficient dictionary matching node type, and is what is used with the
@@ -591,7 +590,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         This implementation does not currently support duplicate keys.
     """
     @property
-    def container_type(self) -> Type[Dict[LeafNode, KeyValuePairNode]]:
+    def container_type(self) -> type[dict[LeafNode, KeyValuePairNode]]:
         """The container type required by :class:`graphtage.sequences.SequenceNode`
 
         Returns:
@@ -601,7 +600,7 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         return dict
 
     @classmethod
-    def from_dict(cls: Type[T], source_dict: Dict[LeafNode, TreeNode]) -> T:
+    def from_dict(cls: type[T], source_dict: dict[LeafNode, TreeNode]) -> T:
         """Constructs a :class:`FixedKeyDictNode` from a mapping of :class:`LeafNode` to :class:`TreeNode`.
 
         Args:
@@ -657,10 +656,10 @@ class FixedKeyDictNode(MappingNode, SequenceNode[Dict[LeafNode, KeyValuePairNode
         else:
             return Replace(self, node)
 
-    def items(self) -> Iterator[Tuple[LeafNode, TreeNode]]:
+    def items(self) -> Iterator[tuple[LeafNode, TreeNode]]:
         yield from iter(self._children.items())
 
-    def editable_dict(self) -> Dict[str, Any]:
+    def editable_dict(self) -> dict[str, Any]:
         ret = dict(self.__dict__)
         ret["_children"] = {e.key: e for e in (kvp.make_edited() for kvp in self)}
         return ret
@@ -748,7 +747,7 @@ class StringFormatter(GraphtageFormatter):
             return c
 
     def write_char(
-            self, printer: Printer, c: Union[str, int], index: int, num_edits: int, removed=False, inserted=False
+            self, printer: Printer, c: str | int, index: int, num_edits: int, removed=False, inserted=False
     ):
         """Writes a character to the printer.
 
@@ -890,7 +889,7 @@ class StringFormatter(GraphtageFormatter):
 class StringNode(LeafNode):
     """A node containing a string"""
 
-    def __init__(self, string_like: Union[str, bytes], quoted=True):
+    def __init__(self, string_like: str | bytes, quoted=True):
         """Initializes a string node.
 
         Args:
@@ -992,8 +991,8 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
     return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
 
 
-FILETYPES_BY_MIME: Dict[str, 'Filetype'] = {}
-FILETYPES_BY_TYPENAME: Dict[str, 'Filetype'] = {}
+FILETYPES_BY_MIME: dict[str, 'Filetype'] = {}
+FILETYPES_BY_TYPENAME: dict[str, 'Filetype'] = {}
 
 
 class FiletypeWatcher(ABCMeta):
@@ -1105,7 +1104,7 @@ class Filetype(metaclass=FiletypeWatcher):
         """
         self.name = type_name
         self.default_mimetype: str = default_mimetype
-        self.mimetypes: Tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
+        self.mimetypes: tuple[str, ...] = (default_mimetype,) + tuple(mimetypes)
         for mime_type in self.mimetypes:
             if mime_type in FILETYPES_BY_MIME:
                 raise ValueError(f"MIME type {mime_type} is already assigned to {FILETYPES_BY_MIME[mime_type]}")
@@ -1117,7 +1116,7 @@ class Filetype(metaclass=FiletypeWatcher):
         FILETYPES_BY_TYPENAME[self.name] = self
 
     @abstractmethod
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         """Builds an intermediate representation tree from a file of this :class:`Filetype`.
 
         Args:
@@ -1131,7 +1130,7 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
     @abstractmethod
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         """Same as :meth:`Filetype.build_tree`, but it should return a human-readable error string on failure.
 
         This function should never throw an exception.
@@ -1152,7 +1151,7 @@ class Filetype(metaclass=FiletypeWatcher):
         raise NotImplementedError()
 
 
-def get_filetype(path: Optional[str] = None, mime_type: Optional[str] = None) -> Filetype:
+def get_filetype(path: str | None = None, mime_type: str | None = None) -> Filetype:
     """Looks up the filetype for the given path.
 
     At least one of :obj:`path` or :obj:`mime_type` must be not :const:`None`. If both are provided, only

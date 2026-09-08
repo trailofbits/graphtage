@@ -3,7 +3,7 @@ Generic node types for representing abstract syntax trees.
 """
 from colorama import Fore
 
-from . import KeyValuePairNode, ListNode, Printer, TreeNode, DictNode, StringNode
+from . import DictNode, KeyValuePairNode, ListNode, Printer, StringNode, TreeNode
 from .dataclasses import DataClassNode
 from .sequences import SequenceFormatter
 

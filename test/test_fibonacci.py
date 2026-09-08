@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Callable, Dict, List, Optional, Set
+from collections.abc import Callable
 from unittest import TestCase
 
 from tqdm import tqdm, trange
@@ -11,8 +11,8 @@ from graphtage.fibonacci import FibonacciHeap, HeapNode, MaxFibonacciHeap
 class TestFibonacciHeap(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.random_list: List[int] = [random.randint(0, 10000) for _ in range(10000)]
-        cls.sorted_list: List[int] = sorted(cls.random_list)
+        cls.random_list: list[int] = [random.randint(0, 10000) for _ in range(10000)]
+        cls.sorted_list: list[int] = sorted(cls.random_list)
 
     def test_duplicate_items(self):
         heap = FibonacciHeap()
@@ -28,7 +28,7 @@ class TestFibonacciHeap(TestCase):
             heap.push(rand_int)
         return heap
 
-    def random_max_heap(self, key: Optional[Callable[[int], int]] = None) -> MaxFibonacciHeap[int, int]:
+    def random_max_heap(self, key: Callable[[int], int] | None = None) -> MaxFibonacciHeap[int, int]:
         heap: FibonacciHeap[int, int] = MaxFibonacciHeap(key=key)
         for rand_int in self.random_list:
             heap.push(rand_int)
@@ -71,10 +71,10 @@ class TestFibonacciHeap(TestCase):
 
     def test_decrease_key(self):
         heap = self.random_heap()
-        nodes_by_value: Dict[int, Set[HeapNode[int, int]]] = defaultdict(set)
+        nodes_by_value: dict[int, set[HeapNode[int, int]]] = defaultdict(set)
         for node in heap.nodes():
             nodes_by_value[node.key].add(node)
-        changes: Dict[int, int] = {}
+        changes: dict[int, int] = {}
         for _ in trange(len(self.random_list)//20):
             while True:
                 random_sorted_index = random.randint(0, len(self.random_list) - 1)

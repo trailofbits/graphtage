@@ -1,9 +1,9 @@
 from unittest import TestCase
 
 import graphtage
+from graphtage import expressions
 from graphtage.constraints import MatchIf, MatchUnless
 from graphtage.json import build_tree
-from graphtage import expressions
 
 
 class TestConstraints(TestCase):

@@ -177,10 +177,10 @@ Examples:
 import inspect
 import logging
 from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
+from collections.abc import Callable, Sequence
+from typing import Any, Generic, Optional, TypeVar
 
 from .printer import Printer
-
 
 log = logging.getLogger(__name__)
 
@@ -238,10 +238,10 @@ T = TypeVar('T')
 
 
 def _get_formatter(
-        node_type: Type[T],
+        node_type: type[T],
         base_formatter: 'Formatter',
-        tested: Set[Type['Formatter']]
-) -> Optional[Callable[[Printer, T], Any]]:
+        tested: set[type['Formatter']]
+) -> Callable[[Printer, T], Any] | None:
     if base_formatter.__class__ not in tested:
         grandchildren = []
         for c in node_type.mro():
@@ -263,9 +263,9 @@ def _get_formatter(
 
 
 def get_formatter(
-        node_type: Type[T],
+        node_type: type[T],
         base_formatter: Optional['Formatter'] = None
-) -> Optional[Callable[[Printer, T], Any]]:
+) -> Callable[[Printer, T], Any] | None:
     """Uses the :ref:`Formatting Protocol` to determine the correct formatter for a given type.
 
     See :ref:`this section <What the formatter module can do>` for a number of examples.
@@ -278,7 +278,7 @@ def get_formatter(
     Returns: The formatter for object type :obj:`node_type`, or :const:`None` if none was found.
 
     """
-    tested_formatters: Set[Type[Formatter]] = set()
+    tested_formatters: set[type[Formatter]] = set()
     if base_formatter is not None:
         ret = _get_formatter(node_type, base_formatter, tested_formatters)
         if ret is not None:
@@ -296,9 +296,9 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
     DEFAULT_INSTANCE: 'Formatter[T]' = None
     """A default instance of this formatter, automatically instantiated by the :class:`FormatterChecker` metaclass."""
-    sub_format_types: Sequence[Type['Formatter[T]']] = ()
+    sub_format_types: Sequence[type['Formatter[T]']] = ()
     """A list of formatter types that should be used as sub-formatters in the :ref:`Formatting Protocol`."""
-    sub_formatters: List['Formatter[T]'] = []
+    sub_formatters: list['Formatter[T]'] = []
     """The list of instantiated formatters corresponding to :attr:`Formatter.sub_format_types`.
     
     This list is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
@@ -334,7 +334,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
             ret.sub_formatters[-1].parent = ret
         return ret
 
-    def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
+    def get_formatter(self, item: T) -> Callable[[Printer, T], Any] | None:
         """Looks up a formatter for the given item using this formatter as a base.
 
         Equivalent to::

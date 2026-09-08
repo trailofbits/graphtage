@@ -1,13 +1,11 @@
 """A :class:`graphtage.Filetype` for parsing, diffing, and rendering Apple plist files."""
 import os
-from xml.parsers.expat import ExpatError
-from typing import Optional, Tuple, Union
-
 from plistlib import dumps, load
+from xml.parsers.expat import ExpatError
 
 from . import json
 from .edits import Edit, EditCollection, Match
-from .graphtage import BoolNode, BuildOptions, Filetype, FloatNode, KeyValuePairNode, IntegerNode, LeafNode, StringNode
+from .graphtage import BoolNode, BuildOptions, Filetype, FloatNode, IntegerNode, KeyValuePairNode, LeafNode, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter, SequenceNode
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
@@ -50,7 +48,7 @@ class PLISTNode(ContainerNode):
         return 1
 
 
-def build_tree(path: str, options: Optional[BuildOptions] = None, *args, **kwargs) -> PLISTNode:
+def build_tree(path: str, options: BuildOptions | None = None, *args, **kwargs) -> PLISTNode:
     """Constructs a PLIST tree from an PLIST file."""
     with open(path, "rb") as stream:
         data = load(stream)
@@ -91,7 +89,7 @@ class PLISTSequenceFormatter(SequenceFormatter):
     print_MappingNode = print_MultiSetNode
 
 
-def _plist_header_footer() -> Tuple[str, str]:
+def _plist_header_footer() -> tuple[str, str]:
     string = "1234567890"
     encoded = dumps(string).decode("utf-8")
     expected = f"<string>{string}</string>"
@@ -156,14 +154,14 @@ class PLIST(Filetype):
             'application/x-plist'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         tree = build_tree(path=path, options=options)
         for node in tree.dfs():
             if isinstance(node, StringNode):
                 node.quoted = False
         return tree
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except ExpatError as ee:

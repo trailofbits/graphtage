@@ -1,15 +1,20 @@
 import itertools
 import logging
-from abc import abstractmethod, ABC, ABCMeta
+from abc import ABC, ABCMeta, abstractmethod
+from collections.abc import Callable, Iterable, Iterator, Sequence, Sized
 from functools import wraps
 from typing import (
-    Any, Callable, Dict, Iterable, Iterator, List, Optional, Sequence, Sized, Tuple, Type, TypeVar, Union
+    Any,
+    Optional,
+    Protocol,
+    TypeVar,
+    Union,
+    runtime_checkable,
 )
-from typing import Protocol, runtime_checkable
 
 from .bounds import Bounded, Range
-from .formatter import Formatter, FORMATTERS
-from .printer import get_default_printer, Printer
+from .formatter import FORMATTERS, Formatter
+from .printer import Printer, get_default_printer
 
 log = logging.getLogger(__name__)
 
@@ -35,20 +40,20 @@ class GraphtageFormatter(FormatterType):
         """
         if isinstance(node_or_edit, Edit):
             if with_edits:
-                edit: Optional[Edit] = node_or_edit
+                edit: Edit | None = node_or_edit
             else:
-                edit: Optional[Edit] = None
+                edit: Edit | None = None
             node: TreeNode = node_or_edit.from_node
         elif with_edits:
             if isinstance(node_or_edit, EditedTreeNode) and \
                     node_or_edit.edit is not None and node_or_edit.edit.has_non_zero_cost():
-                edit: Optional[Edit] = node_or_edit.edit
+                edit: Edit | None = node_or_edit.edit
                 node: TreeNode = node_or_edit
             else:
-                edit: Optional[Edit] = None
+                edit: Edit | None = None
                 node: TreeNode = node_or_edit
         else:
-            edit: Optional[Edit] = None
+            edit: Edit | None = None
             node: TreeNode = node_or_edit
         if edit is not None:
             # First, see if we have a specialized formatter for this edit:
@@ -257,10 +262,10 @@ class EditedTreeNode:
     """
     def __init__(self):
         self.removed: bool = False
-        self.inserted: List[TreeNode] = []
-        self.matched_to: Optional[TreeNode] = None
-        self.edit_list: List[Edit] = []
-        self.edit: Optional[Edit] = None
+        self.inserted: list[TreeNode] = []
+        self.matched_to: TreeNode | None = None
+        self.edit_list: list[Edit] = []
+        self.edit: Edit | None = None
 
     @property
     def edited(self) -> bool:
@@ -292,9 +297,9 @@ class EditedTreeNode:
 class TreeNodeMeta(ABCMeta):
     def __init__(cls, name, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
-        cls._edited_type: Optional[Type[Union[EditedTreeNode, T]]] = None
+        cls._edited_type: type[EditedTreeNode | T] | None = None
 
-    def edited_type(self) -> Type[Union[EditedTreeNode, T]]:
+    def edited_type(self) -> type[EditedTreeNode | T]:
         """Dynamically constructs a new class that is *both* a :class:`TreeNode` *and* an :class:`EditedTreeNode`.
 
         The edited type's member variables are populated by the result of :meth:`TreeNode.editable_dict` of the
@@ -339,7 +344,7 @@ class TreeNode(metaclass=TreeNodeMeta):
     """
     _total_size = None
     _parent: Optional["TreeNode"] = None
-    _edit_modifiers: Optional[List[Callable[["TreeNode", "TreeNode"], Optional[Edit]]]] = None
+    _edit_modifiers: list[Callable[["TreeNode", "TreeNode"], Edit | None]] | None = None
 
     @property
     def edited(self) -> bool:
@@ -377,7 +382,7 @@ class TreeNode(metaclass=TreeNodeMeta):
 
     def copy(self: T) -> T:
         """Creates a deep copy of this node"""
-        work: List[Tuple[TreeNode, List[TreeNode], List[TreeNode]]] = [(self, [], list(reversed(self.children())))]
+        work: list[tuple[TreeNode, list[TreeNode], list[TreeNode]]] = [(self, [], list(reversed(self.children())))]
         while work:
             node, processed_children, remaining_children = work.pop()
             if not remaining_children:
@@ -473,13 +478,13 @@ class TreeNode(metaclass=TreeNodeMeta):
         """
         raise NotImplementedError()
 
-    def add_edit_modifier(self, modifier: Callable[["TreeNode", "TreeNode"], Optional[Edit]]):
+    def add_edit_modifier(self, modifier: Callable[["TreeNode", "TreeNode"], Edit | None]):
         if self._edit_modifiers is None:
             self._edit_modifiers = []
             self.edits = self._edits_with_modifiers
         self._edit_modifiers.append(modifier)
 
-    def make_edited(self) -> Union[EditedTreeNode, T]:
+    def make_edited(self) -> EditedTreeNode | T:
         """Returns a new, copied instance of this node that is also an instance of :class:`EditedTreeNode`.
 
         This is equivalent to::
@@ -498,7 +503,7 @@ class TreeNode(metaclass=TreeNodeMeta):
         assert isinstance(ret, EditedTreeNode)
         return ret
 
-    def editable_dict(self) -> Dict[str, Any]:
+    def editable_dict(self) -> dict[str, Any]:
         """Copies :obj:`self.__dict__`, calling :meth:`TreeNode.editable_dict` on any :class:`TreeNode` objects therein.
 
         This is equivalent to::
@@ -521,7 +526,7 @@ class TreeNode(metaclass=TreeNodeMeta):
                     ret[key] = value.make_edited()
         return ret
 
-    def get_all_edit_contexts(self, node: "TreeNode") -> Iterator[Tuple[Tuple["TreeNode", ...], Edit]]:
+    def get_all_edit_contexts(self, node: "TreeNode") -> Iterator[tuple[tuple["TreeNode", ...], Edit]]:
         """Returns an iterator over all edit contexts that will transform this node into the provided node.
 
         Args:
@@ -543,7 +548,7 @@ class TreeNode(metaclass=TreeNodeMeta):
                 new_range = new_bounds.upper_bound - new_bounds.lower_bound
                 t.update(prev_range - new_range)
                 prev_range = new_range
-        edit_stack: List[Tuple[Tuple[TreeNode, ...], Edit]] = [((node,), edit)]
+        edit_stack: list[tuple[tuple[TreeNode, ...], Edit]] = [((node,), edit)]
         while edit_stack:
             ancestors, edit = edit_stack.pop()
             if isinstance(edit, CompoundEdit):
@@ -569,7 +574,7 @@ class TreeNode(metaclass=TreeNodeMeta):
         for _, edit in self.get_all_edit_contexts(node):
             yield edit
 
-    def diff(self: T, node: 'TreeNode') -> Union[EditedTreeNode, T]:
+    def diff(self: T, node: 'TreeNode') -> EditedTreeNode | T:
         """Performs a diff against the provided node.
 
         Args:

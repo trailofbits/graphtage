@@ -6,14 +6,11 @@ import sys
 
 from colorama.ansi import Fore
 
-from . import expressions
-from . import graphtage
+from . import expressions, graphtage, version
 from . import printer as printermodule
-from . import version
 from .constraints import MatchIf, MatchUnless
 from .printer import HTMLPrinter, Printer, enable_ansi_support
 from .utils import Tempfile
-
 
 log = logging.getLogger('graphtage')
 

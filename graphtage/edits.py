@@ -1,11 +1,12 @@
-from abc import abstractmethod, ABC
 import itertools
-from typing import Any, Callable, cast, Collection, Generic, Iterator, List, Optional, Type, TypeVar
+from abc import ABC, abstractmethod
+from collections.abc import Callable, Collection, Iterator
+from typing import Any, Generic, TypeVar, cast
 
+from .bounds import Range
 from .debug import Debuggable
 from .printer import Back, Fore, Printer
 from .search import IterativeTighteningSearch
-from .bounds import Range
 from .tree import CompoundEdit, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
@@ -20,8 +21,8 @@ class AbstractEdit(Debuggable, Edit, ABC):
     def __init__(self,
                  from_node: TreeNode,
                  to_node: TreeNode = None,
-                 constant_cost: Optional[int] = 0,
-                 cost_upper_bound: Optional[int] = None):
+                 constant_cost: int | None = 0,
+                 cost_upper_bound: int | None = None):
         """Constructs a new Edit.
 
         Args:
@@ -38,7 +39,7 @@ class AbstractEdit(Debuggable, Edit, ABC):
         self._constant_cost = constant_cost
         self._cost_upper_bound = cost_upper_bound
         self._valid: bool = True
-        self._cached_bounds: Optional[Range] = None
+        self._cached_bounds: Range | None = None
         self.initial_bounds = self.bounds()
         """The initial bounds of this edit.
          
@@ -233,7 +234,7 @@ class PossibleEdits(AbstractCompoundEdit):
             from_node: TreeNode,
             to_node: TreeNode,
             edits: Iterator[Edit] = (),
-            initial_cost: Optional[Range] = None
+            initial_cost: Range | None = None
     ):
         """Constructs a new Possible Edits object.
 
@@ -269,7 +270,7 @@ class PossibleEdits(AbstractCompoundEdit):
     def valid(self, is_valid: bool):
         self._valid = is_valid
 
-    def best_possibility(self) -> Optional[Edit]:
+    def best_possibility(self) -> Edit | None:
         """Returns the best possibility as of yet."""
         return self._search.best_match
 
@@ -437,8 +438,8 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
     def __init__(
             self,
             from_node: TreeNode,
-            to_node: Optional[TreeNode],
-            collection: Type[C],
+            to_node: TreeNode | None,
+            collection: type[C],
             add_to_collection: Callable[[C, Edit], Any],
             edits: Iterator[Edit],
             explode_edits: bool = True
@@ -477,7 +478,7 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
         for sub_edit in self.edits():
             sub_edit.print(formatter, printer)
 
-    def _expand_edits(self) -> Optional[Edit]:
+    def _expand_edits(self) -> Edit | None:
         if self._edit_iter is not None:
             try:
                 next_edit = next(self._edit_iter)
@@ -559,7 +560,7 @@ class EditCollection(AbstractCompoundEdit, Generic[C]):
         return f"{self.__class__.__name__}(*{self._sub_edits!r})"
 
 
-class EditSequence(EditCollection[List]):
+class EditSequence(EditCollection[list]):
     """An :class:`EditCollection` using a :class:`list` as the underlying container."""
 
     __slots__ = ()
@@ -567,7 +568,7 @@ class EditSequence(EditCollection[List]):
     def __init__(
             self,
             from_node: TreeNode,
-            to_node: Optional[TreeNode],
+            to_node: TreeNode | None,
             edits: Iterator[Edit],
             explode_edits: bool = True
     ):

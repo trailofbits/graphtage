@@ -7,7 +7,6 @@
 
 import csv
 from io import StringIO
-from typing import Optional
 
 from . import graphtage, json
 from .json import JSONFormatter
@@ -31,7 +30,7 @@ class CSVNode(graphtage.ListNode[CSVRow]):
         return self._children == other._children or (not self and not other)
 
 
-def build_tree(path: str, options: Optional[graphtage.BuildOptions] = None, *args, **kwargs) -> CSVNode:
+def build_tree(path: str, options: graphtage.BuildOptions | None = None, *args, **kwargs) -> CSVNode:
     """Constructs a :class:`CSVNode` from a CSV file.
 
     The file is parsed using Python's :func:`csv.reader`. The elements in each row are constructed by delegating to
@@ -165,11 +164,11 @@ class CSV(graphtage.Filetype):
             'text/csv'
         )
 
-    def build_tree(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: graphtage.BuildOptions | None = None) -> TreeNode:
         """Equivalent to :func:`build_tree`"""
         return build_tree(path, options=options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, options: graphtage.BuildOptions | None = None) -> TreeNode:
         return self.build_tree(path=path, options=options)
 
     def get_default_formatter(self) -> CSVFormatter:

@@ -1,10 +1,8 @@
-from abc import ABCMeta, abstractmethod
 import logging
-from typing import Optional
+from abc import ABCMeta, abstractmethod
 
+from . import expressions, graphtage
 from .edits import Edit
-from . import expressions
-from . import graphtage
 
 log = logging.getLogger('graphtage')
 
@@ -14,7 +12,7 @@ class ConditionalMatcher(metaclass=ABCMeta):
         self.condition: expressions.Expression = condition
 
     @abstractmethod
-    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Edit | None:
         raise NotImplementedError()
 
     @classmethod
@@ -23,7 +21,7 @@ class ConditionalMatcher(metaclass=ABCMeta):
 
 
 class MatchIf(ConditionalMatcher):
-    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Edit | None:
         try:
             if self.condition.eval(locals={'from': from_node, 'to': to_node}):
                 return None
@@ -33,7 +31,7 @@ class MatchIf(ConditionalMatcher):
 
 
 class MatchUnless(ConditionalMatcher):
-    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Optional[Edit]:
+    def __call__(self, from_node: graphtage.TreeNode, to_node: graphtage.TreeNode) -> Edit | None:
         try:
             if self.condition.eval(locals={'from': from_node.to_obj(), 'to': to_node.to_obj()}):
                 return graphtage.Replace(from_node, to_node)

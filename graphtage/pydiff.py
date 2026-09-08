@@ -4,7 +4,8 @@ See :doc:`the documentation on using Graphtage programmatically <library>` for s
 """
 import ast
 import logging
-from typing import Any, List, Optional, Union, Iterator, Iterable
+from collections.abc import Iterable, Iterator
+from typing import Any
 
 from . import Range
 from .ast import Assignment, Call, CallArguments, CallKeywords, Import, KeywordArgument, Module, Subscript
@@ -12,13 +13,19 @@ from .builder import BasicBuilder, Builder
 from .dataclasses import DataClassNode
 from .edits import AbstractCompoundEdit, Edit, Replace
 from .graphtage import (
-    BuildOptions, DictNode, FixedKeyDictNode, KeyValuePairNode, LeafNode, ListNode, MultiSetNode, StringNode
+    BuildOptions,
+    DictNode,
+    FixedKeyDictNode,
+    KeyValuePairNode,
+    LeafNode,
+    ListNode,
+    MultiSetNode,
+    StringNode,
 )
 from .json import JSONDictFormatter, JSONListFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
-
 
 log = logging.getLogger(__name__)
 
@@ -71,11 +78,11 @@ class PyObjFixedAttributes(FixedKeyDictNode):
         return KeywordArgument(key=key, value=value, allow_key_edits=allow_key_edits)
 
 
-PyObjAttributeMapping = Union[PyObjAttributes, PyObjFixedAttributes]
+PyObjAttributeMapping = PyObjAttributes | PyObjFixedAttributes
 
 
 class PyObj(ContainerNode):
-    def __init__(self, class_name: StringNode, attrs: Optional[PyObjAttributeMapping]):
+    def __init__(self, class_name: StringNode, attrs: PyObjAttributeMapping | None):
         self.class_name: StringNode = class_name
         if attrs is None:
             attrs = PyObjAttributes.from_dict({})
@@ -109,7 +116,7 @@ class PyObj(ContainerNode):
         return f"{self.__class__.__name__}(class_name={self.class_name!r}, attrs={self.attrs!r})"
 
 
-ASTNode = Union[ast.AST, ast.stmt, ast.expr, ast.alias]
+ASTNode = ast.AST | ast.stmt | ast.expr | ast.alias
 
 
 class PyAlias(DataClassNode):
@@ -131,17 +138,17 @@ class ASTBuilder(BasicBuilder):
         yield from node.body
 
     @Builder.builder(ast.Module)
-    def build_module(self, _, children: List[TreeNode]):
+    def build_module(self, _, children: list[TreeNode]):
         return Module(tuple(children))
 
     @Builder.expander(ast.List)
     @Builder.expander(ast.Tuple)
     @Builder.expander(ast.Set)
-    def expand_collection(self, node: Union[ast.List, ast.Tuple, ast.Set]):
+    def expand_collection(self, node: ast.List | ast.Tuple | ast.Set):
         yield from node.elts
 
     @Builder.builder(ast.Set)
-    def build_set(self, _, children: List[TreeNode]):
+    def build_set(self, _, children: list[TreeNode]):
         return MultiSetNode(items=children, auto_match_keys=self.options.auto_match_keys)
 
     @Builder.builder(ast.List)
@@ -178,7 +185,7 @@ class ASTBuilder(BasicBuilder):
 
     @Builder.builder(ast.Constant)
     @Builder.builder(ast.Expr)
-    def build_constant(self, _, children: List[TreeNode]):
+    def build_constant(self, _, children: list[TreeNode]):
         assert len(children) == 1
         return children[0]
 
@@ -187,7 +194,7 @@ class ASTBuilder(BasicBuilder):
         return [node.func] + node.args
 
     @Builder.builder(ast.Call)
-    def build_call(self, _, children: List[TreeNode]):
+    def build_call(self, _, children: list[TreeNode]):
         func_name = children[0]
         if isinstance(func_name, StringNode):
             func_name.quoted = False
@@ -202,7 +209,7 @@ class ASTBuilder(BasicBuilder):
         return node.names
 
     @Builder.builder(ast.ImportFrom)
-    def build_import_from(self, node: ast.ImportFrom, children: List[TreeNode]):
+    def build_import_from(self, node: ast.ImportFrom, children: list[TreeNode]):
         if node.module is None:
             from_name = StringNode("", quoted=False)
         else:
@@ -218,7 +225,7 @@ class ASTBuilder(BasicBuilder):
         return PyAlias(StringNode(node.name, quoted=False), as_name)
 
     @Builder.builder(ast.Attribute)
-    def build_attribute(self, node: ast.Attribute, children: List[TreeNode]):
+    def build_attribute(self, node: ast.Attribute, children: list[TreeNode]):
         assert len(children) == 1
         return PyObjAttribute(children[0], StringNode(node.attr, quoted=False))
 
@@ -228,7 +235,7 @@ class ASTBuilder(BasicBuilder):
         yield from node.values
 
     @Builder.builder(ast.Dict)
-    def build_ast_dict(self, node: ast.Dict, children: List[TreeNode]):
+    def build_ast_dict(self, node: ast.Dict, children: list[TreeNode]):
         return self.build_dict(node, children)
 
     @Builder.expander(ast.Subscript)
@@ -237,11 +244,11 @@ class ASTBuilder(BasicBuilder):
         yield node.slice
 
     @Builder.builder(ast.Subscript)
-    def build_subscript(self, _, children: List[TreeNode]):
+    def build_subscript(self, _, children: list[TreeNode]):
         return Subscript(*children)
 
 
-def ast_to_tree(tree: ast.AST, options: Optional[BuildOptions] = None) -> TreeNode:
+def ast_to_tree(tree: ast.AST, options: BuildOptions | None = None) -> TreeNode:
     """Builds a Graphtage tree from a Python Abstract Syntax Tree.
 
     Args:
@@ -266,7 +273,7 @@ class PyObjBuilder(BasicBuilder):
                 yield attr
                 yield getattr(node, attr)
 
-    def default_builder(self, node: Any, children: List[TreeNode]):
+    def default_builder(self, node: Any, children: list[TreeNode]):
         name = children[0]
         assert isinstance(name, StringNode)
         name.quoted = False
@@ -286,7 +293,7 @@ class PyObjBuilder(BasicBuilder):
         return PyObj(name, dict_node)
 
 
-def build_tree(python_obj: Any, options: Optional[BuildOptions] = None) -> TreeNode:
+def build_tree(python_obj: Any, options: BuildOptions | None = None) -> TreeNode:
     """Builds a Graphtage tree from an arbitrary Python object, even complex custom classes.
 
     Args:
@@ -432,11 +439,11 @@ class PyDiffFormatter(GraphtageFormatter):
             printer.write("[")
 
 
-def diff(from_py_obj, to_py_obj, options: Optional[BuildOptions] = None):
+def diff(from_py_obj, to_py_obj, options: BuildOptions | None = None):
     return build_tree(from_py_obj, options=options).diff(build_tree(to_py_obj, options=options))
 
 
-def print_diff(from_py_obj, to_py_obj, printer: Optional[Printer] = None, options: Optional[BuildOptions] = None):
+def print_diff(from_py_obj, to_py_obj, printer: Printer | None = None, options: BuildOptions | None = None):
     if printer is None:
         printer = Printer()
     d = diff(from_py_obj, to_py_obj, options=options)

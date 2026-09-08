@@ -8,7 +8,8 @@ Fibonacci Heap that has amortized constant time insertion.
 
 """
 
-from typing import Callable, Generic, Iterator, Optional, TypeVar
+from collections.abc import Callable, Iterator
+from typing import Generic, TypeVar
 
 T = TypeVar('T')
 Key = TypeVar('Key')
@@ -31,9 +32,9 @@ class HeapNode(Generic[T, Key]):
             key = item
         self.key: Key = key
         """The key to be used when sorting this heap node."""
-        self.parent: Optional[HeapNode[T, Key]] = None
+        self.parent: HeapNode[T, Key] | None = None
         """The node's parent."""
-        self.child: Optional[HeapNode[T, Key]] = None
+        self.child: HeapNode[T, Key] | None = None
         """The node's child."""
         self.left: HeapNode[T, Key] = self
         """The left sibling of this node, or :obj:`self` if it has no left sibling."""
@@ -140,7 +141,7 @@ class HeapNode(Generic[T, Key]):
 
 class FibonacciHeap(Generic[T, Key]):
     """A Fibonacci Heap."""
-    def __init__(self, key: Optional[Callable[[T], Key]] = None):
+    def __init__(self, key: Callable[[T], Key] | None = None):
         """Initializes a Fibonacci heap.
 
         Args:
@@ -155,8 +156,8 @@ class FibonacciHeap(Generic[T, Key]):
             """The function to extract comparison keys from items."""
         else:
             self.key: Callable[[T], Key] = key
-        self._min: Optional[HeapNode[T, Key]] = None
-        self._root: Optional[HeapNode[T, Key]] = None
+        self._min: HeapNode[T, Key] | None = None
+        self._root: HeapNode[T, Key] | None = None
         self._n: int = 0
 
     def clear(self):
@@ -374,7 +375,7 @@ class ReversedComparator(Generic[Key]):
 
 class MaxFibonacciHeap(Generic[T, Key], FibonacciHeap[T, ReversedComparator[Key]]):
     """A Fibonacci Heap that yields items in decreasing order, using a :class:`ReversedComparator`."""
-    def __init__(self, key: Optional[Callable[[T], Key]] = None):
+    def __init__(self, key: Callable[[T], Key] | None = None):
         if key is None:
             def key(n: T):
                 return n
