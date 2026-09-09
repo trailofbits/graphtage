@@ -24,7 +24,7 @@ Example:
 .. _the assignment problem: https://en.wikipedia.org/wiki/Assignment_problem
 .. [Karp78] `Richard M. Karp <https://en.wikipedia.org/wiki/Richard_M._Karp>`_. |karp78title|_. 1978. It is partially
     implemented in :class:`WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION`.
-.. _karp78title: https://www2.eecs.berkeley.edu/Pubs/TechRpts/1978/ERL-m-78-67.pdf
+.. _karp78title: https://digitalassets.lib.berkeley.edu/techreports/ucb/text/ERL-m-78-67.pdf
 .. |karp78title| replace:: *An Algorithm to Solve the* :math:`m \\times n` *Assignment Problem in Expected Time*
     :math:`O(mn \\log n)`
 .. _scipy_linear_sum_assignment:
