@@ -1,7 +1,6 @@
 import itertools
 import os
-from collections.abc import Iterator
-from typing import Optional
+from collections.abc import Iterator, Sequence
 
 import toml
 
@@ -10,7 +9,7 @@ from .edits import Replace
 from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, MappingNode, StringFormatter, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter
-from .tree import EditedTreeNode, GraphtageFormatter, TreeNode
+from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, options: BuildOptions | None) -> TreeNode:
@@ -165,55 +164,157 @@ def is_table(kvp: KeyValuePairNode) -> bool:
     return not (isinstance(kvp.value, EditedTreeNode) and isinstance(kvp.value.edit, Replace))
 
 
-class TOMLMapping:
-    def __init__(
-            self,
-            mapping: MappingNode,
-            parent: Optional['TOMLMapping'] = None,
-            parent_name: TreeNode | None = None
-    ):
-        self.mapping: MappingNode = mapping
-        self.parent: TOMLMapping | None = parent
-        self.parent_name: TreeNode | None = parent_name
+def key_value_pairs(mapping: MappingNode) -> Iterator[KeyValuePairNode]:
+    """Iterates over a mapping's key/value pairs, including any that an edit inserts into it.
 
-    @property
-    def name_segments(self) -> tuple[TreeNode, ...]:
-        if self.parent is None:
-            return ()
+    Args:
+        mapping: The mapping whose pairs to enumerate.
+
+    Returns:
+        Iterator[KeyValuePairNode]: Every pair the mapping renders. An inserted pair belongs to the other document,
+        so it is not among the mapping's own children.
+
+    """
+    inserted: Sequence[TreeNode] = ()
+    if isinstance(mapping, EditedTreeNode):
+        inserted = mapping.inserted
+    return itertools.chain(mapping, inserted)
+
+
+def writes_own_section(mapping: MappingNode) -> bool:
+    """Returns whether a mapping is written as a section of its own rather than only as a name prefix.
+
+    A mapping whose every pair is itself a ``[table]`` writes nothing between its own header and the first header
+    below it, so the header is omitted and the sub-tables carry the whole dotted name. An empty mapping still needs
+    a header of its own, since it would otherwise leave no trace in the output.
+
+    Args:
+        mapping: The mapping to classify.
+
+    Returns:
+        bool: :const:`True` if :obj:`mapping` writes a header and a body of its own.
+
+    """
+    pairs = list(key_value_pairs(mapping))
+    return not pairs or any(not is_table(kvp) for kvp in pairs)
+
+
+class TOMLTableFormatter(SequenceFormatter):
+    """A sub-formatter for a TOML document and for every ``[table]`` section within it.
+
+    Every pair is written through :meth:`SequenceFormatter.print_SequenceNode`, which is where an inserted or removed
+    pair is wrapped in its edit markup. A pair that becomes a section of its own is held back until the rest of its
+    table has been written, because TOML reads every ``key = value`` line that follows a header as part of that
+    header's table.
+
+    """
+    is_partial = True
+
+    def __init__(self):
+        """Initializes the TOML table formatter.
+
+        Equivalent to::
+
+            super().__init__('', '', '')
+
+        """
+        super().__init__('', '', '')
+        self._name: list[TreeNode] = []
+        self._sections: list[list[Edit]] = []
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        """Writes nothing, since every line of a table body already ends itself."""
+
+    def items_indent(self, printer: Printer) -> Printer:
+        """Returns :obj:`printer` itself, since TOML does not indent a table body under its header."""
+        return printer
+
+    def edit_print(self, printer: Printer, edit: Edit):
+        """Writes one pair of a table, holding back any pair that becomes a ``[table]`` section of its own.
+
+        Args:
+            printer: The printer to which to write.
+            edit: The edit for the pair, which is a :class:`graphtage.Match` when the table is not edited.
+
+        """
+        node = edit.from_node
+        if isinstance(node, KeyValuePairNode) and is_table(node):
+            self._sections[-1].append(edit)
         else:
-            return (*self.parent.name_segments, self.parent_name)
+            super().edit_print(printer, edit)
 
-    def key_value_pairs(self) -> Iterator[KeyValuePairNode]:
-        """Iterates over this mapping's key/value pairs, including any that an edit inserts into it."""
-        inserted = ()
-        if self.mapping.edited and self.mapping.inserted:
-            inserted = self.mapping.inserted
-        return itertools.chain(self.mapping, inserted)
+    def print_MappingNode(self, printer: Printer, node: MappingNode):
+        """Writes a TOML document, or one ``[table]`` section and the sections nested within it.
 
-    def items(self) -> Iterator[KeyValuePairNode]:
-        for kvp in self.key_value_pairs():
-            if not is_table(kvp):
-                yield kvp
+        Args:
+            printer: The printer to which to write.
+            node: The document root, or the value of the pair that names this section.
 
-    def __bool__(self):
+        """
+        writes_section = writes_own_section(node)
+        if writes_section and self._name:
+            self.write_header(printer)
+        self._sections.append([])
         try:
-            next(self.items())
-            return True
-        except StopIteration:
-            try:
-                next(self.children())
-                return False
-            except StopIteration:
-                return True
+            super().print_SequenceNode(printer, node)
+        finally:
+            sections = self._sections.pop()
+        if writes_section:
+            printer.newline()
+        for section in sections:
+            super().edit_print(printer, section)
 
-    def children(self) -> Iterator['TOMLMapping']:
-        for kvp in self.key_value_pairs():
-            if is_table(kvp):
-                yield TOMLMapping(mapping=kvp.value, parent=self, parent_name=kvp.key)
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        """Writes one entry of a table, either as a ``key = value`` line or as a ``[table]`` section of its own.
+
+        Args:
+            printer: The printer to which to write.
+            node: The key/value pair to write.
+
+        """
+        if not is_table(node):
+            self.parent.write_key_value_pair(printer, node)
+            printer.newline()
+            return
+        self._name.append(node.key)
+        try:
+            self.print(printer, node.value)
+        finally:
+            self._name.pop()
+
+    def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-mapping sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`TOMLFormatter.print`, thereby delegating to the :class:`TOMLListFormatter` in
+        instances where a table contains a list.
+
+        """
+        self.parent.print(*args, **kwargs)
+
+    def write_header(self, printer: Printer):
+        """Writes the ``[dotted.name]`` header of the section that is currently being written.
+
+        Args:
+            printer: The printer to which to write.
+
+        """
+        printer.write('[')
+        for i, segment in enumerate(self._name):
+            if i > 0:
+                printer.write('.')
+            if isinstance(segment, StringNode):
+                segment.quoted = False
+            self.print(printer, segment)
+        printer.write(']')
+        printer.newline()
 
 
 class TOMLFormatter(GraphtageFormatter):
-    sub_format_types = (TOMLListFormatter, TOMLStringFormatter, TOMLInlineTableFormatter)
+    sub_format_types = (TOMLTableFormatter, TOMLListFormatter, TOMLStringFormatter, TOMLInlineTableFormatter)
 
     @property
     def inline_tables(self) -> TOMLInlineTableFormatter:
@@ -224,6 +325,11 @@ class TOMLFormatter(GraphtageFormatter):
 
         """
         return next(f for f in self.sub_formatters if isinstance(f, TOMLInlineTableFormatter))
+
+    @property
+    def tables(self) -> TOMLTableFormatter:
+        """The sub-formatter for a mapping that is written as a ``[table]`` section."""
+        return next(f for f in self.sub_formatters if isinstance(f, TOMLTableFormatter))
 
     def print(self, printer: Printer, *args, **kwargs):
         # TOML has optional indentation; make it only two spaces, if we use it:
@@ -257,29 +363,8 @@ class TOMLFormatter(GraphtageFormatter):
         if node.parent is not None:
             # This mapping is a value rather than the document, so there is no header to write it under:
             self.inline_tables.print_MappingNode(printer, node)
-            return
-        mappings = [TOMLMapping(node)]
-        while mappings:
-            m: TOMLMapping = mappings.pop()
-            if m:
-                name = m.name_segments
-                if name:
-                    printer.write('[')
-                    first = True
-                    for s in name:
-                        if first:
-                            first = False
-                        else:
-                            printer.write('.')
-                        if isinstance(s, StringNode):
-                            s.quoted = False
-                        self.print(printer, s)
-                    printer.write(']')
-                    printer.newline()
-                for kvp in m.items():
-                    self.print(printer, kvp)
-                printer.newline()
-            mappings.extend(m.children())
+        else:
+            self.tables.print_MappingNode(printer, node)
 
 
 class TOML(Filetype):
