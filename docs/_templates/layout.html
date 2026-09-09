@@ -1,5 +1,10 @@
 {%- extends "!layout.html" %}
 
+{# The published site puts each release in its own directory, so a sibling version is one level up
+   from the current page. `pathto('', 1)` is the relative path back to the root of this version. #}
+{%- set this_version_root = pathto('', 1) %}
+{%- set version_root = ('' if this_version_root == './' else this_version_root) ~ '../' %}
+
 {% block footer %}
   {% if not READTHEDOCS %}
     <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
@@ -11,27 +16,21 @@
       <div class="rst-other-versions">
         <dl>
           <dt>{{ _('Versions') }}</dt>
-          {% if test_versions %}
-            {% for version in test_versions %}
-            <dd><a href="#">{{ version }}</a></dd>
-            {% endfor %}
-          {% else %}
-            <dd><a href="/graphtage/latest">latest</a></dd>
-            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
-            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
-            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
-            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
-            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
-            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
-            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
-            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
-            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
-            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
-            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
-            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
-            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
-            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
-          {% endif %}
+          <dd><a href="{{ version_root }}latest/">latest</a></dd>
+          <dd><a href="{{ version_root }}v0.3.1/">0.3.1</a></dd>
+          <dd><a href="{{ version_root }}v0.3.0/">0.3.0</a></dd>
+          <dd><a href="{{ version_root }}v0.2.9/">0.2.9</a></dd>
+          <dd><a href="{{ version_root }}v0.2.8/">0.2.8</a></dd>
+          <dd><a href="{{ version_root }}v0.2.7/">0.2.7</a></dd>
+          <dd><a href="{{ version_root }}v0.2.6/">0.2.6</a></dd>
+          <dd><a href="{{ version_root }}v0.2.5/">0.2.5</a></dd>
+          <dd><a href="{{ version_root }}v0.2.4/">0.2.4</a></dd>
+          <dd><a href="{{ version_root }}v0.2.3/">0.2.3</a></dd>
+          <dd><a href="{{ version_root }}v0.2.2/">0.2.2</a></dd>
+          <dd><a href="{{ version_root }}v0.2.1/">0.2.1</a></dd>
+          <dd><a href="{{ version_root }}v0.2.0/">0.2.0</a></dd>
+          <dd><a href="{{ version_root }}v0.1.1/">0.1.1</a></dd>
+          <dd><a href="{{ version_root }}v0.1.0/">0.1.0</a></dd>
         </dl>
         <dl>
           <dt>{{ _('Source Code') }}</dt>
