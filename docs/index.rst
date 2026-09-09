@@ -10,7 +10,7 @@ There are several reasons why you might be here…
 
 .. topic:: You want to learn how to use Graphtage as a command line utility.
 
-    This documentation focuses on Graphtage’ use as a library, specifically how to extend it by implementing new file
+    This documentation focuses on Graphtage’s use as a library, specifically how to extend it by implementing new file
     formats. For instructions on using Graphtage as a utility, see the documentation in its `GitHub page`_.
 
 .. topic:: You want to programmatically interact with Graphtage as a library.
