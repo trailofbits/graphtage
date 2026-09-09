@@ -1,9 +1,10 @@
 import ast
 import dataclasses
+from io import StringIO
 from unittest import TestCase
 
 import graphtage
-from graphtage.pydiff import PyDiffFormatter, ast_to_tree, build_tree, print_diff
+from graphtage.pydiff import PyDiffFormatter, PyObjAttribute, ast_to_tree, build_tree, print_diff
 
 from .timing import run_with_time_limit
 
@@ -21,6 +22,17 @@ class TestPyDiff(TestCase):
         self.assertTrue(lists)
         for node in tree.dfs():
             self.assertNotIsInstance(node, graphtage.UnorderedListNode)
+
+    def test_attribute_receiver_is_not_quoted(self):
+        stream = StringIO()
+        attribute = PyObjAttribute(graphtage.StringNode("package"), graphtage.StringNode("member"))
+
+        PyDiffFormatter.DEFAULT_INSTANCE.print(
+            graphtage.Printer(out_stream=stream, ansi_color=False),
+            attribute,
+        )
+
+        self.assertEqual("package.member", stream.getvalue())
 
     def test_diff(self):
         t1 = [1, 2, {3: "three"}, 4]
