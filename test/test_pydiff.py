@@ -70,7 +70,13 @@ class TestPyDiff(TestCase):
 
     def test_plain_import_printing(self):
         """A plain `import` must not render the `from` clause that `from x import y` gets."""
-        for source in ("import os", "import os.path", "import os, sys", "from os import path"):
+        for source in (
+            "import os",
+            "import os.path",
+            "import os, sys",
+            "from os import path",
+            "from os import path as p",
+        ):
             with self.subTest(source=source):
                 self.assertEqual(f"{source}\n", format_tree(ast_to_tree(ast.parse(source))))
     def test_attribute_receiver_is_not_quoted(self):

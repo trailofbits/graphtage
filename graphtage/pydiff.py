@@ -237,7 +237,7 @@ class ASTBuilder(BasicBuilder):
         if not node.asname:
             as_name = StringNode("")
         else:
-            as_name = StringNode(node.asname)
+            as_name = StringNode(node.asname, quoted=False)
         return PyAlias(StringNode(node.name, quoted=False), as_name)
 
     @Builder.builder(ast.Attribute)
