@@ -217,7 +217,7 @@ def main(argv=None) -> int:
             exit(EXIT_ERROR)
 
     if args.dumpversion:
-        print(' '.join(map(str, version.__version__)))
+        print(version.VERSION_STRING)
         exit(0)
 
     if args.version:
