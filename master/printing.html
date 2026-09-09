@@ -50,7 +50,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="extending.html">Extending Graphtage</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Printing Protocol</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Printing Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#status-output">Status Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enabling-ansi-color">Enabling ANSI Color</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
@@ -101,9 +105,13 @@
 <dt>If <code class="docutils literal notranslate"><span class="pre">node_or_edit</span></code> is a <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a>:</dt><dd><ul>
 <li><dl>
 <dt>If <code class="docutils literal notranslate"><span class="pre">with_edits</span></code> <em>and</em> the node is edited and has a non-zero cost,</dt><dd><p>then choose <code class="xref py py-attr docutils literal notranslate"><span class="pre">node_or_edit.edit</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">isinstance</span><span class="p">(</span><span class="n">node_or_edit</span><span class="p">,</span> <span class="n">EditedTreeNode</span><span class="p">)</span> <span class="ow">and</span> \
+        <span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">has_non_zero_cost</span><span class="p">()</span>
 </pre></div>
 </div>
+<p><a class="reference internal" href="graphtage.html#graphtage.Edit.has_non_zero_cost" title="graphtage.Edit.has_non_zero_cost"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.Edit.has_non_zero_cost()</span></code></a> is not a single comparison: it tightens the edit’s bounds in a
+loop until either its lower bound exceeds zero or its bounds are definitive. Deciding whether to print an
+edit can therefore do an arbitrary amount of work.</p>
 </dd>
 </dl>
 </li>
@@ -141,6 +149,32 @@
 </ol>
 <p>This is implemented in <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter.print" title="graphtage.GraphtageFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter.print()</span></code></a>. See the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a> for how formatters
 are chosen.</p>
+<section id="status-output">
+<h2>Status Output<a class="headerlink" href="#status-output" title="Link to this heading"></a></h2>
+<p>A <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a> is also a <a class="reference internal" href="graphtage.progress.html#graphtage.progress.StatusWriter" title="graphtage.progress.StatusWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.progress.StatusWriter</span></code></a>, which is what draws the
+<code class="docutils literal notranslate"><span class="pre">tqdm</span></code> progress bars that Graphtage shows while it diffs. Both the diff output and the status output share the same
+printer, so the printer buffers whole lines and hands them to <code class="xref py py-func docutils literal notranslate"><span class="pre">tqdm.write()</span></code> rather than letting the two
+interleave.</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">quiet=True</span></code> to suppress the progress bars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.printer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Printer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">quiet_printer</span> <span class="o">=</span> <span class="n">Printer</span><span class="p">(</span><span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The command line client passes <code class="docutils literal notranslate"><span class="pre">quiet=True</span></code> for <code class="docutils literal notranslate"><span class="pre">--no-status</span></code> and <code class="docutils literal notranslate"><span class="pre">--quiet</span></code>. To suppress the output as well as
+the status, use <a class="reference internal" href="graphtage.printer.html#graphtage.printer.NULL_PRINTER" title="graphtage.printer.NULL_PRINTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.printer.NULL_PRINTER</span></code></a>, a printer that is both quiet and writes to a stream that
+discards everything. It is the default value of <code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.BuildOptions.printer</span></code>, which is why building a tree
+from the library draws no progress bar while the command line client does.</p>
+</section>
+<section id="enabling-ansi-color">
+<h2>Enabling ANSI Color<a class="headerlink" href="#enabling-ansi-color" title="Link to this heading"></a></h2>
+<p>Importing <a class="reference internal" href="graphtage.html#module-graphtage" title="graphtage"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage</span></code></a> does not call <code class="xref py py-func docutils literal notranslate"><span class="pre">colorama.init()</span></code> and does not replace <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>. Call
+<a class="reference internal" href="graphtage.printer.html#graphtage.printer.enable_ansi_support" title="graphtage.printer.enable_ansi_support"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.printer.enable_ansi_support()</span></code></a> from your application’s entry point if you want that behavior. On a
+legacy Windows console it is what makes ANSI escape sequences work, by replacing <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stderr</span></code> with wrappers that translate the sequences into Win32 console calls.</p>
+<p>A <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a> captures its output stream when it is constructed, so call
+<a class="reference internal" href="graphtage.printer.html#graphtage.printer.enable_ansi_support" title="graphtage.printer.enable_ansi_support"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.printer.enable_ansi_support()</span></code></a> before constructing any printer. A printer constructed first writes past
+the wrapper and loses its color.</p>
+</section>
 </section>
 
 

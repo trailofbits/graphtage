@@ -53,6 +53,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#why-mapping-trees-is-complex">Why Mapping Trees is Complex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#matching-ordered-sequences">Matching Ordered Sequences</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#matching-unordered-collections">Matching Unordered Collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unordered-lists">Unordered Lists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#footnotes">Footnotes</a></li>
 </ul>
 </li>
@@ -86,8 +87,8 @@
   <section id="how-graphtage-works">
 <h1>How Graphtage Works<a class="headerlink" href="#how-graphtage-works" title="Link to this heading"></a></h1>
 <p>In general, optimally mapping one graph to another
-cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id9" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, and is therefore not
-tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id16" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>*<span class="fn-bracket">]</span></a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id10" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
+cannot be executed in polynomial time <a class="footnote-reference brackets" href="#id10" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, and is therefore not
+tractable for graphs of any useful size <a class="footnote-reference brackets" href="#id17" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>*<span class="fn-bracket">]</span></a>. This is true even for restricted classes of graphs like DAGs <a class="footnote-reference brackets" href="#id11" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.
 However, trees and forests are a special case that <em>can</em> be mapped in polynomial time, with reasonable constraints on
 the types of edits possible. Graphtage exploits this.</p>
 <section id="why-mapping-trees-is-complex">
@@ -148,49 +149,83 @@ and 15 of the diff).</p>
 </section>
 <section id="matching-ordered-sequences">
 <h2>Matching Ordered Sequences<a class="headerlink" href="#matching-ordered-sequences" title="Link to this heading"></a></h2>
-<p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id11" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, “constructive” <a class="footnote-reference brackets" href="#id12" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> implementation of the
-Levenshtein distance metric <a class="footnote-reference brackets" href="#id13" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id14" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. The algorithm starts with an
+<p>Graphtage matches ordered sequences like lists using an “online” <a class="footnote-reference brackets" href="#id12" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, “constructive” <a class="footnote-reference brackets" href="#id13" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> implementation of the
+Levenshtein distance metric <a class="footnote-reference brackets" href="#id14" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, similar to the Wagner–Fischer algorithm <a class="footnote-reference brackets" href="#id15" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>. The algorithm starts with an
 unbounded mapping and iteratively improves it until the bounds converge, at which point the optimal edit sequence is
 discovered. This is implemented in the <a class="reference internal" href="graphtage.levenshtein.html#module-graphtage.levenshtein" title="graphtage.levenshtein"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.levenshtein</span></code></a> module.</p>
 </section>
 <section id="matching-unordered-collections">
 <h2>Matching Unordered Collections<a class="headerlink" href="#matching-unordered-collections" title="Link to this heading"></a></h2>
-<p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id15" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> on the complete bipartite graph from key/value
+<p>Dicts are matched by solving the minimum weight matching problem <a class="footnote-reference brackets" href="#id16" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> on the complete bipartite graph from key/value
 pairs in the source dict to key/value pairs in the destination dict. This is implemented in the
 <a class="reference internal" href="graphtage.matching.html#module-graphtage.matching" title="graphtage.matching"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.matching</span></code></a> module.</p>
+<p>That graph has an edge for every pairing of a source key/value pair with a destination key/value pair, and costing all
+of those edges dominates the running time on large dicts. The <code class="docutils literal notranslate"><span class="pre">--dict-strategy</span></code> command line option chooses how much
+of the graph Graphtage builds. It sets <code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.BuildOptions.allow_key_edits</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.BuildOptions.auto_match_keys</span></code>, so the same three strategies are available to library callers:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">auto</span></code></dt><dd><p>The default. Key/value pairs whose keys are equal are matched to each other before the graph is built, and only
+the pairs that are left over become vertices of the bipartite graph. Key edits are still found for those remaining
+pairs, so renaming <code class="docutils literal notranslate"><span class="pre">&quot;bar&quot;</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;zab&quot;</span></code> is still reported as a key edit rather than as a removal and an
+insertion.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">match</span></code></dt><dd><p>Every source key/value pair is costed against every destination key/value pair, including the ones whose keys are
+already equal. This is the most computationally expensive strategy. It can find a cheaper overall matching than
+<code class="docutils literal notranslate"><span class="pre">auto</span></code> when two pairs share a key but have very different values.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">none</span></code></dt><dd><p>No key edits are considered at all. The dict is built as a <a class="reference internal" href="graphtage.html#graphtage.FixedKeyDictNode" title="graphtage.FixedKeyDictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.FixedKeyDictNode</span></code></a>, which only
+compares two key/value pairs when their keys are equal; every other pair is inserted or removed. This is the least
+computationally expensive strategy, and it is also what <code class="docutils literal notranslate"><span class="pre">--no-key-edits</span></code>/<code class="docutils literal notranslate"><span class="pre">-k</span></code> selects.</p>
+</dd>
+</dl>
+</section>
+<section id="unordered-lists">
+<span id="id9"></span><h2>Unordered Lists<a class="headerlink" href="#unordered-lists" title="Link to this heading"></a></h2>
+<p>Lists are ordered by default, so reordering one costs a sequence of Levenshtein edits. The <code class="docutils literal notranslate"><span class="pre">--ignore-list-order</span></code>
+command line option, or <code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.BuildOptions.ignore_list_order</span></code>, builds lists as
+<a class="reference internal" href="graphtage.html#graphtage.UnorderedListNode" title="graphtage.UnorderedListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.UnorderedListNode</span></code></a> instead of <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>. That node type is a subclass of
+<a class="reference internal" href="graphtage.html#graphtage.MultiSetNode" title="graphtage.MultiSetNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MultiSetNode</span></code></a>, so its elements are matched as an unordered collection by the same bipartite matcher
+that dicts use, and reordering costs nothing. Duplicate elements still count, so <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">2]</span></code> matches <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">1,</span> <span class="pre">1]</span></code>
+but not <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">2]</span></code>.</p>
+<p>The trade-off runs in both directions. Two lists whose elements are all equal match immediately, however long they
+are: a shuffle of 2000 integers takes about 0.01 seconds. Two lists that differ require a bipartite matching over
+their symmetric difference, which grows much faster than the ordered comparison: 30 dictionaries of which none match
+took about 30 seconds in one measurement, against 0.7 seconds by default.</p>
+<p>This applies to every format that builds its lists through <a class="reference internal" href="graphtage.json.html#graphtage.json.build_tree" title="graphtage.json.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.json.build_tree()</span></code></a>, which is all of them
+except the rows of a CSV file and the children of an XML element.</p>
 </section>
 <section id="footnotes">
 <h2>Footnotes<a class="headerlink" href="#footnotes" title="Link to this heading"></a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id9" role="doc-footnote">
+<aside class="footnote brackets" id="id10" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Graph_isomorphism_problem">https://en.wikipedia.org/wiki/Graph_isomorphism_problem</a></p>
 </aside>
-<aside class="footnote brackets" id="id10" role="doc-footnote">
+<aside class="footnote brackets" id="id11" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">https://en.wikipedia.org/wiki/Directed_acyclic_graph</a></p>
 </aside>
-<aside class="footnote brackets" id="id11" role="doc-footnote">
+<aside class="footnote brackets" id="id12" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Online_algorithm">https://en.wikipedia.org/wiki/Online_algorithm</a></p>
 </aside>
-<aside class="footnote brackets" id="id12" role="doc-footnote">
+<aside class="footnote brackets" id="id13" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Constructive_proof">https://en.wikipedia.org/wiki/Constructive_proof</a></p>
 </aside>
-<aside class="footnote brackets" id="id13" role="doc-footnote">
+<aside class="footnote brackets" id="id14" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">5</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Levenshtein_distance">https://en.wikipedia.org/wiki/Levenshtein_distance</a></p>
 </aside>
-<aside class="footnote brackets" id="id14" role="doc-footnote">
+<aside class="footnote brackets" id="id15" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">6</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm">https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm</a></p>
 </aside>
-<aside class="footnote brackets" id="id15" role="doc-footnote">
+<aside class="footnote brackets" id="id16" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">7</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Assignment_problem">https://en.wikipedia.org/wiki/Assignment_problem</a></p>
 </aside>
-<aside class="footnote brackets" id="id16" role="doc-footnote">
+<aside class="footnote brackets" id="id17" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">*</a><span class="fn-bracket">]</span></span>
 <p>Unless <a class="reference external" href="https://en.wikipedia.org/wiki/P_versus_NP_problem"><span class="math notranslate nohighlight">\(P = NP\)</span></a>.</p>
 </aside>

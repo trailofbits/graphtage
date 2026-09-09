@@ -48,10 +48,12 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using Graphtage Programmatically</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#the-intermediate-representation">The Intermediate Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-options">Build Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transforming-nodes-with-edits">Transforming Nodes with Edits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#applying-edits-to-nodes">Applying Edits to Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formatting-and-printing-results">Formatting and Printing Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#diffing-in-memory-python-objects">Diffing In-Memory Python Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#diffing-python-source-code">Diffing Python Source Code</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
@@ -102,6 +104,64 @@ filetype has a function to convert arbitrary Python objects (comprised of standa
 </pre></div>
 </div>
 </section>
+<section id="build-options">
+<h2>Build Options<a class="headerlink" href="#build-options" title="Link to this heading"></a></h2>
+<p>Every <code class="docutils literal notranslate"><span class="pre">build_tree</span></code> function—<a class="reference internal" href="graphtage.json.html#graphtage.json.build_tree" title="graphtage.json.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.json.build_tree()</span></code></a>, <a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.build_tree" title="graphtage.pydiff.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.build_tree()</span></code></a>, and the
+<a class="reference internal" href="graphtage.html#graphtage.Filetype.build_tree" title="graphtage.Filetype.build_tree"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build_tree</span></code></a> method of every <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a>—accepts an optional
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code> argument of type <a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.BuildOptions</span></code></a>. It controls which edits the matching algorithms are
+allowed to consider, which is the main lever you have over both the shape of the diff and how long it takes to
+compute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">BuildOptions</span><span class="p">,</span> <span class="n">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">options</span> <span class="o">=</span> <span class="n">BuildOptions</span><span class="p">(</span><span class="n">ignore_list_order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json</span><span class="o">.</span><span class="n">build_tree</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+<span class="go">UnorderedListNode([IntegerNode(1), IntegerNode(2), IntegerNode(3)])</span>
+</pre></div>
+</div>
+<p>Passing no options is the same as passing <code class="docutils literal notranslate"><span class="pre">BuildOptions()</span></code>. The options are:</p>
+<dl>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">allow_key_edits</span></code></dt><dd><p>Whether to consider editing keys when matching <a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.KeyValuePairNode</span></code></a> objects. Defaults to
+<code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>. With <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, dictionary entries only match when their keys are equal, and the tree is built
+from <a class="reference internal" href="graphtage.html#graphtage.FixedKeyDictNode" title="graphtage.FixedKeyDictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.FixedKeyDictNode</span></code></a> rather than <a class="reference internal" href="graphtage.html#graphtage.DictNode" title="graphtage.DictNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.DictNode</span></code></a>. This is the least expensive
+dictionary strategy.</p>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">auto_match_keys</span></code></dt><dd><p>Whether to automatically match key/value pairs in dictionaries if they share the same key. Defaults to
+<code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>. Key edits are still considered for the pairs that are left over. Setting this to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>
+while leaving <code class="xref py py-attr docutils literal notranslate"><span class="pre">allow_key_edits</span></code> set costs every possible pairing of
+keys, which is the most expensive dictionary strategy.</p>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">allow_list_edits</span></code></dt><dd><p>Whether to consider insert and remove edits to lists. Defaults to <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>. With <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, lists are
+compared element by element.</p>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">ignore_list_order</span></code></dt><dd><p>Whether to match the elements of a list as an unordered collection. Defaults to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>. See
+<a class="reference internal" href="howitworks.html#unordered-lists"><span class="std std-ref">Unordered Lists</span></a> for the trade-off this makes.</p>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">check_for_cycles</span></code></dt><dd><p>Whether to check the input for cycles while building the tree. Defaults to <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>. In-memory Python objects
+can refer to themselves, and walking such an object without this check does not terminate.</p>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">ignore_cycles</span></code></dt><dd><p>What to do when a cycle is found. Defaults to <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>, which raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>. With <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>,
+the back edge is replaced by a <a class="reference internal" href="graphtage.builder.html#graphtage.builder.CyclicReference" title="graphtage.builder.CyclicReference"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.CyclicReference</span></code></a> leaf and the walk continues:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">BuildOptions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_tree</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyclic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyclic</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cyclic</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">build_tree</span><span class="p">(</span><span class="n">cyclic</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">  </span><span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">Detected a cycle in [[...]] at child [[...]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">build_tree</span><span class="p">(</span><span class="n">cyclic</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">BuildOptions</span><span class="p">(</span><span class="n">ignore_cycles</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">ListNode((CyclicReference(&lt;graphtage.object_set.IdentityHash object at 0x10df992b0&gt;),))</span>
+</pre></div>
+</div>
+</dd>
+<dt><code class="xref py py-attr docutils literal notranslate"><span class="pre">printer</span></code></dt><dd><p>The printer used to report progress while building the tree. Defaults to
+<a class="reference internal" href="graphtage.printer.html#graphtage.printer.NULL_PRINTER" title="graphtage.printer.NULL_PRINTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.printer.NULL_PRINTER</span></code></a>, which prints nothing. The command line client sets this to the printer it
+is using, which is why <code class="docutils literal notranslate"><span class="pre">graphtage</span></code> shows a progress bar and the library does not.</p>
+</dd>
+</dl>
+<p>Any keyword that <a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.BuildOptions</span></code></a> does not recognize is set as an attribute, and any attribute that was
+never set reads back as <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>. That makes it possible for a <a class="reference internal" href="graphtage.html#graphtage.Filetype" title="graphtage.Filetype"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Filetype</span></code></a> to define its own
+options, but it also means that a misspelled option name is silently accepted.</p>
+</section>
 <section id="transforming-nodes-with-edits">
 <h2>Transforming Nodes with Edits<a class="headerlink" href="#transforming-nodes-with-edits" title="Link to this heading"></a></h2>
 <p>To see the sequence of edits to transform this tree to another, we call <a class="reference internal" href="graphtage.html#graphtage.TreeNode.get_all_edits" title="graphtage.TreeNode.get_all_edits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.get_all_edits()</span></code></a>:</p>
@@ -110,8 +170,8 @@ filetype has a function to convert arbitrary Python objects (comprised of standa
 <span class="go">DictNode([KeyValuePairNode(key=StringNode(&#39;bar&#39;), value=ListNode((IntegerNode(2), IntegerNode(3), IntegerNode(4))))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">from_tree</span><span class="o">.</span><span class="n">get_all_edits</span><span class="p">(</span><span class="n">to_tree</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">edit</span><span class="p">)</span>
-<span class="go">Remove(IntegerNode(1), remove_from=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))</span>
 <span class="go">StringEdit(from_node=StringNode(&#39;foo&#39;), to_node=StringNode(&#39;bar&#39;))</span>
+<span class="go">Remove(IntegerNode(1), remove_from=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4))))</span>
 </pre></div>
 </div>
 </section>
@@ -119,11 +179,10 @@ filetype has a function to convert arbitrary Python objects (comprised of standa
 <h2>Applying Edits to Nodes<a class="headerlink" href="#applying-edits-to-nodes" title="Link to this heading"></a></h2>
 <p>Both nodes and edits are immutable. We can perform a diff to apply edits to nodes, producing a new tree constructed of
 <a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditedTreeNode</span></code></a> objects. Using some Python magic, the new tree’s nodes maintain all of the same
-characteristics of the source nodes—including their source node class types—but are <em>also</em> <code class="xref py py-func docutils literal notranslate"><span class="pre">instanceof()</span></code>
+characteristics of the source nodes—including their source node class types—but are <em>also</em> <a class="reference external" href="https://docs.python.org/3/library/functions.html#isinstance" title="(in Python v3.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">isinstance()</span></code></a>
 <a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditedTreeNode</span></code></a>, too.</p>
 <p>Here is how to diff two nodes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">from_node</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_node</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">from_tree</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_tree</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">from_tree</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_tree</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span>
 <span class="go">EditedDictNode([EditedKeyValuePairNode(key=EditedStringNode(&#39;foo&#39;), value=EditedListNode((EditedIntegerNode(1), EditedIntegerNode(2), EditedIntegerNode(3), EditedIntegerNode(4))))])</span>
 </pre></div>
@@ -137,13 +196,16 @@ removed from its parent container.</p>
 <h2>Formatting and Printing Results<a class="headerlink" href="#formatting-and-printing-results" title="Link to this heading"></a></h2>
 <p>There are two components to outputting a tree or diff: a <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter</span></code></a>, which is responsible
 for the syntax of the output, and a <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a>, which is responsible for rendering that output
-to a stream. For example, to print our diff in JSON format to the default printer (STDOUT), we would do:</p>
+to a stream. Read the default printer with <a class="reference internal" href="graphtage.printer.html#graphtage.printer.get_default_printer" title="graphtage.printer.get_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.printer.get_default_printer()</span></code></a> rather than importing
+<a class="reference internal" href="graphtage.printer.html#graphtage.printer.DEFAULT_PRINTER" title="graphtage.printer.DEFAULT_PRINTER"><code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.printer.DEFAULT_PRINTER</span></code></a> by name, because <a class="reference internal" href="graphtage.printer.html#graphtage.printer.set_default_printer" title="graphtage.printer.set_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.printer.set_default_printer()</span></code></a> rebinds the
+module attribute and an imported name never sees the replacement. For example, to print our diff in JSON format to the
+default printer (STDOUT), we would do:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">printer</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">json</span><span class="o">.</span><span class="n">JSONFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">get_default_printer</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">json</span><span class="o">.</span><span class="n">JSONFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="go">{</span>
-<span class="go">    &quot;++bar++~~foo~~&quot;: [</span>
+<span class="go">    &quot;~~foo~~++bar++&quot;: [</span>
 <span class="go">        ~~1~~,</span>
 <span class="go">        2,</span>
 <span class="go">        3,</span>
@@ -155,10 +217,10 @@ to a stream. For example, to print our diff in JSON format to the default printe
 <p>Since Graphtage’s formatters are independent of the input format, thanks to the intermediate representation, we can
 just as easily output the diff in another format, like YAML:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">yaml</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">get_default_printer</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 <span class="gp">...</span>
-<span class="go">++bar++~~foo~~:</span>
+<span class="go">~~foo~~++bar++:</span>
 <span class="go">- ~~1~~</span>
 <span class="go">- 2</span>
 <span class="go">- 3</span>
@@ -171,11 +233,11 @@ just as easily output the diff in another format, like YAML:</p>
 <p>When used as a library, Graphtage has the ability to diff in-memory Python objects. This can be useful when debugging,
 for example, to quickly determine the difference between two Python objects that cause a differential.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_diff</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">get_default_printer</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">obj1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;three&quot;</span><span class="p">},</span> <span class="mi">4</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">obj2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="s2">&quot;four&quot;</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">,</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
-<span class="go">[1,2,{3: &quot;three&quot; -&gt; 3},++&quot;four&quot;++~~4~~]</span>
+<span class="go">[1,2,{3: &quot;three&quot; -&gt; 3},4 -&gt; &quot;four&quot;]</span>
 </pre></div>
 </div>
 <p>Python object diffing also works with custom classes:</p>
@@ -183,11 +245,61 @@ for example, to quickly determine the difference between two Python objects that
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">baz</span> <span class="o">=</span> <span class="n">baz</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">DEFAULT_PRINTER</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">get_default_printer</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">print_diff</span><span class="p">(</span><span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">),</span> <span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;bak&quot;</span><span class="p">),</span> <span class="n">printer</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
-<span class="go">Foo(bar=&quot;bar&quot;, baz=&quot;ba++k++~~z~~&quot;)</span>
+<span class="go">Foo(bar=&quot;bar&quot;, baz=&quot;ba~~z~~++k++&quot;)</span>
 </pre></div>
 </div>
+<p><a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.print_diff" title="graphtage.pydiff.print_diff"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.print_diff()</span></code></a> only prints. To inspect a diff instead, call <a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.diff" title="graphtage.pydiff.diff"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.diff()</span></code></a>, which
+returns the same edited tree that <a class="reference internal" href="graphtage.html#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.diff()</span></code></a> produces:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">obj1</span><span class="p">,</span> <span class="n">obj2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span>
+<span class="go">EditedListNode((EditedIntegerNode(1), EditedIntegerNode(2), EditedDictNode([EditedKeyValuePairNode(key=EditedIntegerNode(3), value=EditedStringNode(&#39;three&#39;))]), EditedIntegerNode(4)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">bounds</span><span class="p">()</span>
+<span class="go">Range(9, 9)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">edit</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">children</span><span class="p">()</span> <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">has_non_zero_cost</span><span class="p">()]</span>
+<span class="go">[&lt;graphtage.multiset.MultiSetEdit object at 0x10d72b4a0&gt;, Match(match_from=EditedIntegerNode(4), match_to=StringNode(&#39;four&#39;), cost=4)]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.build_tree" title="graphtage.pydiff.build_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.build_tree()</span></code></a> is the underlying tree builder. It accepts any Python object, including instances
+of classes that Graphtage has never seen, and represents them as a <a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.PyObj" title="graphtage.pydiff.PyObj"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.pydiff.PyObj</span></code></a> node whose children
+are the object’s public attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_tree</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">build_tree</span><span class="p">(</span><span class="n">Foo</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;baz&quot;</span><span class="p">))</span>
+<span class="go">PyObj(class_name=StringNode(&#39;Foo&#39;), attrs=PyObjAttributes([KeywordArgument(key=StringNode(&#39;bar&#39;), value=StringNode(&#39;bar&#39;)), KeywordArgument(key=StringNode(&#39;baz&#39;), value=StringNode(&#39;baz&#39;))]))</span>
+</pre></div>
+</div>
+<p>Both functions accept the same <code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code> argument as the filetype tree builders.</p>
+</section>
+<section id="diffing-python-source-code">
+<h2>Diffing Python Source Code<a class="headerlink" href="#diffing-python-source-code" title="Link to this heading"></a></h2>
+<p>Graphtage can also diff Python source code by way of the standard library’s <a class="reference external" href="https://docs.python.org/3/library/ast.html#module-ast" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ast</span></code></a> module.
+<a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.ast_to_tree" title="graphtage.pydiff.ast_to_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.ast_to_tree()</span></code></a> converts an <a class="reference external" href="https://docs.python.org/3/library/ast.html#ast.AST" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ast.AST</span></code></a> into an intermediate representation built from the
+node types in <a class="reference internal" href="graphtage.ast.html#module-graphtage.ast" title="graphtage.ast"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphtage.ast</span></code></a>: <a class="reference internal" href="graphtage.ast.html#graphtage.ast.Module" title="graphtage.ast.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.Module</span></code></a> for a source file,
+<a class="reference internal" href="graphtage.ast.html#graphtage.ast.Assignment" title="graphtage.ast.Assignment"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.Assignment</span></code></a>, <a class="reference internal" href="graphtage.ast.html#graphtage.ast.Call" title="graphtage.ast.Call"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.Call</span></code></a>, <a class="reference internal" href="graphtage.ast.html#graphtage.ast.Import" title="graphtage.ast.Import"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.Import</span></code></a>,
+<a class="reference internal" href="graphtage.ast.html#graphtage.ast.Subscript" title="graphtage.ast.Subscript"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.Subscript</span></code></a>, and <a class="reference internal" href="graphtage.ast.html#graphtage.ast.KeywordArgument" title="graphtage.ast.KeywordArgument"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ast.KeywordArgument</span></code></a>. The conversion is performed by
+<a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.ASTBuilder" title="graphtage.pydiff.ASTBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.pydiff.ASTBuilder</span></code></a>, a <a class="reference internal" href="graphtage.builder.html#graphtage.builder.BasicBuilder" title="graphtage.builder.BasicBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.builder.BasicBuilder</span></code></a> subclass that covers a subset of
+Python’s syntax; a syntax node that it has no builder for raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a>.</p>
+<p><a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.PyDiffFormatter" title="graphtage.pydiff.PyDiffFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.pydiff.PyDiffFormatter</span></code></a> renders the result back as Python source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">printer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyDiffFormatter</span><span class="p">,</span> <span class="n">ast_to_tree</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_ast</span> <span class="o">=</span> <span class="n">ast_to_tree</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;from foo import bar</span><span class="se">\n</span><span class="s2">x = bar(1, 2)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_ast</span>
+<span class="go">Module((Import(names=ListNode((PyAlias(name=StringNode(&#39;bar&#39;), as_name=StringNode(&#39;&#39;)),)), from_name=StringNode(&#39;foo&#39;)), Assignment(targets=ListNode((StringNode(&#39;x&#39;),)), value=Call(func=StringNode(&#39;bar&#39;), args=CallArguments((IntegerNode(1), IntegerNode(2))), kwargs=CallKeywords([])))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_ast</span> <span class="o">=</span> <span class="n">ast_to_tree</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;from foo import bar</span><span class="se">\n</span><span class="s2">x = bar(1, 2)</span><span class="se">\n</span><span class="s2">y = bar(3)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">printer</span><span class="o">.</span><span class="n">get_default_printer</span><span class="p">()</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">PyDiffFormatter</span><span class="o">.</span><span class="n">DEFAULT_INSTANCE</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">from_ast</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">to_ast</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">from foo import bar</span>
+<span class="go">x = bar(1, 2)</span>
+<span class="go">++y = bar(3)++</span>
+</pre></div>
+</div>
+<p>Like the other tree builders, <a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.ast_to_tree" title="graphtage.pydiff.ast_to_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.ast_to_tree()</span></code></a> accepts an <code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code> argument. Its list and
+tuple builder deliberately ignores <code class="xref py py-attr docutils literal notranslate"><span class="pre">graphtage.BuildOptions.ignore_list_order</span></code>, because the elements of a Python
+list or tuple literal are positional.</p>
 </section>
 </section>
 
