@@ -4,7 +4,7 @@ Changing the version here not only affects the version printed with the ``--vers
 automatically updates the version used in the build system and rendered in the documentation.
 """
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 VERSION_STRING = __version__
 
 # For backwards compatibility with code that expects the tuple format

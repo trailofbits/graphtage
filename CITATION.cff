@@ -28,4 +28,6 @@ keywords:
   - diffing
   - graph isomorphism
   - edit distance
-license: LGPL-3.0
+license: LGPL-3.0-or-later
+version: 0.4.0
+date-released: '2026-09-09'
