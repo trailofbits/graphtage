@@ -249,6 +249,25 @@ option. To additionally suppress all but critical log messages, use `--quiet`. F
 via the `--log-level` option. `--debug` is equivalent to `--log-level=DEBUG`, and `--quiet` is equivalent to
 `--log-level=CRITICAL --no-status`.
 
+### Version Information
+`--version` or `-v` writes a line such as `Graphtage version 0.3.1` to STDERR. If you pass it without any input files,
+Graphtage prints the version and exits; if you pass input files as well, it prints the version and then computes the
+diff. `-dumpversion` writes the raw version to STDOUT and exits without reading any input.
+
+### Exit Status
+`graphtage` exits with one of three statuses, so a script can tell the three outcomes apart:
+
+| Status | Meaning |
+|--------|---------|
+| `0` | The two inputs are semantically identical. |
+| `1` | The two inputs differ. |
+| `2` | Graphtage could not compute a diff, for example because a file did not parse or its type was not recognized. |
+
+Interrupting Graphtage with `SIGINT` returns `-2`, which a POSIX shell reports as `254`.
+
+Because a status of `1` means "the inputs differ" rather than "something went wrong", a CI job that treats any non-zero
+status as a failure will fail on every diff Graphtage finds. Test for `2` to detect an error.
+
 ### Git Integration
 Graphtage installs a `graphtage-git-diff` command that implements git's external diff interface, so `git diff` can
 render changes to structured files semantically.
