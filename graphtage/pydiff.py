@@ -61,8 +61,8 @@ class PyObjAttribute(DataClassNode):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if isinstance(object, StringNode):
-            object.quoted = False
+        if isinstance(self.object, StringNode):
+            self.object.quoted = False
         self.attr.quoted = False
 
 

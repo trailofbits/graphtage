@@ -6,7 +6,7 @@ from unittest import TestCase
 import graphtage
 from graphtage.ast import Import
 from graphtage.printer import Printer
-from graphtage.pydiff import PyAlias, PyDiffFormatter, ast_to_tree, build_tree, print_diff
+from graphtage.pydiff import PyAlias, PyDiffFormatter, PyObjAttribute, ast_to_tree, build_tree, print_diff
 
 from .timing import run_with_time_limit
 
@@ -73,6 +73,16 @@ class TestPyDiff(TestCase):
         for source in ("import os", "import os.path", "import os, sys", "from os import path"):
             with self.subTest(source=source):
                 self.assertEqual(f"{source}\n", format_tree(ast_to_tree(ast.parse(source))))
+    def test_attribute_receiver_is_not_quoted(self):
+        stream = StringIO()
+        attribute = PyObjAttribute(graphtage.StringNode("package"), graphtage.StringNode("member"))
+
+        PyDiffFormatter.DEFAULT_INSTANCE.print(
+            graphtage.Printer(out_stream=stream, ansi_color=False),
+            attribute,
+        )
+
+        self.assertEqual("package.member", stream.getvalue())
 
     def test_diff(self):
         t1 = [1, 2, {3: "three"}, 4]

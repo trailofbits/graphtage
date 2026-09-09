@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from typing import get_origin
 
 from . import AbstractCompoundEdit, Edit, Range, Replace
@@ -51,6 +51,7 @@ class DataClassNode(ContainerNode):
     _SLOTS: tuple[str, ...]
     _SLOT_ANNOTATIONS: dict[str, type[TreeNode]]
     _DATA_CLASS_ANCESTORS: list[type["DataClassNode"]]
+    _POST_INITS: tuple[Callable[["DataClassNode"], None], ...]
 
     def __init__(self, *args, **kwargs):
         """Be careful extending __init__; consider using :func:`DataClassNode.post_init` instead."""
@@ -88,14 +89,15 @@ class DataClassNode(ContainerNode):
             setattr(self, s, value)
         # self.__hash__ gets called so often, we cache the result:
         self.__hash = hash(tuple(self))
-        for ancestor in self._DATA_CLASS_ANCESTORS:
-            ancestor.post_init(self)
+        for post_init in self._POST_INITS:
+            post_init(self)
 
     def post_init(self):
-        """Callback called after this class's members have been initialized.
+        """Callback called after this node's slots have been initialized.
 
-        This callback should not call `super().post_init()`. Each superclass's `post_init()` will be automatically
-        called in order of the `__mro__`.
+        This callback should not call `super().post_init()`. Every implementation in the class hierarchy is called
+        automatically, starting with the least derived data class and ending with the class being instantiated. An
+        implementation that a subclass inherits without overriding is called only once.
         """
         pass
 
@@ -103,10 +105,16 @@ class DataClassNode(ContainerNode):
         super().__init_subclass__(**kwargs)
         ancestors = [
             c
-            for c in cls.__mro__
+            for c in reversed(cls.__mro__)
             if c is not cls and issubclass(c, DataClassNode) and c is not DataClassNode
         ]
         cls._DATA_CLASS_ANCESTORS = ancestors
+        # Selecting on __dict__ keeps an inherited implementation from being called once per class that inherits it.
+        cls._POST_INITS = tuple(
+            c.__dict__["post_init"]
+            for c in (*ancestors, cls)
+            if "post_init" in c.__dict__
+        )
         ancestor_slot_names = {
             name: a
             for a in ancestors
