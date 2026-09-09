@@ -114,10 +114,12 @@ def main(argv=None) -> int:
             help=f'equivalent to `--to-mime {mime}`'
         )
     parser.add_argument('--match-if', '-m', type=str, default=None,
-                        help='only attempt to match two dictionaries if the provided expression is satisfied. For '
-                             'example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary '
-                             'which has a "foo" key that has the same value as the other dictionary\'s "bar" key will '
-                             'be attempted to be paired')
+                        help='only attempt to match two nodes if the provided expression is satisfied. `from` and '
+                             '`to` are bound to the plain Python values of the two nodes. For example, `--match-if '
+                             '"from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key '
+                             'that has the same value as the other dictionary\'s "bar" key will be attempted to be '
+                             'paired. A pair for which the expression raises an error, such as the strings and '
+                             'numbers beneath a dictionary, is left unconstrained')
     parser.add_argument('--match-unless', '-u', type=str, default=None,
                         help='similar to `--match-if`, but only attempt a match if the provided expression evaluates '
                              'to `False`')
