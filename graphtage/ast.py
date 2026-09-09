@@ -87,7 +87,7 @@ class Subscript(DataClassNode):
         self.value.print(printer)
         with printer.color(Fore.LIGHTBLUE_EX):
             printer.write("[")
-        self.slice.write(printer)
+        self.slice.print(printer)
         with printer.color(Fore.LIGHTBLUE_EX):
             printer.write("]")
 
