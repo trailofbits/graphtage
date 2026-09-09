@@ -120,14 +120,14 @@ class DataClassNode(ContainerNode):
             for a in ancestors
             for name in a._SLOTS
         }
-        # Collect the inherited slots from *all* data-class ancestors, in reverse-MRO order.
-        # Reading the inherited `_SLOT_ANNOTATIONS`/`_SLOTS` attributes instead would follow
-        # only the first inheritance chain, silently dropping the slots of any additional bases.
+        # Collect the inherited slots from *all* data-class ancestors, which `ancestors` already
+        # lists base-first. Reading the inherited `_SLOT_ANNOTATIONS`/`_SLOTS` attributes instead
+        # would follow only the first inheritance chain, silently dropping the slots of any
+        # additional bases.
         inherited_slot_annotations: dict[str, type[TreeNode]] = {}
-        for ancestor in reversed(ancestors):
+        for ancestor in ancestors:
             inherited_slot_annotations.update(ancestor._SLOT_ANNOTATIONS)
         cls._SLOT_ANNOTATIONS = inherited_slot_annotations
-        new_slots = []
         for name, slot_type in cls.__annotations__.items():
             # get_origin() screens out subscripted generics before issubclass() sees them. On Python
             # 3.10 isinstance(list[int], type) is True, so issubclass() would raise there.
@@ -138,7 +138,6 @@ class DataClassNode(ContainerNode):
             if name in ancestor_slot_names:
                 raise TypeError(f"Dataclass {cls.__name__} cannot redefine slot {name!r} because it is already "
                                 f"defined in its superclass {ancestor_slot_names[name].__name__}")
-            new_slots.append(name)
             cls._SLOT_ANNOTATIONS[name] = slot_type
         cls._SLOTS = tuple(cls._SLOT_ANNOTATIONS)
 
