@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.bounds.html"/>
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.bounds.html" />
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=bd95bda3"></script>
@@ -134,9 +134,9 @@
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">bounds</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">bounds</span><span class="o">.</span><span class="n">Infinity</span><span class="p">(</span><span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="go">'∞'</span>
+<span class="go">&#39;∞&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">p</span><span class="p">)</span>
-<span class="go">'∞'</span>
+<span class="go">&#39;∞&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
 <span class="go">Range(0, Infinity(positive=True))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bounds</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">bounds</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
@@ -174,7 +174,7 @@ bounded ranges (<em>e.g.</em>, sorting).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.bounds.Bounded">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">Bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.Bounded" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
 <p>A protocol for objects that have bounds that can be tightened.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.bounds.Bounded.__init__">
@@ -399,7 +399,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
 <h3>min_bounded<a class="headerlink" href="#min-bounded" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.min_bounded">
-<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">min_bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">B</span></span></span><a class="headerlink" href="#graphtage.bounds.min_bounded" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">min_bounded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">B</span></span></span><a class="headerlink" href="#graphtage.bounds.min_bounded" title="Link to this definition"></a></dt>
 <dd><p>Returns the smallest bounded object.</p>
 <p>The objects are auto-tightened in the event that their ranges overlap and a definitive minimum does not exist.</p>
 </dd></dl>
@@ -419,7 +419,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
 <h3>sort<a class="headerlink" href="#sort" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.bounds.sort">
-<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.bounds.sort" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><span class="pre">B</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.bounds.sort" title="Link to this definition"></a></dt>
 <dd><p>Sorts a sequence of bounded items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -457,7 +457,7 @@ either definitive or non-overlapping with any of the other arguments.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Trail of Bits.</p>
+    <p>&#169; Copyright 2020-2026, Trail of Bits.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
