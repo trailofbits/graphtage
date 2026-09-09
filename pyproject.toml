@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "graphtage"
-description = "A utility to diff tree-like files such as JSON, XML, YAML, TOML, INI, CSV, and plist."
+description = "A utility to diff tree-like files such as JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, and Python pickle."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "LGPL-3.0-or-later"}

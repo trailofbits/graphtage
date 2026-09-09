@@ -1,7 +1,7 @@
 """A :class:`graphtage.Filetype` for parsing, diffing, and rendering `JSON files`_.
 
 .. _JSON files:
-    https://tools.ietf.org/html/std90
+    https://www.rfc-editor.org/info/std90/
 
 """
 
