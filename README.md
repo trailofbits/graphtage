@@ -30,14 +30,14 @@ $ graphtage original.json modified.json
 ```
 ```json
 {
-    "z̟b̶ab̟r̶": "testing",
     "foo": [
         1̶,̶
         2,
         3,
         4,̟
         5̟
-    ],̟
+    ],
+    "b̶z̟ar̶b̟": "testing",̟
     "̟w̟o̟o̟"̟:̟ ̟[̟
         "̟f̟o̟o̟b̟a̟r̟"̟
     ]̟
@@ -60,35 +60,39 @@ first input file. But one could, for example, diff two JSON files and format the
 command-line arguments to specify these transformations, such as `--format`; please check the `--help` output for more
 information.
 
+Graphtage sorts the keys of every dictionary it reads, so the output orders keys alphabetically no matter how the
+input files order them. The examples in this section all render the file `{"foo": [1, 2, 3], "bar": "baz"}` diffed
+against itself.
+
 By default, Graphtage pretty-prints its output with as many line breaks and indents as possible.
 ```json
 {
+    "bar": "baz",
     "foo": [
         1,
         2,
         3
-    ],
-    "bar": "baz"
+    ]
 }
 ```
 Use the `--join-lists` or `-jl` option to suppress linebreaks after list items:
 ```json
 {
-    "foo": [1, 2, 3],
-    "bar": "baz"
+    "bar": "baz",
+    "foo": [1,2,3]
 }
 ```
 Likewise, use the `--join-dict-items` or `-jd` option to suppress linebreaks after key/value pairs in a dict:
 ```json
-{"foo": [
-    1,
-    2,
-    3
-], "bar":  "baz"}
+{"bar": "baz","foo": [
+        1,
+        2,
+        3
+    ]}
 ```
 Use `--condensed` or `-j` to apply both of these options:
 ```json
-{"foo": [1, 2, 3], "bar": "baz"}
+{"bar": "baz","foo": [1,2,3]}
 ```
 
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
@@ -184,7 +188,7 @@ original.json
         4,
         ++5++
     ],
-    "++z++~~b~~a++b++~~r~~": "testing",
+    "~~b~~++z++a~~r~~++b++": "testing",
     ++"woo": [
         "foobar"
     ]++
