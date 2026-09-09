@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Graphtage is a semantic diff/merge utility for tree-like structured data formats (JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, Python pickle). It works as both a command-line tool and Python library.
+Graphtage is a semantic diff/merge utility for tree-like structured data formats (JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, Python pickle, flame graphs). It works as both a command-line tool and Python library.
 
 Key capabilities:
 - Semantic understanding of tree structures (recognizes key vs value changes)
@@ -39,7 +39,7 @@ Key capabilities:
 
 ### File Format Modules
 Each format implements its own TreeNode subclasses and parser:
-- json.py, yaml.py, xml.py, csv.py, toml.py, ini.py, plist.py, pickle.py
+- json.py, yaml.py, xml.py, csv.py, toml.py, ini.py, plist.py, pickle.py, flamegraph.py
 
 ## Development Setup
 
