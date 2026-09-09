@@ -10,8 +10,8 @@ Graphtage provides a :class:`graphtage.builder.Builder` class for conveniently c
 
 .. code-block:: python
 
-    from graphtage import IntegerNode, TreeNode
-    from graphtage.builder import Builder
+    from graphtage import IntegerNode, ListNode, StringNode, TreeNode
+    from graphtage.builder import BasicBuilder, Builder
 
     class CustomBuilder(Builder):
         @Builder.builder(int)
@@ -21,7 +21,7 @@ Graphtage provides a :class:`graphtage.builder.Builder` class for conveniently c
 >>> CustomBuilder().build_tree(10)
 IntegerNode(10)
 
-The :func:`@Builder.builder(int) <graphtage.Builder.builder>` decorator specifies that the function is able to build a Graphtage `TreeNode` object from inputs that are :func:`instanceof` the type `int`. If there are multiple builder functions that match a given object, the function associated with the most specialized type is chosen. For example:
+The :meth:`@Builder.builder(int) <graphtage.builder.Builder.builder>` decorator specifies that the function is able to build a Graphtage `TreeNode` object from inputs that are :func:`isinstance` of the type `int`. If there are multiple builder functions that match a given object, the function associated with the most specialized type is chosen. For example:
 
 .. code-block:: python
 
@@ -38,20 +38,20 @@ The :func:`@Builder.builder(int) <graphtage.Builder.builder>` decorator specifie
         def build_foo(self, node: Foo, children: list[TreeNode]):
             return StringNode("foo")
 
-        @Build.builder(Bar)
+        @Builder.builder(Bar)
         def build_bar(self, node: Bar, children: list[TreeNode]):
             return StringNode("bar")
 
 >>> CustomBuilder().build_tree(Foo())
-StringNode("foo")
+StringNode('foo')
 >>> CustomBuilder().build_tree(Bar())
-StringNode("bar")
+StringNode('bar')
 
 Expanding Children
 ------------------
 
 So far we have only given examples of the production of leaf nodes, like integers and strings.
-What if a node has children, like a list? We can handle this using the :func:`@Builder.expander <graphtage.Builder.expander>` decorator. Here is an example of how a list can be built:
+What if a node has children, like a list? We can handle this using the :meth:`@Builder.expander <graphtage.builder.Builder.expander>` decorator. Here is an example of how a list can be built:
 
 .. code-block:: python
 
@@ -68,7 +68,7 @@ What if a node has children, like a list? We can handle this using the :func:`@B
             return ListNode(children)
 
 >>> CustomBuilder().build_tree([1, 2, 3, 4])
-ListNode([IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4)])
+ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3), IntegerNode(4)))
 
 If an expander is not defined for a type, it is assumed that the type is a leaf with no children.
 
@@ -79,15 +79,15 @@ Graphtage has a subclassed builder :class:`graphtage.builder.BasicBuilder` that 
 Custom Nodes
 ------------
 
-Graphtage provides abstract classes like :class:`graphtage.ContainerNode` and :class:`graphtage.SequenceNode` to aid in the implementation of custom node types. But the easiest way to define a custom node type is to extend off of :class:`graphtage.dataclasses.DataClass`.
+Graphtage provides abstract classes like :class:`graphtage.ContainerNode` and :class:`graphtage.sequences.SequenceNode` to aid in the implementation of custom node types. But the easiest way to define a custom node type is to extend off of :class:`graphtage.dataclasses.DataClassNode`.
 
 
 .. code-block:: python
 
     from graphtage import IntegerNode, ListNode, StringNode
-    from graphtage.dataclasses import DataClass
+    from graphtage.dataclasses import DataClassNode
 
-    class CustomNode(DataClass):
+    class CustomNode(DataClassNode):
         name: StringNode
         value: IntegerNode
         attributes: ListNode
@@ -95,8 +95,9 @@ Graphtage provides abstract classes like :class:`graphtage.ContainerNode` and :c
 This will automatically build a node type that has three children: a string, an integer, and a list.
 
 >>> CustomNode(name=StringNode("the name"), value=IntegerNode(1337), attributes=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3))))
+CustomNode(name=StringNode('the name'), value=IntegerNode(1337), attributes=ListNode((IntegerNode(1), IntegerNode(2), IntegerNode(3))))
 
-Let's say you have another, non-graphtage class that corresponds to :class:`CustomNode`:
+Let's say you have another, non-graphtage class that corresponds to ``CustomNode``:
 
 .. code-block:: python
 
@@ -111,11 +112,66 @@ You can add support for building Graphtage nodes from this custom class as follo
 
     class CustomBuilder(BasicBuilder):
         @Builder.expander(NonGraphtageClass)
-        def expand_non_graphtage_class(node: NonGraphtageClass):
+        def expand_non_graphtage_class(self, node: NonGraphtageClass):
             yield node.name
             yield node.value
             yield node.attributes
 
         @Builder.builder(NonGraphtageClass)
-        def build_non_graphtage_class(node: NonGraphtageClass, children: list[TreeNode]) -> CustomNode:
+        def build_non_graphtage_class(self, node: NonGraphtageClass, children: list[TreeNode]) -> CustomNode:
             return CustomNode(*children)
+
+Data Class Slots
+----------------
+
+The annotations on a :class:`graphtage.dataclasses.DataClassNode` subclass become its *slots*: the children of the
+node, in the order they are declared. Only annotations that name a :class:`graphtage.TreeNode` subclass directly are
+turned into slots. Every other annotation is ignored, including a subscripted generic like ``list[IntegerNode]``,
+which is skipped rather than rejected:
+
+.. code-block:: python
+
+    class SkipsTheSecondAnnotation(DataClassNode):
+        name: StringNode
+        items: list[IntegerNode]
+
+>>> SkipsTheSecondAnnotation._SLOTS
+('name',)
+
+Slot types are enforced when the node is constructed. Passing a node of the wrong type raises a :exc:`ValueError`:
+
+>>> CustomNode(StringNode("the name"), StringNode("1337"), ListNode(()))
+Traceback (most recent call last):
+  ...
+ValueError: Expected a node of type IntegerNode for argument CustomNode.value but instead got StringNode('1337')
+
+A subclass cannot redefine a slot that one of its ancestors already declares. Doing so raises a :exc:`TypeError` when
+the subclass is defined, not when it is instantiated:
+
+>>> class Redefined(CustomNode):
+...     name: StringNode
+Traceback (most recent call last):
+  ...
+TypeError: Dataclass Redefined cannot redefine slot 'name' because it is already defined in its superclass CustomNode
+
+Initializing a Data Class Node
+------------------------------
+
+:meth:`DataClassNode.__init__ <graphtage.dataclasses.DataClassNode.__init__>` assigns the slots from its positional
+and keyword arguments, so overriding it means reimplementing that assignment. Override
+:meth:`graphtage.dataclasses.DataClassNode.post_init` instead. It is called once the slots have been assigned, and it
+should not call ``super().post_init()``: each ancestor's implementation is called in turn, in order of the ``__mro__``.
+
+.. code-block:: python
+
+    class UnquotedName(DataClassNode):
+        name: StringNode
+
+        def post_init(self):
+            self.name.quoted = False
+
+.. note::
+    As of Graphtage 0.3.1, ``post_init()`` is only called for the ancestors of the class being instantiated, never for
+    the class itself. ``UnquotedName(StringNode("x"))`` leaves ``quoted`` set to :const:`True`; the callback runs only
+    when a subclass of ``UnquotedName`` is instantiated. Code that must run for the class itself still has to go in
+    ``__init__``.
