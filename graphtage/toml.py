@@ -6,9 +6,9 @@ from typing import Optional
 import toml
 
 from . import json
-from .edits import Replace
+from .edits import Insert, Remove, Replace
 from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, MappingNode, StringFormatter, StringNode
-from .printer import Printer
+from .printer import Back, Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import EditedTreeNode, GraphtageFormatter, TreeNode
 
@@ -170,11 +170,15 @@ class TOMLMapping:
             self,
             mapping: MappingNode,
             parent: Optional['TOMLMapping'] = None,
-            parent_name: TreeNode | None = None
+            parent_name: TreeNode | None = None,
+            is_removed: bool = False,
+            is_inserted: bool = False
     ):
         self.mapping: MappingNode = mapping
         self.parent: TOMLMapping | None = parent
         self.parent_name: TreeNode | None = parent_name
+        self.is_removed: bool = is_removed
+        self.is_inserted: bool = is_inserted
 
     @property
     def name_segments(self) -> tuple[TreeNode, ...]:
@@ -207,9 +211,22 @@ class TOMLMapping:
                 return True
 
     def children(self) -> Iterator['TOMLMapping']:
+        inserted_ids = set()
+        if self.mapping.edited and self.mapping.inserted:
+            inserted_ids = {id(k) for k in self.mapping.inserted}
         for kvp in self.key_value_pairs():
             if is_table(kvp):
-                yield TOMLMapping(mapping=kvp.value, parent=self, parent_name=kvp.key)
+                # The flags propagate: a section nested under a removed (or inserted) ancestor is
+                # itself removed (or inserted), even when its own key has no edit of its own.
+                yield TOMLMapping(
+                    mapping=kvp.value,
+                    parent=self,
+                    parent_name=kvp.key,
+                    is_removed=self.is_removed or (
+                        isinstance(kvp, EditedTreeNode) and isinstance(kvp.edit, Remove)
+                    ),
+                    is_inserted=self.is_inserted or id(kvp) in inserted_ids
+                )
 
 
 class TOMLFormatter(GraphtageFormatter):
@@ -253,6 +270,30 @@ class TOMLFormatter(GraphtageFormatter):
         self.write_key_value_pair(printer, node)
         printer.newline()
 
+    def _write_section(self, printer: Printer, m: TOMLMapping):
+        """Writes a single ``[table]`` section: the header, then the body lines.
+
+        Does not write the blank line that separates consecutive sections, so that the whole
+        section can be wrapped in an edit context by the caller.
+
+        """
+        name = m.name_segments
+        if name:
+            printer.write('[')
+            first = True
+            for s in name:
+                if first:
+                    first = False
+                else:
+                    printer.write('.')
+                if isinstance(s, StringNode):
+                    s.quoted = False
+                self.print(printer, s)
+            printer.write(']')
+            printer.newline()
+        for kvp in m.items():
+            self.print(printer, kvp)
+
     def print_MappingNode(self, printer: Printer, node: MappingNode):
         if node.parent is not None:
             # This mapping is a value rather than the document, so there is no header to write it under:
@@ -262,22 +303,29 @@ class TOMLFormatter(GraphtageFormatter):
         while mappings:
             m: TOMLMapping = mappings.pop()
             if m:
-                name = m.name_segments
-                if name:
-                    printer.write('[')
-                    first = True
-                    for s in name:
-                        if first:
-                            first = False
+                # A removed or inserted section has no node for Remove.print / Insert.print to wrap, since the
+                # header is synthesized here and the body is printed from the value mapping's own children, so
+                # the section writer has to apply the edit markup itself.
+                if m.is_removed:
+                    with printer.bright(), printer.background(Back.RED), printer.color(Fore.WHITE):
+                        if not printer.ansi_color:
+                            printer.write(Remove.REMOVE_STRING)
+                            self._write_section(printer, m)
+                            printer.write(Remove.REMOVE_STRING)
                         else:
-                            printer.write('.')
-                        if isinstance(s, StringNode):
-                            s.quoted = False
-                        self.print(printer, s)
-                    printer.write(']')
-                    printer.newline()
-                for kvp in m.items():
-                    self.print(printer, kvp)
+                            with printer.strike():
+                                self._write_section(printer, m)
+                elif m.is_inserted:
+                    with printer.bright().background(Back.GREEN).color(Fore.WHITE):
+                        if not printer.ansi_color:
+                            printer.write(Insert.INSERT_STRING)
+                            self._write_section(printer, m)
+                            printer.write(Insert.INSERT_STRING)
+                        else:
+                            with printer.under_plus():
+                                self._write_section(printer, m)
+                else:
+                    self._write_section(printer, m)
                 printer.newline()
             mappings.extend(m.children())
 

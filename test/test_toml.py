@@ -30,6 +30,26 @@ NESTED_LIST_VALUE = b"""[outer]
 k = [2, 3]
 """
 
+REMOVED_TABLE = b"""[keep]
+x = 1
+
+[gone]
+a = 1
+"""
+
+KEEP_TABLE = b"""[keep]
+x = 1
+"""
+
+ADDED_TABLE = b"""[added]
+b = 2
+
+[keep]
+x = 1
+"""
+
+EMPTY = b""
+
 
 def build(content: bytes) -> graphtage.TreeNode:
     with Tempfile(content) as path:
@@ -84,3 +104,18 @@ class TestTOMLDiff(TestCase):
         self.assertNotIn("~~", unchanged)
         self.assertNotIn("++", unchanged)
         self.assertEqual(["[k]", "a = 1"], diff_lines(TABLE, TABLE))
+
+    def test_removed_table_is_marked(self):
+        """A whole removed ``[table]`` used to render with no removal markup at all."""
+        lines = diff_lines(REMOVED_TABLE, KEEP_TABLE)
+        self.assertEqual(["[keep]", "x = 1", "~~[gone]", "a = 1", "~~"], lines)
+
+    def test_inserted_table_is_marked(self):
+        """A whole inserted ``[table]`` used to render with no insertion markup at all."""
+        lines = diff_lines(KEEP_TABLE, ADDED_TABLE)
+        self.assertEqual(["++[added]", "b = 2", "++", "[keep]", "x = 1"], lines)
+
+    def test_removed_nested_table_is_marked(self):
+        """Removal markup must also reach a section nested under another section's header path."""
+        lines = diff_lines(NESTED_TABLE, EMPTY)
+        self.assertEqual(["~~[outer.k]", "a = 1", "~~"], lines)
