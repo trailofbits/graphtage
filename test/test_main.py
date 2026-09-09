@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import unittest
 
+from graphtage import version
 from graphtage.__main__ import EXIT_DIFFERENCES_FOUND, EXIT_ERROR, EXIT_SUCCESS, main
 
 
@@ -66,3 +67,12 @@ class TestCommandLine(unittest.TestCase):
         to_path = self.write('two.json5', '{a: 1,\n')
         status, _ = self.run_graphtage(from_path, to_path)
         self.assertEqual(EXIT_ERROR, status)
+
+    def test_dumpversion_prints_a_bare_version_string(self):
+        """`-dumpversion` joined over the version string, so it printed `0 . 3 . 1` instead of `0.3.1`."""
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()), \
+                self.assertRaises(SystemExit) as exited:
+            main(['graphtage', '-dumpversion'])
+        self.assertEqual(EXIT_SUCCESS, exited.exception.code)
+        self.assertEqual(version.VERSION_STRING, out.getvalue().strip())
