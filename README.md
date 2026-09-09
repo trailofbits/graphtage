@@ -63,6 +63,17 @@ $ pip3 install graphtage[dev]
 
 ## Command Line Usage
 
+### Input File Types
+Graphtage infers the type of each input file from its extension. To state the type instead of inferring it, use
+`--from-<type>` for the first file and `--to-<type>` for the second. Both flags exist for every format Graphtage
+supports: `csv`, `html`, `ini`, `json`, `json5`, `pickle`, `plist`, `toml`, `xml`, and `yaml`. For example, to read a
+JSON document whose name does not end in `.json`:
+```console
+$ graphtage --from-json config.txt config.json
+```
+`--from-mime` and `--to-mime` do the same thing but take a MIME type rather than a format name, which matters for the
+formats that Graphtage registers under more than one type. Run `graphtage --help` for the accepted values.
+
 ### Output Formatting
 Graphtage performs an analysis on an intermediate representation of the trees that is divorced from the filetypes of the
 input files. This means, for example, that you can diff a JSON file against a YAML file. Also, the output format can be
@@ -124,6 +135,9 @@ input files with huge dictionaries. Graphtage has three different strategies for
 3. `--dict-strategy auto` (the default) will automatically match the values of any key-value pairs that have identical
    keys and then use the `match` strategy for the remainder of key/value pairs.
 
+`--dict-strategy` also has the short form `-ds`. The `--no-key-edits` or `-k` option is equivalent to
+`--dict-strategy none`.
+
 See [Pull Request #51](https://github.com/trailofbits/graphtage/pull/51) for some examples of how these strategies
 affect output.
 
@@ -149,6 +163,75 @@ a comparison is large enough for this to matter.
 `--ignore-list-order` cannot be combined with `--no-list-edits` or `--no-list-edits-when-same-length`, because those two
 options apply only to ordered lists.
 
+### Match Constraints
+The `--match-unless` or `-u` and `--match-if` or `-m` options take an expression that decides whether Graphtage may
+pair two nodes. Graphtage evaluates the expression once for each pair of nodes it considers, with `from` bound to the
+node from the first file and `to` bound to the node from the second. `--match-unless` refuses the pair when the
+expression is true; `--match-if` refuses it unless the expression is true. A refused pair is reported as a wholesale
+replacement rather than compared element by element.
+
+Expressions are parsed by the `graphtage.expressions` module rather than by `eval`. They support arithmetic and
+comparison operators, indexing, attribute lookup, and calls to a fixed set of builtins such as `len` and `sorted`.
+
+Say two files describe the same two servers, each identified by an `id`:
+```console
+$ echo Original: && cat servers.json && echo Modified: && cat servers.new.json
+```
+```json
+Original:
+{
+    "primary": {"id": 1, "host": "alpha"},
+    "replica": {"id": 2, "host": "beta"}
+}
+Modified:
+{
+    "primary": {"id": 1, "host": "alphas"},
+    "replica": {"id": 3, "host": "gamma"}
+}
+```
+By default Graphtage pairs the two `replica` records and reports the differences between them, even though they
+describe different servers:
+```console
+$ graphtage servers.json servers.new.json
+```
+```json
+{
+    "primary": {
+        "host": "alpha++s++",
+        "id": 1
+    },
+    "replica": {
+        "host": "~~bet~~++gamm++a",
+        "id": 2 -> 3
+    }
+}
+```
+Refusing to pair records whose `id` differs reports the second record as replaced instead:
+```console
+$ graphtage --match-unless "from['id'] != to['id']" servers.json servers.new.json
+```
+```json
+{
+    "primary": {
+        "host": "alpha++s++",
+        "id": 1
+    },
+    "replica": {
+        "host": "beta",
+        "id": 2
+    } -> {
+        "host": "gamma",
+        "id": 3
+    }
+}
+```
+The two options differ in more than the sense of the test. `--match-unless` binds `from` and `to` to plain Python
+values, and leaves a pair unconstrained when the expression raises an error, which is what makes the example above
+work on the records without also constraining the strings and integers underneath them. `--match-if` binds `from` and
+`to` to Graphtage node objects, and refuses a pair when the expression raises an error. Because the constraint applies
+to every node in the tree, including the two roots, an expression that reads a key such as `from['id'] == to['id']`
+refuses every pair and collapses the whole diff into one replacement. Prefer `--match-unless`.
+
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like
 to have Graphtage emit colorized output from a script or pipe, use the `--color` or `-c` argument. To disable color even
@@ -163,7 +246,8 @@ $ graphtage --html original.json modified.json > diff.html
 ### Status and Logging
 By default, Graphtage prints status messages and a progress bar to STDERR. To suppress this, use the `--no-status`
 option. To additionally suppress all but critical log messages, use `--quiet`. Fine-grained control of log messages is
-via the `--log-level` option.
+via the `--log-level` option. `--debug` is equivalent to `--log-level=DEBUG`, and `--quiet` is equivalent to
+`--log-level=CRITICAL --no-status`.
 
 ### Git Integration
 Graphtage installs a `graphtage-git-diff` command that implements git's external diff interface, so `git diff` can
