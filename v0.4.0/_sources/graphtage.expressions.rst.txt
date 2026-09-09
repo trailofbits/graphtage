@@ -1,0 +1,237 @@
+graphtage.expressions
+=====================
+
+.. automodule:: graphtage.expressions
+
+expressions classes
+-------------------
+
+CloseBracket
+************
+
+.. autoclass:: CloseBracket
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CloseParen
+**********
+
+.. autoclass:: CloseParen
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CollectionInfo
+**************
+
+.. autoclass:: CollectionInfo
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Comma
+*****
+
+.. autoclass:: Comma
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Expression
+**********
+
+.. autoclass:: Expression
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FixedSizeCollection
+*******************
+
+.. autoclass:: FixedSizeCollection
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FloatToken
+**********
+
+.. autoclass:: FloatToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+FunctionCall
+************
+
+.. autoclass:: FunctionCall
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+IdentifierToken
+***************
+
+.. autoclass:: IdentifierToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+IntegerToken
+************
+
+.. autoclass:: IntegerToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+NumericToken
+************
+
+.. autoclass:: NumericToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+OpenBracket
+***********
+
+.. autoclass:: OpenBracket
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+OpenParen
+*********
+
+.. autoclass:: OpenParen
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Operator
+********
+
+.. autoclass:: Operator
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+OperatorToken
+*************
+
+.. autoclass:: OperatorToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PairedEndToken
+**************
+
+.. autoclass:: PairedEndToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PairedStartToken
+****************
+
+.. autoclass:: PairedStartToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PairedToken
+***********
+
+.. autoclass:: PairedToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Parenthesis
+***********
+
+.. autoclass:: Parenthesis
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ParseError
+**********
+
+.. autoclass:: ParseError
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+StringToken
+***********
+
+.. autoclass:: StringToken
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Token
+*****
+
+.. autoclass:: Token
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+Tokenizer
+*********
+
+.. autoclass:: Tokenizer
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+expressions functions
+---------------------
+
+get_member
+**********
+
+.. autofunction:: get_member
+
+infix_to_rpn
+************
+
+.. autofunction:: infix_to_rpn
+
+parse
+*****
+
+.. autofunction:: parse
+
+tokenize
+********
+
+.. autofunction:: tokenize

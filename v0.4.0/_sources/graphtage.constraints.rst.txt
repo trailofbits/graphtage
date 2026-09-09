@@ -1,0 +1,34 @@
+graphtage.constraints
+=====================
+
+.. automodule:: graphtage.constraints
+
+constraints classes
+-------------------
+
+ConditionalMatcher
+******************
+
+.. autoclass:: ConditionalMatcher
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MatchIf
+*******
+
+.. autoclass:: MatchIf
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MatchUnless
+***********
+
+.. autoclass:: MatchUnless
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

@@ -1,0 +1,156 @@
+graphtage.pydiff
+================
+
+.. automodule:: graphtage.pydiff
+
+pydiff classes
+--------------
+
+ASTBuilder
+**********
+
+.. autoclass:: ASTBuilder
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyAlias
+*******
+
+.. autoclass:: PyAlias
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyDictFormatter
+***************
+
+.. autoclass:: PyDictFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyDiffFormatter
+***************
+
+.. autoclass:: PyDiffFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyImportFormatter
+*****************
+
+.. autoclass:: PyImportFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyListFormatter
+***************
+
+.. autoclass:: PyListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyModuleFormatter
+*****************
+
+.. autoclass:: PyModuleFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObj
+*****
+
+.. autoclass:: PyObj
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjAttribute
+**************
+
+.. autoclass:: PyObjAttribute
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjAttributes
+***************
+
+.. autoclass:: PyObjAttributes
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjBuilder
+************
+
+.. autoclass:: PyObjBuilder
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjEdit
+*********
+
+.. autoclass:: PyObjEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjFixedAttributes
+********************
+
+.. autoclass:: PyObjFixedAttributes
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PyObjFormatter
+**************
+
+.. autoclass:: PyObjFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+pydiff functions
+----------------
+
+ast_to_tree
+***********
+
+.. autofunction:: ast_to_tree
+
+build_tree
+**********
+
+.. autofunction:: build_tree
+
+diff
+****
+
+.. autofunction:: diff
+
+print_diff
+**********
+
+.. autofunction:: print_diff

@@ -1,0 +1,51 @@
+graphtage.plist
+===============
+
+.. automodule:: graphtage.plist
+
+plist classes
+-------------
+
+PLIST
+*****
+
+.. autoclass:: PLIST
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PLISTFormatter
+**************
+
+.. autoclass:: PLISTFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PLISTNode
+*********
+
+.. autoclass:: PLISTNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PLISTSequenceFormatter
+**********************
+
+.. autoclass:: PLISTSequenceFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+plist functions
+---------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree

@@ -1,0 +1,16 @@
+graphtage.debug
+===============
+
+.. automodule:: graphtage.debug
+
+debug classes
+-------------
+
+Debuggable
+**********
+
+.. autoclass:: Debuggable
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

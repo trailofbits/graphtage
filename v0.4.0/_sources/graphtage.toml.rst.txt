@@ -1,0 +1,89 @@
+graphtage.toml
+==============
+
+.. automodule:: graphtage.toml
+
+toml classes
+------------
+
+TOML
+****
+
+.. autoclass:: TOML
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLFormatter
+*************
+
+.. autoclass:: TOMLFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLInlineTableFormatter
+************************
+
+.. autoclass:: TOMLInlineTableFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLListFormatter
+*****************
+
+.. autoclass:: TOMLListFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLStringFormatter
+*******************
+
+.. autoclass:: TOMLStringFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+TOMLTableFormatter
+******************
+
+.. autoclass:: TOMLTableFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+toml functions
+--------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree
+
+is_table
+********
+
+.. autofunction:: is_table
+
+key_value_pairs
+***************
+
+.. autofunction:: key_value_pairs
+
+toml_dumps
+**********
+
+.. autofunction:: toml_dumps
+
+writes_own_section
+******************
+
+.. autofunction:: writes_own_section

@@ -1,0 +1,27 @@
+graphtage.git
+=============
+
+.. automodule:: graphtage.git
+
+git functions
+-------------
+
+absent_revision
+***************
+
+.. autofunction:: absent_revision
+
+main
+****
+
+.. autofunction:: main
+
+mime_options
+************
+
+.. autofunction:: mime_options
+
+split_options
+*************
+
+.. autofunction:: split_options

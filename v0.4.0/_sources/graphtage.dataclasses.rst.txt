@@ -1,0 +1,25 @@
+graphtage.dataclasses
+=====================
+
+.. automodule:: graphtage.dataclasses
+
+dataclasses classes
+-------------------
+
+DataClassEdit
+*************
+
+.. autoclass:: DataClassEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+DataClassNode
+*************
+
+.. autoclass:: DataClassNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
