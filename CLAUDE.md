@@ -158,3 +158,17 @@ graphtage --html original.json modified.json > diff.html
 - Use `test_*.py` naming convention
 - Tests are organized by module (test_matching.py tests matching.py)
 - Performance tests in timing.py (not run by default)
+
+## Cutting a Release
+
+`graphtage/version.py` is the single source of truth; `pyproject.toml`, `docs/conf.py`, and `bindist/Makefile` all
+derive from it. Three files repeat the version and need a hand edit: `docs/_templates/layout.html` (the documentation
+version picker), `README.md` (the `--version` example), and `CITATION.cff` (`version` and `date-released`).
+
+The order is draft, then tag, then publish. `artifacts.yml` runs on the tag push and uploads the binaries to the draft;
+`pythonpublish.yml` runs on the release being published and uploads to PyPI. Letting the publish create the tag leaves
+the release public with no binaries for as long as they take to build. Both workflows fail if the tag disagrees with
+`graphtage/version.py`.
+
+`docs/releasing.rst` has the full procedure, including the PyPI trusted publisher check that has to happen before
+publishing.
