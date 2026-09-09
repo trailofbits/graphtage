@@ -137,12 +137,16 @@ class TestFormatting(TestCase):
         return random.choice([True, False])
 
     @staticmethod
-    def make_random_str(exclude_bytes: frozenset[str] = frozenset(), allow_empty_strings: bool = True) -> str:
+    def make_random_str(
+            exclude_bytes: frozenset[str] = frozenset(),
+            allow_empty_strings: bool = True,
+            max_length: int = 128
+    ) -> str:
         if allow_empty_strings:
             min_length = 0
         else:
             min_length = 1
-        return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(min_length, 128)))
+        return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(min_length, max_length)))
 
     @staticmethod
     def make_random_non_container(exclude_bytes: frozenset[str] = frozenset(), allow_empty_strings: bool = True):
@@ -416,3 +420,23 @@ class TestFormatting(TestCase):
     def test_plist_formatting(self):
         orig_obj = TestFormatting.make_random_obj(force_string_keys=True, exclude_bytes=frozenset('<>/\n&?|@{}[]'))
         return orig_obj, plistlib.dumps(orig_obj)
+
+    @staticmethod
+    def make_random_flamegraph() -> str:
+        traces = []
+        for _ in range(random.randint(1, 200)):
+            frames = [
+                TestFormatting.make_random_str(
+                    exclude_bytes=frozenset({'\n', '\r', '\t', ' ', ';'}),
+                    allow_empty_strings=False,
+                    max_length=32
+                )
+                for _ in range(random.randint(1, 16))
+            ]
+            traces.append(f"{';'.join(frames)} {random.randint(0, 10000)}\n")
+        return ''.join(traces)
+
+    @filetype_test(iterations=25)
+    def test_flamegraph_formatting(self):
+        orig_obj = TestFormatting.make_random_flamegraph()
+        return orig_obj, orig_obj
