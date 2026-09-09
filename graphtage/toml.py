@@ -6,10 +6,11 @@ from typing import Optional
 import toml
 
 from . import json
+from .edits import Replace
 from .graphtage import BuildOptions, Filetype, KeyValuePairNode, LeafNode, MappingNode, StringFormatter, StringNode
 from .printer import Printer
 from .sequences import SequenceFormatter
-from .tree import GraphtageFormatter, TreeNode
+from .tree import EditedTreeNode, GraphtageFormatter, TreeNode
 
 
 def build_tree(path: str, options: BuildOptions | None) -> TreeNode:
@@ -53,9 +54,8 @@ class TOMLListFormatter(SequenceFormatter):
 
             self.parent.print(*args, **kwargs)
 
-        which should invoke :meth:`TOMLFormatter.print`, thereby delegating to the :class:`TOMLDictFormatter` in
-        instances where a list contains a dict (the TOML format doesn't allow this, but it might be necessary if
-        formatting from another format into TOML)
+        which should invoke :meth:`TOMLFormatter.print`, thereby delegating to the
+        :class:`TOMLInlineTableFormatter` in instances where a list contains a dict.
 
         """
         self.parent.print(*args, **kwargs)
@@ -82,6 +82,89 @@ class TOMLStringFormatter(StringFormatter):
             return s
 
 
+class TOMLInlineTableFormatter(SequenceFormatter):
+    """A sub-formatter for mappings that have nowhere to write a ``[table]`` header.
+
+    A mapping only gets a header when it is reached by walking down from the document root. One that appears in a
+    value position has no such header available: the replaced side of an edit is printed inside the ``key = value``
+    line it belongs to, and a mapping nested in a list is printed inside the list. Both are written as TOML inline
+    tables, ``{key = value, ...}``, so that the value stays attached to its key.
+
+    """
+    is_partial = True
+
+    def __init__(self):
+        """Initializes the TOML inline table formatter.
+
+        Equivalent to::
+
+            super().__init__('{', '}', ',')
+
+        """
+        super().__init__('{', '}', ',')
+
+    def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
+        """Separates two entries with a single space, since an inline table is written on one line."""
+        if not is_first and not is_last:
+            printer.write(' ')
+
+    def items_indent(self, printer: Printer) -> Printer:
+        """Returns :obj:`printer` itself, since an inline table writes no newline for an indent to apply to."""
+        return printer
+
+    def print_MappingNode(self, *args, **kwargs):
+        """Prints a :class:`graphtage.MappingNode`.
+
+        Equivalent to::
+
+            super().print_SequenceNode(*args, **kwargs)
+
+        """
+        super().print_SequenceNode(*args, **kwargs)
+
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        """Prints one entry of an inline table.
+
+        This is :meth:`TOMLFormatter.write_key_value_pair` without the newline that ends a top-level
+        ``key = value`` line, which would otherwise break the inline table across lines.
+
+        """
+        self.parent.write_key_value_pair(printer, node)
+
+    def print_SequenceNode(self, *args, **kwargs):
+        """Prints a non-mapping sequence.
+
+        This delegates to the parent formatter's implementation::
+
+            self.parent.print(*args, **kwargs)
+
+        which should invoke :meth:`TOMLFormatter.print`, thereby delegating to the :class:`TOMLListFormatter` in
+        instances where an inline table contains a list.
+
+        """
+        self.parent.print(*args, **kwargs)
+
+
+def is_table(kvp: KeyValuePairNode) -> bool:
+    """Returns whether a key/value pair is written as a ``[table]`` section rather than as ``key = value``.
+
+    Only a pair whose value is a mapping can have a section of its own, and only if no edit replaces that mapping
+    with a value of another type. A section body has nowhere to write such a replacement, so classifying the pair as
+    a section would drop its edit from the output entirely.
+
+    Args:
+        kvp: The key/value pair to classify.
+
+    Returns:
+        bool: :const:`True` if :obj:`kvp` is written as its own ``[table]`` section, and :const:`False` if it is
+        written inline as ``key = value``.
+
+    """
+    if not isinstance(kvp.value, MappingNode):
+        return False
+    return not (isinstance(kvp.value, EditedTreeNode) and isinstance(kvp.value.edit, Replace))
+
+
 class TOMLMapping:
     def __init__(
             self,
@@ -100,12 +183,16 @@ class TOMLMapping:
         else:
             return (*self.parent.name_segments, self.parent_name)
 
-    def items(self) -> Iterator[KeyValuePairNode]:
+    def key_value_pairs(self) -> Iterator[KeyValuePairNode]:
+        """Iterates over this mapping's key/value pairs, including any that an edit inserts into it."""
         inserted = ()
         if self.mapping.edited and self.mapping.inserted:
             inserted = self.mapping.inserted
-        for kvp in itertools.chain(self.mapping, inserted):
-            if not isinstance(kvp.value, MappingNode):
+        return itertools.chain(self.mapping, inserted)
+
+    def items(self) -> Iterator[KeyValuePairNode]:
+        for kvp in self.key_value_pairs():
+            if not is_table(kvp):
                 yield kvp
 
     def __bool__(self):
@@ -120,16 +207,23 @@ class TOMLMapping:
                 return True
 
     def children(self) -> Iterator['TOMLMapping']:
-        inserted = ()
-        if self.mapping.edited and self.mapping.inserted:
-            inserted = self.mapping.inserted
-        for kvp in itertools.chain(self.mapping, inserted):
-            if isinstance(kvp.value, MappingNode):
+        for kvp in self.key_value_pairs():
+            if is_table(kvp):
                 yield TOMLMapping(mapping=kvp.value, parent=self, parent_name=kvp.key)
 
 
 class TOMLFormatter(GraphtageFormatter):
-    sub_format_types = (TOMLListFormatter, TOMLStringFormatter)
+    sub_format_types = (TOMLListFormatter, TOMLStringFormatter, TOMLInlineTableFormatter)
+
+    @property
+    def inline_tables(self) -> TOMLInlineTableFormatter:
+        """The sub-formatter for a mapping that has nowhere to write a ``[table]`` header.
+
+        The :ref:`Formatting Protocol` resolves a formatter from a node's type alone, and a mapping written as a
+        section and a mapping written inline are the same type, so this formatter selects between the two itself.
+
+        """
+        return next(f for f in self.sub_formatters if isinstance(f, TOMLInlineTableFormatter))
 
     def print(self, printer: Printer, *args, **kwargs):
         # TOML has optional indentation; make it only two spaces, if we use it:
@@ -139,7 +233,14 @@ class TOMLFormatter(GraphtageFormatter):
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         printer.write(toml_dumps(node.object))
 
-    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+    def write_key_value_pair(self, printer: Printer, node: KeyValuePairNode):
+        """Writes ``key = value``, without the newline that ends a line of a table body.
+
+        Args:
+            printer: The printer to which to write.
+            node: The key/value pair to write.
+
+        """
         if isinstance(node.key, StringNode):
             node.key.quoted = False
         self.print(printer, node.key)
@@ -147,9 +248,16 @@ class TOMLFormatter(GraphtageFormatter):
         if isinstance(node.value, StringNode):
             node.value.quoted = True
         self.print(printer, node.value)
+
+    def print_KeyValuePairNode(self, printer: Printer, node: KeyValuePairNode):
+        self.write_key_value_pair(printer, node)
         printer.newline()
 
     def print_MappingNode(self, printer: Printer, node: MappingNode):
+        if node.parent is not None:
+            # This mapping is a value rather than the document, so there is no header to write it under:
+            self.inline_tables.print_MappingNode(printer, node)
+            return
         mappings = [TOMLMapping(node)]
         while mappings:
             m: TOMLMapping = mappings.pop()
