@@ -1,7 +1,9 @@
+from io import StringIO
 from unittest import TestCase
 
 from graphtage import IntegerNode, Replace, StringNode
 from graphtage.dataclasses import DataClassEdit, DataClassNode
+from graphtage.printer import Fore, Printer
 
 
 class TestDataclasses(TestCase):
@@ -89,6 +91,24 @@ class TestDataclasses(TestCase):
                 self.name.quoted = False
 
         self.assertFalse(Unquoted(StringNode("name")).name.quoted)
+    def test_print_renders_slots(self):
+        """:meth:`DataClassNode.print` is the fallback when no formatter resolves the node type."""
+        class Foo(DataClassNode):
+            name: StringNode
+            count: IntegerNode
+
+        stream = StringIO()
+        Foo(name=StringNode("x"), count=IntegerNode(3)).print(Printer(out_stream=stream, ansi_color=False))
+        self.assertEqual('Foo(name="x", count=3)', stream.getvalue())
+
+    def test_print_colors_the_class_name_yellow(self):
+        """The class name must be yellow; ``Fore.Yellow`` used to raise :exc:`AttributeError` here."""
+        class Foo(DataClassNode):
+            name: StringNode
+
+        stream = StringIO()
+        Foo(name=StringNode("x")).print(Printer(out_stream=stream, ansi_color=True))
+        self.assertIn(f"{Fore.YELLOW}Foo", stream.getvalue())
 
     def test_inheritance_with_duplicate(self):
         def define_duplicate():

@@ -3,7 +3,7 @@ from typing import get_origin
 
 from . import AbstractCompoundEdit, Edit, Range, Replace
 from .printer import Fore, Printer
-from .tree import ContainerNode, TreeNode
+from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
 
 class DataClassEdit(AbstractCompoundEdit):
@@ -29,6 +29,20 @@ class DataClassEdit(AbstractCompoundEdit):
 
     def tighten_bounds(self) -> bool:
         return any(edit.tighten_bounds() for edit in self.slot_edits)
+
+    def print(self, formatter: GraphtageFormatter, printer: Printer):
+        """Prints this edit by delegating to the formatter for the node being edited.
+
+        The default :meth:`graphtage.AbstractCompoundEdit.print` implementation prints the slot edits back to back,
+        which drops whatever syntax the node's formatter writes between the slots. Delegating to the node formatter
+        keeps that syntax, and the formatter reaches the slot edits as it prints each child.
+
+        This is equivalent to::
+
+            formatter.get_formatter(self.from_node)(printer, self.from_node)
+
+        """
+        formatter.get_formatter(self.from_node)(printer, self.from_node)
 
 
 class DataClassNode(ContainerNode):
@@ -155,7 +169,7 @@ class DataClassNode(ContainerNode):
         return sum(s.calculate_total_size() for s in self)
 
     def print(self, printer: Printer):
-        with printer.color(Fore.Yellow):
+        with printer.color(Fore.YELLOW):
             printer.write(self.__class__.__name__)
         printer.write("(")
         for i, slot in enumerate(self._SLOTS):
