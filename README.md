@@ -101,7 +101,8 @@ The `--edit-digest` or `-d` option is like `--only-edits` but prints a more conc
 human-readable.
 
 ### Matching Options
-By default, Graphtage tries to match all possible pairs of elements in a dictionary.
+By default, Graphtage matches the values of key/value pairs that share a key, and tries to match all possible
+pairs of the remaining elements.
 
 Matching two dictionaries with each other is hard. Although computationally tractable, this can sometimes be onerous for 
 input files with huge dictionaries. Graphtage has three different strategies for matching dictionaries:
@@ -272,4 +273,4 @@ This research was developed by [Trail of Bits](https://www.trailofbits.com/) wit
 Advanced Research Projects Agency (DARPA) under the SafeDocs program as a subcontractor to [Galois](https://galois.com).
 It is licensed under the [GNU Lesser General Public License v3.0](LICENSE).
 [Contact us](mailto:opensource@trailofbits.com) if you're looking for an exception to the terms.
-© 2020–2023, Trail of Bits.
+© 2020–2026, Trail of Bits.
