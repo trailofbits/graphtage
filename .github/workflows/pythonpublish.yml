@@ -21,6 +21,18 @@ jobs:
         with:
           python-version: "3.x"
 
+      # A stale graphtage/version.py would build graphtage-<old version>.tar.gz, which PyPI
+      # rejects as an existing filename, after the release is already public.
+      - name: Check that the release tag matches graphtage/version.py
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          VERSION="$(python graphtage/version.py)"
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "Release tag $TAG does not match graphtage/version.py ($VERSION)" >&2
+            exit 1
+          fi
+
       - name: Build distributions
         run: |
           python -m pip install --upgrade pip build
@@ -40,8 +52,8 @@ jobs:
       url: https://pypi.org/p/graphtage
     needs: [build]
     permissions:
-      # Used to sign the release's artifacts with sigstore-python.
-      # Used to publish to PyPI with Trusted Publishing.
+      # Used to publish to PyPI with Trusted Publishing, and to sign each distribution with a
+      # PEP 740 attestation, which pypa/gh-action-pypi-publish generates by default.
       id-token: write
     steps:
       - name: Download distributions

@@ -1,4 +1,4 @@
-GRAPHTAGE_VERSION=$(shell graphtage --version 2>&1 | sed "s/Graphtage version //")
+GRAPHTAGE_VERSION=$(shell python3 ../graphtage/version.py)
 DIST_VERSION=$(shell uname | tr '[:upper:]' '[:lower:]')-$(shell uname -m | tr '[:upper:]' '[:lower:]')
 DIST_NAME=graphtage-$(GRAPHTAGE_VERSION)-$(DIST_VERSION)
 DIST_FILE=$(DIST_NAME).zip

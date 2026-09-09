@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*"
+  # Lets the binary build be exercised on a branch, without uploading anything.
+  workflow_dispatch:
 
 permissions: {}
 
@@ -18,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     permissions:
-      # NOTE: Needed to save artifacts the repository.
+      # NOTE: Needed to upload the binaries to the release.
       contents: write
 
     steps:
@@ -31,6 +33,19 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.13"
+
+      # The archive name comes from graphtage/version.py, so a tag that disagrees with it would
+      # produce a mislabeled binary. Fail here, while the release is still a draft.
+      - name: Check that the tag matches graphtage/version.py
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION="$(python graphtage/version.py)"
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "Tag $TAG does not match graphtage/version.py ($VERSION)" >&2
+            exit 1
+          fi
 
       - name: Install dependencies
         run: |
@@ -46,7 +61,13 @@ jobs:
       - name: Check that the binary runs
         run: bindist/dist/graphtage --version
 
-      - name: Release binary artifacts
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
-        with:
-          files: bindist/${{ env.DIST_FILE }}
+      # `gh release upload` can only add assets to a release that already exists, so a stray tag
+      # cannot publish a release of its own. It uploads to a draft just as well as to a published
+      # release.
+      - name: Upload the binary to the release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: gh release upload "$TAG" "bindist/$DIST_FILE" --clobber
