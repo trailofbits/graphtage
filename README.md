@@ -101,20 +101,20 @@ Use the `--join-lists` or `-jl` option to suppress linebreaks after list items:
 ```json
 {
     "bar": "baz",
-    "foo": [1,2,3]
+    "foo": [1, 2, 3]
 }
 ```
 Likewise, use the `--join-dict-items` or `-jd` option to suppress linebreaks after key/value pairs in a dict:
 ```json
-{"bar": "baz","foo": [
-        1,
-        2,
-        3
-    ]}
+{"bar": "baz", "foo": [
+    1,
+    2,
+    3
+]}
 ```
 Use `--condensed` or `-j` to apply both of these options:
 ```json
-{"bar": "baz","foo": [1,2,3]}
+{"bar": "baz", "foo": [1, 2, 3]}
 ```
 
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
