@@ -12,7 +12,8 @@ a rename or a copy, and passes a single argument for an unmerged path; both form
 Git stops the whole diff when a driver exits with a non-zero status, so this driver reports a successful diff as
 :const:`graphtage.__main__.EXIT_SUCCESS` even when the two revisions differ. A status of
 :const:`graphtage.__main__.EXIT_ERROR` is reserved for failures that prevent Graphtage from producing a diff at
-all, such as an unsupported file type or a file that does not parse.
+all, such as an unsupported file type or a file that does not parse. Quitting git's pager closes the driver's
+standard output, which ends the diff with :const:`graphtage.__main__.EXIT_BROKEN_PIPE` rather than a traceback.
 
 See the "Git Integration" section of the Graphtage README for the ``git`` configuration this driver expects.
 """
@@ -22,7 +23,14 @@ import sys
 from collections.abc import Sequence
 
 from . import graphtage
-from .__main__ import EXIT_DIFFERENCES_FOUND, EXIT_ERROR, EXIT_SUCCESS, register_mimetypes
+from .__main__ import (
+    EXIT_BROKEN_PIPE,
+    EXIT_DIFFERENCES_FOUND,
+    EXIT_ERROR,
+    EXIT_SUCCESS,
+    register_mimetypes,
+    silence_broken_pipe,
+)
 from .__main__ import main as graphtage_main
 
 UNMERGED_ARGUMENT_COUNT = 1
@@ -111,7 +119,8 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     Returns:
         int: :const:`graphtage.__main__.EXIT_SUCCESS` if the diff was produced, whether or not the revisions differ,
-        and :const:`graphtage.__main__.EXIT_ERROR` if Graphtage could not produce one.
+        :const:`graphtage.__main__.EXIT_ERROR` if Graphtage could not produce one, and
+        :const:`graphtage.__main__.EXIT_BROKEN_PIPE` if git's pager closed the pipe before the diff was written.
     """
     if argv is None:
         argv = sys.argv
@@ -123,18 +132,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         sys.stderr.write(USAGE)
         return EXIT_ERROR
     path, from_path, to_path = git_args[0], git_args[1], git_args[4]
-    sys.stdout.write(f"{path}\n")
-    change = absent_revision(from_path, to_path)
-    if change is not None:
-        sys.stdout.write(f"({change}; Graphtage compares two revisions and needs both of them)\n")
-        return EXIT_SUCCESS
-    register_mimetypes()
     try:
-        inferred = mime_options(path, forwarded)
-    except ValueError as e:
-        sys.stderr.write(f"Error: {e!s}\n")
-        return EXIT_ERROR
-    sys.stdout.flush()
+        sys.stdout.write(f"{path}\n")
+        change = absent_revision(from_path, to_path)
+        if change is not None:
+            sys.stdout.write(f"({change}; Graphtage compares two revisions and needs both of them)\n")
+            return EXIT_SUCCESS
+        register_mimetypes()
+        try:
+            inferred = mime_options(path, forwarded)
+        except ValueError as e:
+            sys.stderr.write(f"Error: {e!s}\n")
+            return EXIT_ERROR
+        sys.stdout.flush()
+    except BrokenPipeError:
+        silence_broken_pipe()
+        return EXIT_BROKEN_PIPE
     status = graphtage_main(['graphtage', '--no-status', *forwarded, *inferred, from_path, to_path])
     if status == EXIT_DIFFERENCES_FOUND:
         return EXIT_SUCCESS
