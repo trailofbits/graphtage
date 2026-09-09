@@ -161,7 +161,7 @@ class DataClassNode(ContainerNode):
         return sum(s.calculate_total_size() for s in self)
 
     def print(self, printer: Printer):
-        with printer.color(Fore.Yellow):
+        with printer.color(Fore.YELLOW):
             printer.write(self.__class__.__name__)
         printer.write("(")
         for i, slot in enumerate(self._SLOTS):
