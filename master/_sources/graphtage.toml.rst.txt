@@ -24,6 +24,15 @@ TOMLFormatter
    :inherited-members:
    :show-inheritance:
 
+TOMLInlineTableFormatter
+************************
+
+.. autoclass:: TOMLInlineTableFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 TOMLListFormatter
 *****************
 
@@ -58,6 +67,11 @@ build_tree
 **********
 
 .. autofunction:: build_tree
+
+is_table
+********
+
+.. autofunction:: is_table
 
 toml_dumps
 **********

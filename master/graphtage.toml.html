@@ -79,6 +79,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#toml-classes">toml classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#toml">TOML</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tomlformatter">TOMLFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tomlinlinetableformatter">TOMLInlineTableFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tomllistformatter">TOMLListFormatter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tomlmapping">TOMLMapping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tomlstringformatter">TOMLStringFormatter</a></li>
@@ -86,6 +87,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#toml-functions">toml functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#build-tree">build_tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-table">is_table</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#toml-dumps">toml_dumps</a></li>
 </ul>
 </li>
@@ -234,6 +236,14 @@ call for the same node must print the bare node. See <code class="xref py py-dat
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLFormatter.inline_tables">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inline_tables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.toml.TOMLInlineTableFormatter" title="graphtage.toml.TOMLInlineTableFormatter"><span class="pre">TOMLInlineTableFormatter</span></a></em><a class="headerlink" href="#graphtage.toml.TOMLFormatter.inline_tables" title="Link to this definition"></a></dt>
+<dd><p>The sub-formatter for a mapping that has nowhere to write a <code class="docutils literal notranslate"><span class="pre">[table]</span></code> header.</p>
+<p>The <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a> resolves a formatter from a node’s type alone, and a mapping written as a
+section and a mapping written inline are the same type, so this formatter selects between the two itself.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.toml.TOMLFormatter.is_partial">
 <span class="sig-name descname"><span class="pre">is_partial</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#graphtage.toml.TOMLFormatter.is_partial" title="Link to this definition"></a></dt>
@@ -291,13 +301,204 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.toml.TOMLFormatter.sub_format_types">
-<span class="sig-name descname"><span class="pre">sub_format_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;class</span> <span class="pre">'graphtage.toml.TOMLListFormatter'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'graphtage.toml.TOMLStringFormatter'&gt;)</span></em><a class="headerlink" href="#graphtage.toml.TOMLFormatter.sub_format_types" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sub_format_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(&lt;class</span> <span class="pre">'graphtage.toml.TOMLListFormatter'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'graphtage.toml.TOMLStringFormatter'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'graphtage.toml.TOMLInlineTableFormatter'&gt;)</span></em><a class="headerlink" href="#graphtage.toml.TOMLFormatter.sub_format_types" title="Link to this definition"></a></dt>
 <dd><p>A list of formatter types that should be used as sub-formatters in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.toml.TOMLFormatter.sub_formatters">
 <span class="sig-name descname"><span class="pre">sub_formatters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#graphtage.toml.TOMLFormatter.sub_formatters" title="Link to this definition"></a></dt>
+<dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
+<p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLFormatter.write_key_value_pair">
+<span class="sig-name descname"><span class="pre">write_key_value_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><span class="pre">KeyValuePairNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLFormatter.write_key_value_pair" title="Link to this definition"></a></dt>
+<dd><p>Writes <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code>, without the newline that ends a line of a table body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The key/value pair to write.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="tomlinlinetableformatter">
+<h3>TOMLInlineTableFormatter<a class="headerlink" href="#tomlinlinetableformatter" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.toml.</span></span><span class="sig-name descname"><span class="pre">TOMLInlineTableFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="graphtage.sequences.html#graphtage.sequences.SequenceFormatter" title="graphtage.sequences.SequenceFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceFormatter</span></code></a></p>
+<p>A sub-formatter for mappings that have nowhere to write a <code class="docutils literal notranslate"><span class="pre">[table]</span></code> header.</p>
+<p>A mapping only gets a header when it is reached by walking down from the document root. One that appears in a
+value position has no such header available: the replaced side of an edit is printed inside the <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code>
+line it belongs to, and a mapping nested in a list is printed inside the list. Both are written as TOML inline
+tables, <code class="docutils literal notranslate"><span class="pre">{key</span> <span class="pre">=</span> <span class="pre">value,</span> <span class="pre">...}</span></code>, so that the value stays attached to its key.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.DEFAULT_INSTANCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_INSTANCE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;graphtage.toml.TOMLInlineTableFormatter</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.DEFAULT_INSTANCE" title="Link to this definition"></a></dt>
+<dd><p>A default instance of this formatter, automatically instantiated by the <code class="xref py py-class docutils literal notranslate"><span class="pre">FormatterChecker</span></code> metaclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes the TOML inline table formatter.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.__new__">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.__new__" title="Link to this definition"></a></dt>
+<dd><p>Instantiates a new formatter.</p>
+<p>This automatically instantiates and populates <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_formatters</span></code> and sets their
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.delimiter_callback">
+<span class="sig-name descname"><span class="pre">delimiter_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.delimiter_callback" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.edit_print">
+<span class="sig-name descname"><span class="pre">edit_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">edit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.edit_print" title="Link to this definition"></a></dt>
+<dd><p>Called when the edit for an item is to be printed.</p>
+<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceNode</span></code> being printed either is not edited or has no edits, then the edit passed to this
+function will be a <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">Match(child,</span> <span class="pre">child,</span> <span class="pre">0)</span></code></a>.</p>
+<p>This implementation simply delegates the print to the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">printer</span><span class="p">,</span> <span class="n">edit</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.get_formatter">
+<span class="sig-name descname"><span class="pre">get_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.get_formatter" title="Link to this definition"></a></dt>
+<dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">get_formatter</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">base_formatter</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.is_partial">
+<span class="sig-name descname"><span class="pre">is_partial</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.is_partial" title="Link to this definition"></a></dt>
+<dd><p>This is a partial formatter; it will not be automatically used in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.item_newline">
+<span class="sig-name descname"><span class="pre">item_newline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.item_newline" title="Link to this definition"></a></dt>
+<dd><p>Separates two entries with a single space, since an inline table is written on one line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.items_indent">
+<span class="sig-name descname"><span class="pre">items_indent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.items_indent" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="xref py py-obj docutils literal notranslate"><span class="pre">printer</span></code> itself, since an inline table writes no newline for an indent to apply to.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.parent" title="Link to this definition"></a></dt>
+<dd><p>The parent formatter for this formatter instance.</p>
+<p>This is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.print">
+<span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_or_edit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_edits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.print" title="Link to this definition"></a></dt>
+<dd><p>Prints the given node or edit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
+See the <a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> for a detailed description.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.print_KeyValuePairNode">
+<span class="sig-name descname"><span class="pre">print_KeyValuePairNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><span class="pre">KeyValuePairNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.print_KeyValuePairNode" title="Link to this definition"></a></dt>
+<dd><p>Prints one entry of an inline table.</p>
+<p>This is <a class="reference internal" href="#graphtage.toml.TOMLFormatter.write_key_value_pair" title="graphtage.toml.TOMLFormatter.write_key_value_pair"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TOMLFormatter.write_key_value_pair()</span></code></a> without the newline that ends a top-level
+<code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code> line, which would otherwise break the inline table across lines.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.print_MappingNode">
+<span class="sig-name descname"><span class="pre">print_MappingNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.print_MappingNode" title="Link to this definition"></a></dt>
+<dd><p>Prints a <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>.</p>
+<p>Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">print_SequenceNode</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.print_SequenceNode">
+<span class="sig-name descname"><span class="pre">print_SequenceNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.print_SequenceNode" title="Link to this definition"></a></dt>
+<dd><p>Prints a non-mapping sequence.</p>
+<p>This delegates to the parent formatter’s implementation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which should invoke <a class="reference internal" href="#graphtage.toml.TOMLFormatter.print" title="graphtage.toml.TOMLFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TOMLFormatter.print()</span></code></a>, thereby delegating to the <a class="reference internal" href="#graphtage.toml.TOMLListFormatter" title="graphtage.toml.TOMLListFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TOMLListFormatter</span></code></a> in
+instances where an inline table contains a list.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.root">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">root</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.root" title="Link to this definition"></a></dt>
+<dd><p>Returns the root formatter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.sub_format_types">
+<span class="sig-name descname"><span class="pre">sub_format_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.sub_format_types" title="Link to this definition"></a></dt>
+<dd><p>A list of formatter types that should be used as sub-formatters in the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLInlineTableFormatter.sub_formatters">
+<span class="sig-name descname"><span class="pre">sub_formatters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter" title="graphtage.formatter.Formatter"><span class="pre">Formatter</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#graphtage.toml.TOMLInlineTableFormatter.sub_formatters" title="Link to this definition"></a></dt>
 <dd><p>The list of instantiated formatters corresponding to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Formatter.sub_format_types</span></code>.</p>
 <p>This list is automatically populated by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Formatter.__new__()</span></code> and should never be manually modified.</p>
 </dd></dl>
@@ -458,9 +659,8 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>which should invoke <a class="reference internal" href="#graphtage.toml.TOMLFormatter.print" title="graphtage.toml.TOMLFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TOMLFormatter.print()</span></code></a>, thereby delegating to the <code class="xref py py-class docutils literal notranslate"><span class="pre">TOMLDictFormatter</span></code> in
-instances where a list contains a dict (the TOML format doesn’t allow this, but it might be necessary if
-formatting from another format into TOML)</p>
+<p>which should invoke <a class="reference internal" href="#graphtage.toml.TOMLFormatter.print" title="graphtage.toml.TOMLFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">TOMLFormatter.print()</span></code></a>, thereby delegating to the
+<a class="reference internal" href="#graphtage.toml.TOMLInlineTableFormatter" title="graphtage.toml.TOMLInlineTableFormatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TOMLInlineTableFormatter</span></code></a> in instances where a list contains a dict.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -515,6 +715,12 @@ formatting from another format into TOML)</p>
 <dt class="sig sig-object py" id="graphtage.toml.TOMLMapping.items">
 <span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><span class="pre">KeyValuePairNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.toml.TOMLMapping.items" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.toml.TOMLMapping.key_value_pairs">
+<span class="sig-name descname"><span class="pre">key_value_pairs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><span class="pre">KeyValuePairNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.toml.TOMLMapping.key_value_pairs" title="Link to this definition"></a></dt>
+<dd><p>Iterates over this mapping’s key/value pairs, including any that an edit inserts into it.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="graphtage.toml.TOMLMapping.name_segments">
@@ -718,6 +924,30 @@ already automatically been configured to format them prior to the call to
 <dt class="sig sig-object py" id="graphtage.toml.build_tree">
 <span class="sig-prename descclassname"><span class="pre">graphtage.toml.</span></span><span class="sig-name descname"><span class="pre">build_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.BuildOptions" title="graphtage.BuildOptions"><span class="pre">BuildOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></span><a class="headerlink" href="#graphtage.toml.build_tree" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+</section>
+<section id="is-table">
+<h3>is_table<a class="headerlink" href="#is-table" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.toml.is_table">
+<span class="sig-prename descclassname"><span class="pre">graphtage.toml.</span></span><span class="sig-name descname"><span class="pre">is_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kvp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><span class="pre">KeyValuePairNode</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.toml.is_table" title="Link to this definition"></a></dt>
+<dd><p>Returns whether a key/value pair is written as a <code class="docutils literal notranslate"><span class="pre">[table]</span></code> section rather than as <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code>.</p>
+<p>Only a pair whose value is a mapping can have a section of its own, and only if no edit replaces that mapping
+with a value of another type. A section body has nowhere to write such a replacement, so classifying the pair as
+a section would drop its edit from the output entirely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kvp</strong> – The key/value pair to classify.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if <code class="xref py py-obj docutils literal notranslate"><span class="pre">kvp</span></code> is written as its own <code class="docutils literal notranslate"><span class="pre">[table]</span></code> section, and <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code> if it is
+written inline as <code class="docutils literal notranslate"><span class="pre">key</span> <span class="pre">=</span> <span class="pre">value</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="toml-dumps">
