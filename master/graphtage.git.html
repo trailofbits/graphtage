@@ -132,7 +132,8 @@ a rename or a copy, and passes a single argument for an unmerged path; both form
 <p>Git stops the whole diff when a driver exits with a non-zero status, so this driver reports a successful diff as
 <code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_SUCCESS</span></code> even when the two revisions differ. A status of
 <code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_ERROR</span></code> is reserved for failures that prevent Graphtage from producing a diff at
-all, such as an unsupported file type or a file that does not parse.</p>
+all, such as an unsupported file type or a file that does not parse. Quitting git’s pager closes the driver’s
+standard output, which ends the diff with <code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_BROKEN_PIPE</span></code> rather than a traceback.</p>
 <p>See the “Git Integration” section of the Graphtage README for the <code class="docutils literal notranslate"><span class="pre">git</span></code> configuration this driver expects.</p>
 <section id="git-functions">
 <h2>git functions<a class="headerlink" href="#git-functions" title="Link to this heading"></a></h2>
@@ -172,7 +173,8 @@ of them exist.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_SUCCESS</span></code> if the diff was produced, whether or not the revisions differ,
-and <code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_ERROR</span></code> if Graphtage could not produce one.</p>
+<code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_ERROR</span></code> if Graphtage could not produce one, and
+<code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_BROKEN_PIPE</span></code> if git’s pager closed the pipe before the diff was written.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
