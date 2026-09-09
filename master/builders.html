@@ -231,7 +231,8 @@ the subclass is defined, not when it is instantiated:</p>
 <p><a class="reference internal" href="graphtage.dataclasses.html#graphtage.dataclasses.DataClassNode.__init__" title="graphtage.dataclasses.DataClassNode.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DataClassNode.__init__</span></code></a> assigns the slots from its positional
 and keyword arguments, so overriding it means reimplementing that assignment. Override
 <a class="reference internal" href="graphtage.dataclasses.html#graphtage.dataclasses.DataClassNode.post_init" title="graphtage.dataclasses.DataClassNode.post_init"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.dataclasses.DataClassNode.post_init()</span></code></a> instead. It is called once the slots have been assigned, and it
-should not call <code class="docutils literal notranslate"><span class="pre">super().post_init()</span></code>: each ancestor’s implementation is called in turn, in order of the <code class="docutils literal notranslate"><span class="pre">__mro__</span></code>.</p>
+should not call <code class="docutils literal notranslate"><span class="pre">super().post_init()</span></code>: every implementation in the class hierarchy is called automatically,
+starting with the least derived data class and ending with the class being instantiated.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">UnquotedName</span><span class="p">(</span><span class="n">DataClassNode</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="n">StringNode</span>
 
@@ -241,10 +242,7 @@ should not call <code class="docutils literal notranslate"><span class="pre">sup
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>As of Graphtage 0.3.1, <code class="docutils literal notranslate"><span class="pre">post_init()</span></code> is only called for the ancestors of the class being instantiated, never for
-the class itself. <code class="docutils literal notranslate"><span class="pre">UnquotedName(StringNode(&quot;x&quot;))</span></code> leaves <code class="docutils literal notranslate"><span class="pre">quoted</span></code> set to <code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code>; the callback runs only
-when a subclass of <code class="docutils literal notranslate"><span class="pre">UnquotedName</span></code> is instantiated. Code that must run for the class itself still has to go in
-<code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
+<p>An implementation that a subclass inherits without overriding runs once, not once per class that inherits it.</p>
 </div>
 </section>
 </section>

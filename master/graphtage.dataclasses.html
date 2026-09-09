@@ -539,9 +539,10 @@ you define a subclass of <code class="xref py py-class docutils literal notransl
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.dataclasses.DataClassNode.post_init">
 <span class="sig-name descname"><span class="pre">post_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.dataclasses.DataClassNode.post_init" title="Link to this definition"></a></dt>
-<dd><p>Callback called after this class’s members have been initialized.</p>
-<p>This callback should not call <cite>super().post_init()</cite>. Each superclass’s <cite>post_init()</cite> will be automatically
-called in order of the <cite>__mro__</cite>.</p>
+<dd><p>Callback called after this node’s slots have been initialized.</p>
+<p>This callback should not call <cite>super().post_init()</cite>. Every implementation in the class hierarchy is called
+automatically, starting with the least derived data class and ending with the class being instantiated. An
+implementation that a subclass inherits without overriding is called only once.</p>
 </dd></dl>
 
 <dl class="py method">
