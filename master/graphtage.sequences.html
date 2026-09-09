@@ -568,6 +568,22 @@ formatter. For an example, see the implementation of <a class="reference interna
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.sequences.SequenceFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.sequences.SequenceFormatter.edit_print">
 <span class="sig-name descname"><span class="pre">edit_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">edit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><span class="pre">Edit</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.sequences.SequenceFormatter.edit_print" title="Link to this definition"></a></dt>
 <dd><p>Called when the edit for an item is to be printed.</p>
@@ -637,7 +653,9 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>

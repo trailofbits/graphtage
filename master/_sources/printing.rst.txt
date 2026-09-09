@@ -11,8 +11,8 @@ The protocol for delegating how a :class:`graphtage.TreeNode` or :class:`graphta
         * If ``with_edits``, then choose the edit
         * Otherwise, choose :attr:`node_or_edit.from_node <graphtage.Edit.from_node>`
     * If ``node_or_edit`` is a :class:`graphtage.TreeNode`:
-        * If ``with_edits`` *and* the node is edited and has a non-zero cost,
-            then choose :attr:`node_or_edit.edit <graphtage.EditedTreeNode.edit>`::
+        * If ``with_edits``, the node's own formatter is not already on the stack, *and* the node is edited and has a
+            non-zero cost, then choose :attr:`node_or_edit.edit <graphtage.EditedTreeNode.edit>`::
 
                 isinstance(node_or_edit, EditedTreeNode) and \
                         node_or_edit.edit is not None and node_or_edit.edit.has_non_zero_cost()
@@ -29,6 +29,7 @@ The protocol for delegating how a :class:`graphtage.TreeNode` or :class:`graphta
     * If not, try calling the edit's :func:`graphtage.Edit.print` method. If :exc:`NotImplementedError` is
       *not* raised, return.
 #. If the chosen object is a node, or if we failed to find a printer for the edit:
+    * Record that this node's formatter is on the stack, for the duration of the next two steps.
     * See if there is a specialized formatter for this node by calling
       :meth:`graphtage.formatter.Formatter.get_formatter`
     * If so, delegate to that formatter and return.
@@ -37,6 +38,20 @@ The protocol for delegating how a :class:`graphtage.TreeNode` or :class:`graphta
 
 This is implemented in :meth:`graphtage.GraphtageFormatter.print`. See the :ref:`Formatting Protocol` for how formatters
 are chosen.
+
+Re-entering the protocol with the same node
+-------------------------------------------
+
+``with_edits`` is an argument to :meth:`graphtage.GraphtageFormatter.print`, but it is not part of the
+``print_<NodeType>(printer, node)`` calling convention that formatters implement, so it stops at the formatter
+boundary. That matters because formatters hand nodes back to the protocol: a list formatter that meets a nested dict
+has no ``print_MappingNode`` of its own, so it calls ``self.parent.print(printer, node)`` to reach the format's dict
+formatter, as :meth:`graphtage.json.JSONListFormatter.print_SequenceNode` does. Such a call starts the protocol over
+for a node whose edit the outer call has already printed, or has deliberately declined to print.
+
+Recording the node for the duration of its own formatter is what keeps that second pass from printing the edit again.
+It applies to the node being printed only, not to its children, so an edit nested inside the delegated subtree still
+prints normally.
 
 Status Output
 -------------

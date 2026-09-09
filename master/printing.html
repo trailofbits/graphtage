@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="builders.html">Constructing Graphtage Trees</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filetypes.html">Defining New Filetypes</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Printing Protocol</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#re-entering-the-protocol-with-the-same-node">Re-entering the protocol with the same node</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#status-output">Status Output</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#enabling-ansi-color">Enabling ANSI Color</a></li>
 </ul>
@@ -104,7 +105,7 @@
 <li><dl>
 <dt>If <code class="docutils literal notranslate"><span class="pre">node_or_edit</span></code> is a <a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a>:</dt><dd><ul>
 <li><dl>
-<dt>If <code class="docutils literal notranslate"><span class="pre">with_edits</span></code> <em>and</em> the node is edited and has a non-zero cost,</dt><dd><p>then choose <code class="xref py py-attr docutils literal notranslate"><span class="pre">node_or_edit.edit</span></code>:</p>
+<dt>If <code class="docutils literal notranslate"><span class="pre">with_edits</span></code>, the node’s own formatter is not already on the stack, <em>and</em> the node is edited and has a</dt><dd><p>non-zero cost, then choose <code class="xref py py-attr docutils literal notranslate"><span class="pre">node_or_edit.edit</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">isinstance</span><span class="p">(</span><span class="n">node_or_edit</span><span class="p">,</span> <span class="n">EditedTreeNode</span><span class="p">)</span> <span class="ow">and</span> \
         <span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_or_edit</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">has_non_zero_cost</span><span class="p">()</span>
 </pre></div>
@@ -137,6 +138,7 @@ edit can therefore do an arbitrary amount of work.</p>
 </li>
 <li><dl class="simple">
 <dt>If the chosen object is a node, or if we failed to find a printer for the edit:</dt><dd><ul class="simple">
+<li><p>Record that this node’s formatter is on the stack, for the duration of the next two steps.</p></li>
 <li><p>See if there is a specialized formatter for this node by calling
 <a class="reference internal" href="graphtage.formatter.html#graphtage.formatter.Formatter.get_formatter" title="graphtage.formatter.Formatter.get_formatter"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.formatter.Formatter.get_formatter()</span></code></a></p></li>
 <li><p>If so, delegate to that formatter and return.</p></li>
@@ -149,6 +151,18 @@ edit can therefore do an arbitrary amount of work.</p>
 </ol>
 <p>This is implemented in <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter.print" title="graphtage.GraphtageFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter.print()</span></code></a>. See the <a class="reference internal" href="graphtage.formatter.html#formatting-protocol"><span class="std std-ref">Formatting Protocol</span></a> for how formatters
 are chosen.</p>
+<section id="re-entering-the-protocol-with-the-same-node">
+<h2>Re-entering the protocol with the same node<a class="headerlink" href="#re-entering-the-protocol-with-the-same-node" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">with_edits</span></code> is an argument to <a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter.print" title="graphtage.GraphtageFormatter.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.GraphtageFormatter.print()</span></code></a>, but it is not part of the
+<code class="docutils literal notranslate"><span class="pre">print_&lt;NodeType&gt;(printer,</span> <span class="pre">node)</span></code> calling convention that formatters implement, so it stops at the formatter
+boundary. That matters because formatters hand nodes back to the protocol: a list formatter that meets a nested dict
+has no <code class="docutils literal notranslate"><span class="pre">print_MappingNode</span></code> of its own, so it calls <code class="docutils literal notranslate"><span class="pre">self.parent.print(printer,</span> <span class="pre">node)</span></code> to reach the format’s dict
+formatter, as <a class="reference internal" href="graphtage.json.html#graphtage.json.JSONListFormatter.print_SequenceNode" title="graphtage.json.JSONListFormatter.print_SequenceNode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.json.JSONListFormatter.print_SequenceNode()</span></code></a> does. Such a call starts the protocol over
+for a node whose edit the outer call has already printed, or has deliberately declined to print.</p>
+<p>Recording the node for the duration of its own formatter is what keeps that second pass from printing the edit again.
+It applies to the node being printed only, not to its children, so an edit nested inside the delegated subtree still
+prints normally.</p>
+</section>
 <section id="status-output">
 <h2>Status Output<a class="headerlink" href="#status-output" title="Link to this heading"></a></h2>
 <p>A <a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.printer.Printer</span></code></a> is also a <a class="reference internal" href="graphtage.progress.html#graphtage.progress.StatusWriter" title="graphtage.progress.StatusWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.progress.StatusWriter</span></code></a>, which is what draws the

@@ -238,6 +238,22 @@
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.yaml.YAMLDictFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.yaml.YAMLDictFormatter.delimiter_callback">
 <span class="sig-name descname"><span class="pre">delimiter_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.yaml.YAMLDictFormatter.delimiter_callback" title="Link to this definition"></a></dt>
@@ -313,7 +329,9 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>
@@ -409,6 +427,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.yaml.YAMLFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.yaml.YAMLFormatter.get_formatter">
 <span class="sig-name descname"><span class="pre">get_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.yaml.YAMLFormatter.get_formatter" title="Link to this definition"></a></dt>
 <dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
@@ -439,7 +473,9 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>
@@ -515,6 +551,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.yaml.YAMLKeyValuePairFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.yaml.YAMLKeyValuePairFormatter.get_formatter">
 <span class="sig-name descname"><span class="pre">get_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.yaml.YAMLKeyValuePairFormatter.get_formatter" title="Link to this definition"></a></dt>
 <dd><p>Looks up a formatter for the given item using this formatter as a base.</p>
@@ -545,7 +597,9 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>
@@ -623,6 +677,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">parent</span></code> to this new formatter.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.yaml.YAMLListFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.yaml.YAMLListFormatter.delimiter_callback">
 <span class="sig-name descname"><span class="pre">delimiter_callback</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#graphtage.yaml.YAMLListFormatter.delimiter_callback" title="Link to this definition"></a></dt>
@@ -698,7 +768,9 @@ function will be a <a class="reference internal" href="graphtage.html#graphtage.
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>
@@ -794,6 +866,22 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.yaml.YAMLStringFormatter._print_node">
+<span class="sig-name descname"><span class="pre">_print_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter._print_node" title="Link to this definition"></a></dt>
+<dd><p>Hands a node to its formatter, suppressing that node’s edit for the duration of the call.</p>
+<p>Whether to print <code class="docutils literal notranslate"><span class="pre">node</span></code>’s edit was already settled by <code class="xref py py-meth docutils literal notranslate"><span class="pre">GraphtageFormatter.print()</span></code>, so any re-entrant
+call for the same node must print the bare node. See <code class="xref py py-data docutils literal notranslate"><span class="pre">_NODES_BEING_PRINTED</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>printer</strong> – The printer to which to write.</p></li>
+<li><p><strong>node</strong> – The node to print.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.yaml.YAMLStringFormatter.context">
 <span class="sig-name descname"><span class="pre">context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.yaml.YAMLStringFormatter.context" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -854,7 +942,9 @@ See the <a class="reference internal" href="printing.html#printing-protocol"><sp
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>printer</strong> – The printer to which to write.</p></li>
 <li><p><strong>node_or_edit</strong> – The node or edit to print.</p></li>
-<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node.</p></li>
+<li><p><strong>with_edits</strong> – If :keyword:True, print any edits associated with the node. This is also implied to be
+:keyword:False while the node’s own formatter is on the stack, so that a formatter delegating the
+same node to a sibling formatter does not print its edit twice.</p></li>
 </ul>
 </dd>
 </dl>
