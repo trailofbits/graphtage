@@ -1,6 +1,8 @@
 from io import StringIO
 from unittest import TestCase
 
+import toml
+
 import graphtage
 from graphtage.printer import Printer
 from graphtage.utils import Tempfile
@@ -28,6 +30,43 @@ a = 1
 
 NESTED_LIST_VALUE = b"""[outer]
 k = [2, 3]
+"""
+
+TWO_TABLES = b"""[keep]
+x = 1
+
+[gone]
+a = 1
+"""
+
+ONE_TABLE = b"""[keep]
+x = 1
+"""
+
+TABLE_WITH_TWO_KEYS = b"""[keep]
+x = 1
+y = 2
+"""
+
+SECTIONS = b"""title = "top"
+
+[other]
+z = 3
+
+[outer.keep]
+x = 1
+
+[outer.gone]
+a = 1
+"""
+
+SECTIONS_WITHOUT_ONE = b"""title = "top"
+
+[other]
+z = 3
+
+[outer.keep]
+x = 1
 """
 
 
@@ -84,3 +123,43 @@ class TestTOMLDiff(TestCase):
         self.assertNotIn("~~", unchanged)
         self.assertNotIn("++", unchanged)
         self.assertEqual(["[k]", "a = 1"], diff_lines(TABLE, TABLE))
+
+    def test_removed_table_is_marked(self):
+        """A whole section used to render exactly as it appears in the original, marking nothing as removed."""
+        self.assertEqual(
+            ["[keep]", "x = 1", "~~[gone]", "a = 1", "~~"],
+            diff_lines(TWO_TABLES, ONE_TABLE)
+        )
+
+    def test_inserted_table_is_marked(self):
+        """A whole section used to be written with no marker, so the diff read as though nothing was added."""
+        self.assertEqual(
+            ["[keep]", "x = 1", "++[gone]", "a = 1", "++"],
+            diff_lines(ONE_TABLE, TWO_TABLES)
+        )
+
+    def test_removed_nested_table_is_marked(self):
+        """A section below the document root keeps its dotted name and carries the removal marker."""
+        self.assertEqual(
+            ['title = "top"', "[other]", "z = 3", "[outer.keep]", "x = 1", "~~[outer.gone]", "a = 1", "~~"],
+            diff_lines(SECTIONS, SECTIONS_WITHOUT_ONE)
+        )
+
+    def test_inserted_nested_table_is_marked(self):
+        """The mirror image of the removal, since an inserted pair reaches the formatter by a different route."""
+        self.assertEqual(
+            ['title = "top"', "[other]", "z = 3", "[outer.keep]", "x = 1", "++[outer.gone]", "a = 1", "++"],
+            diff_lines(SECTIONS_WITHOUT_ONE, SECTIONS)
+        )
+
+    def test_removed_scalar_in_a_table_is_marked(self):
+        """The control for a pair that is written as a ``key = value`` line rather than as a section."""
+        self.assertEqual(["[keep]", "x = 1", "~~y = 2", "~~"], diff_lines(TABLE_WITH_TWO_KEYS, ONE_TABLE))
+
+    def test_inserted_scalar_in_a_table_is_marked(self):
+        """An inserted pair is absent from the mapping's own children, so it too used to render unmarked."""
+        self.assertEqual(["[keep]", "x = 1", "++y = 2", "++"], diff_lines(ONE_TABLE, TABLE_WITH_TWO_KEYS))
+
+    def test_document_with_several_sections_round_trips(self):
+        """Every ``key = value`` line must precede the first header below it, or TOML reparses it into that table."""
+        self.assertEqual(toml.loads(SECTIONS.decode("utf-8")), toml.loads(render_diff(SECTIONS, SECTIONS)))
