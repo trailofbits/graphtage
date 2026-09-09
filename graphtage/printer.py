@@ -12,6 +12,8 @@ Attributes:
     DEFAULT_PRINTER (Printer): A default :class:`Printer` instance printing to :attr:`sys.stdout`. Read it through
         :func:`get_default_printer` rather than importing the name, because :func:`set_default_printer` replaces it.
 
+    NULL_PRINTER (Printer): A :class:`Printer` instance that discards everything written to it.
+
 """
 
 import logging

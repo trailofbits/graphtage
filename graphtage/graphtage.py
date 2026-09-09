@@ -1059,7 +1059,7 @@ class BuildOptions:
         """If `True` and if `check_for_cycles` is also `True`, then ignore cycles in the input,
         preventing an infinite loop."""
         self.printer = printer
-        """A printer to use while building trees (default is :class:`graphtage.printer.NullPrinter`)"""
+        """A printer to use while building trees (default is :attr:`graphtage.printer.NULL_PRINTER`)"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
 
