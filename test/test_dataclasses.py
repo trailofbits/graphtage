@@ -91,6 +91,41 @@ class TestDataclasses(TestCase):
                 self.name.quoted = False
 
         self.assertFalse(Unquoted(StringNode("name")).name.quoted)
+
+    def test_multiple_inheritance(self):
+        """Slots from *all* bases must survive diamond inheritance, not just the first chain."""
+        class Foo(DataClassNode):
+            foo: IntegerNode
+
+        class Bar(Foo):
+            bar: StringNode
+
+        class Baz(Foo):
+            baz: StringNode
+
+        class Quux(Bar, Baz):
+            quux: IntegerNode
+
+        self.assertEqual(("foo",), Foo._SLOTS)
+        self.assertEqual(("foo", "bar"), Bar._SLOTS)
+        self.assertEqual(("foo", "baz"), Baz._SLOTS)
+        self.assertEqual(("foo", "baz", "bar", "quux"), Quux._SLOTS)
+        self.assertEqual(
+            {"foo": IntegerNode, "baz": StringNode, "bar": StringNode, "quux": IntegerNode},
+            Quux._SLOT_ANNOTATIONS
+        )
+
+        node = Quux(foo=IntegerNode(1), bar=StringNode("bar"), baz=StringNode("baz"), quux=IntegerNode(4))
+        self.assertEqual(1, node.foo.object)
+        self.assertEqual("bar", node.bar.object)
+        self.assertEqual("baz", node.baz.object)
+        self.assertEqual(4, node.quux.object)
+        self.assertEqual({"foo", "bar", "baz", "quux"}, set(node.to_obj()))
+
+        # diffing against an identical node yields a DataClassEdit, not a Replace
+        twin = Quux(foo=IntegerNode(1), bar=StringNode("bar"), baz=StringNode("baz"), quux=IntegerNode(4))
+        self.assertIsInstance(node.edits(twin), DataClassEdit)
+
     def test_print_renders_slots(self):
         """:meth:`DataClassNode.print` is the fallback when no formatter resolves the node type."""
         class Foo(DataClassNode):
