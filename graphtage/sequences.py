@@ -2,13 +2,13 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Callable, cast, Dict, Generic, Iterable, Iterator, List, Optional, Sequence, Type, TypeVar
+from collections.abc import Callable, Iterable, Iterator, Sequence
+from typing import Any, Generic, TypeVar, cast
 
 from .bounds import Range, repeat_until_tightened
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
 from .printer import Fore, Printer
 from .tree import ContainerNode, Edit, EditedTreeNode, GraphtageFormatter, TreeNode
-
 
 log = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
         """
         if not isinstance(from_node, SequenceNode):
             raise ValueError(f"from_node must be a SequenceNode, but {from_node!r} is {type(from_node)}!")
-        super().__init__(from_node=from_node, *args, **kwargs)
+        super().__init__(*args, from_node=from_node, **kwargs)
 
     @property
     def sequence(self) -> 'SequenceNode':
@@ -64,14 +64,18 @@ class SequenceEdit(AbstractCompoundEdit, ABC):
 class FixedLengthSequenceEdit(SequenceEdit):
     """An edit for sequences that does not consider interleaving."""
 
-    __slots__ = ('_sub_edits', 'to_remove', 'to_insert')
+    __slots__ = ('_sub_edits', 'to_insert', 'to_remove')
 
     def __init__(
             self,
             from_node: 'SequenceNode',
             to_node: 'SequenceNode'
     ):
-        self._sub_edits: List[Edit] = [from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node)]
+        # Not strict: the sequences may differ in length, and the surplus is handled just below
+        # as to_remove or to_insert.
+        self._sub_edits: list[Edit] = [
+            from_child.edits(to_child) for from_child, to_child in zip(from_node, to_node, strict=False)
+        ]
 
         if len(from_node) > len(to_node):
             self.to_remove: Sequence[TreeNode] = from_node.children()[-len(from_node) - len(to_node):]
@@ -132,12 +136,12 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
         """
         self._children: T = children
-        self.child_indexes: Dict[TreeNode, int] = {
+        self.child_indexes: dict[TreeNode, int] = {
             child: i for i, child in enumerate(self.children())
         }
 
     def children(self) -> Sequence[TreeNode]:
-        if isinstance(self._children, list) or isinstance(self._children, tuple):
+        if isinstance(self._children, (list, tuple)):
             return self._children
         else:
             return super().children()
@@ -186,7 +190,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
 
     @property
     @abstractmethod
-    def container_type(self) -> Type[T]:
+    def container_type(self) -> type[T]:
         """Returns the container type used to store :attr:`SequenceNode._children`.
 
         This is used for performing a deep copy of this node in the :meth:`SequenceNode.editable_dict` function.
@@ -194,7 +198,7 @@ class SequenceNode(ContainerNode, Generic[T], ABC):
         """
         raise NotImplementedError()
 
-    def editable_dict(self) -> Dict[str, Any]:
+    def editable_dict(self) -> dict[str, Any]:
         """Copies :obj:`self.__dict__`, calling :meth:`TreeNode.editable_dict` on all children.
 
         This is equivalent to::
@@ -253,7 +257,7 @@ class SequenceFormatter(GraphtageFormatter):
             start_symbol: str,
             end_symbol: str,
             delimiter: str,
-            delimiter_callback: Optional[Callable[[Printer], Any]] = None
+            delimiter_callback: Callable[[Printer], Any] | None = None
     ):
         """Initializes a sequence formatter.
 

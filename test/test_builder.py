@@ -1,4 +1,3 @@
-from typing import List
 from unittest import TestCase
 
 from graphtage import BuildOptions, IntegerNode, ListNode, TreeNode, UnorderedListNode
@@ -31,7 +30,7 @@ class TestBuilder(TestCase):
                 yield obj.bar
 
             @Builder.builder(Foo)
-            def build_foo(self, obj: Foo, children: List[TreeNode]):
+            def build_foo(self, obj: Foo, children: list[TreeNode]):
                 test.assertEqual(1, len(children))
                 return children[0]
 

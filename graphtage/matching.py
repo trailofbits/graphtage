@@ -34,20 +34,22 @@ Example:
 """
 
 import itertools
-import sys
 from abc import ABCMeta, abstractmethod
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from collections.abc import Set as SetCollection
-from typing import Callable, Dict, Generic, Iterable, Iterator, List
-from typing import Mapping, Optional, Sequence, Set, Tuple, TypeVar, Union
+from typing import (
+    Generic,
+    TypeVar,
+    Union,
+)
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .bounds import Bounded, make_distinct, Range, repeat_until_tightened
+from .bounds import Bounded, Range, make_distinct, repeat_until_tightened
 from .bounds import sort as bounds_sort
 from .fibonacci import FibonacciHeap
-from .utils import smallest, largest
-
+from .utils import largest, smallest
 
 T = TypeVar('T')
 
@@ -95,30 +97,29 @@ class MatchingNode(Generic[T], metaclass=ABCMeta):
         self.node = node
         self.matcher = matcher
         self.weight = Range()
-        self._edges: Optional[Dict[MatchingNode[T], Edge[T]]] = None
+        self._edges: dict[MatchingNode[T], Edge[T]] | None = None
         self.potential: int = 0
 
     @abstractmethod
-    def construct_edges(self) -> Dict['MatchingNode[T]', Edge[T]]:
+    def construct_edges(self) -> dict['MatchingNode[T]', Edge[T]]:
         pass
 
-    def edges(self) -> Iterable[Edge[T]]:
+    def _edge_map(self) -> dict['MatchingNode[T]', Edge[T]]:
         if self._edges is None:
             self._edges = self.construct_edges()
-        return self._edges.values()
+        return self._edges
+
+    def edges(self) -> Iterable[Edge[T]]:
+        return self._edge_map().values()
 
     def __repr__(self):
         return repr(self.node)
 
     def __getitem__(self, neighbor: 'MatchingNode[T]') -> Edge[T]:
-        if self._edges is None:
-            self.edges
-        return self._edges[neighbor]
+        return self._edge_map()[neighbor]
 
     def __contains__(self, node):
-        if self._edges is None:
-            self.edges
-        return node in self._edges
+        return node in self._edge_map()
 
     def __hash__(self):
         return hash(self.node)
@@ -131,9 +132,9 @@ class SortedEdges(Generic[T]):
     """A sorted collection of edges."""
     def __init__(self, edges: Iterable[Edge[T]]):
         self._edges = edges
-        self._sorting_iter: Optional[Iterator[Edge]] = None
-        self._sorted: List[Edge[T]] = []
-        self._indexes: Dict[MatchingToNode[T], int] = {}
+        self._sorting_iter: Iterator[Edge] | None = None
+        self._sorted: list[Edge[T]] = []
+        self._indexes: dict[MatchingToNode[T], int] = {}
 
     def _get_next(self) -> bool:
         if self._sorting_iter is None:
@@ -156,7 +157,7 @@ class SortedEdges(Generic[T]):
             pass
         return self._sorted[-1]
 
-    def __getitem__(self, node_or_index: Union['MatchingToNode[T]', int]) -> Union[Edge[T], int]:
+    def __getitem__(self, node_or_index: Union['MatchingToNode[T]', int]) -> Edge[T] | int:
         if isinstance(node_or_index, int):
             while len(self._sorted) <= node_or_index:
                 if not self._get_next():
@@ -171,7 +172,7 @@ class SortedEdges(Generic[T]):
 class MatchingFromNode(Generic[T], MatchingNode[T]):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._sorted_neighbors: Optional[SortedEdges[T]] = None
+        self._sorted_neighbors: SortedEdges[T] | None = None
 
     @property
     def sorted_neighbors(self) -> SortedEdges[T]:
@@ -179,7 +180,7 @@ class MatchingFromNode(Generic[T], MatchingNode[T]):
             self._sorted_neighbors = SortedEdges(self.edges())
         return self._sorted_neighbors
 
-    def construct_edges(self) -> Dict[MatchingNode[T], Edge[T]]:
+    def construct_edges(self) -> dict[MatchingNode[T], Edge[T]]:
         return {
             neighbor: Edge(self, neighbor, edge) for neighbor, edge in (
                 (neighbor, self.matcher.get_edge(self.node, neighbor.node)) for neighbor in self.matcher.to_nodes
@@ -192,7 +193,7 @@ class MatchingFromNode(Generic[T], MatchingNode[T]):
 
 class MatchingToNode(Generic[T], MatchingNode[T]):
     """A node type used in the implementation of [Karp78]_."""
-    def construct_edges(self) -> Dict[MatchingNode[T], Edge[T]]:
+    def construct_edges(self) -> dict[MatchingNode[T], Edge[T]]:
         return {
             from_node: from_node[self] for from_node in self.matcher.from_nodes if self in from_node
         }
@@ -201,21 +202,14 @@ class MatchingToNode(Generic[T], MatchingNode[T]):
         return f"\u21A3{self.node!r}"
 
 
-if sys.version_info.major < 3 or sys.version_info.minor < 7:
-    # This is to satisfy Python 3.6's MRO
-    SetType = object
-else:
-    SetType = Set[Edge[T]]
-
-
-class Matching(Generic[T], SetCollection, Bounded, SetType):
+class Matching(SetCollection, Bounded, set[Edge[T]], Generic[T]):
     """An abstract base class used by the partial implementation of [Karp78]_."""
     def __init__(self):
         super().__init__()
-        self._edges: Set[Edge[T]] = set()
-        self._edges_by_node: Dict[MatchingNode[T], Edge[T]] = {}
+        self._edges: set[Edge[T]] = set()
+        self._edges_by_node: dict[MatchingNode[T], Edge[T]] = {}
 
-    def __contains__(self, edge_or_node: Union[Edge[T], MatchingNode[T]]) -> bool:
+    def __contains__(self, edge_or_node: Edge[T] | MatchingNode[T]) -> bool:
         if isinstance(edge_or_node, Edge):
             return edge_or_node in self._edges
         else:
@@ -227,10 +221,10 @@ class Matching(Generic[T], SetCollection, Bounded, SetType):
     def __iter__(self) -> Iterator[Edge[T]]:
         return iter(self._edges)
 
-    def __getitem__(self, node: MatchingNode[T]) -> Optional[Edge[T]]:
+    def __getitem__(self, node: MatchingNode[T]) -> Edge[T] | None:
         return self._edges_by_node.get(node, None)
 
-    def symmetric_difference(self, matching: Set[Edge[T]]) -> 'Matching[T]':
+    def symmetric_difference(self, matching: set[Edge[T]]) -> 'Matching[T]':
         ret = Matching()
         ret._edges = self._edges.symmetric_difference(matching)
         ret._edges_by_node = {}
@@ -247,16 +241,13 @@ class Matching(Generic[T], SetCollection, Bounded, SetType):
         self._edges_by_node[edge.to_node] = edge
 
     def tighten_bounds(self) -> bool:
-        for edge in self:
-            if edge.weight.tighten_bounds():
-                return True
-        return False
+        return any(edge.weight.tighten_bounds() for edge in self)
 
     def bounds(self) -> Range:
         return sum(edge.weight.bounds() for edge in self._edges)
 
     def __repr__(self):
-        matchings = ", ".join((f"{e.from_node}{e.to_node}" for e in self._edges))
+        matchings = ", ".join(f"{e.from_node}{e.to_node}" for e in self._edges)
         return f'{self.__class__.__name__}<{matchings}>'
 
 
@@ -264,7 +255,7 @@ class PathSet(Matching[T], Generic[T]):
     """A version of a Matching with edge directions overridden, used for [Karp78]_"""
     def __init__(self):
         super().__init__()
-        self._flipped: Dict[MatchingToNode[T], Edge[T]] = {}
+        self._flipped: dict[MatchingToNode[T], Edge[T]] = {}
 
     def add(self, edge: Edge[T], flip_direction: bool):
         if flip_direction:
@@ -274,10 +265,10 @@ class PathSet(Matching[T], Generic[T]):
 
     def _path_to(
             self,
-            from_any_of: Set[MatchingFromNode[T]],
+            from_any_of: set[MatchingFromNode[T]],
             node: MatchingNode[T],
-            history: Optional[Set[Edge[T]]] = None
-    ) -> Optional[Set[Edge[T]]]:
+            history: set[Edge[T]] | None = None
+    ) -> set[Edge[T]] | None:
         if node in from_any_of:
             return set()
         if history is None:
@@ -298,9 +289,9 @@ class PathSet(Matching[T], Generic[T]):
 
     def path_to(
         self,
-        from_any_of: Set[MatchingFromNode[T]],
+        from_any_of: set[MatchingFromNode[T]],
         node: MatchingToNode[T]
-    ) -> Set[Edge[T]]:
+    ) -> set[Edge[T]]:
         ret = self._path_to(from_any_of, node)
         if ret is None:
             return set()
@@ -336,15 +327,15 @@ class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
             self,
             from_nodes: Iterable[T],
             to_nodes: Iterable[T],
-            get_edge: Callable[[T, T], Optional[Bounded]]
+            get_edge: Callable[[T, T], Bounded | None]
     ):
-        self.from_nodes: List[MatchingFromNode[T]] = [MatchingFromNode(self, node) for node in from_nodes]
-        self.to_nodes: List[MatchingToNode[T]] = [MatchingToNode(self, node) for node in to_nodes]
+        self.from_nodes: list[MatchingFromNode[T]] = [MatchingFromNode(self, node) for node in from_nodes]
+        self.to_nodes: list[MatchingToNode[T]] = [MatchingToNode(self, node) for node in to_nodes]
         if len(self.from_nodes) > len(self.to_nodes):
             raise ValueError()
         self.get_edge = get_edge
         self.matching: Matching[T] = Matching()
-        self._min_path_cost: Dict[MatchingNode[T], int] = {}
+        self._min_path_cost: dict[MatchingNode[T], int] = {}
 
     def free_sources(self) -> Iterator[MatchingFromNode[T]]:
         # Given a matching M, a vertex v is called free if it is incident with no edge in M
@@ -394,7 +385,7 @@ class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
 
         path: PathSet[T] = PathSet()
         q: QueueType = FibonacciHeap(key=lambda n: n.cost)
-        r: Set[MatchingNode[T]] = set(self.free_sources())
+        r: set[MatchingNode[T]] = set(self.free_sources())
         for x in r:
             self._min_path_cost[x] = 0
             assert isinstance(x, MatchingFromNode)
@@ -443,10 +434,10 @@ class WeightedBipartiteMatcherPARTIAL_IMPLEMENTATION(Bounded, Generic[T]):
         pass
 
 
-W = TypeVar('W', bound=Union[bool, int, float])
-EdgeType = Union[bool, int, float]
+W = TypeVar('W', bound=bool | int | float)
+EdgeType = bool | int | float
 
-INTEGER_DTYPE_INTERVALS: Tuple[Tuple[int, int, np.dtype], ...] = (
+INTEGER_DTYPE_INTERVALS: tuple[tuple[int, int, np.dtype], ...] = (
     (0, 2**8, np.dtype(np.uint8)),
     (0, 2**16, np.dtype(np.uint16)),
     (0, 2**32, np.dtype(np.uint32)),
@@ -469,8 +460,8 @@ def get_dtype(min_value: int, max_value: int) -> np.dtype:
 def min_weight_bipartite_matching(
         from_nodes: Sequence[T],
         to_nodes: Sequence[T],
-        get_edges: Callable[[T, T], Optional[W]]
-) -> Mapping[int, Tuple[int, EdgeType]]:
+        get_edges: Callable[[T, T], W | None]
+) -> Mapping[int, tuple[int, EdgeType]]:
     """Calculates the minimum weight bipartite matching between two sequences.
 
     Args:
@@ -500,11 +491,11 @@ def min_weight_bipartite_matching(
 
     """
     # Assume that the bipartite graph is dense. If the edges are sparse, consider switching to `scipy.sparse.coo_matrix`
-    weights: List[List[Optional[EdgeType]]] = [[None] * len(to_nodes) for _ in range(len(from_nodes))]
+    weights: list[list[EdgeType | None]] = [[None] * len(to_nodes) for _ in range(len(from_nodes))]
 
-    edge_type: Optional[type] = None
-    max_edge: Optional[EdgeType] = None
-    min_edge: Optional[EdgeType] = None
+    edge_type: type | None = None
+    max_edge: EdgeType | None = None
+    min_edge: EdgeType | None = None
 
     has_null_edges = False
 
@@ -526,7 +517,7 @@ def min_weight_bipartite_matching(
     if has_null_edges:
         if isinstance(edge_type, bool):
             raise ValueError("Null edges are only supported with `int` or `float` edge types, not `bool`. Bipartite graphs with `bool` edge weights must be complete.")
-        null_edge_value: Optional[EdgeType] = max(
+        null_edge_value: EdgeType | None = max(
             sum(weights[row][col] for row in range(len(from_nodes)) if weights[row][col] is not None)
             for col in range(len(to_nodes))
         ) + 1
@@ -542,7 +533,7 @@ def min_weight_bipartite_matching(
         dtype = bool
     elif edge_type is float:
         dtype = float
-    elif not edge_type is int:
+    elif edge_type is not int:
         raise ValueError(f"Unexpected edge type: {edge_type}")
     else:
         dtype = get_dtype(min_edge, max_edge)
@@ -556,7 +547,7 @@ def min_weight_bipartite_matching(
     left_matches = linear_sum_assignment(np.array(weights, dtype=dtype), maximize=False)
     return {
         from_index: (to_index, weights[from_index][to_index])
-        for from_index, to_index in zip(*left_matches)
+        for from_index, to_index in zip(*left_matches, strict=True)
         if not has_null_edges or weights[from_index][to_index] < null_edge_value
     }
 
@@ -576,7 +567,7 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             self,
             from_nodes: Iterable[T],
             to_nodes: Iterable[T],
-            get_edge: Callable[[T, T], Optional[Bounded]]
+            get_edge: Callable[[T, T], Bounded | None]
     ):
         """Initializes the weighted bipartite matcher.
 
@@ -592,20 +583,20 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             to_nodes = tuple(to_nodes)
         self.from_nodes: Sequence[T] = from_nodes
         self.to_nodes: Sequence[T] = to_nodes
-        self.from_node_indexes: Dict[T, int] = {
+        self.from_node_indexes: dict[T, int] = {
             from_node: i for i, from_node in enumerate(from_nodes)
         }
-        self.to_node_indexes: Dict[T, int] = {
+        self.to_node_indexes: dict[T, int] = {
             to_node: i for i, to_node in enumerate(to_nodes)
         }
-        self._edges: Optional[List[List[Optional[Bounded]]]] = None
-        self._match: Optional[Mapping[T, Tuple[T, Bounded]]] = None
+        self._edges: list[list[Bounded | None]] | None = None
+        self._match: Mapping[T, tuple[T, Bounded]] | None = None
         self._edges_are_distinct: bool = False
         self.get_edge = get_edge
-        self._bounds: Optional[Range] = None
+        self._bounds: Range | None = None
 
     @property
-    def edges(self) -> List[List[Optional[Bounded]]]:
+    def edges(self) -> list[list[Bounded | None]]:
         """Returns a dense matrix of the edges in the graph.
 
         This property lazily constructs the edge matrix and memoizes the result.
@@ -653,7 +644,7 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
             return True
 
     @property
-    def matching(self) -> Mapping[T, Tuple[T, Bounded]]:
+    def matching(self) -> Mapping[T, tuple[T, Bounded]]:
         """Returns the minimum weight matching.
 
         Returns:
@@ -703,7 +694,4 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
                 return True
             _ = self.matching     # This computes the minimum weight matching
             return True
-        for (_, (_, edge)) in self.matching.items():
-            if edge.tighten_bounds():
-                return True
-        return False
+        return any(edge.tighten_bounds() for _, (_, edge) in self.matching.items())

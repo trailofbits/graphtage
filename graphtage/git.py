@@ -19,7 +19,7 @@ See the "Git Integration" section of the Graphtage README for the ``git`` config
 
 import os
 import sys
-from typing import List, Optional, Sequence, Tuple
+from collections.abc import Sequence
 
 from . import graphtage
 from .__main__ import EXIT_DIFFERENCES_FOUND, EXIT_ERROR, EXIT_SUCCESS, register_mimetypes
@@ -42,7 +42,7 @@ section of the Graphtage README.
 """
 
 
-def split_options(argv: Sequence[str]) -> Tuple[List[str], List[str]]:
+def split_options(argv: Sequence[str]) -> tuple[list[str], list[str]]:
     """Splits the leading Graphtage options off of the arguments that git supplies.
 
     Git appends its own positional arguments after whatever command the user configured, so every argument up to
@@ -62,7 +62,7 @@ def split_options(argv: Sequence[str]) -> Tuple[List[str], List[str]]:
     return list(argv[:index]), list(argv[index:])
 
 
-def mime_options(path: str, forwarded: Sequence[str]) -> List[str]:
+def mime_options(path: str, forwarded: Sequence[str]) -> list[str]:
     """Builds the Graphtage MIME type options implied by a path in the repository.
 
     Args:
@@ -85,7 +85,7 @@ def mime_options(path: str, forwarded: Sequence[str]) -> List[str]:
     return [f'{prefix}mime={mime_type}' for prefix in prefixes]
 
 
-def absent_revision(from_path: str, to_path: str) -> Optional[str]:
+def absent_revision(from_path: str, to_path: str) -> str | None:
     """Describes a change that leaves Graphtage with only one revision to work from.
 
     Args:
@@ -93,7 +93,7 @@ def absent_revision(from_path: str, to_path: str) -> Optional[str]:
         to_path: The new revision, which git passes as its fifth argument.
 
     Returns:
-        Optional[str]: ``'added'`` or ``'deleted'`` if one of the revisions is missing, and :const:`None` if both
+        str | None: ``'added'`` or ``'deleted'`` if one of the revisions is missing, and :const:`None` if both
         of them exist.
     """
     if from_path in ABSENT_FILE_NAMES:
@@ -103,7 +103,7 @@ def absent_revision(from_path: str, to_path: str) -> Optional[str]:
     return None
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     """Runs Graphtage over the two revisions that git supplies.
 
     Args:

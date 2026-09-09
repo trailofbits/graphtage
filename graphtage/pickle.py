@@ -1,10 +1,9 @@
 import os
-from typing import Optional, Union
 
 from fickling.fickle import Interpreter, Pickled, PickleDecodeError
 
 from .graphtage import BuildOptions, Filetype, TreeNode
-from .pydiff import ast_to_tree, PyDiffFormatter
+from .pydiff import PyDiffFormatter, ast_to_tree
 
 
 class Pickle(Filetype):
@@ -22,14 +21,14 @@ class Pickle(Filetype):
             'application/x-python-pickle'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         with open(path, "rb") as f:
             pickle = Pickled.load(f)
             interpreter = Interpreter(pickle)
             ast = interpreter.to_ast()
             return ast_to_tree(ast, options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except PickleDecodeError as e:

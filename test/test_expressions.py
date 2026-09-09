@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from graphtage.expressions import parse, ParseError, StringToken
+from graphtage.expressions import ParseError, StringToken, parse
 
 
 class TestExpressions(TestCase):

@@ -59,3 +59,10 @@ class TestCommandLine(unittest.TestCase):
         to_path = self.write('two.json', '{this is not json\n')
         status, _ = self.run_graphtage(from_path, to_path)
         self.assertEqual(EXIT_ERROR, status)
+
+    def test_json5_parse_failure_is_an_error(self):
+        """A malformed JSON5 file used to raise TypeError from the error message's own format string."""
+        from_path = self.write('one.json5', '{a: 1}\n')
+        to_path = self.write('two.json5', '{a: 1,\n')
+        status, _ = self.run_graphtage(from_path, to_path)
+        self.assertEqual(EXIT_ERROR, status)

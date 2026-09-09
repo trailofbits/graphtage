@@ -23,14 +23,13 @@ Attributes:
 """
 
 import logging
+from collections.abc import Iterable, Iterator
 from functools import wraps
-from typing import Iterable, Iterator, List, Optional, Tuple, TypeVar, Union
-from typing_extensions import Protocol
+from typing import Protocol, TypeVar
 
 from intervaltree import Interval, IntervalTree
 
 from .fibonacci import FibonacciHeap
-
 
 log = logging.getLogger(__name__)
 
@@ -111,7 +110,7 @@ class Infinity:
 
 NEGATIVE_INFINITY: Infinity = Infinity(positive=False)
 POSITIVE_INFINITY = Infinity(positive=True)
-RangeValue = Union[int, Infinity]
+RangeValue = int | Infinity
 
 
 class Range:
@@ -174,7 +173,7 @@ class Range:
         return hash((self.lower_bound, self.upper_bound))
 
     def __add__(self, other):
-        if isinstance(other, int) or isinstance(other, Infinity):
+        if isinstance(other, (int, Infinity)):
             return Range(self.lower_bound + other, self.upper_bound + other)
         else:
             return Range(self.lower_bound + other.lower_bound, self.upper_bound + other.upper_bound)
@@ -183,7 +182,7 @@ class Range:
         return self + other
 
     def __sub__(self, other):
-        if isinstance(other, int) or isinstance(other, Infinity):
+        if isinstance(other, (int, Infinity)):
             return Range(self.lower_bound - other, self.upper_bound - other)
         else:
             return Range(self.lower_bound - other.lower_bound, self.upper_bound - other.upper_bound)
@@ -383,8 +382,8 @@ def min_bounded(bounds: Iterator[B]) -> B:
     The objects are auto-tightened in the event that their ranges overlap and a definitive minimum does not exist.
 
     """
-    best_item: Optional[B] = None
-    best: Optional[BoundedComparator] = None
+    best_item: B | None = None
+    best: BoundedComparator | None = None
     for b in map(BoundedComparator, bounds):
         if best_item is None or b < best:
             best_item = b.bounded
@@ -400,7 +399,7 @@ def make_distinct(*bounded: Bounded):
     tree: IntervalTree = IntervalTree()
     # Use a max-heap (negative sizes) to find biggest intervals in O(log n)
     # Heap entries: (-size, id(interval), interval) - id breaks ties deterministically
-    size_heap: List[Tuple[int, int, Interval]] = []
+    size_heap: list[tuple[int, int, Interval]] = []
 
     for b in bounded:
         if not b.bounds().finite:
@@ -417,7 +416,7 @@ def make_distinct(*bounded: Bounded):
 
     while len(tree) > 1:
         # Pop from heap until we find a valid interval (still in tree)
-        biggest: Optional[Interval] = None
+        biggest: Interval | None = None
         while size_heap:
             neg_size, iv_id, candidate = heapq.heappop(size_heap)
             if iv_id in valid_intervals:
@@ -446,7 +445,7 @@ def make_distinct(*bounded: Bounded):
             continue
 
         # Find the biggest intersecting interval (linear search over smaller set)
-        second_biggest: Optional[Interval] = None
+        second_biggest: Interval | None = None
         for m in matching:
             m_size = m.end - m.begin
             if second_biggest is None or m_size > second_biggest.end - second_biggest.begin:

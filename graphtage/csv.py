@@ -7,7 +7,6 @@
 
 import csv
 from io import StringIO
-from typing import Optional
 
 from . import graphtage, json
 from .json import JSONFormatter
@@ -31,7 +30,7 @@ class CSVNode(graphtage.ListNode[CSVRow]):
         return self._children == other._children or (not self and not other)
 
 
-def build_tree(path: str, options: Optional[graphtage.BuildOptions] = None, *args, **kwargs) -> CSVNode:
+def build_tree(path: str, options: graphtage.BuildOptions | None = None, *args, **kwargs) -> CSVNode:
     """Constructs a :class:`CSVNode` from a CSV file.
 
     The file is parsed using Python's :func:`csv.reader`. The elements in each row are constructed by delegating to
@@ -93,7 +92,7 @@ class CSVRows(SequenceFormatter):
     """A sub formatter for printing the sequence of rows in a CSV file."""
     is_partial = True
 
-    sub_format_types = [CSVRowFormatter]
+    sub_format_types = (CSVRowFormatter,)
 
     def __init__(self):
         """Initializes the formatter.
@@ -127,7 +126,7 @@ class CSVRows(SequenceFormatter):
 
 class CSVFormatter(GraphtageFormatter):
     """Top-level formatter for CSV files."""
-    sub_format_types = [CSVRows, JSONFormatter]
+    sub_format_types = (CSVRows, JSONFormatter)
 
     def print_LeafNode(self, printer: Printer, node: graphtage.LeafNode):
         """Prints a leaf node, which should always be a column in a CSV row.
@@ -165,11 +164,11 @@ class CSV(graphtage.Filetype):
             'text/csv'
         )
 
-    def build_tree(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: graphtage.BuildOptions | None = None) -> TreeNode:
         """Equivalent to :func:`build_tree`"""
         return build_tree(path, options=options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[graphtage.BuildOptions] = None) -> TreeNode:
+    def build_tree_handling_errors(self, path: str, options: graphtage.BuildOptions | None = None) -> TreeNode:
         return self.build_tree(path=path, options=options)
 
     def get_default_formatter(self) -> CSVFormatter:

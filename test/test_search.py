@@ -3,6 +3,7 @@ from unittest import TestCase
 from tqdm import trange
 
 from graphtage.search import IterativeTighteningSearch
+
 from .test_bounds import RandomDecreasingRange
 
 

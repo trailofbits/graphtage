@@ -2,8 +2,9 @@
 
 import io
 import sys
+from collections.abc import Iterable, Iterator
 from types import TracebackType
-from typing import AnyStr, Iterable, Iterator, IO, List, Optional, TextIO, Type
+from typing import IO, AnyStr, TextIO
 
 from tqdm import tqdm, trange
 
@@ -20,7 +21,7 @@ class StatusWriter(IO[str]):
     written may be lost.
 
     """
-    def __init__(self, out_stream: Optional[TextIO] = None, quiet: bool = False):
+    def __init__(self, out_stream: TextIO | None = None, quiet: bool = False):
         """Initializes a status writer.
 
         Args:
@@ -35,21 +36,21 @@ class StatusWriter(IO[str]):
             out_stream = sys.stdout
         self.status_stream: TextIO = out_stream
         """The status stream to which to print."""
-        self._buffer: List[str] = []
+        self._buffer: list[str] = []
         try:
             self.write_raw = self.quiet or (
                     out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
             )
             """If :const:`True`, this writer *will not* buffer output and use :func:`tqdm.write`.
-            
+
             This defaults to::
-            
+
                 self.write_raw = self.quiet or (
                     out_stream.fileno() != sys.stderr.fileno() and out_stream.fileno() != sys.stdout.fileno()
                 )
-            
+
             """
-        except io.UnsupportedOperation as e:
+        except io.UnsupportedOperation:
             self.write_raw = True
 
     def tqdm(self, *args, **kwargs) -> tqdm:
@@ -118,7 +119,7 @@ class StatusWriter(IO[str]):
     def readline(self, limit: int = ...) -> AnyStr:
         return self.status_stream.readline(limit)
 
-    def readlines(self, hint: int = ...) -> List[AnyStr]:
+    def readlines(self, hint: int = ...) -> list[AnyStr]:
         return self.status_stream.readlines(hint)
 
     def seek(self, offset: int, whence: int = ...) -> int:
@@ -130,7 +131,7 @@ class StatusWriter(IO[str]):
     def tell(self) -> int:
         return self.status_stream.tell()
 
-    def truncate(self, size: Optional[int] = ...) -> int:
+    def truncate(self, size: int | None = ...) -> int:
         return self.status_stream.truncate(size)
 
     def writable(self) -> bool:
@@ -161,8 +162,8 @@ class StatusWriter(IO[str]):
         self._reentries += 1
         return self
 
-    def __exit__(self, t: Optional[Type[BaseException]], value: Optional[BaseException],
-                 traceback: Optional[TracebackType]) -> Optional[bool]:
+    def __exit__(self, t: type[BaseException] | None, value: BaseException | None,
+                 traceback: TracebackType | None) -> bool | None:
         self._reentries -= 1
         if self._reentries == 0:
             self.flush(final=True)

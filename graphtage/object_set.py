@@ -3,8 +3,8 @@ A data structure that can hold a set of unique Python objects, even if those obj
 Uniqueness is determined based upon identity.
 """
 
-from collections.abc import MutableSet
-from typing import Any, Iterable, Set
+from collections.abc import Iterable, MutableSet
+from typing import Any
 
 
 class IdentityHash:
@@ -27,7 +27,7 @@ class ObjectSet(MutableSet):
 
     """
     def __init__(self, initial_objs: Iterable[Any] = ()):
-        self.objs: Set[IdentityHash] = set()
+        self.objs: set[IdentityHash] = set()
         for obj in initial_objs:
             self.add(obj)
 

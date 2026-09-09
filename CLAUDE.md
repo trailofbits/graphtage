@@ -60,13 +60,11 @@ pytest -q                   # Quiet output
 ```
 
 ### Linting
-```bash
-# Ruff is configured in pyproject.toml
-ruff check graphtage test
-ruff check --fix graphtage test
+Ruff is configured in `pyproject.toml` and gates CI, so the tree is expected to be clean.
 
-# CI currently uses flake8
-flake8 graphtage test --select=E9,F63,F7,F82
+```bash
+ruff check graphtage test docs bindist
+ruff check --fix graphtage test docs bindist
 ```
 
 ### Building Documentation
@@ -109,6 +107,12 @@ Python 3.10 is the minimum supported version. Check `requires-python` in `pyproj
 `.github/workflows/pythonpackage.yml` before using a feature from a newer release; a runtime-evaluated annotation
 that the floor does not support fails at import, which takes down the whole package.
 
+Never add `from __future__ import annotations` to this package. Two places read annotations at runtime, and PEP 563
+turns both into silent no-ops rather than errors: `DataClassNode.__init_subclass__` derives `_SLOTS` from
+`cls.__annotations__`, and `FormatterChecker` validates the `printer` parameter of every `print_*` method with
+`inspect.signature`. For the same reason, a `DataClassNode` slot annotation must name a `TreeNode` subclass
+directly; a subscripted generic is skipped, not turned into a slot.
+
 ### Working with Edits
 - Edit costs are computed lazily via `bounds()` method
 - Use `has_non_zero_cost()` to check if an edit represents a change
@@ -124,7 +128,8 @@ The printing system is extensible:
 
 - Line length: 120 characters (configured in ruff)
 - Python version: 3.10+ compatibility required; CI covers 3.10 through 3.14
-- Type hints: Use typing_extensions for Protocol support
+- Type hints: `typing.Protocol`; `typing_extensions` is not a dependency of the library
+- Annotations: PEP 585 and PEP 604 spellings (`list[str]`, `X | None`), not `typing.List` or `Optional`
 - Docstrings: Google style for public APIs
 - Tests: Mirror package structure in test/ directory
 

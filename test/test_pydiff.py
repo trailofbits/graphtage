@@ -3,7 +3,7 @@ import dataclasses
 from unittest import TestCase
 
 import graphtage
-from graphtage.pydiff import ast_to_tree, build_tree, print_diff, PyDiffFormatter
+from graphtage.pydiff import PyDiffFormatter, ast_to_tree, build_tree, print_diff
 
 from .timing import run_with_time_limit
 

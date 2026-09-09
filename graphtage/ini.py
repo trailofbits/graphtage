@@ -13,7 +13,6 @@ file that :mod:`configparser` can read back.
 
 import configparser
 import os
-from typing import Optional, Union
 
 from . import json
 from .graphtage import BuildOptions, Filetype, KeyValuePairNode, MappingNode, StringFormatter, StringNode
@@ -36,7 +35,7 @@ def _parser() -> configparser.ConfigParser:
     return parser
 
 
-def build_tree(path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+def build_tree(path: str, options: BuildOptions | None = None) -> TreeNode:
     parser = _parser()
     with open(path, encoding="utf-8") as f:
         parser.read_file(f)
@@ -44,7 +43,7 @@ def build_tree(path: str, options: Optional[BuildOptions] = None) -> TreeNode:
     return json.build_tree(data, options)
 
 
-def _unquote(node: Optional[TreeNode]):
+def _unquote(node: TreeNode | None):
     """Clears a string node's quoting, since INI has no string delimiters."""
     if isinstance(node, StringNode):
         node.quoted = False
@@ -111,7 +110,7 @@ class INIListFormatter(SequenceFormatter):
 class INIMappingFormatter(SequenceFormatter):
     """A formatter for an INI document and for each of its section bodies."""
     is_partial = True
-    sub_format_types = [INIOptionFormatter]
+    sub_format_types = (INIOptionFormatter,)
 
     def __init__(self):
         super().__init__("", "", "")
@@ -135,7 +134,7 @@ class INIMappingFormatter(SequenceFormatter):
 
 class INIFormatter(GraphtageFormatter):
     """A formatter for INI files."""
-    sub_format_types = [INIMappingFormatter, INIListFormatter, INIStringFormatter]
+    sub_format_types = (INIMappingFormatter, INIListFormatter, INIStringFormatter)
 
     def print(self, printer: Printer, *args, **kwargs):
         if args and isinstance(args[0], TreeNode) and args[0].parent is None:
@@ -162,11 +161,11 @@ class INI(Filetype):
             "text/x-ini",
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         """Equivalent to :func:`build_tree`"""
         return build_tree(path, options=options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except (configparser.Error, OSError, ValueError) as e:

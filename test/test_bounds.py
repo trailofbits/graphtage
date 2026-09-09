@@ -4,11 +4,11 @@ from unittest import TestCase
 
 from tqdm import trange
 
-from graphtage.bounds import Bounded, make_distinct, Range, sort
+from graphtage.bounds import Bounded, Range, make_distinct, sort
 
 
 class RandomDecreasingRange(Bounded):
-    def __init__(self, fixed_lb: int = 0, fixed_ub: int = 2000000, final_value: Optional[int] = None):
+    def __init__(self, fixed_lb: int = 0, fixed_ub: int = 2000000, final_value: int | None = None):
         if final_value is None:
             self.final_value = random.randint(fixed_lb, fixed_lb + (fixed_ub - fixed_lb) // 2)
         elif final_value < fixed_lb:
@@ -67,7 +67,7 @@ class TestBounds(TestCase):
         for _ in trange(100):
             ranges = [RandomDecreasingRange() for _ in range(100)]
             sorted_ranges = sorted(ranges, key=lambda r: r.final_value)
-            for expected, actual in zip(sorted_ranges, sort(ranges)):
+            for expected, actual in zip(sorted_ranges, sort(ranges), strict=True):
                 self.assertEqual(expected.final_value, actual.final_value)
 
     def test_make_distinct(self):

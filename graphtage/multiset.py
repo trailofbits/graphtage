@@ -6,9 +6,10 @@ This is used by :class:`graphtage.MultiSetNode` and :class:`graphtage.DictNode`,
 """
 
 import logging
-from typing import Iterator, List
+from collections.abc import Iterator
 
 import graphtage
+
 from .bounds import Range
 from .edits import Insert, Match, Remove
 from .matching import WeightedBipartiteMatcher
@@ -30,7 +31,7 @@ class MultiSetEdit(SequenceEdit):
 
     """
 
-    __slots__ = ('_matched_kvp_edits', 'to_insert', 'to_remove', '_edits', '_matcher')
+    __slots__ = ('_edits', '_matched_kvp_edits', '_matcher', 'to_insert', 'to_remove')
 
     def __init__(
             self,
@@ -54,15 +55,15 @@ class MultiSetEdit(SequenceEdit):
                 this to `False` will require a significant amount more computation for larger dictionaries.
 
         """
-        self._matched_kvp_edits: List[Edit] = []
+        self._matched_kvp_edits: list[Edit] = []
         if auto_match_keys:
             to_set = HashableCounter(to_set)
             from_set = HashableCounter(from_set)
             to_remove_from = []
-            for f in from_set.keys():
+            for f in from_set:
                 if not isinstance(f, graphtage.KeyValuePairNode):
                     continue
-                for t in to_set.keys():
+                for t in to_set:
                     if not isinstance(t, graphtage.KeyValuePairNode):
                         continue
                     if f.key == t.key:
@@ -87,7 +88,7 @@ class MultiSetEdit(SequenceEdit):
                 "Matching %d unordered elements against %d requires costing %d pairs, which can take a long time",
                 sum(self.to_remove.values()), sum(self.to_insert.values()), num_pairs
             )
-        self._edits: List[Edit] = [Match(n, n, 0) for n in to_match.elements()]
+        self._edits: list[Edit] = [Match(n, n, 0) for n in to_match.elements()]
         self._matcher = WeightedBipartiteMatcher(
             from_nodes=self.to_remove.elements(),
             to_nodes=self.to_insert.elements(),

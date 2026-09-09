@@ -134,7 +134,7 @@ Examples:
         ...         printer.newline()
         ...
         >>> class BarFormatter(BasicFormatter[Bar]):
-        ...     sub_format_types = [BarStringFormatter]
+        ...     sub_format_types = (BarStringFormatter,)
         ...     def print_Bar(self, printer: Printer, item: Bar):
         ...         printer.write("BarFormatter: ")
         ...         self.print(printer, item.bar)
@@ -176,20 +176,11 @@ Examples:
 
 import inspect
 import logging
-import sys
 from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, Generic, List, Optional, Sequence, Set, Type, TypeVar
-
-if sys.version_info.major == 3 and sys.version_info.minor < 7:
-    # Backward compatibility for pre-Python3.7
-    from typing import GenericMeta
-else:
-    # Create a dummy type for GenericMeta since it was removed in Python3.7
-    # It was a subclass of ABCMeta in Python3.6, anyway
-    GenericMeta = ABCMeta
+from collections.abc import Callable, Sequence
+from typing import Any, Generic, Optional, TypeVar
 
 from .printer import Printer
-
 
 log = logging.getLogger(__name__)
 
@@ -198,7 +189,7 @@ FORMATTERS: Sequence['Formatter[Any]'] = []
 """A list of default instances of non-partial formatters that have subclassed :class:`Formatter`."""
 
 
-class FormatterChecker(GenericMeta):
+class FormatterChecker(ABCMeta):
     """The metaclass for :class:`Formatter`.
 
     For every class that subclasses :class:`Formatter`, if :attr:`Formatter.is_partial` is :const:`False` (the default)
@@ -237,9 +228,9 @@ class FormatterChecker(GenericMeta):
                             if a is not None and a != inspect.Signature.empty and inspect.isclass(a) \
                                     and not issubclass(Printer, a):
                                 raise TypeError(f"The type annotation for {name}.{member}(printer: {a}) was expected to be a superclass of graphtage.printer.Printer")
-                if not instance.is_partial and not cls.__name__ == 'BasicFormatter':
+                if not instance.is_partial and cls.__name__ != 'BasicFormatter':
                     FORMATTERS.append(instance)
-                setattr(cls, 'DEFAULT_INSTANCE', instance)
+                cls.DEFAULT_INSTANCE = instance
         super().__init__(name, bases, clsdict)
 
 
@@ -247,10 +238,10 @@ T = TypeVar('T')
 
 
 def _get_formatter(
-        node_type: Type[T],
+        node_type: type[T],
         base_formatter: 'Formatter',
-        tested: Set[Type['Formatter']]
-) -> Optional[Callable[[Printer, T], Any]]:
+        tested: set[type['Formatter']]
+) -> Callable[[Printer, T], Any] | None:
     if base_formatter.__class__ not in tested:
         grandchildren = []
         for c in node_type.mro():
@@ -262,7 +253,7 @@ def _get_formatter(
                         return getattr(sub_formatter, f'print_{c.__name__}')
                     grandchildren.extend(sub_formatter.sub_formatters)
         tested.add(base_formatter.__class__)
-        tested |= set(s.__class__ for s in base_formatter.sub_formatters)
+        tested |= {s.__class__ for s in base_formatter.sub_formatters}
         for grandchild in grandchildren:
             ret = _get_formatter(node_type, grandchild, tested)
             if ret is not None:
@@ -272,9 +263,9 @@ def _get_formatter(
 
 
 def get_formatter(
-        node_type: Type[T],
+        node_type: type[T],
         base_formatter: Optional['Formatter'] = None
-) -> Optional[Callable[[Printer, T], Any]]:
+) -> Callable[[Printer, T], Any] | None:
     """Uses the :ref:`Formatting Protocol` to determine the correct formatter for a given type.
 
     See :ref:`this section <What the formatter module can do>` for a number of examples.
@@ -287,7 +278,7 @@ def get_formatter(
     Returns: The formatter for object type :obj:`node_type`, or :const:`None` if none was found.
 
     """
-    tested_formatters: Set[Type[Formatter]] = set()
+    tested_formatters: set[type[Formatter]] = set()
     if base_formatter is not None:
         ret = _get_formatter(node_type, base_formatter, tested_formatters)
         if ret is not None:
@@ -305,17 +296,19 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
     DEFAULT_INSTANCE: 'Formatter[T]' = None
     """A default instance of this formatter, automatically instantiated by the :class:`FormatterChecker` metaclass."""
-    sub_format_types: Sequence[Type['Formatter[T]']] = ()
+    sub_format_types: Sequence[type['Formatter[T]']] = ()
     """A list of formatter types that should be used as sub-formatters in the :ref:`Formatting Protocol`."""
-    sub_formatters: List['Formatter[T]'] = []
+    # Not a ClassVar: Formatter.__new__ gives every instance its own list. The class-level empty
+    # list is only a default for classes that are never instantiated.
+    sub_formatters: list['Formatter[T]'] = []  # noqa: RUF012
     """The list of instantiated formatters corresponding to :attr:`Formatter.sub_format_types`.
-    
+
     This list is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
-    
+
     """
     parent: Optional['Formatter[T]'] = None
     """The parent formatter for this formatter instance.
-    
+
     This is automatically populated by :meth:`Formatter.__new__` and should never be manually modified.
 
     """
@@ -337,13 +330,13 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
 
         """
         ret: Formatter[T] = super().__new__(cls)
-        setattr(ret, 'sub_formatters', [])
+        ret.sub_formatters = []
         for sub_formatter in ret.sub_format_types:
             ret.sub_formatters.append(sub_formatter())
             ret.sub_formatters[-1].parent = ret
         return ret
 
-    def get_formatter(self, item: T) -> Optional[Callable[[Printer, T], Any]]:
+    def get_formatter(self, item: T) -> Callable[[Printer, T], Any] | None:
         """Looks up a formatter for the given item using this formatter as a base.
 
         Equivalent to::
@@ -364,14 +357,7 @@ class Formatter(Generic[T], metaclass=FormatterChecker):
         raise NotImplementedError()
 
 
-if sys.version_info.major == 3 and sys.version_info.minor < 7:
-    # Backward compatibility for pre-Python3.7
-    basic_formatter_types = (Formatter,)
-else:
-    basic_formatter_types = (Generic[T], Formatter[T])
-
-
-class BasicFormatter(*basic_formatter_types):
+class BasicFormatter(Generic[T], Formatter[T]):
     """A basic formatter that falls back on an item's natural string representation if no formatter is found."""
 
     def print(self, printer: Printer, item: T):

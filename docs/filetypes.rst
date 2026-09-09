@@ -25,7 +25,7 @@ With the MIME type registered, here is a sketch of how one might define the Pick
 
 .. code-block:: python
 
-    from graphtage import BuildOptions, Filetype, Formatter, TreeNode
+    from graphtage import BuildOptions, Filetype, GraphtageFormatter, TreeNode
 
     class Pickle(Filetype):
         def __init__(self):
@@ -35,10 +35,10 @@ With the MIME type registered, here is a sketch of how one might define the Pick
                 "application/x-python-pickle"  # an optional secondary MIME type
             )
 
-        def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+        def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
             # return the root node of the tree built from the given pickle file
 
-        def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+        def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
             # the same as the build_tree() function,
             # but on error return a string containing the error message
             #

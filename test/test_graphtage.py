@@ -6,7 +6,6 @@ import graphtage
 import graphtage.json
 import graphtage.multiset
 import graphtage.tree
-
 from graphtage.printer import Printer
 
 from .timing import run_with_time_limit

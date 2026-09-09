@@ -1,13 +1,11 @@
 import random
-from typing import List
 from unittest import TestCase
 
 from tqdm import trange
 
+from graphtage import EditDistance, string_edit_distance
 from graphtage.edits import Edit, Insert, Match, Remove
 from graphtage.levenshtein import levenshtein_distance
-from graphtage import EditDistance, string_edit_distance
-
 
 LETTERS: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 SMALL_ALPHABET: str = 'abcd'
@@ -21,7 +19,7 @@ class TestEditDistance(TestCase):
             str_from = ''.join(random.choices(LETTERS, k=str1_len))
             str_to = ''.join(random.choices(LETTERS, k=str2_len))
             distance: EditDistance = string_edit_distance(str_from, str_to)
-            edits: List[Edit] = list(distance.edits())
+            edits: list[Edit] = list(distance.edits())
             reconstructed_from = ''
             reconstructed_to = ''
             for edit in edits:
@@ -55,7 +53,7 @@ class TestEditDistance(TestCase):
                 else:
                     str_to += str_from[i]
             distance: EditDistance = string_edit_distance(str_from, str_to)
-            edits: List[Edit] = list(distance.edits())
+            edits: list[Edit] = list(distance.edits())
             num_edits = len(edits)
             if num_ground_truth_edits < num_edits:
                 print()

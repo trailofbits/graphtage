@@ -1,6 +1,7 @@
 import itertools
 import os
-from typing import Iterator, Optional, Tuple, Union
+from collections.abc import Iterator
+from typing import Optional
 
 import toml
 
@@ -11,8 +12,8 @@ from .sequences import SequenceFormatter
 from .tree import GraphtageFormatter, TreeNode
 
 
-def build_tree(path: str, options: Optional[BuildOptions]) -> TreeNode:
-    with open(path, 'r') as f:
+def build_tree(path: str, options: BuildOptions | None) -> TreeNode:
+    with open(path) as f:
         return json.build_tree(toml.load(f), options)
 
 
@@ -86,18 +87,18 @@ class TOMLMapping:
             self,
             mapping: MappingNode,
             parent: Optional['TOMLMapping'] = None,
-            parent_name: Optional[TreeNode] = None
+            parent_name: TreeNode | None = None
     ):
         self.mapping: MappingNode = mapping
-        self.parent: Optional[TOMLMapping] = parent
-        self.parent_name: Optional[TreeNode] = parent_name
+        self.parent: TOMLMapping | None = parent
+        self.parent_name: TreeNode | None = parent_name
 
     @property
-    def name_segments(self) -> Tuple[TreeNode, ...]:
+    def name_segments(self) -> tuple[TreeNode, ...]:
         if self.parent is None:
             return ()
         else:
-            return self.parent.name_segments + (self.parent_name,)
+            return (*self.parent.name_segments, self.parent_name)
 
     def items(self) -> Iterator[KeyValuePairNode]:
         inserted = ()
@@ -128,7 +129,7 @@ class TOMLMapping:
 
 
 class TOMLFormatter(GraphtageFormatter):
-    sub_format_types = [TOMLListFormatter, TOMLStringFormatter]
+    sub_format_types = (TOMLListFormatter, TOMLStringFormatter)
 
     def print(self, printer: Printer, *args, **kwargs):
         # TOML has optional indentation; make it only two spaces, if we use it:
@@ -187,11 +188,11 @@ class TOML(Filetype):
             'text/toml'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         """Equivalent to :func:`build_tree`"""
         return build_tree(path, options=options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except (IndexError, TypeError, ValueError) as e:

@@ -28,23 +28,25 @@ dependencies = [
     "colorama",
     "fickling>=0.1.3",
     "intervaltree",
-    "json5==0.9.5",
-    "numpy>=1.19.4",
+    "json5>=0.9.5",
+    "numpy>=1.26",
     "PyYAML",
-    "scipy>=1.4.0",
+    "scipy>=1.11",
     "toml>=0.10.2",
     "tqdm",
-    "typing_extensions>=3.7.4.3",
+    # Graphtage itself needs nothing from typing_extensions. fickling does: fickle.py imports
+    # typing_extensions.Buffer on Python < 3.12 without declaring the dependency, so importing
+    # graphtage.pickle fails on 3.10 and 3.11 unless something else installs it.
+    "typing_extensions; python_version < '3.12'",
 ]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
-    "ruff>=0.1.0",
+    "ruff>=0.16.0,<1.0",
     "sphinx>=5.0.0",
     "sphinx_rtd_theme==3.0.2",
-    "twine>=4.0.0",
 ]
 
 [project.scripts]
@@ -82,6 +84,8 @@ packages = ["graphtage"]
 [tool.ruff]
 target-version = "py310"
 line-length = 120
+
+[tool.ruff.lint]
 select = [
     "E",     # pycodestyle errors
     "W",     # pycodestyle warnings
@@ -99,15 +103,26 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "B904",  # raise without from inside except
     "SIM108", # use ternary operator instead of if-else block
+    # Collapsing an if/elif chain whose arms are identical turns short, readable branches into
+    # one long unparenthesized and/or expression. Several of these run past 150 characters.
+    "SIM114", # if-with-same-arms
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test/**/*.py" = [
     "F401",  # unused imports in tests
     "F841",  # unused variables in tests
 ]
+# The import order here is load-bearing: the star imports must run before the plain submodule
+# imports, because graphtage/ast.py does `from . import DictNode, ...`. The star imports are also
+# what `SUBMODULES_TO_SUBSUME` relies on to hoist submodule classes to the top-level package.
+"graphtage/__init__.py" = [
+    "I001",  # unsorted imports
+    "F401",  # unused imports
+    "F403",  # star imports
+]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["graphtage"]
 
 [tool.pytest.ini_options]

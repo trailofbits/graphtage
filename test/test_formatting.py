@@ -6,7 +6,6 @@ import random
 import time
 from functools import partial, wraps
 from io import StringIO
-from typing import FrozenSet, Optional, Tuple, Type, Union
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -19,11 +18,10 @@ from graphtage import xml
 
 from .timing import run_with_time_limit
 
-
-STR_BYTES: FrozenSet[str] = frozenset([
+STR_BYTES: frozenset[str] = frozenset([
     chr(i) for i in range(32, 127)
 ] + ['\n', '\t', '\r'])
-LETTERS: Tuple[str, ...] = tuple(
+LETTERS: tuple[str, ...] = tuple(
     chr(i) for i in range(ord('a'), ord('z'))
 ) + tuple(
     chr(i) for i in range(ord('A'), ord('Z'))
@@ -139,7 +137,7 @@ class TestFormatting(TestCase):
         return random.choice([True, False])
 
     @staticmethod
-    def make_random_str(exclude_bytes: FrozenSet[str] = frozenset(), allow_empty_strings: bool = True) -> str:
+    def make_random_str(exclude_bytes: frozenset[str] = frozenset(), allow_empty_strings: bool = True) -> str:
         if allow_empty_strings:
             min_length = 0
         else:
@@ -147,7 +145,7 @@ class TestFormatting(TestCase):
         return ''.join(random.choices(list(STR_BYTES - exclude_bytes), k=random.randint(min_length, 128)))
 
     @staticmethod
-    def make_random_non_container(exclude_bytes: FrozenSet[str] = frozenset(), allow_empty_strings: bool = True):
+    def make_random_non_container(exclude_bytes: frozenset[str] = frozenset(), allow_empty_strings: bool = True):
         return random.choice([
             TestFormatting.make_random_int,
             TestFormatting.make_random_bool,
@@ -160,7 +158,7 @@ class TestFormatting(TestCase):
     @staticmethod
     def _make_random_obj(
             obj_stack,
-            force_container_type: Optional[Type[Union[dict, list]]] = None,
+            force_container_type: type[dict | list] | None = None,
             allow_non_container: bool = True,
             *args,
             **kwargs
@@ -190,15 +188,15 @@ class TestFormatting(TestCase):
             allow_empty_containers: bool = True,
             alternate_containers: bool = False,
             lists_can_contain_dicts: bool = True,
-            force_outer_container_type: Optional[Type[Union[dict, list]]] = None,
+            force_outer_container_type: type[dict | list] | None = None,
             allow_lists: bool = True,
             *args, **kwargs):
         obj_stack = []
         ret = TestFormatting._make_random_obj(
             obj_stack,
+            *args,
             force_container_type=force_outer_container_type,
             allow_non_container=force_outer_container_type is None,
-            *args,
             **kwargs
         )
 
@@ -224,12 +222,12 @@ class TestFormatting(TestCase):
                         if force_string_keys:
                             expanding[TestFormatting.make_random_str(*args, **kwargs)] = \
                                 TestFormatting._make_random_obj(
-                                    obj_stack, force_container_type=force_container_type, *args, **kwargs
+                                    obj_stack, *args, force_container_type=force_container_type, **kwargs
                                 )
                         else:
                             expanding[TestFormatting.make_random_non_container(*args, **kwargs)] = \
                                 TestFormatting._make_random_obj(
-                                    obj_stack, force_container_type=force_container_type, *args, **kwargs
+                                    obj_stack, *args, force_container_type=force_container_type, **kwargs
                                 )
             else:
                 if size == 0 and not allow_empty_containers:
@@ -243,12 +241,12 @@ class TestFormatting(TestCase):
                         force_container_type = None
                     for _ in range(size):
                         expanding.append(TestFormatting._make_random_obj(
-                            obj_stack, force_container_type=force_container_type, *args, **kwargs
+                            obj_stack, *args, force_container_type=force_container_type, **kwargs
                         ))
         return ret
 
     def test_formatter_coverage(self):
-        for name in graphtage.FILETYPES_BY_TYPENAME.keys():
+        for name in graphtage.FILETYPES_BY_TYPENAME:
             if not hasattr(self, f'test_{name}_formatting'):
                 self.fail(f"Filetype {name} is missing a `test_{name}_formatting` test function")
 

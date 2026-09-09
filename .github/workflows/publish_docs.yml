@@ -7,6 +7,12 @@ on:
     tags:
       - v*
 
+permissions: {}
+
+concurrency:
+  group: publish-docs
+  cancel-in-progress: false
+
 jobs:
   deploydocs:
     runs-on: ubuntu-latest
@@ -14,58 +20,52 @@ jobs:
       # NOTE: Needed to push to the repository.
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: graphtage
+          persist-credentials: false
+
       - name: Get the version
-        id: get_version
-        run: echo "::set-env name=VERSION::${GITHUB_REF#refs/*/}"
-        env:
-          # The use of ::set-env here is safe!
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v7
+        run: echo "VERSION=${GITHUB_REF#refs/*/}" >> "$GITHUB_ENV"
+
+      # No cache here: this job publishes, and a poisoned entry would reach gh-pages.
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
-          python-version: 3.12
-      - name: Install dependencies
-        run: |
-          cd graphtage
-          python -m pip install --upgrade pip
-          pip install setuptools
-          pip install .[dev]
+          enable-cache: false
+
       - name: Build documentation
-        run: |
-          cd graphtage/docs
-          make html
+        working-directory: graphtage
+        run: uv run --frozen --extra dev make -C docs html
+
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: gh-pages
           path: gh-pages
           fetch-depth: 0
+          persist-credentials: false
+
       - name: Commit documentation changes
+        working-directory: gh-pages
         run: |
-          cd gh-pages
           git pull
-          rm -rf ${VERSION}
-          mkdir ${VERSION}
-          cp -r ../graphtage/docs/_build/html/* ${VERSION}/
-          cd ${VERSION}
+          rm -rf "${VERSION}"
+          mkdir "${VERSION}"
+          cp -r ../graphtage/docs/_build/html/* "${VERSION}/"
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add .
+          git add "${VERSION}"
           if [ "$GITHUB_REF" == "refs/heads/master" ]; then
-            cd ..
-            # This is not tag, so it is the latest:
+            # This is not a tag, so it is the latest:
             rm -f latest
-            ln -s ${VERSION} latest
+            ln -s "${VERSION}" latest
             git add latest
           fi
+          # This fails when there is nothing to commit, which is not an error here.
           git commit -m "Update documentation for ${GITHUB_REF}" -a || true
-          # The above command will fail if no changes were present, so we ignore
-          # the return code.
+
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # v1.3.0
         with:
           branch: gh-pages
           directory: gh-pages

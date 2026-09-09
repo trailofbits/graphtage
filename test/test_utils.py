@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from graphtage.json import build_tree
 from graphtage.sequences import SequenceNode
-from graphtage.utils import HashableCounter, largest, smallest, SparseMatrix
+from graphtage.utils import HashableCounter, SparseMatrix, largest, smallest
 
 from .timing import run_with_time_limit
 

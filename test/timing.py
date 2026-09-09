@@ -1,5 +1,5 @@
-import threading
 import _thread
+import threading
 from contextlib import contextmanager
 
 

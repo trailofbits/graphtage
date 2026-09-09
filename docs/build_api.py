@@ -3,13 +3,12 @@ import os
 import sys
 from pathlib import Path
 
-
 DOCS_PATH = os.path.dirname(os.path.realpath(__file__))
 ROOT_PATH = Path(DOCS_PATH).parents[0]
 
-sys.path = [ROOT_PATH] + sys.path
+sys.path = [ROOT_PATH, *sys.path]
 
-import graphtage
+import graphtage  # noqa: E402  (imported only after ROOT_PATH is on sys.path)
 
 MODULES = []
 
@@ -88,7 +87,7 @@ for name, obj in inspect.getmembers(graphtage, inspect.ismodule):
     if obj.__name__.startswith('graphtage') and name not in ('graphtage', 'tree', 'edits'):
         MODULES.append(obj)
 
-MODULES = [graphtage] + sorted(MODULES, key=lambda m: m.__name__)
+MODULES = [graphtage, *sorted(MODULES, key=lambda m: m.__name__)]
 
 for m in MODULES:
     process_module(m)

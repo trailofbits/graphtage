@@ -6,21 +6,34 @@
 """
 
 import json
-import json5
 import os
-from typing import Optional, Union
 
-from .graphtage import BoolNode, BuildOptions, DictNode, Filetype, FixedKeyDictNode, \
-    FloatNode, IntegerNode, KeyValuePairNode, LeafNode, ListNode, NullNode, StringFormatter, StringNode, \
-    UnorderedListNode
-from .printer import Fore, get_default_printer, Printer
+import json5
+
+from .graphtage import (
+    BoolNode,
+    BuildOptions,
+    DictNode,
+    Filetype,
+    FixedKeyDictNode,
+    FloatNode,
+    IntegerNode,
+    KeyValuePairNode,
+    LeafNode,
+    ListNode,
+    NullNode,
+    StringFormatter,
+    StringNode,
+    UnorderedListNode,
+)
+from .printer import Fore, Printer, get_default_printer
 from .sequences import SequenceFormatter
 from .tree import ContainerNode, GraphtageFormatter, TreeNode
 
 
 def build_tree(
-        python_obj: Union[int, float, bool, str, bytes, list, dict],
-        options: Optional[BuildOptions] = None,
+        python_obj: int | float | bool | str | bytes | list | dict,
+        options: BuildOptions | None = None,
         force_leaf_node: bool = False) -> TreeNode:
     """Builds a Graphtage tree from an arbitrary Python object.
 
@@ -52,7 +65,7 @@ def build_tree(
         return StringNode(python_obj.decode('utf-8'))
     elif force_leaf_node:
         raise ValueError(f"{python_obj!r} was expected to be an int or string, but was instead a {type(python_obj)}")
-    elif isinstance(python_obj, list) or isinstance(python_obj, tuple):
+    elif isinstance(python_obj, (list, tuple)):
         children = [
             build_tree(n, options=options) for n in
             get_default_printer().tqdm(python_obj, delay=2.0, desc="Loading JSON List", leave=False)
@@ -206,7 +219,7 @@ class JSONStringFormatter(StringFormatter):
 
 class JSONFormatter(GraphtageFormatter):
     """The default JSON formatter."""
-    sub_format_types = [JSONStringFormatter, JSONListFormatter, JSONDictFormatter]
+    sub_format_types = (JSONStringFormatter, JSONListFormatter, JSONDictFormatter)
 
     def print_LeafNode(self, printer: Printer, node: LeafNode):
         """Prints a :class:`graphtage.LeafNode`.
@@ -237,7 +250,7 @@ class JSONFormatter(GraphtageFormatter):
 
         """
         # Treat the container like a list
-        list_node = ListNode((c.copy() for c in node.children()))
+        list_node = ListNode(c.copy() for c in node.children())
         self.print(printer, list_node)
 
 
@@ -259,11 +272,11 @@ class JSON(Filetype):
             'text/x-json'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         with open(path) as f:
             return build_tree(json.load(f), options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except json.decoder.JSONDecodeError as de:
@@ -288,15 +301,15 @@ class JSON5(Filetype):
             'text/x-json5'
         )
 
-    def build_tree(self, path: str, options: Optional[BuildOptions] = None) -> TreeNode:
+    def build_tree(self, path: str, options: BuildOptions | None = None) -> TreeNode:
         with open(path) as f:
             return build_tree(json5.load(f), options)
 
-    def build_tree_handling_errors(self, path: str, options: Optional[BuildOptions] = None) -> Union[str, TreeNode]:
+    def build_tree_handling_errors(self, path: str, options: BuildOptions | None = None) -> str | TreeNode:
         try:
             return self.build_tree(path=path, options=options)
         except ValueError as ve:
-            return f'Error parsing {os.path.basename(path)}: {ve:!s}'
+            return f'Error parsing {os.path.basename(path)}: {ve!s}'
 
     def get_default_formatter(self) -> JSONFormatter:
         return JSONFormatter.DEFAULT_INSTANCE

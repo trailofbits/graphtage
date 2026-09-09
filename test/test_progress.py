@@ -4,7 +4,6 @@ import sys
 import tempfile
 from io import StringIO
 from os.path import join
-from typing import List, Tuple
 from unittest import TestCase
 
 import graphtage.json
@@ -19,7 +18,7 @@ TO_OBJ = {"a": 2, "b": [1, 2, 4], "c": {"d": "goodbye world"}}
 PROGRESS_BAR = b"Diffing:"
 
 
-def run_graphtage(*args: str) -> Tuple[bytes, bytes]:
+def run_graphtage(*args: str) -> tuple[bytes, bytes]:
     """Runs the command line in a subprocess and returns what it wrote to stdout and to stderr.
 
     The subprocess matters: the modules that draw the progress bars resolve the default printer while they are being
@@ -29,17 +28,17 @@ def run_graphtage(*args: str) -> Tuple[bytes, bytes]:
         *args: Options to pass before the two file operands.
 
     Returns:
-        Tuple[bytes, bytes]: The bytes written to stdout and to stderr.
+        tuple[bytes, bytes]: The bytes written to stdout and to stderr.
 
     """
     with tempfile.TemporaryDirectory() as tmpdir:
-        paths: List[str] = []
+        paths: list[str] = []
         for name, obj in (("from.json", FROM_OBJ), ("to.json", TO_OBJ)):
             path = join(tmpdir, name)
             with open(path, "w") as f:
                 f.write(json.dumps(obj))
             paths.append(path)
-        command: List[str] = [sys.executable, "-m", "graphtage"]
+        command: list[str] = [sys.executable, "-m", "graphtage"]
         command.extend(args)
         command.extend(paths)
         result = subprocess.run(command, capture_output=True)

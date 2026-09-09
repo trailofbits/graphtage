@@ -36,15 +36,21 @@ Attributes:
 
 """
 
+import itertools
 from collections import deque
+from collections.abc import Callable, Collection, Iterable, Iterator
 from enum import Enum
 from io import StringIO
-from typing import Any, Callable, Collection, Dict, Generic, IO, Iterable, Iterator, List, Optional, Set, \
-    SupportsFloat, SupportsInt, Tuple, Type, TypeVar, Union
-import itertools
+from typing import (
+    IO,
+    Any,
+    Generic,
+    SupportsFloat,
+    SupportsInt,
+    TypeVar,
+)
 
-
-DEFAULT_GLOBALS: Dict[str, Any] = {
+DEFAULT_GLOBALS: dict[str, Any] = {
     obj.__name__: obj for obj in (
         str, bool, int, bytes, float, bytearray, dict, set, frozenset,
         enumerate, zip, map, filter, any, all, chr, ord, abs, ascii, bin, bool, complex, hash, hex, oct, min, max, id,
@@ -53,7 +59,7 @@ DEFAULT_GLOBALS: Dict[str, Any] = {
 }
 
 
-OPERATORS_BY_NAME: Dict[str, 'Operator'] = {}
+OPERATORS_BY_NAME: dict[str, 'Operator'] = {}
 
 
 class ParseError(RuntimeError):
@@ -139,7 +145,7 @@ class Operator(Enum):
                  is_left_associative: bool = True,
                  arity: int = 2,
                  include_in_global_operator_table: bool = False,
-                 expand: Optional[Tuple[bool, ...]] = None):
+                 expand: tuple[bool, ...] | None = None):
         """Initializes an operator enum.
 
         Raises:
@@ -151,7 +157,7 @@ class Operator(Enum):
             raise ValueError("Operators of length greater than three are currently not supported by the tokenizer.")
         self.token: str = token
         """The token string associated with this operator. It is used for automatically parsing the operators.
-        
+
         Tokens must be unique. There is no programmatic check to ensure this.
         """
         self.priority: int = priority
@@ -163,15 +169,15 @@ class Operator(Enum):
         self.arity: int = arity
         """The number of arguments consumed by the operator."""
         if expand is None:
-            self.expand: Tuple[bool, ...] = (True,) * self.arity
+            self.expand: tuple[bool, ...] = (True,) * self.arity
             """Whether each of the operator's arguments should be auto-expanded before execution."""
         else:
-            self.expand: Tuple[bool, ...] = expand
+            self.expand: tuple[bool, ...] = expand
         if not include_in_global_operator_table:
             OPERATORS_BY_NAME[self.token] = self
 
 
-IDENTIFIER_BYTES: Set[str] = {
+IDENTIFIER_BYTES: set[str] = {
     chr(i) for i in range(ord('A'), ord('Z') + 1)
 } | {
     chr(i) for i in range(ord('a'), ord('z') + 1)
@@ -239,7 +245,7 @@ class PairedEndToken(PairedToken):
     Examples include "]" and ")".
 
     """
-    start_token_type: Type[PairedStartToken] = None
+    start_token_type: type[PairedStartToken] = None
 
 
 class Parenthesis(Token):
@@ -272,7 +278,7 @@ class CloseParen(Parenthesis, PairedEndToken):
 
 class OperatorToken(Token):
     """A token associated with an :class:`Operator`."""
-    def __init__(self, op: Union[str, Operator], offset: int):
+    def __init__(self, op: str | Operator, offset: int):
         if isinstance(op, str):
             op = OPERATORS_BY_NAME[op]
         super().__init__(op.token, offset)
@@ -325,11 +331,11 @@ class FixedSizeCollection(Token):
     This is used for parsing and evaluating argument lists of functions of unknown arity.
 
     """
-    def __init__(self, size: int, container_type: Type[Collection], offset: int):
+    def __init__(self, size: int, container_type: type[Collection], offset: int):
         super().__init__(container_type.__name__, offset)
         self.size: int = size
         """The number of items on the stack to include."""
-        self.container_type: Type[Collection] = container_type
+        self.container_type: type[Collection] = container_type
         """The type of collection in which to store the items."""
 
     def __repr__(self):
@@ -344,7 +350,7 @@ class IdentifierToken(Token):
         """The name of this identifier"""
 
 
-N = TypeVar('N', bound=Union[SupportsInt, SupportsFloat])
+N = TypeVar('N', bound=SupportsInt | SupportsFloat)
 
 
 class NumericToken(Token, Generic[N]):
@@ -392,7 +398,7 @@ class FunctionCall(OperatorToken):
 
 class Tokenizer:
     """The expression tokenizer."""
-    def __init__(self, stream: Union[str, IO]):
+    def __init__(self, stream: str | IO):
         """Initializes a tokenizer, but does not commence any tokenization.
 
         Args:
@@ -403,11 +409,11 @@ class Tokenizer:
             stream = StringIO(stream)
         self._stream: IO = stream
         self._buffer: deque = deque()
-        self._next_token: Optional[Token] = None
-        self.prev_token: Optional[Token] = None
+        self._next_token: Token | None = None
+        self.prev_token: Token | None = None
         """The previous token yielded by this tokenizer."""
         self._offset: int = 0
-        self._function_parens: List[bool] = []
+        self._function_parens: list[bool] = []
 
     def _peek_byte(self, n=1) -> str:
         bytes_needed = n - len(self._buffer)
@@ -425,13 +431,13 @@ class Tokenizer:
         self._offset += len(ret)
         return ret
 
-    def peek(self) -> Optional[Token]:
+    def peek(self) -> Token | None:
         """Returns the next token that would be returned from a call to :meth:`Tokenizer.next`.
 
         This function actually computes and caches the next token if it has not already been cached.
 
         Returns:
-            Optional[Token]: The next token that would be returned from a call to :meth:`Tokenizer.next`,
+            Token | None: The next token that would be returned from a call to :meth:`Tokenizer.next`,
             or :const:`None` if there are no more tokens.
 
         """
@@ -439,9 +445,9 @@ class Tokenizer:
             return self._next_token
         elif isinstance(self.prev_token, FunctionCall):
             return OpenParen(self.prev_token.offset, is_function_call=True)
-        ret: Optional[Token] = None
-        operand: Optional[str] = None
-        string_start: Optional[str] = None
+        ret: Token | None = None
+        operand: str | None = None
+        string_start: str | None = None
         string_start_pos: int = 0
         # ignore leading whitespace
         while self._peek_byte() == ' ' or self._peek_byte() == '\t':
@@ -475,8 +481,9 @@ class Tokenizer:
 
                 # An opening bracket indicates creating a list (rather than a getitem) if it follows a comma
                 # or '[' or '(' or an operator
-                is_list = self.prev_token is None or isinstance(self.prev_token, Comma) \
-                          or isinstance(self.prev_token, PairedStartToken) or isinstance(self.prev_token, OperatorToken)
+                is_list = self.prev_token is None or isinstance(
+                    self.prev_token, (Comma, PairedStartToken, OperatorToken)
+                )
                 ret = OpenBracket(self._offset, is_list=is_list)
             elif c[0] == ',':
                 # we also have to check this before the operators for the same reason as '[' above:
@@ -499,8 +506,7 @@ class Tokenizer:
                 else:
                     ret = OperatorToken(c[0], self._offset)
             elif c[0] == '(':
-                if isinstance(self.prev_token, IdentifierToken) \
-                        or isinstance(self.prev_token, PairedEndToken):
+                if isinstance(self.prev_token, (IdentifierToken, PairedEndToken)):
                     # Inject a function call before the parenthesis
                     # We will emit the OpenParen token on the next call to peek()
                     ret = FunctionCall(self._offset)
@@ -566,11 +572,11 @@ class Tokenizer:
         """
         return self.peek() is not None
 
-    def next(self) -> Optional[Token]:
+    def next(self) -> Token | None:
         """Returns the next token in the stream.
 
         Returns:
-            Optional[Token]: The next token, or :const:`None` if there are no more tokens.
+            Token | None: The next token, or :const:`None` if there are no more tokens.
 
         """
         ret = self.peek()
@@ -587,7 +593,7 @@ class Tokenizer:
             yield ret
 
 
-def tokenize(stream_or_str: Union[IO, str]) -> Iterator[Token]:
+def tokenize(stream_or_str: IO | str) -> Iterator[Token]:
     """Convenience function for tokenizing a string.
 
     This is equivalent to::
@@ -600,16 +606,16 @@ def tokenize(stream_or_str: Union[IO, str]) -> Iterator[Token]:
 
 class CollectionInfo:
     """A datastructure used by the :func:`infix_to_rpn` function to keep track of list and tuple semantics."""
-    def __init__(self, collection_type: Union[Type[tuple], Type[list]]):
+    def __init__(self, collection_type: type[tuple] | type[list]):
         self.num_commas: int = 0
-        self.collection_type: Union[Type[tuple], Type[list]] = collection_type
+        self.collection_type: type[tuple] | type[list] = collection_type
         self.last_was_comma: bool = False
 
 
 def infix_to_rpn(tokens: Iterable[Token]) -> Iterator[Token]:
     """Converts an infix expression to reverse Polish notation using the Shunting Yard algorithm."""
-    operators: List[OperatorToken] = []
-    collection_stack: List[CollectionInfo] = []
+    operators: list[OperatorToken] = []
+    collection_stack: list[CollectionInfo] = []
 
     for token in tokens:
         if isinstance(token, Comma):
@@ -627,7 +633,7 @@ def infix_to_rpn(tokens: Iterable[Token]) -> Iterator[Token]:
             else:
                 raise NotImplementedError(f"Add support for tokens of type {type(token)}")
         elif isinstance(token, PairedEndToken):
-            looking_for: Type[PairedStartToken] = token.start_token_type
+            looking_for: type[PairedStartToken] = token.start_token_type
             while operators and not isinstance(operators[-1], looking_for):
                 if isinstance(operators[-1], PairedStartToken):
                     raise ParseError(f"{token.name} mismatched with a {operators[-1].name}", token.offset)
@@ -686,10 +692,10 @@ class Expression:
 
     """
     def __init__(self, rpn: Iterable[Token]):
-        self.tokens: Tuple[Token, ...] = tuple(rpn)
+        self.tokens: tuple[Token, ...] = tuple(rpn)
 
     @staticmethod
-    def get_value(token: Token, locals: Dict[str, Any], globals: Dict[str, Any]):
+    def get_value(token: Token, locals: dict[str, Any], globals: dict[str, Any]):
         """Determines the value of a token given the provided state.
 
         Literal tokens like :class:`NumericToken` and :class:`StringToken` will return their values, and identifiers
@@ -726,7 +732,7 @@ class Expression:
         else:
             return token
 
-    def eval(self, locals: Optional[Dict[str, Any]] = None, globals: Optional[Dict[str, Any]] = None):
+    def eval(self, locals: dict[str, Any] | None = None, globals: dict[str, Any] | None = None):
         """Evaluates this expression given the provided state.
 
         Args:
@@ -740,24 +746,24 @@ class Expression:
 
         """
         if locals is None:
-            locals: Dict[str, Any] = {}
+            locals: dict[str, Any] = {}
         if globals is None:
-            globals: Dict[str, Any] = DEFAULT_GLOBALS
-        values: List[Any] = []
+            globals: dict[str, Any] = DEFAULT_GLOBALS
+        values: list[Any] = []
         for t in self.tokens:
             if isinstance(t, FixedSizeCollection):
                 args = [
                     self.get_value(arg, locals, globals) for arg in values[-t.size:]
                 ]
-                values = values[:-t.size] + [t.container_type(args)]
+                values = [*values[:-t.size], t.container_type(args)]
             elif isinstance(t, OperatorToken):
                 args = []
-                for expand, v in zip(t.op.expand, values[-t.op.arity:]):
+                for expand, v in zip(t.op.expand, values[-t.op.arity:], strict=True):
                     if expand:
                         args.append(self.get_value(v, locals, globals))
                     else:
                         args.append(v)
-                values = values[:-t.op.arity] + [t.op.execute(*args)]
+                values = [*values[:-t.op.arity], t.op.execute(*args)]
             else:
                 values.append(t)
         if len(values) != 1:
