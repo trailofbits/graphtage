@@ -128,7 +128,6 @@ def setup(app):
     #app.connect('autodoc-process-docstring', docstring_callback)
 
 
-add_package_names = False
 # prefix each section label with the name of the document it is in, followed by a colon
 autosectionlabel_prefix_document = True
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
