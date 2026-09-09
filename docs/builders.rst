@@ -117,5 +117,5 @@ You can add support for building Graphtage nodes from this custom class as follo
             yield node.attributes
 
         @Builder.builder(NonGraphtageClass)
-        def build_non_graphtage_class(node: NonGraphtageClass, children: List[TreeNode]) -> CustomNode:
+        def build_non_graphtage_class(node: NonGraphtageClass, children: list[TreeNode]) -> CustomNode:
             return CustomNode(*children)
