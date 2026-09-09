@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>graphtage.git &mdash; Graphtage v0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/graphtage.git.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=bd95bda3"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="graphtage.ini" href="graphtage.ini.html" />
+    <link rel="prev" title="graphtage.formatter" href="graphtage.formatter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Graphtage
+          </a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.3.1"><div class="version">v0.3.1</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="package.html">Graphtage API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="graphtage.html">graphtage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.ast.html">graphtage.ast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.bounds.html">graphtage.bounds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.builder.html">graphtage.builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.constraints.html">graphtage.constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.csv.html">graphtage.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.dataclasses.html">graphtage.dataclasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.debug.html">graphtage.debug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.git</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#git-functions">git functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#absent-revision">absent_revision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main">main</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mime-options">mime_options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#split-options">split_options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.ini.html">graphtage.ini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.matching.html">graphtage.matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.multiset.html">graphtage.multiset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.object_set.html">graphtage.object_set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pickle.html">graphtage.pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.printer.html">graphtage.printer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.progress.html">graphtage.progress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.pydiff.html">graphtage.pydiff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.search.html">graphtage.search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.sequences.html">graphtage.sequences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.toml.html">graphtage.toml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.utils.html">graphtage.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.version.html">graphtage.version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.xml.html">graphtage.xml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.yaml.html">graphtage.yaml</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="package.html">Graphtage API</a></li>
+      <li class="breadcrumb-item active">graphtage.git</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/graphtage.git.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-graphtage.git">
+<span id="graphtage-git"></span><h1>graphtage.git<a class="headerlink" href="#module-graphtage.git" title="Link to this heading"></a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">git</span></code> external diff driver that formats changes with Graphtage.</p>
+<p>Git runs an external diff driver with seven positional arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="n">old</span><span class="o">-</span><span class="n">file</span> <span class="n">old</span><span class="o">-</span><span class="nb">hex</span> <span class="n">old</span><span class="o">-</span><span class="n">mode</span> <span class="n">new</span><span class="o">-</span><span class="n">file</span> <span class="n">new</span><span class="o">-</span><span class="nb">hex</span> <span class="n">new</span><span class="o">-</span><span class="n">mode</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">old-file</span></code> and <code class="docutils literal notranslate"><span class="pre">new-file</span></code> are the two revisions to compare. Git usually passes at least one of them as a
+temporary copy whose name does not necessarily carry the original file extension, so this driver resolves the file
+type from <code class="docutils literal notranslate"><span class="pre">path</span></code>, which is the file’s location in the repository. Git appends two more arguments when it detects
+a rename or a copy, and passes a single argument for an unmerged path; both forms are handled.</p>
+<p>Git stops the whole diff when a driver exits with a non-zero status, so this driver reports a successful diff as
+<code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_SUCCESS</span></code> even when the two revisions differ. A status of
+<code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_ERROR</span></code> is reserved for failures that prevent Graphtage from producing a diff at
+all, such as an unsupported file type or a file that does not parse.</p>
+<p>See the “Git Integration” section of the Graphtage README for the <code class="docutils literal notranslate"><span class="pre">git</span></code> configuration this driver expects.</p>
+<section id="git-functions">
+<h2>git functions<a class="headerlink" href="#git-functions" title="Link to this heading"></a></h2>
+<section id="absent-revision">
+<h3>absent_revision<a class="headerlink" href="#absent-revision" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.git.absent_revision">
+<span class="sig-prename descclassname"><span class="pre">graphtage.git.</span></span><span class="sig-name descname"><span class="pre">absent_revision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.git.absent_revision" title="Link to this definition"></a></dt>
+<dd><p>Describes a change that leaves Graphtage with only one revision to work from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_path</strong> – The old revision, which git passes as its second argument.</p></li>
+<li><p><strong>to_path</strong> – The new revision, which git passes as its fifth argument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'added'</span></code> or <code class="docutils literal notranslate"><span class="pre">'deleted'</span></code> if one of the revisions is missing, and <code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code> if both
+of them exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="main">
+<h3>main<a class="headerlink" href="#main" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.git.main">
+<span class="sig-prename descclassname"><span class="pre">graphtage.git.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.git.main" title="Link to this definition"></a></dt>
+<dd><p>Runs Graphtage over the two revisions that git supplies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>argv</strong> – The command line arguments, including the name of the program. Defaults to <a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.argv" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.argv</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_SUCCESS</span></code> if the diff was produced, whether or not the revisions differ,
+and <code class="xref py py-const docutils literal notranslate"><span class="pre">graphtage.__main__.EXIT_ERROR</span></code> if Graphtage could not produce one.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="mime-options">
+<h3>mime_options<a class="headerlink" href="#mime-options" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.git.mime_options">
+<span class="sig-prename descclassname"><span class="pre">graphtage.git.</span></span><span class="sig-name descname"><span class="pre">mime_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">forwarded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.git.mime_options" title="Link to this definition"></a></dt>
+<dd><p>Builds the Graphtage MIME type options implied by a path in the repository.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – The path of the file in the repository, which git passes as its first argument.</p></li>
+<li><p><strong>forwarded</strong> – The Graphtage options that the user configured, which take precedence over the inferred type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The <code class="docutils literal notranslate"><span class="pre">--from-mime</span></code> and <code class="docutils literal notranslate"><span class="pre">--to-mime</span></code> options that are not already covered by <code class="docutils literal notranslate"><span class="pre">forwarded</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the file type of <code class="docutils literal notranslate"><span class="pre">path</span></code> is unknown or is not supported by Graphtage.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="split-options">
+<h3>split_options<a class="headerlink" href="#split-options" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.git.split_options">
+<span class="sig-prename descclassname"><span class="pre">graphtage.git.</span></span><span class="sig-name descname"><span class="pre">split_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.git.split_options" title="Link to this definition"></a></dt>
+<dd><p>Splits the leading Graphtage options off of the arguments that git supplies.</p>
+<p>Git appends its own positional arguments after whatever command the user configured, so every argument up to
+the first one that does not start with <code class="docutils literal notranslate"><span class="pre">-</span></code> belongs to the user. Two consequences follow: an option that takes
+a value must spell it with an equals sign, because a value passed as a separate argument is indistinguishable
+from the first argument supplied by git, and a repository path that starts with <code class="docutils literal notranslate"><span class="pre">-</span></code> is read as an option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>argv</strong> – The command line arguments, excluding the name of the program.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The options to forward to Graphtage, followed by git’s arguments.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>], List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="graphtage.formatter.html" class="btn btn-neutral float-left" title="graphtage.formatter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graphtage.ini.html" class="btn btn-neutral float-right" title="graphtage.ini" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2026, Trail of Bits.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.3.1
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          <dd><a href="../latest/">latest</a></dd>
+          <dd><a href="../v0.3.1/">0.3.1</a></dd>
+          <dd><a href="../v0.3.0/">0.3.0</a></dd>
+          <dd><a href="../v0.2.9/">0.2.9</a></dd>
+          <dd><a href="../v0.2.8/">0.2.8</a></dd>
+          <dd><a href="../v0.2.7/">0.2.7</a></dd>
+          <dd><a href="../v0.2.6/">0.2.6</a></dd>
+          <dd><a href="../v0.2.5/">0.2.5</a></dd>
+          <dd><a href="../v0.2.4/">0.2.4</a></dd>
+          <dd><a href="../v0.2.3/">0.2.3</a></dd>
+          <dd><a href="../v0.2.2/">0.2.2</a></dd>
+          <dd><a href="../v0.2.1/">0.2.1</a></dd>
+          <dd><a href="../v0.2.0/">0.2.0</a></dd>
+          <dd><a href="../v0.1.1/">0.1.1</a></dd>
+          <dd><a href="../v0.1.0/">0.1.0</a></dd>
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

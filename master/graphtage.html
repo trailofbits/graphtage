@@ -109,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.git.html">graphtage.git</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.ini.html">graphtage.ini</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
@@ -1730,29 +1731,6 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">Edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Bounded" title="graphtage.bounds.Bounded"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bounded</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Protocol" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protocol</span></code></a></p>
 <p>A protocol for defining an edit.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.Edit.initial_bounds">
-<span class="sig-name descname"><span class="pre">initial_bounds</span></span><a class="headerlink" href="#graphtage.Edit.initial_bounds" title="Link to this definition"></a></dt>
-<dd><p>The initial bounds of this edit. Classes implementing this protocol can, for example,
-set this by calling <a class="reference internal" href="#graphtage.Edit.bounds" title="graphtage.Edit.bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds()</span></code></a> during initialization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range">Range</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="graphtage.Edit.from_node">
-<span class="sig-name descname"><span class="pre">from_node</span></span><a class="headerlink" href="#graphtage.Edit.from_node" title="Link to this definition"></a></dt>
-<dd><p>The node that this edit transforms.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode">TreeNode</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.Edit.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.Edit.__init__" title="Link to this definition"></a></dt>
@@ -1774,8 +1752,8 @@ set this by calling <a class="reference internal" href="#graphtage.Edit.bounds" 
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="graphtage.Edit.from_node">
+<span class="sig-name descname"><span class="pre">from_node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#graphtage.TreeNode" title="graphtage.TreeNode"><span class="pre">TreeNode</span></a></em><a class="headerlink" href="#graphtage.Edit.from_node" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1787,8 +1765,8 @@ definitive.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="graphtage.Edit.initial_bounds">
+<span class="sig-name descname"><span class="pre">initial_bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></em><a class="headerlink" href="#graphtage.Edit.initial_bounds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -7810,23 +7788,21 @@ options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
       <div class="rst-other-versions">
         <dl>
           <dt>Versions</dt>
-          
-            <dd><a href="/graphtage/latest">latest</a></dd>
-            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
-            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
-            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
-            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
-            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
-            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
-            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
-            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
-            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
-            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
-            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
-            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
-            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
-            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
-          
+          <dd><a href="../latest/">latest</a></dd>
+          <dd><a href="../v0.3.1/">0.3.1</a></dd>
+          <dd><a href="../v0.3.0/">0.3.0</a></dd>
+          <dd><a href="../v0.2.9/">0.2.9</a></dd>
+          <dd><a href="../v0.2.8/">0.2.8</a></dd>
+          <dd><a href="../v0.2.7/">0.2.7</a></dd>
+          <dd><a href="../v0.2.6/">0.2.6</a></dd>
+          <dd><a href="../v0.2.5/">0.2.5</a></dd>
+          <dd><a href="../v0.2.4/">0.2.4</a></dd>
+          <dd><a href="../v0.2.3/">0.2.3</a></dd>
+          <dd><a href="../v0.2.2/">0.2.2</a></dd>
+          <dd><a href="../v0.2.1/">0.2.1</a></dd>
+          <dd><a href="../v0.2.0/">0.2.0</a></dd>
+          <dd><a href="../v0.1.1/">0.1.1</a></dd>
+          <dd><a href="../v0.1.0/">0.1.0</a></dd>
         </dl>
         <dl>
           <dt>Source Code</dt>

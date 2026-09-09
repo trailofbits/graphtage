@@ -61,6 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.expressions.html">graphtage.expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.fibonacci.html">graphtage.fibonacci</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.formatter.html">graphtage.formatter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graphtage.git.html">graphtage.git</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.ini.html">graphtage.ini</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.json.html">graphtage.json</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graphtage.levenshtein.html">graphtage.levenshtein</a></li>
@@ -71,6 +72,7 @@
 <li class="toctree-l2"><a class="reference internal" href="graphtage.plist.html">graphtage.plist</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">graphtage.printer</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#graphtage.printer.DEFAULT_PRINTER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_PRINTER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graphtage.printer.NULL_PRINTER"><code class="docutils literal notranslate"><span class="pre">NULL_PRINTER</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#printer-classes">printer classes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ansicontext">ANSIContext</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#combiningmarkcontext">CombiningMarkContext</a></li>
@@ -147,6 +149,17 @@ the command line).</p></li>
 <span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_PRINTER</span></span><a class="headerlink" href="#graphtage.printer.DEFAULT_PRINTER" title="Link to this definition"></a></dt>
 <dd><p>A default <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> instance printing to <code class="xref py py-attr docutils literal notranslate"><span class="pre">sys.stdout</span></code>. Read it through
 <a class="reference internal" href="#graphtage.printer.get_default_printer" title="graphtage.printer.get_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_default_printer()</span></code></a> rather than importing the name, because <a class="reference internal" href="#graphtage.printer.set_default_printer" title="graphtage.printer.set_default_printer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_default_printer()</span></code></a> replaces it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer">Printer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.printer.NULL_PRINTER">
+<span class="sig-prename descclassname"><span class="pre">graphtage.printer.</span></span><span class="sig-name descname"><span class="pre">NULL_PRINTER</span></span><a class="headerlink" href="#graphtage.printer.NULL_PRINTER" title="Link to this definition"></a></dt>
+<dd><p>A <a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Printer</span></code></a> instance that discards everything written to it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#graphtage.printer.Printer" title="graphtage.printer.Printer">Printer</a></p>
@@ -1258,23 +1271,21 @@ then this decorator will have the method automatically return a <a class="refere
       <div class="rst-other-versions">
         <dl>
           <dt>Versions</dt>
-          
-            <dd><a href="/graphtage/latest">latest</a></dd>
-            <dd><a href="/graphtage/v0.3.1">0.3.1</a></dd>
-            <dd><a href="/graphtage/v0.3.0">0.3.0</a></dd>
-            <dd><a href="/graphtage/v0.2.9">0.2.9</a></dd>
-            <dd><a href="/graphtage/v0.2.8">0.2.8</a></dd>
-            <dd><a href="/graphtage/v0.2.7">0.2.7</a></dd>
-            <dd><a href="/graphtage/v0.2.6">0.2.6</a></dd>
-            <dd><a href="/graphtage/v0.2.5">0.2.5</a></dd>
-            <dd><a href="/graphtage/v0.2.4">0.2.4</a></dd>
-            <dd><a href="/graphtage/v0.2.3">0.2.3</a></dd>
-            <dd><a href="/graphtage/v0.2.2">0.2.2</a></dd>
-            <dd><a href="/graphtage/v0.2.1">0.2.1</a></dd>
-            <dd><a href="/graphtage/v0.2.0">0.2.0</a></dd>
-            <dd><a href="/graphtage/v0.1.1">0.1.1</a></dd>
-            <dd><a href="/graphtage/v0.1.0">0.1.0</a></dd>
-          
+          <dd><a href="../latest/">latest</a></dd>
+          <dd><a href="../v0.3.1/">0.3.1</a></dd>
+          <dd><a href="../v0.3.0/">0.3.0</a></dd>
+          <dd><a href="../v0.2.9/">0.2.9</a></dd>
+          <dd><a href="../v0.2.8/">0.2.8</a></dd>
+          <dd><a href="../v0.2.7/">0.2.7</a></dd>
+          <dd><a href="../v0.2.6/">0.2.6</a></dd>
+          <dd><a href="../v0.2.5/">0.2.5</a></dd>
+          <dd><a href="../v0.2.4/">0.2.4</a></dd>
+          <dd><a href="../v0.2.3/">0.2.3</a></dd>
+          <dd><a href="../v0.2.2/">0.2.2</a></dd>
+          <dd><a href="../v0.2.1/">0.2.1</a></dd>
+          <dd><a href="../v0.2.0/">0.2.0</a></dd>
+          <dd><a href="../v0.1.1/">0.1.1</a></dd>
+          <dd><a href="../v0.1.0/">0.1.0</a></dd>
         </dl>
         <dl>
           <dt>Source Code</dt>

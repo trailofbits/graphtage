@@ -15,6 +15,7 @@ Graphtage API
    graphtage.expressions
    graphtage.fibonacci
    graphtage.formatter
+   graphtage.git
    graphtage.ini
    graphtage.json
    graphtage.levenshtein
