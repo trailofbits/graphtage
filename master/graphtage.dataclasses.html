@@ -262,13 +262,12 @@ the sub-edits:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.dataclasses.DataClassEdit.print">
 <span class="sig-name descname"><span class="pre">print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">formatter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.html#graphtage.GraphtageFormatter" title="graphtage.GraphtageFormatter"><span class="pre">GraphtageFormatter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">printer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="graphtage.printer.html#graphtage.printer.Printer" title="graphtage.printer.Printer"><span class="pre">Printer</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.dataclasses.DataClassEdit.print" title="Link to this definition"></a></dt>
-<dd><p>Edits can optionally implement a printing method</p>
-<p>This function is called automatically from the formatter in the
-<a class="reference internal" href="printing.html#printing-protocol"><span class="std std-ref">Printing Protocol</span></a> and should never be called directly unless you really know what you’re doing!
-Raising <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> will cause the formatter to fall back on its own printing implementations.</p>
-<p>This implementation is equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">edit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edits</span><span class="p">():</span>
-    <span class="n">edit</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">printer</span><span class="p">)</span>
+<dd><p>Prints this edit by delegating to the formatter for the node being edited.</p>
+<p>The default <a class="reference internal" href="graphtage.html#graphtage.AbstractCompoundEdit.print" title="graphtage.AbstractCompoundEdit.print"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.AbstractCompoundEdit.print()</span></code></a> implementation prints the slot edits back to back,
+which drops whatever syntax the node’s formatter writes between the slots. Delegating to the node formatter
+keeps that syntax, and the formatter reaches the slot edits as it prints each child.</p>
+<p>This is equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">formatter</span><span class="o">.</span><span class="n">get_formatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">from_node</span><span class="p">)(</span><span class="n">printer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_node</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
