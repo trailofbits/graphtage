@@ -46,8 +46,19 @@ $ graphtage original.json modified.json
 
 ## Installation
 
+Graphtage requires Python 3.10 or later. It is tested against Python 3.10 through 3.14.
+
 ```console
 $ pip3 install graphtage
+```
+
+Installing the package puts two commands on your `PATH`: `graphtage`, the diff utility, and `graphtage-git-diff`, the
+external diff driver described in [Git Integration](#git-integration).
+
+To work on Graphtage itself, install the `dev` extra, which adds pytest, Ruff, and Sphinx:
+
+```console
+$ pip3 install graphtage[dev]
 ```
 
 ## Command Line Usage
