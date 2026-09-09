@@ -73,6 +73,43 @@ class TestPyDiff(TestCase):
         for source in ("import os", "import os.path", "import os, sys", "from os import path"):
             with self.subTest(source=source):
                 self.assertEqual(f"{source}\n", format_tree(ast_to_tree(ast.parse(source))))
+
+    def test_import_alias_is_not_quoted(self):
+        """Reproduces https://github.com/trailofbits/graphtage/issues/172
+
+        `PyAlias` built its `as_name` with `StringNode`'s default quoting, so `from os import path as p` rendered as
+        `from os import path as "p"`. Both printing paths write the slot as-is, so both quoted the alias:
+        `PyDiffFormatter.print_PyAlias` and `PyAlias.print`.
+        """
+        expected = {
+            "from os import path": ["path"],
+            "from os import path as p": ["path as p"],
+            "from a import b as c, d as e": ["b as c", "d as e"],
+            "import os as o": ["os as o"],
+        }
+        for source, alias_renderings in expected.items():
+            with self.subTest(source=source):
+                tree = ast_to_tree(ast.parse(source))
+                self.assertEqual(f"{source}\n", format_tree(tree))
+                aliases = [node for node in tree.dfs() if isinstance(node, PyAlias)]
+                for alias, rendering in zip(aliases, alias_renderings, strict=True):
+                    stream = StringIO()
+                    alias.print(Printer(out_stream=stream, ansi_color=False))
+                    self.assertEqual(rendering, stream.getvalue())
+
+    def test_directly_constructed_alias_is_not_quoted(self):
+        """`PyAlias` un-quotes its own slots, just as `PyObjAttribute` does, so callers need not pass `quoted`."""
+        stream = StringIO()
+        alias = PyAlias(graphtage.StringNode("os"), graphtage.StringNode("o"))
+
+        alias.print(Printer(out_stream=stream, ansi_color=False))
+
+        self.assertEqual("os as o", stream.getvalue())
+
+    def test_alias_edit_is_not_quoted(self):
+        """An edited alias must stay unquoted too; the diff used to render as `import os as "o" -> "p"`."""
+        self.assertEqual("import os as o -> p", render_diff("import os as o", "import os as p"))
+
     def test_attribute_receiver_is_not_quoted(self):
         stream = StringIO()
         attribute = PyObjAttribute(graphtage.StringNode("package"), graphtage.StringNode("member"))

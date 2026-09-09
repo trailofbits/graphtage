@@ -120,8 +120,19 @@ ASTNode = ast.AST | ast.stmt | ast.expr | ast.alias
 
 
 class PyAlias(DataClassNode):
+    """An imported name and the alias it is bound to, as in ``import os as o``.
+
+    Both slots hold Python identifiers rather than string literals, so neither is quoted when printed. An empty
+    ``as_name`` means the import has no alias.
+    """
+
     name: StringNode
     as_name: StringNode
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name.quoted = False
+        self.as_name.quoted = False
 
     def print(self, printer: Printer):
         self.name.print(printer)
@@ -235,9 +246,9 @@ class ASTBuilder(BasicBuilder):
     @Builder.builder(ast.alias)
     def build_alias(self, node: ast.alias, _):
         if not node.asname:
-            as_name = StringNode("")
+            as_name = StringNode("", quoted=False)
         else:
-            as_name = StringNode(node.asname)
+            as_name = StringNode(node.asname, quoted=False)
         return PyAlias(StringNode(node.name, quoted=False), as_name)
 
     @Builder.builder(ast.Attribute)
