@@ -14,7 +14,12 @@ The protocol for delegating how a :class:`graphtage.TreeNode` or :class:`graphta
         * If ``with_edits`` *and* the node is edited and has a non-zero cost,
             then choose :attr:`node_or_edit.edit <graphtage.EditedTreeNode.edit>`::
 
-                node_or_edit.edit is not None and node_or_edit.edit.bounds().lower_bound > 0
+                isinstance(node_or_edit, EditedTreeNode) and \
+                        node_or_edit.edit is not None and node_or_edit.edit.has_non_zero_cost()
+
+            :meth:`graphtage.Edit.has_non_zero_cost` is not a single comparison: it tightens the edit's bounds in a
+            loop until either its lower bound exceeds zero or its bounds are definitive. Deciding whether to print an
+            edit can therefore do an arbitrary amount of work.
 
         * Otherwise choose ``node_or_edit``
 #. If the chosen object is an edit:
@@ -32,3 +37,33 @@ The protocol for delegating how a :class:`graphtage.TreeNode` or :class:`graphta
 
 This is implemented in :meth:`graphtage.GraphtageFormatter.print`. See the :ref:`Formatting Protocol` for how formatters
 are chosen.
+
+Status Output
+-------------
+
+A :class:`graphtage.printer.Printer` is also a :class:`graphtage.progress.StatusWriter`, which is what draws the
+``tqdm`` progress bars that Graphtage shows while it diffs. Both the diff output and the status output share the same
+printer, so the printer buffers whole lines and hands them to :func:`tqdm.write` rather than letting the two
+interleave.
+
+Pass ``quiet=True`` to suppress the progress bars::
+
+    >>> from graphtage.printer import Printer
+    >>> quiet_printer = Printer(quiet=True)
+
+The command line client passes ``quiet=True`` for ``--no-status`` and ``--quiet``. To suppress the output as well as
+the status, use :attr:`graphtage.printer.NULL_PRINTER`, a printer that is both quiet and writes to a stream that
+discards everything. It is the default value of :attr:`graphtage.BuildOptions.printer`, which is why building a tree
+from the library draws no progress bar while the command line client does.
+
+Enabling ANSI Color
+-------------------
+
+Importing :mod:`graphtage` does not call :func:`colorama.init` and does not replace :attr:`sys.stdout`. Call
+:func:`graphtage.printer.enable_ansi_support` from your application's entry point if you want that behavior. On a
+legacy Windows console it is what makes ANSI escape sequences work, by replacing :attr:`sys.stdout` and
+:attr:`sys.stderr` with wrappers that translate the sequences into Win32 console calls.
+
+A :class:`graphtage.printer.Printer` captures its output stream when it is constructed, so call
+:func:`graphtage.printer.enable_ansi_support` before constructing any printer. A printer constructed first writes past
+the wrapper and loses its color.
