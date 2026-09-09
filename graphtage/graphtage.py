@@ -2,6 +2,7 @@ __docformat__ = "google"
 
 import copy as copy_module
 import mimetypes
+import warnings
 from abc import ABC, ABCMeta, abstractmethod
 from collections.abc import Collection, Iterable, Iterator
 from typing import Any, Generic, TypeVar
@@ -1014,7 +1015,7 @@ class BuildOptions:
                  allow_list_edits=True,
                  allow_list_edits_when_same_length=True,
                  ignore_list_order=False,
-                 check_for_cyces=True,
+                 check_for_cycles: bool | None = None,
                  ignore_cycles=False,
                  printer=NULL_PRINTER,
                  **kwargs
@@ -1023,7 +1024,16 @@ class BuildOptions:
 
         Options not specified will default to :const:`False`.
 
+        Args:
+            check_for_cycles: Whether to check the input for cycles. Omitting it, or passing :const:`None`,
+                selects the default of :const:`True`. The misspelled ``check_for_cyces`` is still accepted as a
+                deprecated alias and raises a :class:`DeprecationWarning`.
+
+        Raises:
+            TypeError: If both ``check_for_cycles`` and the deprecated ``check_for_cyces`` alias are given.
+
         """
+        check_for_cycles = self._resolve_check_for_cycles(check_for_cycles, kwargs)
         self.allow_key_edits = allow_key_edits
         """Whether to consider editing keys when matching :class:`KeyValuePairNode` objects"""
         self.allow_list_edits = allow_list_edits
@@ -1048,7 +1058,7 @@ class BuildOptions:
         """
         self.auto_match_keys = auto_match_keys
         """Whether to automatically match key/value pairs in dictionaries if they share the same key"""
-        self.check_for_cycles = check_for_cyces
+        self.check_for_cycles = check_for_cycles
         """If possible, check for cycles in the input
 
         If `True` and if `ignore_cycles` is `False`, then a :class:`ValueError` will be raised if a cycle is detected
@@ -1062,6 +1072,40 @@ class BuildOptions:
         """A printer to use while building trees (default is :attr:`graphtage.printer.NULL_PRINTER`)"""
         for attr, value in kwargs.items():
             setattr(self, attr, value)
+
+    @staticmethod
+    def _resolve_check_for_cycles(check_for_cycles: bool | None, kwargs: dict[str, Any]) -> bool:
+        """Resolves the ``check_for_cycles`` option, honoring its deprecated misspelling.
+
+        The alias is removed from ``kwargs`` so that it is not also set as an attribute by the catch-all that
+        assigns every unrecognized keyword.
+
+        Args:
+            check_for_cycles: The value given for the correctly spelled keyword, or :const:`None` if it was omitted.
+            kwargs: The unrecognized keyword arguments, modified in place.
+
+        Returns:
+            bool: The value to assign to :attr:`BuildOptions.check_for_cycles`.
+
+        Raises:
+            TypeError: If both spellings were given.
+
+        """
+        deprecated = kwargs.pop("check_for_cyces", None)
+        if deprecated is not None:
+            warnings.warn(
+                "The `check_for_cyces` keyword argument of BuildOptions is misspelled and deprecated; "
+                "use `check_for_cycles` instead.",
+                DeprecationWarning,
+                stacklevel=3,
+            )
+            if check_for_cycles is not None:
+                raise TypeError(
+                    "BuildOptions got both `check_for_cycles` and its deprecated alias `check_for_cyces`; "
+                    "pass only `check_for_cycles`"
+                )
+            check_for_cycles = deprecated
+        return True if check_for_cycles is None else check_for_cycles
 
     def copy(self) -> "BuildOptions":
         return copy_module.copy(self)
