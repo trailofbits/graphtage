@@ -1,11 +1,24 @@
 import ast
 import dataclasses
+from io import StringIO
 from unittest import TestCase
 
 import graphtage
+from graphtage.printer import Printer
 from graphtage.pydiff import PyDiffFormatter, ast_to_tree, build_tree, print_diff
 
 from .timing import run_with_time_limit
+
+
+def render_diff(from_source: str, to_source: str) -> str:
+    """Diffs two Python sources and returns the rendering produced by :class:`PyDiffFormatter`."""
+    from_tree = ast_to_tree(ast.parse(from_source))
+    to_tree = ast_to_tree(ast.parse(to_source))
+    stream = StringIO()
+    printer = Printer(out_stream=stream, ansi_color=False)
+    with printer:
+        PyDiffFormatter.DEFAULT_INSTANCE.print(printer, from_tree.diff(to_tree))
+    return stream.getvalue().strip()
 
 
 class TestPyDiff(TestCase):
@@ -46,6 +59,21 @@ class TestPyDiff(TestCase):
         self.assertIsInstance(kvp, graphtage.KeyValuePairNode)
         self.assertIsInstance(kvp.key, graphtage.StringNode)
         self.assertIsInstance(kvp.value, graphtage.ListNode)
+
+    def test_dataclass_edit_preserves_syntax(self):
+        """Reproduces https://github.com/trailofbits/graphtage/issues/150
+
+        Without `DataClassEdit.print`, an edited `DataClassNode` falls back to `AbstractCompoundEdit.print`, which
+        prints the slot edits back to back and drops the syntax the node formatter writes between them. The first
+        case below rendered as `[x]foo[1,2,++3++]`.
+        """
+        self.assertEqual("x = foo(1, 2, ++3++)", render_diff("x = foo(1, 2)", "x = foo(1, 2, 3)"))
+        self.assertEqual("x -> y = foo(1, 2)", render_diff("x = foo(1, 2)", "y = foo(1, 2)"))
+        self.assertEqual("x = ~~foo~~++bar++(1, 2)", render_diff("x = foo(1, 2)", "x = bar(1, 2)"))
+
+    def test_attribute_edit_preserves_separators(self):
+        """An edited `PyObjAttribute` keeps the dots between its slots; it used to render as `[x]abc -> d`."""
+        self.assertEqual("x = a.b.c -> d", render_diff("x = a.b.c", "x = a.b.d"))
 
     def test_infinite_loop(self):
         """Reproduces https://github.com/trailofbits/graphtage/issues/82"""
