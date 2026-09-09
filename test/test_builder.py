@@ -1,3 +1,4 @@
+from inspect import signature
 from unittest import TestCase
 
 from graphtage import BuildOptions, IntegerNode, ListNode, TreeNode, UnorderedListNode
@@ -37,3 +38,30 @@ class TestBuilder(TestCase):
         tree = Tester().build_tree(Foo(10))
         self.assertIsInstance(tree, IntegerNode)
         self.assertEqual(10, tree.object)
+
+
+class TestBuildOptions(TestCase):
+    def test_check_for_cycles(self):
+        parameters = signature(BuildOptions.__init__).parameters
+        self.assertIn("check_for_cycles", parameters)
+        self.assertNotIn("check_for_cyces", parameters)
+        self.assertTrue(BuildOptions().check_for_cycles)
+        self.assertFalse(BuildOptions(check_for_cycles=False).check_for_cycles)
+
+    def test_deprecated_check_for_cycles_spelling(self):
+        with self.assertWarns(DeprecationWarning):
+            options = BuildOptions(check_for_cyces=False)
+        self.assertFalse(options.check_for_cycles)
+        with self.assertWarns(DeprecationWarning):
+            options = BuildOptions(check_for_cyces=True)
+        self.assertTrue(options.check_for_cycles)
+
+    def test_check_for_cycles_sets_no_misspelled_attribute(self):
+        self.assertNotIn("check_for_cyces", vars(BuildOptions(check_for_cycles=False)))
+        with self.assertWarns(DeprecationWarning):
+            options = BuildOptions(check_for_cyces=False)
+        self.assertNotIn("check_for_cyces", vars(options))
+
+    def test_conflicting_check_for_cycles_spellings(self):
+        with self.assertRaises(TypeError):
+            BuildOptions(check_for_cycles=True, check_for_cyces=False)
