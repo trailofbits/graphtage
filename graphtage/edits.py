@@ -1,4 +1,5 @@
 import itertools
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Callable, Collection, Iterator
 from typing import Any, Generic, TypeVar, cast
@@ -63,13 +64,13 @@ class AbstractEdit(Debuggable, Edit, ABC):
                 with printer:
                     printer.write(f"The bounds before tightening {self!s} were {bounds_before!s}, but {new_bounds!s} "
                                   f"after\n")
-                exit(255)
+                sys.exit(255)
         elif not new_bounds.definitive():
             printer = Printer(ansi_color=True)
             with printer:
                 printer.write(f"self.tighten_bounds() returned False; the bounds before tightening {self!s} were "
                               f"{bounds_before!s} and {new_bounds!s} after, which is not definitive")
-            exit(255)
+            sys.exit(255)
         return result
 
     def _debug___all__(self, name, method, *args, **kwargs):
@@ -92,7 +93,7 @@ class AbstractEdit(Debuggable, Edit, ABC):
         if new_bounds != bounds_before:
             print(f"Error: Bounds before calling {self!r}.{name}(*{args!r}, **{kwargs!r}) were {bounds_before!s} "
                   f"but {new_bounds!s} after")
-            exit(255)
+            sys.exit(255)
         return new_result
 
     def is_complete(self) -> bool:

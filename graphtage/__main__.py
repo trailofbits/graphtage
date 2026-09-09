@@ -242,16 +242,16 @@ def main(argv=None) -> int:
         numeric_log_level = getattr(logging, args.log_level.upper(), None)
         if not isinstance(numeric_log_level, int):
             sys.stderr.write(f'Invalid log level: {args.log_level}')
-            exit(EXIT_ERROR)
+            sys.exit(EXIT_ERROR)
 
     if args.dumpversion:
         print(version.VERSION_STRING)
-        exit(0)
+        sys.exit(0)
 
     if args.version:
         sys.stderr.write(f"Graphtage version {version.VERSION_STRING}\n")
         if args.FROM_PATH == '-' and args.TO_PATH == '-':
-            exit(0)
+            sys.exit(0)
 
     if args.no_color:
         ansi_color = False

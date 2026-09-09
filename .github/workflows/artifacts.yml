@@ -56,10 +56,25 @@ jobs:
       - name: Build the binary
         run: |
           make -C bindist
-          echo "DIST_FILE=$(make -C bindist dist-name | tr -d '\n')" >> "$GITHUB_ENV"
+          # GNU make writes "Entering directory" to stdout with -C, and it would land inside the
+          # captured archive name.
+          echo "DIST_FILE=$(make --no-print-directory -C bindist dist-name)" >> "$GITHUB_ENV"
 
+      # A frozen binary runs without the site module, and it bundles only the imports PyInstaller
+      # can find, so it can fail where the interpreter does not. Diff something rather than only
+      # asking for the version.
       - name: Check that the binary runs
-        run: bindist/dist/graphtage --version
+        run: |
+          bindist/dist/graphtage --version
+          printf '{"a": 1, "b": [2, 3]}' > "$RUNNER_TEMP/from.json"
+          printf '{"a": 1, "b": [2, 4]}' > "$RUNNER_TEMP/to.json"
+          exit_status=0
+          bindist/dist/graphtage --no-status --format yaml \
+            "$RUNNER_TEMP/from.json" "$RUNNER_TEMP/to.json" || exit_status=$?
+          if [ "$exit_status" -ne 1 ]; then
+            echo "Expected exit status 1 (differences found), got $exit_status" >&2
+            exit 1
+          fi
 
       # `gh release upload` can only add assets to a release that already exists, so a stray tag
       # cannot publish a release of its own. It uploads to a draft just as well as to a published

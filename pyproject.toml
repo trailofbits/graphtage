@@ -97,6 +97,9 @@ select = [
     "SIM",   # flake8-simplify
     "TID",   # flake8-tidy-imports
     "RUF",   # Ruff-specific rules
+    # `exit` and `quit` come from the site module, which a PyInstaller binary runs without, so a
+    # bare `exit()` raises NameError in the binary distribution and nowhere else.
+    "PLR1722",  # sys-exit-alias
 ]
 ignore = [
     "E501",  # line too long (handled by formatter)
