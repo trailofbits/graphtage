@@ -35,7 +35,7 @@ jobs:
 
       - name: Build documentation
         working-directory: graphtage
-        run: uv run --frozen --extra dev make -C docs html
+        run: uv run --frozen --extra dev make -C docs html SPHINXOPTS="-W --keep-going"
 
       - name: Checkout gh-pages branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
