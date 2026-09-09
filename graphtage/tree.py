@@ -22,6 +22,20 @@ log = logging.getLogger(__name__)
 FormatterType = Formatter[Union['TreeNode', 'Edit']]
 
 
+_NODES_BEING_PRINTED: set[int] = set()
+"""The :func:`id` of every node whose formatter is currently on the stack.
+
+:meth:`GraphtageFormatter.print` decides whether to print a node's edit *before* it hands the node to that node's
+formatter, so by the time the formatter runs, the decision has already been made and acted upon. Formatters routinely
+re-enter :meth:`GraphtageFormatter.print` with the very same node to pass it to a sibling formatter, for example
+:meth:`graphtage.json.JSONListFormatter.print_SequenceNode`, which forwards a dict nested in a list to
+:class:`graphtage.json.JSONDictFormatter` through ``self.parent.print(...)``. That re-entry cannot repeat the
+decision: the ``with_edits`` argument is not part of the ``print_*`` calling convention, so it never reaches the
+sub-formatter and the re-entry would default to printing the edit a second time.
+
+"""
+
+
 class GraphtageFormatter(FormatterType):
     """A base class for defining formatters that operate on :class:`TreeNode` and :class:`Edit`."""
 
@@ -31,7 +45,9 @@ class GraphtageFormatter(FormatterType):
         Args:
             printer: The printer to which to write.
             node_or_edit: The node or edit to print.
-            with_edits: If :keyword:True, print any edits associated with the node.
+            with_edits: If :keyword:True, print any edits associated with the node. This is also implied to be
+                :keyword:False while the node's own formatter is on the stack, so that a formatter delegating the
+                same node to a sibling formatter does not print its edit twice.
 
         Note:
             The protocol for determining how a node or edit should be printed is very complex due to its extensibility.
@@ -44,7 +60,7 @@ class GraphtageFormatter(FormatterType):
             else:
                 edit: Edit | None = None
             node: TreeNode = node_or_edit.from_node
-        elif with_edits:
+        elif with_edits and id(node_or_edit) not in _NODES_BEING_PRINTED:
             if isinstance(node_or_edit, EditedTreeNode) and \
                     node_or_edit.edit is not None and node_or_edit.edit.has_non_zero_cost():
                 edit: Edit | None = node_or_edit.edit
@@ -66,14 +82,35 @@ class GraphtageFormatter(FormatterType):
                 return
             except NotImplementedError:
                 pass
-        formatter = self.get_formatter(node)
-        if formatter is not None:
-            formatter(printer, node)
-        else:
-            log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
+        self._print_node(printer, node)
+
+    def _print_node(self, printer: Printer, node: 'TreeNode'):
+        """Hands a node to its formatter, suppressing that node's edit for the duration of the call.
+
+        Whether to print ``node``'s edit was already settled by :meth:`GraphtageFormatter.print`, so any re-entrant
+        call for the same node must print the bare node. See :data:`_NODES_BEING_PRINTED`.
+
+        Args:
+            printer: The printer to which to write.
+            node: The node to print.
+
+        """
+        node_id = id(node)
+        is_outermost = node_id not in _NODES_BEING_PRINTED
+        if is_outermost:
+            _NODES_BEING_PRINTED.add(node_id)
+        try:
+            formatter = self.get_formatter(node)
+            if formatter is not None:
+                formatter(printer, node)
+            else:
+                log.debug(f"""There is no formatter that can handle nodes of type {node.__class__.__name__}
     Falling back to the node's internal printer
     Registered formatters: {''.join([f.__class__.__name__ for f in FORMATTERS])}""")
-            node.print(printer)
+                node.print(printer)
+        finally:
+            if is_outermost:
+                _NODES_BEING_PRINTED.discard(node_id)
 
 
 @runtime_checkable

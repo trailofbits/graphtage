@@ -109,9 +109,34 @@ class JSONListFormatter(SequenceFormatter):
         """
         super().__init__('[', ']', ',')
 
+    def _joined(self, printer: Printer) -> bool:
+        return bool(getattr(printer, 'join_lists', False))
+
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if not hasattr(printer, 'join_lists') or not printer.join_lists:
+        """Separates two list items.
+
+        A joined list keeps all of its items on one line, separated by a single space so that the result reads as
+        ``[1, 2, 3]`` rather than ``[1,2,3]``.
+
+        """
+        if not self._joined(printer):
             printer.newline()
+        elif not is_first and not is_last:
+            printer.write(' ')
+
+    def items_indent(self, printer: Printer) -> Printer:
+        """Returns the printer context in which the list items are printed.
+
+        A joined list emits no newlines of its own, so indenting its items would have no visible effect on the list
+        itself while still adding a level of indentation to any nested sequence that *does* break across lines.
+
+        Returns:
+            Printer: :obj:`printer` itself if the list is joined, otherwise ``printer.indent()``.
+
+        """
+        if self._joined(printer):
+            return printer
+        return printer.indent()
 
     def print_ListNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.ListNode`.
@@ -146,9 +171,34 @@ class JSONDictFormatter(SequenceFormatter):
     def __init__(self):
         super().__init__('{', '}', ',')
 
+    def _joined(self, printer: Printer) -> bool:
+        return bool(getattr(printer, 'join_dict_items', False))
+
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if not hasattr(printer, 'join_dict_items') or not printer.join_dict_items:
+        """Separates two dict items.
+
+        A joined dict keeps all of its items on one line, separated by a single space so that the result reads as
+        ``{"a": 1, "b": 2}`` rather than ``{"a": 1,"b": 2}``.
+
+        """
+        if not self._joined(printer):
             printer.newline()
+        elif not is_first and not is_last:
+            printer.write(' ')
+
+    def items_indent(self, printer: Printer) -> Printer:
+        """Returns the printer context in which the dict items are printed.
+
+        A joined dict emits no newlines of its own, so indenting its items would have no visible effect on the dict
+        itself while still adding a level of indentation to any nested sequence that *does* break across lines.
+
+        Returns:
+            Printer: :obj:`printer` itself if the dict is joined, otherwise ``printer.indent()``.
+
+        """
+        if self._joined(printer):
+            return printer
+        return printer.indent()
 
     def print_MultiSetNode(self, *args, **kwargs):
         """Prints a :class:`graphtage.MultiSetNode`.

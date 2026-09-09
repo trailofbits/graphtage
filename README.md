@@ -101,20 +101,20 @@ Use the `--join-lists` or `-jl` option to suppress linebreaks after list items:
 ```json
 {
     "bar": "baz",
-    "foo": [1,2,3]
+    "foo": [1, 2, 3]
 }
 ```
 Likewise, use the `--join-dict-items` or `-jd` option to suppress linebreaks after key/value pairs in a dict:
 ```json
-{"bar": "baz","foo": [
-        1,
-        2,
-        3
-    ]}
+{"bar": "baz", "foo": [
+    1,
+    2,
+    3
+]}
 ```
 Use `--condensed` or `-j` to apply both of these options:
 ```json
-{"bar": "baz","foo": [1,2,3]}
+{"bar": "baz", "foo": [1, 2, 3]}
 ```
 
 The `--only-edits` or `-e` option will print out a list of edits rather than applying them to the input file in place.
@@ -166,9 +166,9 @@ options apply only to ordered lists.
 ### Match Constraints
 The `--match-unless` or `-u` and `--match-if` or `-m` options take an expression that decides whether Graphtage may
 pair two nodes. Graphtage evaluates the expression once for each pair of nodes it considers, with `from` bound to the
-node from the first file and `to` bound to the node from the second. `--match-unless` refuses the pair when the
-expression is true; `--match-if` refuses it unless the expression is true. A refused pair is reported as a wholesale
-replacement rather than compared element by element.
+plain Python value of the node from the first file and `to` bound to the plain Python value of the node from the
+second. `--match-unless` refuses the pair when the expression is true; `--match-if` refuses it unless the expression
+is true. A refused pair is reported as a wholesale replacement rather than compared element by element.
 
 Expressions are parsed by the `graphtage.expressions` module rather than by `eval`. They support arithmetic and
 comparison operators, indexing, attribute lookup, and calls to a fixed set of builtins such as `len` and `sorted`.
@@ -225,12 +225,32 @@ $ graphtage --match-unless "from['id'] != to['id']" servers.json servers.new.jso
     }
 }
 ```
-The two options differ in more than the sense of the test. `--match-unless` binds `from` and `to` to plain Python
-values, and leaves a pair unconstrained when the expression raises an error, which is what makes the example above
-work on the records without also constraining the strings and integers underneath them. `--match-if` binds `from` and
-`to` to Graphtage node objects, and refuses a pair when the expression raises an error. Because the constraint applies
-to every node in the tree, including the two roots, an expression that reads a key such as `from['id'] == to['id']`
-refuses every pair and collapses the whole diff into one replacement. Prefer `--match-unless`.
+The same constraint written with `--match-if` produces the same diff:
+```console
+$ graphtage --match-if "from['id'] == to['id']" servers.json servers.new.json
+```
+```json
+{
+    "primary": {
+        "host": "alpha++s++",
+        "id": 1
+    },
+    "replica": {
+        "host": "beta",
+        "id": 2
+    } -> {
+        "host": "gamma",
+        "id": 3
+    }
+}
+```
+Graphtage applies the constraint to every node in the tree, not only to the dictionaries the expression was written
+for. A pair for which the expression raises an error is left unconstrained, which is what lets the expression above
+constrain the two records without also constraining the strings and integers underneath them, where subscripting by
+`'id'` has no meaning.
+
+Because of that, an expression that raises for every pair constrains nothing at all. If a constraint appears to have
+no effect, run the same command with `--debug`, which logs the error Graphtage caught for each pair it skipped.
 
 ### ANSI Color
 By default, Graphtage will only use ANSI color in its output if it is run from a TTY. If, for example, you would like

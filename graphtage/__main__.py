@@ -23,6 +23,32 @@ EXIT_DIFFERENCES_FOUND = 1
 EXIT_ERROR = 2
 """The exit status used when Graphtage could not compute a diff."""
 
+EXIT_BROKEN_PIPE = 141
+"""The exit status used when the process reading Graphtage's output closed the pipe.
+
+This is ``128 + SIGPIPE``, the status a shell reports for a process that a broken pipe terminated. Python ignores
+``SIGPIPE`` and raises :exc:`BrokenPipeError` instead, so Graphtage reports the status itself.
+"""
+
+
+def silence_broken_pipe() -> None:
+    """Redirects standard output to the null device after the reader closed the pipe.
+
+    CPython flushes :data:`sys.stdout` while the interpreter shuts down, and that flush raises a second
+    :exc:`BrokenPipeError` that is printed as ``Exception ignored`` however the first one was handled. Pointing the
+    underlying file descriptor at :data:`os.devnull` lets the final flush, and any write that still happens while
+    Graphtage cleans up, succeed silently.
+    """
+    try:
+        stdout_fd = sys.stdout.fileno()
+    except (OSError, ValueError):
+        return
+    devnull = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(devnull, stdout_fd)
+    finally:
+        os.close(devnull)
+
 
 class PathOrStdin:
     def __init__(self, path):
@@ -114,10 +140,12 @@ def main(argv=None) -> int:
             help=f'equivalent to `--to-mime {mime}`'
         )
     parser.add_argument('--match-if', '-m', type=str, default=None,
-                        help='only attempt to match two dictionaries if the provided expression is satisfied. For '
-                             'example, `--match-if "from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary '
-                             'which has a "foo" key that has the same value as the other dictionary\'s "bar" key will '
-                             'be attempted to be paired')
+                        help='only attempt to match two nodes if the provided expression is satisfied. `from` and '
+                             '`to` are bound to the plain Python values of the two nodes. For example, `--match-if '
+                             '"from[\'foo\'] == to[\'bar\']"` will mean that only a dictionary which has a "foo" key '
+                             'that has the same value as the other dictionary\'s "bar" key will be attempted to be '
+                             'paired. A pair for which the expression raises an error, such as the strings and '
+                             'numbers beneath a dictionary, is left unconstrained')
     parser.add_argument('--match-unless', '-u', type=str, default=None,
                         help='similar to `--match-if`, but only attempt a match if the provided expression evaluates '
                              'to `False`')
@@ -243,15 +271,19 @@ def main(argv=None) -> int:
     else:
         printer_type = Printer
 
-    printer = printer_type(
-        sys.stdout,
-        ansi_color=ansi_color,
-        quiet=args.no_status or args.quiet,
-        options={
-            'join_lists': args.condensed or args.join_lists,
-            'join_dict_items': args.condensed or args.join_dict_items
-        }
-    )
+    try:
+        printer = printer_type(
+            sys.stdout,
+            ansi_color=ansi_color,
+            quiet=args.no_status or args.quiet,
+            options={
+                'join_lists': args.condensed or args.join_lists,
+                'join_dict_items': args.condensed or args.join_dict_items
+            }
+        )
+    except BrokenPipeError:
+        silence_broken_pipe()
+        return EXIT_BROKEN_PIPE
     printermodule.set_default_printer(printer)
 
     logging.basicConfig(level=numeric_log_level, stream=Printer(
@@ -311,6 +343,7 @@ def main(argv=None) -> int:
         ignore_list_order=args.ignore_list_order
     )
 
+    broken_pipe = False
     try:
         with printer:
             options.printer = printer
@@ -374,8 +407,17 @@ def main(argv=None) -> int:
             printer.write('\n')
     except KeyboardInterrupt:
         return -2  # SIGINT
+    except BrokenPipeError:
+        silence_broken_pipe()
+        broken_pipe = True
     finally:
-        printer.close()
+        try:
+            printer.close()
+        except BrokenPipeError:
+            silence_broken_pipe()
+            broken_pipe = True
+    if broken_pipe:
+        return EXIT_BROKEN_PIPE
     if had_edits:
         return EXIT_DIFFERENCES_FOUND
     else:

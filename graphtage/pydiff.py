@@ -449,7 +449,7 @@ class PyDiffFormatter(GraphtageFormatter):
             printer.write("[")
         self.print(printer, node.slice)
         with printer.color(Fore.BLUE):
-            printer.write("[")
+            printer.write("]")
 
 
 def diff(from_py_obj, to_py_obj, options: BuildOptions | None = None):
