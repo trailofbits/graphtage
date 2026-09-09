@@ -10,6 +10,10 @@ sys.path = [ROOT_PATH, *sys.path]
 
 import graphtage  # noqa: E402  (imported only after ROOT_PATH is on sys.path)
 
+# graphtage/__init__.py deliberately omits `git`, because graphtage.git imports graphtage.__main__.
+# Import it here so that the module enumeration below gives it an API page.
+import graphtage.git  # noqa: E402
+
 MODULES = []
 
 
@@ -84,6 +88,8 @@ def process_module(module):
 
 
 for name, obj in inspect.getmembers(graphtage, inspect.ismodule):
+    if name.startswith('_'):
+        continue
     if obj.__name__.startswith('graphtage') and name not in ('graphtage', 'tree', 'edits'):
         MODULES.append(obj)
 
