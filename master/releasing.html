@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cutting a Release &mdash; Graphtage v0.4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://trailofbits.github.io/graphtage/latest/releasing.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=97b6c874"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Graphtage API" href="package.html" />
+    <link rel="prev" title="How Graphtage Works" href="howitworks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Graphtage
+          </a>
+<a href="https://github.com/trailofbits/graphtage/releases/tag/v0.4.0"><div class="version">v0.4.0</div></a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="library.html">Using Graphtage Programmatically</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending.html">Extending Graphtage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howitworks.html">How Graphtage Works</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Cutting a Release</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#where-the-version-lives">Where the Version Lives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-the-workflows-do">What the Workflows Do</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-release-procedure">The Release Procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verifying-a-release">Verifying a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#if-something-goes-wrong">If Something Goes Wrong</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Graphtage API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Graphtage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Cutting a Release</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/releasing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cutting-a-release">
+<span id="releasing"></span><h1>Cutting a Release<a class="headerlink" href="#cutting-a-release" title="Link to this heading"></a></h1>
+<p>This page is for Graphtage maintainers. It describes how a version reaches PyPI, the GitHub releases
+page, and the published documentation.</p>
+<p>Graphtage uses <code class="docutils literal notranslate"><span class="pre">MAJOR.MINOR.PATCH</span></code> version numbers. While the major version is zero, a release that
+adds a filetype, adds a command line option, or raises the minimum Python version is a minor bump; a
+release that only fixes bugs is a patch bump.</p>
+<section id="where-the-version-lives">
+<h2>Where the Version Lives<a class="headerlink" href="#where-the-version-lives" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">graphtage/version.py</span></code> is the single source of truth. Three consumers derive their version from it
+and need no edit of their own:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> declares <code class="docutils literal notranslate"><span class="pre">dynamic</span> <span class="pre">=</span> <span class="pre">[&quot;version&quot;]</span></code> and points <code class="docutils literal notranslate"><span class="pre">[tool.hatch.version]</span></code> at the
+module, so the built distributions take their version from it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/conf.py</span></code> executes the module to set the Sphinx <code class="docutils literal notranslate"><span class="pre">version</span></code> and <code class="docutils literal notranslate"><span class="pre">release</span></code> values, and to
+build the release link in the sidebar.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bindist/Makefile</span></code> runs the module to name the binary archive.</p></li>
+</ul>
+<p>Three files repeat the version and have to be edited by hand:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">docs/_templates/layout.html</span></code> lists every published version in the documentation version picker.
+Add the new version directly below the <code class="docutils literal notranslate"><span class="pre">latest</span></code> entry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> shows the output of <code class="docutils literal notranslate"><span class="pre">graphtage</span> <span class="pre">--version</span></code> in the command line options section.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> carries <code class="docutils literal notranslate"><span class="pre">version</span></code> and <code class="docutils literal notranslate"><span class="pre">date-released</span></code>.</p></li>
+</ul>
+</section>
+<section id="what-the-workflows-do">
+<h2>What the Workflows Do<a class="headerlink" href="#what-the-workflows-do" title="Link to this heading"></a></h2>
+<p>Three workflows make up the release. Each has a different trigger, which is what determines the order
+of the steps below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 30.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Workflow</p></th>
+<th class="head"><p>Trigger</p></th>
+<th class="head"><p>Effect</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">artifacts.yml</span></code></p></td>
+<td><p>A pushed tag matching <code class="docutils literal notranslate"><span class="pre">v*</span></code></p></td>
+<td><p>Builds the PyInstaller binaries for Linux and macOS and uploads them to the release for that
+tag, which may be a draft.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pythonpublish.yml</span></code></p></td>
+<td><p>A published GitHub release</p></td>
+<td><p>Builds the source distribution and wheel and uploads them to PyPI.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">publish_docs.yml</span></code></p></td>
+<td><p>A push to <code class="docutils literal notranslate"><span class="pre">master</span></code>, or a pushed tag matching <code class="docutils literal notranslate"><span class="pre">v*</span></code></p></td>
+<td><p>Publishes the built documentation to <code class="docutils literal notranslate"><span class="pre">gh-pages/master/</span></code> or <code class="docutils literal notranslate"><span class="pre">gh-pages/&lt;tag&gt;/</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal notranslate"><span class="pre">latest</span></code> documentation symlink follows <code class="docutils literal notranslate"><span class="pre">master</span></code>, not the newest release, so it moves as soon
+as the version bump lands rather than when the release is published.</p>
+<p>Both tag-triggered workflows check that the tag matches <code class="docutils literal notranslate"><span class="pre">graphtage/version.py</span></code> and fail if it does
+not. <code class="docutils literal notranslate"><span class="pre">artifacts.yml</span></code> uploads with <code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">release</span> <span class="pre">upload</span></code>, which can only add assets to a release
+that already exists: pushing a <code class="docutils literal notranslate"><span class="pre">v*</span></code> tag with no release behind it fails the upload rather than
+creating a release nobody reviewed.</p>
+</section>
+<section id="the-release-procedure">
+<h2>The Release Procedure<a class="headerlink" href="#the-release-procedure" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Confirm that <code class="docutils literal notranslate"><span class="pre">master</span></code> is green and that the working tree is clean.</p></li>
+<li><p>Confirm the PyPI trusted publisher. Graphtage publishes with <a class="reference external" href="https://docs.pypi.org/trusted-publishers/">Trusted Publishing</a> and holds no
+PyPI token, so a missing or misconfigured publisher fails the upload with no fallback. In the
+project’s PyPI publishing settings, confirm there is a publisher for the <code class="docutils literal notranslate"><span class="pre">trailofbits/graphtage</span></code>
+repository, the <code class="docutils literal notranslate"><span class="pre">pythonpublish.yml</span></code> workflow, and the <code class="docutils literal notranslate"><span class="pre">pypi</span></code> environment.</p></li>
+<li><p>Exercise the binary build before it matters. It only runs on tags, so it can break unnoticed
+between releases:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;Build binary artifacts&quot;</span><span class="w"> </span>--ref<span class="w"> </span>master
+</pre></div>
+</div>
+<p>On a branch it builds and smoke tests the binaries and uploads nothing.</p>
+</li>
+<li><p>Bump the version. Edit <code class="docutils literal notranslate"><span class="pre">graphtage/version.py</span></code>, then the three files that repeat the version.
+Commit and push to <code class="docutils literal notranslate"><span class="pre">master</span></code>, and wait for the checks to pass.</p></li>
+<li><p>Draft the release. Pin it to the commit you just pushed rather than to <code class="docutils literal notranslate"><span class="pre">master</span></code>, so that a merge
+in the meantime cannot move the tag:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">BUMP_SHA</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>rev-parse<span class="w"> </span>origin/master<span class="k">)</span>
+<span class="gp">$ </span>gh<span class="w"> </span>release<span class="w"> </span>create<span class="w"> </span>v1.2.3<span class="w"> </span>--draft<span class="w"> </span>--target<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BUMP_SHA</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--title<span class="w"> </span><span class="s2">&quot;Graphtage v1.2.3&quot;</span><span class="w"> </span>--notes-file<span class="w"> </span>notes.md
+</pre></div>
+</div>
+<p>A draft release creates no tag, and nothing is public yet.</p>
+</li>
+<li><p>Push the tag, so that the binaries attach to the draft:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v1.2.3<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$BUMP_SHA</span><span class="s2">&quot;</span><span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Graphtage v1.2.3&quot;</span>
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v1.2.3
+</pre></div>
+</div>
+<p>Wait for the binary build, then confirm both archives arrived and the release is still a draft:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gh<span class="w"> </span>release<span class="w"> </span>view<span class="w"> </span>v1.2.3<span class="w"> </span>--json<span class="w"> </span>isDraft,assets<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;.isDraft, [.assets[].name]&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Review the draft on GitHub and publish it. Publishing is what uploads to PyPI. Because the tag
+already exists, no other workflow runs.</p></li>
+</ol>
+<p>The tag has to come after the draft and before the publish. Letting the publish create the tag makes
+the release public for as long as the binaries take to build, and leaves a published release with no
+binaries if that build fails.</p>
+</section>
+<section id="verifying-a-release">
+<h2>Verifying a Release<a class="headerlink" href="#verifying-a-release" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The new version appears at <code class="docutils literal notranslate"><span class="pre">https://pypi.org/project/graphtage/</span></code>.</p></li>
+<li><p>Both binary archives are attached to the release, and each runs <code class="docutils literal notranslate"><span class="pre">graphtage</span> <span class="pre">--version</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://trailofbits.github.io/graphtage/v1.2.3/</span></code> renders, and the version picker on
+<code class="docutils literal notranslate"><span class="pre">https://trailofbits.github.io/graphtage/latest/</span></code> lists the new version.</p></li>
+</ul>
+<p>The version picker is written into each build, so documentation published before this release will
+never list it. Only <code class="docutils literal notranslate"><span class="pre">latest</span></code> and the new version’s own directory are current.</p>
+</section>
+<section id="if-something-goes-wrong">
+<h2>If Something Goes Wrong<a class="headerlink" href="#if-something-goes-wrong" title="Link to this heading"></a></h2>
+<p>While the release is still a draft, the tag is the only public artifact and it can be withdrawn:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>--delete<span class="w"> </span>origin<span class="w"> </span>v1.2.3
+<span class="gp">$ </span>gh<span class="w"> </span>release<span class="w"> </span>edit<span class="w"> </span>v1.2.3<span class="w"> </span>--target<span class="w"> </span>&lt;new-sha&gt;
+</pre></div>
+</div>
+<p>After the release is published the version is permanent. PyPI does not allow a filename to be
+reused, so a failed upload that has to be rebuilt needs a new patch version.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="howitworks.html" class="btn btn-neutral float-left" title="How Graphtage Works" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="package.html" class="btn btn-neutral float-right" title="Graphtage API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2026, Trail of Bits.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+      <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Graphtage Documentation</span>
+        v0.4.0
+        <span class="fa fa-caret-down"></span>
+      </span>
+      <div class="rst-other-versions">
+        <dl>
+          <dt>Versions</dt>
+          <dd><a href="../latest/">latest</a></dd>
+          <dd><a href="../v0.4.0/">0.4.0</a></dd>
+          <dd><a href="../v0.3.1/">0.3.1</a></dd>
+          <dd><a href="../v0.3.0/">0.3.0</a></dd>
+          <dd><a href="../v0.2.9/">0.2.9</a></dd>
+          <dd><a href="../v0.2.8/">0.2.8</a></dd>
+          <dd><a href="../v0.2.7/">0.2.7</a></dd>
+          <dd><a href="../v0.2.6/">0.2.6</a></dd>
+          <dd><a href="../v0.2.5/">0.2.5</a></dd>
+          <dd><a href="../v0.2.4/">0.2.4</a></dd>
+          <dd><a href="../v0.2.3/">0.2.3</a></dd>
+          <dd><a href="../v0.2.2/">0.2.2</a></dd>
+          <dd><a href="../v0.2.1/">0.2.1</a></dd>
+          <dd><a href="../v0.2.0/">0.2.0</a></dd>
+          <dd><a href="../v0.1.1/">0.1.1</a></dd>
+          <dd><a href="../v0.1.0/">0.1.0</a></dd>
+        </dl>
+        <dl>
+          <dt>Source Code</dt>
+            <dd>
+              <a href="https://github.com/trailofbits/graphtage">GitHub Page</a>
+            </dd>
+        </dl>
+      </div>
+    </div>
+  
+
+
+</body>
+</html>

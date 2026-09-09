@@ -30,6 +30,10 @@ There are several reasons why you might be here…
 
     Documentation on how Graphtage works is :doc:`here <howitworks>`.
 
+.. topic:: You maintain Graphtage and need to cut a release.
+
+    The release procedure is documented in :doc:`Cutting a Release <releasing>`.
+
 .. _GitHub page: https://github.com/trailofbits/graphtage
 
 .. toctree::
@@ -39,6 +43,7 @@ There are several reasons why you might be here…
    library
    extending
    howitworks
+   releasing
    package
 
 Indices and tables
