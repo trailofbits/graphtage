@@ -160,7 +160,8 @@ Initializing a Data Class Node
 :meth:`DataClassNode.__init__ <graphtage.dataclasses.DataClassNode.__init__>` assigns the slots from its positional
 and keyword arguments, so overriding it means reimplementing that assignment. Override
 :meth:`graphtage.dataclasses.DataClassNode.post_init` instead. It is called once the slots have been assigned, and it
-should not call ``super().post_init()``: each ancestor's implementation is called in turn, in order of the ``__mro__``.
+should not call ``super().post_init()``: every implementation in the class hierarchy is called automatically,
+starting with the least derived data class and ending with the class being instantiated.
 
 .. code-block:: python
 
@@ -171,7 +172,4 @@ should not call ``super().post_init()``: each ancestor's implementation is calle
             self.name.quoted = False
 
 .. note::
-    As of Graphtage 0.3.1, ``post_init()`` is only called for the ancestors of the class being instantiated, never for
-    the class itself. ``UnquotedName(StringNode("x"))`` leaves ``quoted`` set to :const:`True`; the callback runs only
-    when a subclass of ``UnquotedName`` is instantiated. Code that must run for the class itself still has to go in
-    ``__init__``.
+    An implementation that a subclass inherits without overriding runs once, not once per class that inherits it.
