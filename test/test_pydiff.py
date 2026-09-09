@@ -4,11 +4,19 @@ from io import StringIO
 from unittest import TestCase
 
 import graphtage
-from graphtage.ast import Subscript
+from graphtage.ast import Import, Subscript
 from graphtage.printer import Printer
-from graphtage.pydiff import PyDiffFormatter, PyObjAttribute, ast_to_tree, build_tree, print_diff
+from graphtage.pydiff import PyAlias, PyDiffFormatter, PyObjAttribute, ast_to_tree, build_tree, print_diff
 
 from .timing import run_with_time_limit
+
+
+def format_tree(tree: graphtage.TreeNode) -> str:
+    stream = StringIO()
+    printer = Printer(out_stream=stream, ansi_color=False)
+    with printer:
+        PyDiffFormatter.DEFAULT_INSTANCE.print(printer, tree)
+    return stream.getvalue()
 
 
 def render_diff(from_source: str, to_source: str) -> str:
@@ -36,6 +44,35 @@ class TestPyDiff(TestCase):
         for node in tree.dfs():
             self.assertNotIsInstance(node, graphtage.UnorderedListNode)
 
+    def test_plain_import_builds(self):
+        """Reproduces https://github.com/trailofbits/graphtage/issues/151.
+
+        `ASTBuilder` had no builder for `ast.Import`, so every module containing a plain `import` statement raised
+        `NotImplementedError`.
+
+        """
+        expected = {
+            "import os": [("os", "")],
+            "import os.path": [("os.path", "")],
+            "import os as o": [("os", "o")],
+            "import os, sys": [("os", ""), ("sys", "")],
+        }
+        for source, aliases in expected.items():
+            with self.subTest(source=source):
+                imports = [node for node in ast_to_tree(ast.parse(source)).dfs() if isinstance(node, Import)]
+                self.assertEqual(1, len(imports))
+                self.assertEqual("", imports[0].from_name.object)
+                names = imports[0].names.children()
+                for name, (expected_name, expected_as_name) in zip(names, aliases, strict=True):
+                    self.assertIsInstance(name, PyAlias)
+                    self.assertEqual(expected_name, name.name.object)
+                    self.assertEqual(expected_as_name, name.as_name.object)
+
+    def test_plain_import_printing(self):
+        """A plain `import` must not render the `from` clause that `from x import y` gets."""
+        for source in ("import os", "import os.path", "import os, sys", "from os import path"):
+            with self.subTest(source=source):
+                self.assertEqual(f"{source}\n", format_tree(ast_to_tree(ast.parse(source))))
     def test_attribute_receiver_is_not_quoted(self):
         stream = StringIO()
         attribute = PyObjAttribute(graphtage.StringNode("package"), graphtage.StringNode("member"))

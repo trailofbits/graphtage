@@ -204,8 +204,9 @@ class ASTBuilder(BasicBuilder):
             CallKeywords(())
         )
 
+    @Builder.expander(ast.Import)
     @Builder.expander(ast.ImportFrom)
-    def expand_import_from(self, node: ast.ImportFrom):
+    def expand_import(self, node: ast.Import | ast.ImportFrom):
         return node.names
 
     @Builder.builder(ast.ImportFrom)
@@ -215,6 +216,21 @@ class ASTBuilder(BasicBuilder):
         else:
             from_name = StringNode(node.module, quoted=False)
         return Import(names=ListNode(children), from_name=from_name)
+
+    @Builder.builder(ast.Import)
+    def build_import(self, _, children: list[TreeNode]):
+        """Builds a plain ``import x`` statement.
+
+        :class:`ast.Import` has no module of its own, so the resulting :class:`graphtage.ast.Import` gets an empty
+        ``from_name``, which is how both the node and its formatter distinguish ``import x`` from ``from y import x``.
+
+        Args:
+            children: The :class:`PyAlias` nodes built from the statement's aliases.
+
+        Returns:
+            Import: The resulting node.
+        """
+        return Import(names=ListNode(children), from_name=StringNode("", quoted=False))
 
     @Builder.builder(ast.alias)
     def build_alias(self, node: ast.alias, _):
