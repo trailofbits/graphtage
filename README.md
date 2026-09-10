@@ -6,8 +6,8 @@
 
 Graphtage is a command-line utility and [underlying library](https://trailofbits.github.io/graphtage/latest/library.html)
 for semantically comparing and merging tree-like structures, such as JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV,
-plist, and Python pickle files. Its name is a portmanteau of “graph” and “graftage”—the latter being the horticultural
-practice of joining two trees together such that they grow as one.
+plist, and Python pickle files, as well as flame graphs. Its name is a portmanteau of “graph” and “graftage”—the
+latter being the horticultural practice of joining two trees together such that they grow as one.
 
 ```console
 $ echo Original: && cat original.json && echo Modified: && cat modified.json
@@ -66,13 +66,44 @@ $ pip3 install 'graphtage[dev]'
 ### Input File Types
 Graphtage infers the type of each input file from its extension. To state the type instead of inferring it, use
 `--from-<type>` for the first file and `--to-<type>` for the second. Both flags exist for every format Graphtage
-supports: `csv`, `html`, `ini`, `json`, `json5`, `pickle`, `plist`, `toml`, `xml`, and `yaml`. For example, to read a
-JSON document whose name does not end in `.json`:
+supports: `csv`, `flamegraph`, `html`, `ini`, `json`, `json5`, `pickle`, `plist`, `toml`, `xml`, and `yaml`. For
+example, to read a JSON document whose name does not end in `.json`:
 ```console
 $ graphtage --from-json config.txt config.json
 ```
 `--from-mime` and `--to-mime` do the same thing but take a MIME type rather than a format name, which matters for the
 formats that Graphtage registers under more than one type. Run `graphtage --help` for the accepted values.
+
+#### Flame Graphs
+Graphtage reads flame graphs in the folded stacks format that
+[stackcollapse-perf.pl](https://github.com/brendangregg/FlameGraph) and its siblings emit, from files ending in
+`.folded` or `.collapsed`. Each line is one stack trace, written as a `;`-delimited list of function names, followed by
+a space and the integer number of times that stack trace was sampled.
+
+Diffing two profiles of the same program shows where a performance regression came from: which stack traces gained or
+lost samples, and which functions entered or left the call stack. Given `before.folded`:
+```
+main;work 100
+main;work;parse 40
+main;work;emit 30
+```
+and `after.folded`:
+```
+main;work 100
+main;work;parse 55
+main;work;flush 30
+```
+Graphtage reports the changed sample count and the changed frame, and leaves the unchanged stack trace alone:
+```console
+$ graphtage before.folded after.folded
+main;work 100
+main;work;parse 40 -> 55
+main;work;~~emit~~++flush++ 30
+```
+Graphtage matches the stack traces that two profiles have in common by their function names, so only the stack traces
+unique to one profile are compared against each other. Those are matched the same way Graphtage matches dictionary
+entries, which is quadratic in their number: two profiles with a thousand distinct stack traces take about as long to
+diff as two dictionaries of the same size.
 
 ### Output Formatting
 Graphtage performs an analysis on an intermediate representation of the trees that is divorced from the filetypes of the
