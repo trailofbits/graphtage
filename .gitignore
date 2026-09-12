@@ -19,3 +19,5 @@ htmlcov/
 venv/
 ENV/
 env/
+config.bat
+node_modules
