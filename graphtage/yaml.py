@@ -213,8 +213,8 @@ class YAMLFormatter(GraphtageFormatter):
         This is a fallback to permit the printing of custom containers, like :class:`graphtage.xml.XMLElement`.
 
         """
-        # Treat the container like a list
-        list_node = ListNode(node.children())
+        # Treat the container like a list. Copy so live children are not re-parented.
+        list_node = ListNode(c.copy() for c in node.children())
         self.print(printer, list_node)
 
 

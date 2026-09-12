@@ -30,6 +30,7 @@ from .json import JSONFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
+from .yaml import YAMLFormatter
 
 
 class XMLElementEdit(AbstractCompoundEdit):
@@ -456,17 +457,32 @@ class HTML(XML):
         )
 
 
-# Tell JSON how to format XML:
-def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
+def _xml_element_json_view(node: XMLElement) -> DictNode:
+    """Build a JSON dict view that owns its children.
+
+    Wrapping ``node.tag`` and the other live children in a new :class:`KeyValuePairNode` re-parents them and raises
+    ``ValueError`` once nodes gained parents in v0.2.7. Copies and a recursive dict for nested elements keep the
+    original tree intact.
+
+    """
     kvps = [
-        KeyValuePairNode(StringNode('tag'), node.tag),
+        KeyValuePairNode(StringNode('tag'), node.tag.copy()),
     ]
     if len(node.attrib) > 0:
-        kvps.append(KeyValuePairNode(StringNode('attrs'), node.attrib))
+        kvps.append(KeyValuePairNode(StringNode('attrs'), node.attrib.copy()))
     if node.text is not None:
-        kvps.append(KeyValuePairNode(StringNode('text'), node.text))
-    kvps.append(KeyValuePairNode(StringNode('children'), node._children))
-    self.print(printer, DictNode(kvps))
+        kvps.append(KeyValuePairNode(StringNode('text'), node.text.copy()))
+    kvps.append(KeyValuePairNode(
+        StringNode('children'),
+        ListNode(_xml_element_json_view(child) for child in node._children)
+    ))
+    return DictNode(kvps)
+
+
+# Tell JSON how to format XML:
+def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
+    self.print(printer, _xml_element_json_view(node))
 
 
 JSONFormatter.print_XMLElement = _json_print_XMLElement
+YAMLFormatter.print_XMLElement = _json_print_XMLElement
