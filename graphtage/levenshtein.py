@@ -117,7 +117,10 @@ class EditDistance(SequenceEdit):
         """
         self.penalty: int = insert_remove_penalty
         # Optimization: See if the sequences trivially share a common prefix or suffix.
-        # If so, this will quadratically reduce the size of the Levenshtein matrix
+        # If so, this will quadratically reduce the size of the Levenshtein matrix.
+        # Stripping the prefix is output-visible as well as faster: it forces the leading elements to be matched
+        # diagonally, which selects a different, equally optimal alignment for about 10% of small-alphabet inputs.
+        # See test_shared_prefix_biases_the_alignment.
         self.shared_prefix: list[tuple[TreeNode, TreeNode]] = []
         for fn, tn in zip(from_seq, to_seq, strict=False):
             if fn == tn:

@@ -240,3 +240,20 @@ class TestEditDistance(TestCase):
         self.assert_edit_script('aba', 'bab', ['-a', 'b>b', 'a>a', '+b'])
         # Six alignments tie on both keys, so every one of the three directions is load-bearing here.
         self.assert_edit_script('caccda', 'bcddcb', ['-c', 'a>b', 'c>c', 'c>d', 'd>d', '+c', 'a>b'])
+
+    def test_shared_prefix_biases_the_alignment(self):
+        """Pins the edit scripts that the shared-prefix strip in :meth:`EditDistance.__init__` decides.
+
+        Stripping a common prefix reads as a pure optimization, but it is output-visible: it forces the leading
+        characters to be matched diagonally, whereas backward reconstruction otherwise reaches the origin by a
+        border move. Roughly 10% of small-alphabet pairs produce a different — equally optimal — script when the
+        strip is removed, which is why these expectations exist.
+
+        The shared-suffix strip has no such effect, because it agrees with the diagonal-first tie-break that
+        reconstruction already applies at the end of the matrix.
+
+        """
+        self.assert_edit_script('a', 'aa', ['a>a', '+a'])
+        self.assert_edit_script('cc', 'c', ['c>c', '-c'])
+        self.assert_edit_script('aac', 'ab', ['a>a', '-a', 'c>b'])
+        self.assert_edit_script('cbcbbb', 'caa', ['c>c', '-b', '-c', '-b', 'b>a', 'b>a'])
