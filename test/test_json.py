@@ -90,3 +90,52 @@ class TestJSONJoinOptions(TestCase):
             '{"a": [1, ~~2~~, 3], ++"b": 4++}',
             render(b'{"a": [1, 2, 3]}', b'{"a": [1, 3], "b": 4}', join_lists=True, join_dict_items=True)
         )
+
+
+class TestRenderedDiffs(TestCase):
+    """Pins the rendered diff of documents whose output the string edit script decides.
+
+    Which characters come out marked removed and inserted, and in which order, is decided by the candidate
+    ordering in :meth:`graphtage.levenshtein.EditDistance._best_match` and by the shared-prefix strip in its
+    constructor. ``test/test_levenshtein.py`` pins both of those edit by edit; these snapshots pin what a user
+    sees, so a change to either shows up in a normal test run.
+
+    """
+
+    def test_dict_with_every_key_and_value_changed(self):
+        """Pins the diff of a dict in which no key and no value survives unchanged."""
+        self.assertEqual(
+            '{\n    "source++s++": "/usr/l~~ocal~~++ib++",\n    "target++s++": "/opt/l~~ocal~~++ib++"\n}',
+            render(
+                b'{"source": "/usr/local", "target": "/opt/local"}',
+                b'{"sources": "/usr/lib", "targets": "/opt/lib"}'
+            )
+        )
+
+    def test_list_of_similar_strings(self):
+        """Pins the diff of a list whose items are matched to each other by string edit distance."""
+        self.assertEqual(
+            '[\n    "re++a++d",\n    "gre~~e~~n",\n    "blue++s++"\n]',
+            render(b'["red", "green", "blue"]', b'["read", "gren", "blues"]')
+        )
+
+    def test_nested_dict_with_a_changed_string_and_number(self):
+        """Pins the diff of a string nested two levels deep alongside a replaced number."""
+        self.assertEqual(
+            '{\n    "server": {\n        "path": "/usr/l~~ocal~~++ib++/bin",\n        "retries": 3 -> 4\n    }\n}',
+            render(
+                b'{"server": {"path": "/usr/local/bin", "retries": 3}}',
+                b'{"server": {"path": "/usr/lib/bin", "retries": 4}}'
+            )
+        )
+
+    def test_nested_dict_with_an_appended_list_item(self):
+        """Pins the indentation and the insertion marker of a list nested inside two dicts."""
+        self.assertEqual(
+            '{\n    "outer": {\n        "inner": {\n            "leaf": 1 -> 2\n        },\n'
+            '        "sibling": [\n            1,\n            2,\n            ++3++\n        ]\n    }\n}',
+            render(
+                b'{"outer": {"inner": {"leaf": 1}, "sibling": [1, 2]}}',
+                b'{"outer": {"inner": {"leaf": 2}, "sibling": [1, 2, 3]}}'
+            )
+        )
