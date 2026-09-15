@@ -727,8 +727,6 @@ class StringFormatter(GraphtageFormatter):
         """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
-            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
-                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False

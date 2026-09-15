@@ -244,3 +244,19 @@ class TestBytesStringNode(TestCase):
         self.assert_exact_cost(5, "hello", b"hello")
         self.assert_exact_cost(5, b"hello", "hello")
         self.assert_exact_cost(1, "a", b"a")
+
+    @staticmethod
+    def render(from_bytes: str | bytes, to_bytes: str | bytes) -> str:
+        out_stream = StringIO()
+        graphtage.StringNode(from_bytes).diff(graphtage.StringNode(to_bytes)).print(
+            Printer(ansi_color=False, out_stream=out_stream)
+        )
+        return out_stream.getvalue()
+
+    def test_rendering_closes_the_quote(self):
+        """The ``b`` prefix used to be repeated before the closing quote, rendering ``b"hellob"``."""
+        self.assertEqual('b"hell~~o~~++p++"', self.render(b"hello", b"hellp"))
+        self.assertEqual('"hell~~o~~++p++"', self.render("hello", "hellp"))
+
+    def test_rendering_escapes_unprintable_bytes(self):
+        self.assertEqual('b"he~~\\x00~~++\\xff++o"', self.render(b"he\x00o", b"he\xffo"))
