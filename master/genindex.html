@@ -223,6 +223,12 @@
 </li>
         <li><a href="graphtage.ast.html#graphtage.ast.Subscript.__init__">(graphtage.ast.Subscript method)</a>
 </li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.__init__">(graphtage.batch_distance.BatchBackend method)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.__init__">(graphtage.batch_distance.NumpyBackend method)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.__init__">(graphtage.batch_distance.PythonBackend method)</a>
+</li>
         <li><a href="graphtage.html#graphtage.BoolNode.__init__">(graphtage.BoolNode method)</a>
 </li>
         <li><a href="graphtage.bounds.html#graphtage.bounds.Bounded.__init__">(graphtage.bounds.Bounded method)</a>
@@ -1150,10 +1156,10 @@
       </ul></li>
       <li><a href="graphtage.expressions.html#graphtage.expressions.ParseError.add_note">add_note() (graphtage.expressions.ParseError method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="graphtage.expressions.html#graphtage.expressions.Operator.ADDITION">ADDITION (graphtage.expressions.Operator attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="graphtage.ast.html#graphtage.ast.Assignment.all_children_are_leaves">all_children_are_leaves() (graphtage.ast.Assignment method)</a>
 
       <ul>
@@ -1212,6 +1218,10 @@
         <li><a href="graphtage.xml.html#graphtage.xml.XMLElementChildren.all_children_are_leaves">(graphtage.xml.XMLElementChildren method)</a>
 </li>
       </ul></li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.all_flat">all_flat() (in module graphtage.batch_distance)</a>
+</li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.all_pairs">all_pairs() (in module graphtage.batch_distance)</a>
+</li>
       <li><a href="graphtage.printer.html#graphtage.printer.HTMLPrinter.ansi_color">ansi_color (graphtage.printer.HTMLPrinter property)</a>
 
       <ul>
@@ -1250,6 +1260,8 @@
 </li>
       <li><a href="graphtage.xml.html#graphtage.xml.XMLElementEdit.attrib_edit">attrib_edit (graphtage.xml.XMLElementEdit attribute)</a>
 </li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.available_backends">available_backends() (in module graphtage.batch_distance)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1275,6 +1287,8 @@
       <li><a href="graphtage.builder.html#graphtage.builder.BasicBuilder">BasicBuilder (class in graphtage.builder)</a>
 </li>
       <li><a href="graphtage.formatter.html#graphtage.formatter.BasicFormatter">BasicFormatter (class in graphtage.formatter)</a>
+</li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend">BatchBackend (class in graphtage.batch_distance)</a>
 </li>
       <li><a href="graphtage.bounds.html#graphtage.bounds.IdentityInterval.begin">begin (graphtage.bounds.IdentityInterval attribute)</a>
 </li>
@@ -2448,6 +2462,14 @@
       </ul></li>
       <li><a href="graphtage.bounds.html#graphtage.bounds.IdentityInterval.distance_to">distance_to() (graphtage.bounds.IdentityInterval method)</a>
 </li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.distances">distances() (graphtage.batch_distance.BatchBackend method)</a>
+
+      <ul>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.distances">(graphtage.batch_distance.NumpyBackend method)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.distances">(graphtage.batch_distance.PythonBackend method)</a>
+</li>
+      </ul></li>
       <li><a href="graphtage.expressions.html#graphtage.expressions.Operator.DIVISION">DIVISION (graphtage.expressions.Operator attribute)</a>
 </li>
       <li><a href="graphtage.bounds.html#graphtage.bounds.Range.dominates">dominates() (graphtage.bounds.Range method)</a>
@@ -3357,6 +3379,13 @@
 </li>
       </ul></li>
       <li>
+    graphtage.batch_distance
+
+      <ul>
+        <li><a href="graphtage.batch_distance.html#module-graphtage.batch_distance">module</a>
+</li>
+      </ul></li>
+      <li>
     graphtage.bounds
 
       <ul>
@@ -3806,6 +3835,14 @@
 
       <ul>
         <li><a href="graphtage.printer.html#graphtage.printer.HTMLANSIContext.is_applied">(graphtage.printer.HTMLANSIContext attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.is_available">is_available() (graphtage.batch_distance.BatchBackend method)</a>
+
+      <ul>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.is_available">(graphtage.batch_distance.NumpyBackend method)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.is_available">(graphtage.batch_distance.PythonBackend method)</a>
 </li>
       </ul></li>
       <li><a href="graphtage.html#graphtage.AbstractCompoundEdit.is_complete">is_complete() (graphtage.AbstractCompoundEdit method)</a>
@@ -4404,12 +4441,12 @@
 </li>
       <li><a href="graphtage.matching.html#graphtage.matching.MatchingFromNode">MatchingFromNode (class in graphtage.matching)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="graphtage.matching.html#graphtage.matching.MatchingNode">MatchingNode (class in graphtage.matching)</a>
 </li>
       <li><a href="graphtage.matching.html#graphtage.matching.MatchingToNode">MatchingToNode (class in graphtage.matching)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="graphtage.constraints.html#graphtage.constraints.MatchUnless">MatchUnless (class in graphtage.constraints)</a>
 </li>
       <li><a href="graphtage.fibonacci.html#graphtage.fibonacci.MaxFibonacciHeap">MaxFibonacciHeap (class in graphtage.fibonacci)</a>
@@ -4424,6 +4461,14 @@
 
       <ul>
         <li><a href="graphtage.fibonacci.html#graphtage.fibonacci.MaxFibonacciHeap.min_node">(graphtage.fibonacci.MaxFibonacciHeap property)</a>
+</li>
+      </ul></li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.min_pairs">min_pairs (graphtage.batch_distance.BatchBackend attribute)</a>
+
+      <ul>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.min_pairs">(graphtage.batch_distance.NumpyBackend attribute)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.min_pairs">(graphtage.batch_distance.PythonBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="graphtage.matching.html#graphtage.matching.min_weight_bipartite_matching">min_weight_bipartite_matching() (in module graphtage.matching)</a>
@@ -4443,6 +4488,8 @@
         <li><a href="graphtage.html#module-graphtage">graphtage</a>
 </li>
         <li><a href="graphtage.ast.html#module-graphtage.ast">graphtage.ast</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#module-graphtage.batch_distance">graphtage.batch_distance</a>
 </li>
         <li><a href="graphtage.bounds.html#module-graphtage.bounds">graphtage.bounds</a>
 </li>
@@ -4531,9 +4578,15 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="graphtage.expressions.html#graphtage.expressions.CloseBracket.name">name (graphtage.expressions.CloseBracket attribute)</a>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.name">name (graphtage.batch_distance.BatchBackend attribute)</a>
 
       <ul>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.name">(graphtage.batch_distance.NumpyBackend attribute)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.name">(graphtage.batch_distance.PythonBackend attribute)</a>
+</li>
+        <li><a href="graphtage.expressions.html#graphtage.expressions.CloseBracket.name">(graphtage.expressions.CloseBracket attribute)</a>
+</li>
         <li><a href="graphtage.expressions.html#graphtage.expressions.CloseParen.name">(graphtage.expressions.CloseParen attribute)</a>
 </li>
         <li><a href="graphtage.expressions.html#graphtage.expressions.IdentifierToken.name">(graphtage.expressions.IdentifierToken attribute)</a>
@@ -4559,10 +4612,10 @@
       </ul></li>
       <li><a href="graphtage.ast.html#graphtage.ast.Import.names">names (graphtage.ast.Import attribute)</a>
 </li>
-      <li><a href="graphtage.bounds.html#graphtage.bounds.NEGATIVE_INFINITY">NEGATIVE_INFINITY (in module graphtage.bounds)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="graphtage.bounds.html#graphtage.bounds.NEGATIVE_INFINITY">NEGATIVE_INFINITY (in module graphtage.bounds)</a>
+</li>
       <li><a href="graphtage.printer.html#graphtage.printer.HTMLPrinter.newline">newline() (graphtage.printer.HTMLPrinter method)</a>
 
       <ul>
@@ -4598,6 +4651,8 @@
       <li><a href="graphtage.utils.html#graphtage.utils.SparseMatrix.num_rows">num_rows (graphtage.utils.SparseMatrix attribute)</a>
 </li>
       <li><a href="graphtage.expressions.html#graphtage.expressions.NumericToken">NumericToken (class in graphtage.expressions)</a>
+</li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend">NumpyBackend (class in graphtage.batch_distance)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -5509,6 +5564,8 @@
 </li>
       <li><a href="graphtage.pydiff.html#graphtage.pydiff.PyObjFormatter">PyObjFormatter (class in graphtage.pydiff)</a>
 </li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend">PythonBackend (class in graphtage.batch_distance)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -5619,6 +5676,8 @@
         <li><a href="graphtage.html#graphtage.TreeNodeMeta.register">(graphtage.TreeNodeMeta method)</a>
 </li>
       </ul></li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.register_backend">register_backend() (in module graphtage.batch_distance)</a>
+</li>
       <li><a href="graphtage.expressions.html#graphtage.expressions.Operator.REMAINDER">REMAINDER (graphtage.expressions.Operator attribute)</a>
 </li>
       <li><a href="graphtage.html#graphtage.Remove">Remove (class in graphtage)</a>
@@ -5845,6 +5904,14 @@
 </li>
       <li><a href="graphtage.utils.html#graphtage.utils.SparseMatrix.SparseMatrixRow">SparseMatrix.SparseMatrixRow (class in graphtage.utils)</a>
 </li>
+      <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.BatchBackend.speed_rank">speed_rank (graphtage.batch_distance.BatchBackend attribute)</a>
+
+      <ul>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.NumpyBackend.speed_rank">(graphtage.batch_distance.NumpyBackend attribute)</a>
+</li>
+        <li><a href="graphtage.batch_distance.html#graphtage.batch_distance.PythonBackend.speed_rank">(graphtage.batch_distance.PythonBackend attribute)</a>
+</li>
+      </ul></li>
       <li><a href="graphtage.git.html#graphtage.git.split_options">split_options() (in module graphtage.git)</a>
 </li>
       <li><a href="graphtage.printer.html#graphtage.printer.ANSIContext.start_code">start_code (graphtage.printer.ANSIContext property)</a>

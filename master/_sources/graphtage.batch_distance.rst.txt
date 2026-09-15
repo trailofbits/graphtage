@@ -1,0 +1,57 @@
+graphtage.batch_distance
+========================
+
+.. automodule:: graphtage.batch_distance
+
+batch_distance classes
+----------------------
+
+BatchBackend
+************
+
+.. autoclass:: BatchBackend
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+NumpyBackend
+************
+
+.. autoclass:: NumpyBackend
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+PythonBackend
+*************
+
+.. autoclass:: PythonBackend
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+batch_distance functions
+------------------------
+
+all_flat
+********
+
+.. autofunction:: all_flat
+
+all_pairs
+*********
+
+.. autofunction:: all_pairs
+
+available_backends
+******************
+
+.. autofunction:: available_backends
+
+register_backend
+****************
+
+.. autofunction:: register_backend
