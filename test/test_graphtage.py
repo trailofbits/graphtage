@@ -194,3 +194,53 @@ class TestUnorderedListNode(TestCase):
             edit = unordered(*values).edits(unordered(*shuffled))
         self.assertIsInstance(edit, graphtage.Match)
         self.assertEqual(0, edit.bounds().upper_bound)
+
+
+class TestBytesStringNode(TestCase):
+    """Covers :class:`graphtage.StringNode` objects that wrap :class:`bytes` instead of :class:`str`.
+
+    Iterating over :class:`bytes` yields :class:`int` byte values, so the per-character lattice that
+    :func:`graphtage.string_edit_distance` builds wraps each byte in a ``StringNode`` holding an ``int``.
+    Every test here used to raise ``TypeError: object of type 'int' has no len()``.
+
+    """
+
+    def assert_exact_cost(self, expected: int, from_bytes: str | bytes, to_bytes: str | bytes):
+        edit = graphtage.StringNode(from_bytes).edits(graphtage.StringNode(to_bytes))
+        while edit.tighten_bounds():
+            pass
+        self.assertEqual(graphtage.Range(expected, expected), edit.bounds())
+
+    def test_substitution(self):
+        """One differing byte costs one, the same as one differing character does."""
+        self.assert_exact_cost(1, b"hello", b"hellp")
+        self.assert_exact_cost(1, "hello", "hellp")
+
+    def test_equal_bytes_match_for_free(self):
+        edit = graphtage.StringNode(b"hello").edits(graphtage.StringNode(b"hello"))
+        self.assertIsInstance(edit, graphtage.Match)
+        self.assert_exact_cost(0, b"hello", b"hello")
+
+    def test_single_byte(self):
+        """A one-byte value takes the single-character shortcut, which is where the crash originated."""
+        self.assert_exact_cost(1, b"a", b"b")
+        self.assert_exact_cost(0, b"a", b"a")
+
+    def test_empty_bytes(self):
+        """An empty value on either side costs one per byte on the other side."""
+        self.assert_exact_cost(0, b"", b"")
+        self.assert_exact_cost(3, b"", b"abc")
+        self.assert_exact_cost(3, b"abc", b"")
+
+    def test_insertion_and_removal_cost_one_per_byte(self):
+        """A byte node's total size is one, so inserting or removing it costs the same as a character."""
+        self.assertEqual(1, graphtage.StringNode(b"h").total_size)
+        self.assertEqual(5, graphtage.StringNode(b"hello").total_size)
+        self.assert_exact_cost(1, b"hello", b"hell")
+        self.assert_exact_cost(1, b"hell", b"hello")
+
+    def test_str_versus_bytes(self):
+        """A ``str`` never equals ``bytes``, so every position counts as a substitution."""
+        self.assert_exact_cost(5, "hello", b"hello")
+        self.assert_exact_cost(5, b"hello", "hello")
+        self.assert_exact_cost(1, "a", b"a")
