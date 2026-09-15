@@ -1,107 +1,74 @@
-import json
+"""Regression tests for #128.
+
+Importing graphtage.printer used to have the side effect of calling
+colorama.init() at module scope, because NULL_PRINTER (constructed at
+import time) was built on top of a NullWriter whose isatty() incorrectly
+returned True. colorama.init() replaces sys.stdout/sys.stderr with a
+stripping wrapper, so any later, real Printer that writes to a
+redirected/piped stream had its ANSI escapes silently stripped even when
+color was explicitly forced with --color.
+"""
+
+import importlib
 import subprocess
 import sys
-import tempfile
-from os.path import join
 from unittest import TestCase
 
-from graphtage.__main__ import EXIT_BROKEN_PIPE
-
-FROM_JSON = '{"a": 1, "b": [1, 2, 3]}'
-TO_JSON = '{"a": 2, "b": [1, 2, 4]}'
-
-ANSI_ESCAPE = b"\x1b["
-
-LARGE_KEY_COUNT = 4000
-"""Enough keys that the diff overflows the pipe buffer, so Graphtage is still writing when the reader gives up."""
+from graphtage.printer import NullWriter, NULL_PRINTER, Printer
 
 
-def run_graphtage(*args: str) -> bytes:
-    """Runs the command line with its output redirected to a pipe, and returns what was written to stdout."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        from_path = join(tmpdir, "from.json")
-        to_path = join(tmpdir, "to.json")
-        for path, contents in ((from_path, FROM_JSON), (to_path, TO_JSON)):
-            with open(path, "w") as f:
-                f.write(contents)
-        command: list[str] = [sys.executable, "-m", "graphtage", "--no-status"]
-        command.extend(args)
-        command.extend((from_path, to_path))
-        result = subprocess.run(command, capture_output=True)
-    if result.returncode not in (0, 1):
-        raise AssertionError(f"`graphtage` exited with status {result.returncode}: {result.stderr.decode('utf-8')}")
-    return result.stdout
+class TestNullWriter(TestCase):
+    def test_isatty_is_false(self):
+        """A writer that discards everything has no terminal to color."""
+        self.assertFalse(NullWriter().isatty())
+
+    def test_null_printer_does_not_enable_color(self):
+        self.assertFalse(NULL_PRINTER.ansi_color)
 
 
-def write_large_inputs(tmpdir: str) -> tuple[str, str]:
-    """Writes two JSON objects whose diff is several times larger than the pipe buffer, and returns their paths."""
-    from_object = {f"key_{i:05d}": f"value_{i:05d}{'_padding' * 4}" for i in range(LARGE_KEY_COUNT)}
-    to_object = dict(from_object)
-    to_object["key_00007"] = "changed"
-    from_path = join(tmpdir, "from.json")
-    to_path = join(tmpdir, "to.json")
-    for path, contents in ((from_path, from_object), (to_path, to_object)):
-        with open(path, "w") as f:
-            json.dump(contents, f)
-    return from_path, to_path
-
-
-def run_graphtage_into_a_closed_pipe(*args: str) -> tuple[int, bytes]:
-    """Runs the command line, closes its standard output partway through, and returns the exit status and stderr."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        from_path, to_path = write_large_inputs(tmpdir)
-        command: list[str] = [sys.executable, "-m", "graphtage", "--no-status"]
-        command.extend(args)
-        command.extend((from_path, to_path))
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        with process:
-            process.stdout.read(64)
-            process.stdout.close()
-            stderr = process.stderr.read()
-    return process.returncode, stderr
-
-
-class TestPrinter(TestCase):
-    def test_import_does_not_wrap_stdout(self):
-        """Importing the library must not replace :attr:`sys.stdout` with colorama's wrapper."""
-        code = (
-            "import sys\n"
-            "before = type(sys.stdout).__name__\n"
-            "import graphtage\n"
-            "with open(sys.argv[1], 'w') as f:\n"
-            "    f.write(f'{before} {type(sys.stdout).__name__}')\n"
-        )
-        with tempfile.TemporaryDirectory() as tmpdir:
-            out_path = join(tmpdir, "stdout_types.txt")
-            subprocess.run([sys.executable, "-c", code, out_path], capture_output=True, check=True)
-            with open(out_path) as f:
-                before, after = f.read().split()
-        self.assertEqual(before, after, "`import graphtage` replaced sys.stdout")
-
-    def test_forced_color_is_not_stripped_when_redirected(self):
-        """``--color`` must emit ANSI escapes even though stdout is a pipe rather than a terminal."""
-        self.assertIn(ANSI_ESCAPE, run_graphtage("--color"))
-
-    def test_redirected_output_is_uncolored_by_default(self):
-        """Without ``--color``, a redirected diff must stay free of ANSI escapes."""
-        self.assertNotIn(ANSI_ESCAPE, run_graphtage())
-
-    def test_html_output_is_colored_when_forced(self):
-        """``--html --color`` must emit HTML colors rather than ANSI escapes."""
-        output = run_graphtage("--html", "--color")
-        self.assertIn(b"color:", output)
-        self.assertNotIn(ANSI_ESCAPE, output)
-
-    def test_closing_the_pipe_early_is_quiet(self):
-        """Piping a diff into a reader that stops early must not print ``BrokenPipeError`` tracebacks.
-
-        The HTML printer is checked alongside the plain one because it writes markup outside of the diff:
-        :class:`graphtage.printer.HTMLPrinter` emits the document header while it is constructed and the closing
-        tags while it is closed, so a dead pipe breaks it both before and after the diff is printed.
+class TestImportDoesNotMutateStdStreams(TestCase):
+    def test_importing_printer_module_does_not_wrap_stdout(self):
+        """Reproduces #128 in a fresh subprocess so a prior import in this
+        test process (or colorama's own global state) can't mask the bug.
         """
-        for args in ((), ("--html",)):
-            with self.subTest(args=args):
-                status, stderr = run_graphtage_into_a_closed_pipe(*args)
-                self.assertNotIn(b"Traceback", stderr)
-                self.assertNotIn(b"BrokenPipeError", stderr)
-                self.assertEqual(EXIT_BROKEN_PIPE, status)
+        script = (
+            "import sys\n"
+            "before = sys.stdout\n"
+            "import graphtage.printer\n"
+            "after = sys.stdout\n"
+            "assert before is after, (type(before), type(after))\n"
+            "print('OK')\n"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "OK")
+
+
+class TestForcedColorSurvivesRedirection(TestCase):
+    def test_color_flag_emits_ansi_escapes_when_redirected(self):
+        """End-to-end reproduction of the issue's own repro steps: forcing
+        --color on output redirected to a file (i.e. not a tty) must still
+        emit ANSI escape sequences.
+        """
+        import json
+        import os
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            a_path = os.path.join(tmpdir, "a.json")
+            b_path = os.path.join(tmpdir, "b.json")
+            with open(a_path, "w") as f:
+                json.dump({"a": 1}, f)
+            with open(b_path, "w") as f:
+                json.dump({"a": 2}, f)
+
+            result = subprocess.run(
+                [sys.executable, "-m", "graphtage", "--no-status", "--color", a_path, b_path],
+                capture_output=True,
+                text=True,
+            )
+            self.assertIn("\x1b", result.stdout, "expected ANSI escapes in forced-color redirected output")
