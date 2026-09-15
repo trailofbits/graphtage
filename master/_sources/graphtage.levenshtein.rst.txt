@@ -18,6 +18,11 @@ EditDistance
 levenshtein functions
 ---------------------
 
+exact_string_distance
+*********************
+
+.. autofunction:: exact_string_distance
+
 levenshtein_distance
 ********************
 

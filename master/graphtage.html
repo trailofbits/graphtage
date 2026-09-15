@@ -6492,19 +6492,23 @@ Raising <a class="reference external" href="https://docs.python.org/3/builtins/e
 <dl class="py class">
 <dt class="sig sig-object py" id="graphtage.StringEdit">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.</span></span><span class="sig-name descname"><span class="pre">StringEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><span class="pre">StringNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><span class="pre">StringNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#graphtage.AbstractEdit" title="graphtage.AbstractEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractEdit</span></code></a></p>
-<p>An edit returned from a <a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringNode</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#graphtage.ConstantCostEdit" title="graphtage.ConstantCostEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstantCostEdit</span></code></a></p>
+<p>An edit returned from a <a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">StringNode</span></code></a>.</p>
+<p>The cost of the edit is the Levenshtein distance between the two strings, which
+<a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.exact_string_distance" title="graphtage.levenshtein.exact_string_distance"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.levenshtein.exact_string_distance()</span></code></a> computes arithmetically at construction time. The
+character-level lattice that renders the edit is built only when <a class="reference internal" href="#graphtage.StringEdit.edit_distance" title="graphtage.StringEdit.edit_distance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">StringEdit.edit_distance</span></code></a> is read,
+which the formatters do for the edits they actually print. A diff costs many more pairs of strings than it
+renders.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.StringEdit.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><span class="pre">StringNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#graphtage.StringNode" title="graphtage.StringNode"><span class="pre">StringNode</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.StringEdit.__init__" title="Link to this definition"></a></dt>
-<dd><p>Constructs a new Edit.</p>
+<dd><p>Constructs a new edit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>from_node</strong> – The node that this edit transforms.</p></li>
-<li><p><strong>to_node</strong> – The node that this edit transforms <a class="reference internal" href="#graphtage.StringEdit.from_node" title="graphtage.StringEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> into.</p></li>
-<li><p><strong>constant_cost</strong> – A optional lower bound on the cost of this edit.</p></li>
-<li><p><strong>cost_upper_bound</strong> – An optional upper bound on the cost of this edit.</p></li>
+<li><p><strong>from_node</strong> – The node being edited.</p></li>
+<li><p><strong>to_node</strong> – The node into which <a class="reference internal" href="#graphtage.StringEdit.from_node" title="graphtage.StringEdit.from_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node</span></code></a> is being transformed.</p></li>
+<li><p><strong>cost</strong> – The constant cost of the edit.</p></li>
 </ul>
 </dd>
 </dl>
@@ -6541,10 +6545,21 @@ provided to the constructor, the upper bound defaults to:</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py property">
 <dt class="sig sig-object py" id="graphtage.StringEdit.edit_distance">
-<span class="sig-name descname"><span class="pre">edit_distance</span></span><a class="headerlink" href="#graphtage.StringEdit.edit_distance" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edit_distance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.EditDistance" title="graphtage.levenshtein.EditDistance"><span class="pre">EditDistance</span></a></em><a class="headerlink" href="#graphtage.StringEdit.edit_distance" title="Link to this definition"></a></dt>
+<dd><p>The character-level edit lattice for this edit, constructed on first access.</p>
+<p>The lattice is the only source of the edit script, so the sequence of character matches, insertions, and
+removals that a formatter renders is unaffected by the cost having been computed separately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The lattice over the characters of the two strings.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.EditDistance" title="graphtage.levenshtein.EditDistance">EditDistance</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="graphtage.StringEdit.from_node">
@@ -6622,20 +6637,7 @@ formatter like <a class="reference internal" href="#graphtage.StringFormatter" t
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.StringEdit.tighten_bounds">
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.StringEdit.tighten_bounds" title="Link to this definition"></a></dt>
-<dd><p>Tightens the <a class="reference internal" href="#graphtage.Edit.bounds" title="graphtage.Edit.bounds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Edit.bounds()</span></code></a> on the cost of this edit, if possible.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> if the bounds have been tightened.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Implementations of this function should return <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code> if and only if
-<a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range.definitive" title="graphtage.bounds.Range.definitive"><code class="xref py py-meth docutils literal notranslate"><span class="pre">self.bounds().definitive()</span></code></a>.</p>
-</div>
+<dd><p>This always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">

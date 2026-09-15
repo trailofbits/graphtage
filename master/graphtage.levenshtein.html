@@ -72,6 +72,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#levenshtein-functions">levenshtein functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exact-string-distance">exact_string_distance</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#levenshtein-distance">levenshtein_distance</a></li>
 </ul>
 </li>
@@ -393,11 +394,41 @@ the sub-edits:</p>
 </section>
 <section id="levenshtein-functions">
 <h2>levenshtein functions<a class="headerlink" href="#levenshtein-functions" title="Link to this heading"></a></h2>
+<section id="exact-string-distance">
+<h3>exact_string_distance<a class="headerlink" href="#exact-string-distance" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.levenshtein.exact_string_distance">
+<span class="sig-prename descclassname"><span class="pre">graphtage.levenshtein.</span></span><span class="sig-name descname"><span class="pre">exact_string_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.exact_string_distance" title="Link to this definition"></a></dt>
+<dd><p>Computes the Levenshtein distance between two strings without building an edit script.</p>
+<p><a class="reference internal" href="#graphtage.levenshtein.EditDistance" title="graphtage.levenshtein.EditDistance"><code class="xref py py-class docutils literal notranslate"><span class="pre">EditDistance</span></code></a> computes the same number, but it does so by materializing one
+<a class="reference internal" href="graphtage.html#graphtage.TreeNode" title="graphtage.TreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.TreeNode</span></code></a> per character and one live <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Edit</span></code></a> per cell of the Levenshtein
+matrix. Callers that only need the cost, such as <a class="reference internal" href="graphtage.html#graphtage.StringEdit" title="graphtage.StringEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.StringEdit</span></code></a> and
+<a class="reference internal" href="graphtage.html#graphtage.LeafNode.edits" title="graphtage.LeafNode.edits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.LeafNode.edits()</span></code></a>, go through this function instead and leave the lattice unbuilt.</p>
+<p>Both arguments may be <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, in either combination. Indexing <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> yields
+<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> byte values, which never compare equal to a <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> character, so a mixed pair costs one
+per aligned position exactly as the lattice charges for it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> – the string from which to match.</p></li>
+<li><p><strong>t</strong> – the string to which to match.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Levenshtein edit distance metric between the two strings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="levenshtein-distance">
 <h3>levenshtein_distance<a class="headerlink" href="#levenshtein-distance" title="Link to this heading"></a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="graphtage.levenshtein.levenshtein_distance">
-<span class="sig-prename descclassname"><span class="pre">graphtage.levenshtein.</span></span><span class="sig-name descname"><span class="pre">levenshtein_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.levenshtein_distance" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">graphtage.levenshtein.</span></span><span class="sig-name descname"><span class="pre">levenshtein_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.levenshtein.levenshtein_distance" title="Link to this definition"></a></dt>
 <dd><p>Canonical implementation of the Levenshtein distance metric.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
