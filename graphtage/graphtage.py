@@ -8,8 +8,16 @@ from collections.abc import Collection, Iterable, Iterator
 from typing import Any, Generic, TypeVar
 
 from .bounds import Range
-from .edits import AbstractCompoundEdit, AbstractEdit, EditCollection, Insert, Match, Remove, Replace
-from .levenshtein import EditDistance, levenshtein_distance
+from .edits import (
+    AbstractCompoundEdit,
+    ConstantCostEdit,
+    EditCollection,
+    Insert,
+    Match,
+    Remove,
+    Replace,
+)
+from .levenshtein import EditDistance, exact_string_distance
 from .multiset import MultiSetEdit
 from .printer import NULL_PRINTER, Back, Fore, NullANSIContext, Printer
 from .sequences import FixedLengthSequenceEdit, SequenceEdit, SequenceNode
@@ -73,7 +81,7 @@ class LeafNode(TreeNode):
 
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, LeafNode):
-            return Match(self, node, levenshtein_distance(str(self.object), str(node.object)))
+            return Match(self, node, exact_string_distance(str(self.object), str(node.object)))
         elif isinstance(node, ContainerNode):
             return Replace(self, node)
 
@@ -672,30 +680,48 @@ class FixedKeyDictNode(MappingNode, SequenceNode[dict[LeafNode, KeyValuePairNode
         return iter(self._children.values())
 
 
-class StringEdit(AbstractEdit):
-    """An edit returned from a :class:`StringNode`"""
+class StringEdit(ConstantCostEdit):
+    """An edit returned from a :class:`StringNode`.
 
-    __slots__ = ('edit_distance',)
+    The cost of the edit is the Levenshtein distance between the two strings, which
+    :func:`graphtage.levenshtein.exact_string_distance` computes arithmetically at construction time. The
+    character-level lattice that renders the edit is built only when :attr:`StringEdit.edit_distance` is read,
+    which the formatters do for the edits they actually print. A diff costs many more pairs of strings than it
+    renders.
+
+    """
+
+    __slots__ = ('_edit_distance',)
 
     def __init__(
             self,
             from_node: 'StringNode',
             to_node: 'StringNode'
     ):
-        self.edit_distance = string_edit_distance(from_node.object, to_node.object)
+        self._edit_distance: EditDistance | None = None
         super().__init__(
             from_node=from_node,
-            to_node=to_node
+            to_node=to_node,
+            cost=exact_string_distance(from_node.object, to_node.object)
         )
+
+    @property
+    def edit_distance(self) -> EditDistance:
+        """The character-level edit lattice for this edit, constructed on first access.
+
+        The lattice is the only source of the edit script, so the sequence of character matches, insertions, and
+        removals that a formatter renders is unaffected by the cost having been computed separately.
+
+        Returns:
+            EditDistance: The lattice over the characters of the two strings.
+
+        """
+        if self._edit_distance is None:
+            self._edit_distance = string_edit_distance(self.from_node.object, self.to_node.object)
+        return self._edit_distance
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(from_node={self.from_node!r}, to_node={self.to_node!r})"
-
-    def bounds(self) -> Range:
-        return self.edit_distance.bounds()
-
-    def tighten_bounds(self) -> bool:
-        return self.edit_distance.tighten_bounds()
 
     def print(self, formatter: GraphtageFormatter, printer: Printer):
         """`StringEdit` does not implement :meth:`graphtage.tree.Edit.print`.

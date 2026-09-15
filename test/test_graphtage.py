@@ -260,3 +260,133 @@ class TestBytesStringNode(TestCase):
 
     def test_rendering_escapes_unprintable_bytes(self):
         self.assertEqual('b"he~~\\x00~~++\\xff++o"', self.render(b"he\x00o", b"he\xffo"))
+
+
+class StringEditDistanceCounter:
+    """Counts how many character-level lattices :class:`graphtage.StringEdit` builds inside a block."""
+
+    def __init__(self):
+        self.count = 0
+        self._original = graphtage.graphtage.string_edit_distance
+
+    def __enter__(self) -> 'StringEditDistanceCounter':
+        def counted(s1, s2):
+            self.count += 1
+            return self._original(s1, s2)
+
+        graphtage.graphtage.string_edit_distance = counted
+        return self
+
+    def __exit__(self, *args):
+        graphtage.graphtage.string_edit_distance = self._original
+
+
+class TestStringEdit(TestCase):
+    """Covers the two halves of :class:`graphtage.StringEdit`: its cost and its edit script.
+
+    The cost is computed arithmetically at construction; the lattice that produces the script is built only when
+    something reads :attr:`graphtage.StringEdit.edit_distance`. These tests pin that split, because a
+    :class:`graphtage.StringEdit` that eagerly builds its lattice is correct but quadratically slower, and a
+    lattice whose cost disagrees with the reported cost renders a diff that does not add up to its own price.
+
+    """
+
+    @staticmethod
+    def edit(from_str: str | bytes, to_str: str | bytes) -> graphtage.StringEdit:
+        return graphtage.StringEdit(graphtage.StringNode(from_str), graphtage.StringNode(to_str))
+
+    def test_bounds_are_definitive_on_construction(self):
+        """A caller that never tightens must still see the exact cost.
+
+        :class:`graphtage.matching.WeightedBipartiteMatcher` prices its edges with ``bounds().upper_bound``
+        after only partial tightening, so an edit whose initial upper bound is an over-estimate feeds the
+        assignment problem a weight that is too large.
+
+        """
+        edit = self.edit("kitten", "sitting")
+        self.assertTrue(edit.bounds().definitive())
+        self.assertEqual(graphtage.Range(3, 3), edit.bounds())
+        self.assertEqual(graphtage.Range(3, 3), edit.initial_bounds)
+
+    def test_tighten_bounds_returns_false(self):
+        """There is nothing left to tighten, so the loops that drive edits to completion terminate at once."""
+        edit = self.edit("kitten", "sitting")
+        self.assertFalse(edit.tighten_bounds())
+        self.assertEqual(graphtage.Range(3, 3), edit.bounds())
+
+    def test_the_lattice_is_not_built_until_it_is_read(self):
+        """Constructing the edit must not build the lattice; reading the property must, exactly once."""
+        edit = self.edit("/usr/local/bin", "/usr/lib/bin")
+        self.assertIsNone(edit._edit_distance)
+        lattice = edit.edit_distance
+        self.assertIsNotNone(edit._edit_distance)
+        self.assertIs(lattice, edit.edit_distance)
+
+    def test_the_lattice_agrees_with_the_reported_cost(self):
+        """The script a formatter renders has to add up to the cost the edit reported to the matcher."""
+        for from_str, to_str in (
+                ("/usr/local/bin", "/usr/lib/bin"),
+                ("kitten", "sitting"),
+                ("aabc", "bcb"),
+                ("hello", "hellp"),
+                ("", "abc"),
+                ("abc", ""),
+                ("abcd", "abcd"),
+                (b"he\x00o", b"he\xffo"),
+        ):
+            with self.subTest(from_str=from_str, to_str=to_str):
+                edit = self.edit(from_str, to_str)
+                lattice = edit.edit_distance
+                while lattice.tighten_bounds():
+                    pass
+                self.assertEqual(edit.bounds().upper_bound, lattice.bounds().upper_bound)
+
+    def test_printing_a_string_node_builds_no_lattice(self):
+        """``print_StringNode`` constructs two ``StringEdit``s per node only to ask whether it is quoted."""
+        out_stream = StringIO()
+        with StringEditDistanceCounter() as counter:
+            graphtage.StringNode("/usr/local/bin").print(Printer(ansi_color=False, out_stream=out_stream))
+        self.assertEqual(0, counter.count)
+        self.assertEqual('"/usr/local/bin"', out_stream.getvalue())
+
+    def test_a_diff_builds_a_lattice_only_for_what_it_renders(self):
+        """A dense N-by-N match costs N*N pairs of key/value nodes but renders at most N of them.
+
+        No key survives, so the bipartite matcher prices every one of the 64 candidate pairs, each of which
+        holds a key string and a value string. Eagerly building a lattice per candidate is what made a diff of
+        a few dozen strings take seconds. The bound here is deliberately loose; it only has to stay far below
+        the 128 lattices that the candidates would otherwise account for.
+
+        """
+        size = 8
+        from_obj = {f"from-key-{i}": f"/usr/local/share/value-{i}" for i in range(size)}
+        to_obj = {f"to-key-{i}": f"/opt/local/share/value-{i * 3}" for i in range(size)}
+        out_stream = StringIO()
+        with StringEditDistanceCounter() as counter:
+            diffed = graphtage.json.build_tree(from_obj).diff(graphtage.json.build_tree(to_obj))
+            graphtage.json.JSONFormatter.DEFAULT_INSTANCE.print(
+                Printer(ansi_color=False, quiet=True, out_stream=out_stream), diffed
+            )
+        self.assertLessEqual(counter.count, 4 * size)
+
+    def test_a_sixty_key_dict_diff_is_fast(self):
+        """Guards the whole point of computing string edit costs without the lattice.
+
+        Every key and every value differs, so the bipartite matcher costs 3600 pairs of key/value nodes, and
+        therefore 7200 pairs of strings. Building a lattice for each of those takes the better part of a
+        minute; deriving the cost arithmetically takes under a second. The limit is generous so that a slow
+        runner cannot flake it.
+
+        """
+        rng = random.Random(60)
+
+        def words(count: int, length: int) -> list[str]:
+            return [''.join(rng.choices('abcdefghijklmnopqrstuvwxyz', k=length)) for _ in range(count)]
+
+        from_obj = dict(zip(words(60, 12), words(60, 40), strict=True))
+        to_obj = dict(zip(words(60, 12), words(60, 40), strict=True))
+        with run_with_time_limit(seconds=30):
+            edit = graphtage.json.build_tree(from_obj).edits(graphtage.json.build_tree(to_obj))
+            while edit.tighten_bounds():
+                pass
+        self.assertTrue(edit.bounds().definitive())

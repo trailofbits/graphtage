@@ -30,7 +30,7 @@ from .tree import Edit, TreeNode
 log = logging.getLogger(__name__)
 
 
-def levenshtein_distance(s: str, t: str) -> int:
+def levenshtein_distance(s: str | bytes, t: str | bytes) -> int:
     """Canonical implementation of the Levenshtein distance metric.
 
     Args:
@@ -62,6 +62,45 @@ def levenshtein_distance(s: str, t: str) -> int:
                                  dist[row - 1][col - 1] + cost)
 
     return dist[rows - 1][cols - 1]
+
+
+def exact_string_distance(s: str | bytes, t: str | bytes) -> int:
+    """Computes the Levenshtein distance between two strings without building an edit script.
+
+    :class:`EditDistance` computes the same number, but it does so by materializing one
+    :class:`graphtage.TreeNode` per character and one live :class:`graphtage.Edit` per cell of the Levenshtein
+    matrix. Callers that only need the cost, such as :class:`graphtage.StringEdit` and
+    :meth:`graphtage.LeafNode.edits`, go through this function instead and leave the lattice unbuilt.
+
+    Both arguments may be :class:`str` or :class:`bytes`, in either combination. Indexing :class:`bytes` yields
+    :class:`int` byte values, which never compare equal to a :class:`str` character, so a mixed pair costs one
+    per aligned position exactly as the lattice charges for it.
+
+    Args:
+        s: the string from which to match.
+        t: the string to which to match.
+
+    Returns:
+        int: The Levenshtein edit distance metric between the two strings.
+
+    """
+    if s == t:
+        return 0
+    elif not s:
+        return len(t)
+    elif not t:
+        return len(s)
+    # Stripping a shared prefix and suffix quadratically reduces the size of the matrix that
+    # levenshtein_distance builds. It cannot change the answer: characters that align with themselves are
+    # always free, and no optimal alignment crosses them.
+    overlap = min(len(s), len(t))
+    prefix = 0
+    while prefix < overlap and s[prefix] == t[prefix]:
+        prefix += 1
+    suffix = 0
+    while suffix < overlap - prefix and s[len(s) - suffix - 1] == t[len(t) - suffix - 1]:
+        suffix += 1
+    return levenshtein_distance(s[prefix:len(s) - suffix], t[prefix:len(t) - suffix])
 
 
 class EditDistance(SequenceEdit):

@@ -1,7 +1,13 @@
+import random
+import string
 from unittest import TestCase
+
+import numpy as np
+from scipy.optimize import linear_sum_assignment
 
 import graphtage
 from graphtage.builder import BasicBuilder
+from graphtage.levenshtein import levenshtein_distance
 from graphtage.multiset import MultiSetEdit
 from graphtage.pydiff import diff
 
@@ -56,3 +62,84 @@ class TestMultiSetEdit(TestCase):
 
     def test_dict_with_set_value(self):
         self.assertMultiSetEdit({"a": {1, 2}}, {"a": {1, 3}}, 1)
+
+
+class TestMatchingOptimality(TestCase):
+    """Checks that the matching a diff of two string sets produces is optimal under exact edit costs.
+
+    :class:`graphtage.matching.WeightedBipartiteMatcher` prices its edges with ``bounds().upper_bound`` after
+    only partial tightening, so it can hand :func:`scipy.optimize.linear_sum_assignment` a weight matrix that
+    over-states some pairs and solve a different problem than the one it meant to. Nothing else in the suite
+    checks the weights the matcher actually used, only that the cost it reports is self-consistent.
+
+    The assignment problem is solved here a second time, from a cost matrix built directly with
+    :func:`graphtage.levenshtein.levenshtein_distance`, and the two totals must agree. That is an absolute
+    statement about the matching rather than a comparison against any particular earlier implementation.
+
+    """
+
+    def assert_matching_is_optimal(self, from_strings: set[str], to_strings: set[str]):
+        """Asserts that the matcher's chosen pairs cost what an independent optimal assignment costs.
+
+        Args:
+            from_strings: the set to match from.
+            to_strings: the set to match to.
+
+        """
+        edit = BasicBuilder().build_tree(from_strings).edits(BasicBuilder().build_tree(to_strings))
+        self.assertIsInstance(edit, MultiSetEdit)
+        while edit.tighten_bounds():
+            pass
+        matcher = edit._matcher
+        from_nodes, to_nodes = list(matcher.from_nodes), list(matcher.to_nodes)
+        self.assertTrue(from_nodes)
+        self.assertTrue(to_nodes)
+        costs = np.array(
+            [[levenshtein_distance(f.object, t.object) for t in to_nodes] for f in from_nodes],
+            dtype=np.int64
+        )
+        rows, columns = linear_sum_assignment(costs)
+        matching = matcher.matching
+        self.assertEqual(min(len(from_nodes), len(to_nodes)), len(matching))
+        self.assertEqual(
+            int(costs[rows, columns].sum()),
+            sum(levenshtein_distance(f.object, t.object) for f, (t, _) in matching.items())
+        )
+
+    @staticmethod
+    def words(rng: random.Random, count: int, length: int) -> set[str]:
+        return {''.join(rng.choices(string.ascii_lowercase, k=length)) for _ in range(count)}
+
+    def test_unrelated_strings(self):
+        rng = random.Random(1)
+        for _ in range(5):
+            self.assert_matching_is_optimal(self.words(rng, 12, 10), self.words(rng, 12, 10))
+
+    def test_near_misses(self):
+        """Pairs that differ in two characters make the difference between assignments small and easy to miss."""
+        rng = random.Random(2)
+        originals = self.words(rng, 14, 12)
+        mutated = {w[:5] + ''.join(rng.choices(string.ascii_lowercase, k=2)) + w[7:] for w in originals}
+        self.assert_matching_is_optimal(originals, mutated)
+
+    def test_shared_affixes(self):
+        """A shared prefix and suffix is what the exact cost helper strips, so it has to stay exact."""
+        rng = random.Random(3)
+        self.assert_matching_is_optimal(
+            {f"/usr/local/lib/{w}/bin" for w in self.words(rng, 10, 6)},
+            {f"/usr/local/lib/{w}/bin" for w in self.words(rng, 10, 6)}
+        )
+
+    def test_rectangular_matching(self):
+        """More elements on one side than the other leaves some unmatched, which scipy also handles."""
+        rng = random.Random(4)
+        self.assert_matching_is_optimal(self.words(rng, 8, 9), self.words(rng, 15, 9))
+        self.assert_matching_is_optimal(self.words(rng, 15, 9), self.words(rng, 8, 9))
+
+    def test_small_alphabet(self):
+        """A small alphabet maximizes the number of assignments that tie, which is where a bias shows up."""
+        rng = random.Random(5)
+        self.assert_matching_is_optimal(
+            {''.join(rng.choices('abcd', k=8)) for _ in range(12)},
+            {''.join(rng.choices('abcd', k=8)) for _ in range(12)}
+        )

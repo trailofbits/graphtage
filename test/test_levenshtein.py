@@ -5,10 +5,11 @@ from tqdm import trange
 
 from graphtage import EditDistance, string_edit_distance
 from graphtage.edits import Edit, Insert, Match, Remove
-from graphtage.levenshtein import levenshtein_distance
+from graphtage.levenshtein import exact_string_distance, levenshtein_distance
 
 LETTERS: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 SMALL_ALPHABET: str = 'abcd'
+NON_ASCII: str = 'αβγδεζηθ🙂é́'
 
 
 def render_script(distance: EditDistance) -> list[str]:
@@ -281,3 +282,73 @@ class TestEditDistance(TestCase):
             bounds = distance.bounds()
             self.assertTrue(bounds.definitive(), f"{pair} has bounds {bounds!s}")
             self.assertEqual(cost, bounds.upper_bound, pair)
+
+
+class TestExactStringDistance(TestCase):
+    """Covers :func:`graphtage.levenshtein.exact_string_distance`.
+
+    The function short-circuits equal and empty operands and strips a shared prefix and suffix before calling
+    :func:`graphtage.levenshtein.levenshtein_distance`. Every one of those steps is an opportunity to return a
+    number that is not the Levenshtein distance, and the number it returns is the cost of a
+    :class:`graphtage.StringEdit`, so a wrong answer silently changes which nodes a diff matches.
+
+    """
+
+    def assert_agrees(self, s, t):
+        expected = levenshtein_distance(s, t)
+        pair = f"{s!r} -> {t!r}"
+        self.assertEqual(expected, exact_string_distance(s, t), pair)
+        self.assertEqual(expected, exact_string_distance(t, s), f"{t!r} -> {s!r}")
+
+    def test_agrees_on_random_strings(self):
+        """A small alphabet maximizes the number of pairs with a shared prefix or suffix to strip."""
+        for _ in trange(500):
+            s = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 12)))
+            t = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 12)))
+            self.assert_agrees(s, t)
+
+    def test_agrees_on_random_bytes(self):
+        """:class:`StringNode` wraps ``bytes`` as well as ``str``, and indexing ``bytes`` yields ``int``."""
+        for _ in trange(500):
+            s = bytes(random.choices(range(0, 8), k=random.randint(0, 12)))
+            t = bytes(random.choices(range(0, 8), k=random.randint(0, 12)))
+            self.assert_agrees(s, t)
+
+    def test_agrees_on_random_non_ascii(self):
+        """Astral characters and combining marks are single positions to both implementations."""
+        for _ in trange(200):
+            s = ''.join(random.choices(NON_ASCII, k=random.randint(0, 10)))
+            t = ''.join(random.choices(NON_ASCII, k=random.randint(0, 10)))
+            self.assert_agrees(s, t)
+
+    def test_empty_operands(self):
+        self.assertEqual(0, exact_string_distance('', ''))
+        self.assertEqual(0, exact_string_distance(b'', b''))
+        self.assertEqual(3, exact_string_distance('', 'abc'))
+        self.assertEqual(3, exact_string_distance('abc', ''))
+        self.assertEqual(3, exact_string_distance(b'', b'abc'))
+        self.assertEqual(3, exact_string_distance(b'abc', b''))
+
+    def test_shared_prefix_and_suffix_do_not_overlap(self):
+        """An operand that is wholly a prefix of the other must not have its characters counted twice."""
+        self.assertEqual(1, exact_string_distance('aa', 'aaa'))
+        self.assertEqual(2, exact_string_distance('aaa', 'aaaaa'))
+        self.assertEqual(4, exact_string_distance('a', 'aaaaa'))
+        self.assertEqual(1, exact_string_distance('ab', 'aab'))
+        self.assertEqual(0, exact_string_distance('aaaa', 'aaaa'))
+
+    def test_str_never_equals_bytes(self):
+        """A mixed pair costs one per aligned position, which is what the character lattice charges."""
+        self.assertEqual(5, exact_string_distance('hello', b'hello'))
+        self.assertEqual(5, exact_string_distance(b'hello', 'hello'))
+        self.assertEqual(1, exact_string_distance('a', b'a'))
+
+    def test_agrees_with_the_lattice(self):
+        """The lattice is what renders the edit, so the reported cost has to be the cost of its script."""
+        for _ in trange(100):
+            s = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 10)))
+            t = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 10)))
+            lattice = string_edit_distance(s, t)
+            while lattice.tighten_bounds():
+                pass
+            self.assertEqual(lattice.bounds().upper_bound, exact_string_distance(s, t), f"{s!r} -> {t!r}")
