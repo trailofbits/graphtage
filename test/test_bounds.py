@@ -4,7 +4,48 @@ from unittest import TestCase
 
 from tqdm import trange
 
-from graphtage.bounds import Bounded, Range, make_distinct, sort
+from graphtage.bounds import Bounded, IdentityInterval, Range, make_distinct, sort
+
+
+class CollidingRange(Bounded):
+    """A bounded range whose initial bounds are identical to those of every other instance.
+
+    This is the shape :func:`graphtage.bounds.make_distinct` sees at the start of a bipartite match,
+    where every edge reports near-identical initial bounds and therefore produces intervals that share
+    a span.
+
+    Equality is by identity, which is what Graphtage's edits use, but every comparison is counted in
+    :attr:`comparisons` so that a test can tell an O(n) workload from an O(n^2) one.
+    """
+
+    comparisons: int = 0
+
+    def __init__(self, final_value: int, width: int = 1024):
+        self.final_value = final_value
+        self._lb = 0
+        self._ub = width
+
+    def bounds(self) -> Range:
+        return Range(self._lb, self._ub)
+
+    def tighten_bounds(self) -> bool:
+        if self._lb == self._ub:
+            return False
+        if self._lb < self.final_value:
+            self._lb += max((self.final_value - self._lb) // 2, 1)
+        if self._ub > self.final_value:
+            self._ub -= max((self._ub - self.final_value) // 2, 1)
+        return True
+
+    def __eq__(self, other):
+        CollidingRange.comparisons += 1
+        return self is other
+
+    def __hash__(self):
+        return id(self)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.final_value!r})"
 
 
 class RandomDecreasingRange(Bounded):
@@ -99,3 +140,57 @@ class TestBounds(TestCase):
                         tests += 1
         finally:
             print(f"Average speedup: {speedups / tests:.01f}x")
+
+    def test_make_distinct_with_identical_initial_bounds(self):
+        """Checks the result of ``make_distinct`` when every input starts with the same bounds.
+
+        The interval tree ``make_distinct`` uses keys its intervals on their spans, so inputs that all
+        report the same bounds are the degenerate case for it. This asserts the outcome rather than the
+        data structure: it catches a rewrite of ``make_distinct`` that leaves two ranges overlapping
+        without being definitive, which is the postcondition callers such as the bipartite matcher rely
+        on to order edits.
+        """
+        ranges = [CollidingRange(final_value=i * 5) for i in range(64)]
+        make_distinct(*ranges)
+        ordered = list(sort(ranges))
+        self.assertEqual(len(ranges), len(ordered))
+        last_range = None
+        for r in ordered:
+            rbounds = r.bounds()
+            if last_range is not None:
+                self.assertTrue(
+                    (last_range.definitive() and rbounds.definitive() and last_range == rbounds)
+                    or last_range.upper_bound < rbounds.lower_bound,
+                    f"{last_range!r} was followed by {rbounds!r}",
+                )
+            last_range = rbounds
+
+    def test_make_distinct_does_not_probe_quadratically(self):
+        """Pins the hash and equality invariant that keeps ``make_distinct`` out of quadratic behavior.
+
+        ``intervaltree.Interval`` hashes on ``(begin, end)`` alone but compares ``data`` as well, and
+        ``IntervalTree`` holds its intervals in sets. Intervals that share a span therefore land in one
+        hash bucket, and each insertion and lookup turns into a linear scan of equality tests.
+        ``IdentityInterval`` mixes ``id(data)`` into the hash to keep those buckets apart.
+
+        This catches a regression to the inherited hash. With it, a 64-element run costs over 700,000
+        data comparisons; with ``IdentityInterval`` it costs none at all, because no two intervals share
+        a bucket.
+        """
+        first, second = CollidingRange(1), CollidingRange(2)
+        self.assertNotEqual(IdentityInterval(0, 10, first), IdentityInterval(0, 10, second))
+
+        n = 64
+        ranges = [CollidingRange(final_value=i * 5) for i in range(n)]
+        CollidingRange.comparisons = 0
+        try:
+            make_distinct(*ranges)
+            comparisons = CollidingRange.comparisons
+        finally:
+            CollidingRange.comparisons = 0
+        self.assertLessEqual(
+            comparisons,
+            4 * n,
+            f"make_distinct made {comparisons} equality comparisons over {n} equally bounded inputs, "
+            f"which suggests the intervals are colliding into shared hash buckets",
+        )
