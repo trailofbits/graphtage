@@ -391,6 +391,33 @@ def min_bounded(bounds: Iterator[B]) -> B:
     return best_item
 
 
+class IdentityInterval(Interval):
+    """An :class:`intervaltree.Interval` that also hashes on the identity of its data.
+
+    :class:`intervaltree.Interval` hashes on ``(begin, end)`` alone, but its equality test compares
+    ``data`` as well. :class:`intervaltree.IntervalTree` stores its intervals in :class:`set` objects, so
+    intervals that share a span but carry different data all land in one hash bucket, and every insertion
+    and lookup degenerates into a linear scan of equality tests. :func:`make_distinct` hits that case
+    directly: the bounded objects it receives start out with near-identical bounds.
+
+    Mixing ``id(data)`` into the hash spreads those intervals across buckets. :func:`make_distinct` needs
+    one interval per bounded object regardless of how those objects compare, so distinguishing them by
+    identity matches what the function already assumes.
+
+    Note:
+        Do not look up an :class:`IdentityInterval` with a plain :class:`intervaltree.Interval`, or the
+        other way around. The two hash differently, so the lookup misses even when the intervals compare
+        equal. :class:`intervaltree.IntervalTree` builds no intervals of its own on the ``add``,
+        ``remove``, and overlap-query paths that :func:`make_distinct` uses, so the tree here only ever
+        holds and probes instances of this class.
+    """
+
+    __slots__ = ()
+
+    def __hash__(self) -> int:
+        return hash((self.begin, self.end, id(self.data)))
+
+
 def make_distinct(*bounded: Bounded):
     """Ensures that all of the provided bounded arguments are tightened until they are finite and
     either definitive or non-overlapping with any of the other arguments."""
@@ -399,14 +426,14 @@ def make_distinct(*bounded: Bounded):
     tree: IntervalTree = IntervalTree()
     # Use a max-heap (negative sizes) to find biggest intervals in O(log n)
     # Heap entries: (-size, id(interval), interval) - id breaks ties deterministically
-    size_heap: list[tuple[int, int, Interval]] = []
+    size_heap: list[tuple[int, int, IdentityInterval]] = []
 
     for b in bounded:
         if not b.bounds().finite:
             b.tighten_bounds()
             if not b.bounds().finite:
                 raise ValueError(f"Could not tighten {b!r} to a finite bound")
-        interval = Interval(b.bounds().lower_bound, b.bounds().upper_bound + 1, b)
+        interval = IdentityInterval(b.bounds().lower_bound, b.bounds().upper_bound + 1, b)
         tree.add(interval)
         size = interval.end - interval.begin
         heapq.heappush(size_heap, (-size, id(interval), interval))
@@ -416,7 +443,7 @@ def make_distinct(*bounded: Bounded):
 
     while len(tree) > 1:
         # Pop from heap until we find a valid interval (still in tree)
-        biggest: Interval | None = None
+        biggest: IdentityInterval | None = None
         while size_heap:
             neg_size, iv_id, candidate = heapq.heappop(size_heap)
             if iv_id in valid_intervals:
@@ -445,7 +472,7 @@ def make_distinct(*bounded: Bounded):
             continue
 
         # Find the biggest intersecting interval (linear search over smaller set)
-        second_biggest: Interval | None = None
+        second_biggest: IdentityInterval | None = None
         for m in matching:
             m_size = m.end - m.begin
             if second_biggest is None or m_size > second_biggest.end - second_biggest.begin:
@@ -467,7 +494,7 @@ def make_distinct(*bounded: Bounded):
             second_biggest.data.tighten_bounds()
 
         # Re-add intervals if they still overlap with others
-        new_interval = Interval(
+        new_interval = IdentityInterval(
             begin=biggest.data.bounds().lower_bound,
             end=biggest.data.bounds().upper_bound + 1,
             data=biggest.data
@@ -478,7 +505,7 @@ def make_distinct(*bounded: Bounded):
             size = new_interval.end - new_interval.begin
             heapq.heappush(size_heap, (-size, id(new_interval), new_interval))
 
-        new_interval = Interval(
+        new_interval = IdentityInterval(
             begin=second_biggest.data.bounds().lower_bound,
             end=second_biggest.data.bounds().upper_bound + 1,
             data=second_biggest.data
