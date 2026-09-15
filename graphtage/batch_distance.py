@@ -22,7 +22,12 @@ Two backends ship with Graphtage:
 Set the ``GRAPHTAGE_BATCH_BACKEND`` environment variable to a backend name to pin the choice, which is useful for
 benchmarking one backend against another and for testing that they agree.
 
-Nothing in Graphtage calls this module yet.
+Graphtage reaches the batch through :func:`cost`, which prices a single pair the way
+:func:`graphtage.levenshtein.levenshtein_distance` does but answers from a pre-computed block when one holds the
+pair. :class:`graphtage.multiset.MultiSetEdit` and :class:`graphtage.levenshtein.EditDistance` each face a cross
+product of node pairs whose edits are constructed one at a time, so they call :func:`preprice` or
+:func:`preprice_product` before constructing any of them and let every later :func:`cost` read the answer out of the
+block.
 
 """
 
@@ -62,6 +67,49 @@ few percent to the extra per-chunk bookkeeping.
 
 _KERNEL_ITEM_BYTES = 4
 """The width of one dynamic programming cell, which the scan holds as :class:`numpy.int32`."""
+
+BLOCK_STACK_LIMIT = 8
+"""The number of pre-priced blocks :func:`cost` searches before the oldest is dropped.
+
+A block is a pure cache of a deterministic function, so dropping one costs a recomputation and nothing else. The
+limit is what keeps the structure bounded: an edit installs a block in its constructor and reads from it across
+however many later calls it takes to tighten its bounds, and nothing tells the cache when that edit is finished.
+
+"""
+
+PREPRICE_MIN_PAIRS = 32
+"""The number of pairs below which pre-pricing is skipped and every pair goes through the scalar dynamic program.
+
+Building a block costs a pass over the pairs, a batch, and the two dictionaries that index it, none of which the
+scalar path pays. Measured on an Apple M-series laptop over lists of 6 to 24 character strings, diffing gets
+faster from about 36 pairs and slower below about 25, which is the same crossing as :const:`NUMPY_MIN_PAIRS`:
+below it a batch is answered by the ``python`` backend, so a block buys the overhead of vectorizing without the
+vectorization.
+
+"""
+
+PREPRICE_MAX_CELLS = 4 * 1024 * 1024
+"""The largest block, in cells, that pre-pricing will build.
+
+The pairs a caller offers need not fill the rectangle their distinct sides span. A collection holding both leaves
+and key/value pairs, for instance, spans a rectangle several times larger than the number of pairs in it. Cells
+that no pair fills cost four bytes each and hold no answer, so a batch whose rectangle is this large is left to the
+scalar path rather than given a block of 16 MB.
+
+"""
+
+VECTORIZED_MIN_CELLS = 4096
+"""The size of Levenshtein matrix above which one pair alone is worth handing to a vectorized backend.
+
+The batched scan costs one array pass per row rather than one interpreter step per cell, so it beats the scalar
+dynamic program on a single pair of long strings even though there is nothing to amortize the array setup over.
+Measured on an Apple M-series laptop, the two meet at about 52 by 52 characters and the scan is 2.4 times faster
+by 128 by 128. This threshold, 64 by 64, sits just above the crossing.
+
+"""
+
+_UNPRICED = -1
+"""The value of a block cell that no pair filled. Distances are never negative, so it cannot be mistaken for one."""
 
 _STR_PAD = 0x110000
 """The padding symbol for :class:`str` batches: the first value that is not a Unicode code point."""
@@ -538,3 +586,284 @@ def all_flat(
         raise ValueError(f"all_flat needs two collections of the same length, but got {len(a)} and {len(b)}")
     unique_pairs, index = _dedupe(list(zip(a, b, strict=True)))
     return _pair_distances(unique_pairs, backend)[index]
+
+
+class _Block:
+    """A rectangle of pre-computed distances, indexed by the strings themselves.
+
+    A :class:`dict` keyed on pairs of strings would hold the same answers, but it would hold each key too: for the
+    cross product of two collections of four hundred strings that is tens of megabytes of tuples and hashes against
+    the ``rows * columns * 4`` bytes of the matrix here.
+
+    """
+
+    __slots__ = ('_columns', '_matrix', '_rows')
+
+    def __init__(self, rows: dict[str | bytes, int], columns: dict[str | bytes, int], matrix: np.ndarray):
+        """Initializes the block.
+
+        Args:
+            rows: Each string that indexes a row, mapped to its row.
+            columns: Each string that indexes a column, mapped to its column.
+            matrix: A ``(len(rows), len(columns))`` array of :class:`numpy.int32`, whose unfilled cells hold
+                :const:`_UNPRICED`.
+
+        """
+        self._rows = rows
+        self._columns = columns
+        self._matrix = matrix
+
+    def lookup(self, a: str | bytes, b: str | bytes) -> int | None:
+        """Returns the distance between two strings, or :const:`None` if this block does not hold it.
+
+        Args:
+            a: The string to measure from.
+            b: The string to measure to.
+
+        Returns:
+            Optional[int]: The distance, or :const:`None`.
+
+        """
+        row = self._rows.get(a)
+        if row is None:
+            return None
+        column = self._columns.get(b)
+        if column is None:
+            return None
+        value = int(self._matrix[row, column])
+        if value == _UNPRICED:
+            return None
+        return value
+
+
+_blocks: tuple[_Block, ...] = ()
+"""The pre-priced blocks, newest first. Rebound rather than mutated, so that a reader never sees a partial update."""
+
+
+def _install(block: _Block) -> None:
+    """Adds a block to the front of the stack, dropping the oldest once the stack is full.
+
+    The stack is replaced rather than mutated. A reader holding the old tuple still sees a consistent stack, and a
+    writer that loses a race only costs the block it was installing, which is a recomputation rather than a wrong
+    answer.
+
+    Args:
+        block: The block to install.
+
+    """
+    global _blocks
+    _blocks = (block, *_blocks[:BLOCK_STACK_LIMIT - 1])
+
+
+def clear() -> None:
+    """Discards every pre-priced block.
+
+    :func:`cost` answers the same afterwards, because the blocks only hold what it would otherwise compute.
+
+    """
+    global _blocks
+    _blocks = ()
+
+
+def cost(a: str | bytes, b: str | bytes) -> int:
+    """Returns the Levenshtein distance between two strings, reading a pre-priced block when one holds it.
+
+    This is what :func:`graphtage.levenshtein.exact_string_distance` calls, and it returns exactly what
+    :func:`graphtage.levenshtein.levenshtein_distance` returns for the same pair.
+
+    A pair that no block holds is computed and *not* recorded. Recording it would make the cache grow with the
+    number of distinct pairs a diff asks about, which is the whole cross product, and nothing would ever evict it.
+    Blocks are installed deliberately, by a caller that knows it is about to ask for a whole rectangle of pairs.
+
+    Args:
+        a: The string to measure from.
+        b: The string to measure to.
+
+    Returns:
+        int: The Levenshtein edit distance between the two strings.
+
+    """
+    if a == b:
+        return 0
+    elif not a:
+        return len(b)
+    elif not b:
+        return len(a)
+    for block in _blocks:
+        value = block.lookup(a, b)
+        if value is not None:
+            return value
+    return _uncached_cost(a, b)
+
+
+def _strip_shared_affixes(a: str | bytes, b: str | bytes) -> tuple[str | bytes, str | bytes]:
+    """Removes the shared prefix and suffix of two strings, which quadratically shrinks the matrix between them.
+
+    Dropping them cannot change the distance: a character that aligns with itself is free, and no optimal alignment
+    crosses such a position.
+
+    Args:
+        a: The string to measure from.
+        b: The string to measure to.
+
+    Returns:
+        Tuple[str | bytes, str | bytes]: What is left of each string.
+
+    """
+    overlap = min(len(a), len(b))
+    prefix = 0
+    while prefix < overlap and a[prefix] == b[prefix]:
+        prefix += 1
+    suffix = 0
+    while suffix < overlap - prefix and a[len(a) - suffix - 1] == b[len(b) - suffix - 1]:
+        suffix += 1
+    return a[prefix:len(a) - suffix], b[prefix:len(b) - suffix]
+
+
+def _same_kind(a: str | bytes, b: str | bytes) -> bool:
+    """Returns whether two strings are both :class:`str` or both :class:`bytes`.
+
+    A pair that mixes the two still has a well defined distance, because a :class:`str` character never equals a
+    :class:`bytes` element, but the backends reject it rather than pick one of the two readings of its symbols.
+
+    Args:
+        a: The string to measure from.
+        b: The string to measure to.
+
+    Returns:
+        bool: Whether a backend will accept the pair.
+
+    """
+    if isinstance(a, str):
+        return isinstance(b, str)
+    return isinstance(a, bytes) and isinstance(b, bytes)
+
+
+def _preferred_backend() -> str:
+    """Returns the backend to run a batch whose pairs are big but whose pair count is small.
+
+    :func:`_select_backend` skips a backend whose :attr:`BatchBackend.min_pairs` a batch does not meet, which is the
+    right rule for a batch of short strings and the wrong one for a batch of one long pair. Naming the backend
+    outright bypasses that rule while still honoring ``GRAPHTAGE_BATCH_BACKEND``.
+
+    Returns:
+        str: The name of the fastest available backend, or of the one the environment pins.
+
+    """
+    return os.environ.get(BACKEND_ENV_VAR) or available_backends()[0]
+
+
+def _uncached_cost(a: str | bytes, b: str | bytes) -> int:
+    """Prices one pair that no block holds.
+
+    Args:
+        a: The string to measure from, which differs from ``b`` and is not empty.
+        b: The string to measure to, which is not empty.
+
+    Returns:
+        int: The Levenshtein edit distance between the two strings.
+
+    """
+    left, right = _strip_shared_affixes(a, b)
+    if not left:
+        return len(right)
+    elif not right:
+        return len(left)
+    elif len(left) * len(right) < VECTORIZED_MIN_CELLS or not _same_kind(left, right):
+        return levenshtein_distance(left, right)
+    return int(_pair_distances([(left, right)], _preferred_backend())[0])
+
+
+def _index(values: Sequence[str | bytes]) -> tuple[list[str | bytes], dict[str | bytes, int]]:
+    """Numbers the distinct values of a collection in first-seen order.
+
+    Args:
+        values: The strings to number.
+
+    Returns:
+        Tuple[List[str | bytes], Dict[str | bytes, int]]: The distinct strings, and each one mapped to its position.
+
+    """
+    positions: dict[str | bytes, int] = {}
+    for value in values:
+        if value not in positions:
+            positions[value] = len(positions)
+    return list(positions), positions
+
+
+def _product_matrix(rows: list[str | bytes], columns: list[str | bytes]) -> np.ndarray:
+    """Prices a whole rectangle, one batch per kind of string.
+
+    :class:`str` and :class:`bytes` rows are batched separately, and the cells where one meets the other are left
+    unfilled so that :meth:`_Block.lookup` reports them as absent.
+
+    Args:
+        rows: The distinct strings indexing the rows.
+        columns: The distinct strings indexing the columns.
+
+    Returns:
+        numpy.ndarray: A ``(len(rows), len(columns))`` array of :class:`numpy.int32`.
+
+    """
+    matrix = np.full((len(rows), len(columns)), _UNPRICED, dtype=np.int32)
+    for kind in (str, bytes):
+        row_positions = [position for position, value in enumerate(rows) if isinstance(value, kind)]
+        column_positions = [position for position, value in enumerate(columns) if isinstance(value, kind)]
+        if row_positions and column_positions:
+            matrix[np.ix_(row_positions, column_positions)] = all_pairs(
+                [rows[position] for position in row_positions],
+                [columns[position] for position in column_positions],
+            )
+    return matrix
+
+
+def preprice_product(
+        from_strings: Sequence[str | bytes],
+        to_strings: Sequence[str | bytes],
+) -> None:
+    """Prices every pair drawn from two collections and keeps the answers for :func:`cost`.
+
+    Call this before constructing the edits that will ask for those pairs. The block outlives this call, because
+    the edits that read it are constructed and tightened long afterwards.
+
+    Nothing is installed for a rectangle larger than :const:`PREPRICE_MAX_CELLS`, and the pairs then go through the
+    scalar path one at a time.
+
+    Args:
+        from_strings: The strings to measure from, which may repeat.
+        to_strings: The strings to measure to, which may repeat.
+
+    """
+    rows, row_index = _index(from_strings)
+    columns, column_index = _index(to_strings)
+    if not rows or not columns or len(rows) * len(columns) > PREPRICE_MAX_CELLS:
+        return
+    _install(_Block(row_index, column_index, _product_matrix(rows, columns)))
+
+
+def preprice(pairs: Sequence[Pair]) -> None:
+    """Prices a list of pairs and keeps the answers for :func:`cost`.
+
+    This is the form for a caller whose pairs are not a whole rectangle, such as
+    :class:`graphtage.multiset.MultiSetEdit`, which draws one pair from two leaves but two from two key/value
+    pairs. Pairs that mix :class:`str` with :class:`bytes` are left out and go through the scalar path.
+
+    Nothing is installed for a rectangle larger than :const:`PREPRICE_MAX_CELLS`.
+
+    Args:
+        pairs: The pairs to price, which may repeat.
+
+    """
+    priceable = [(left, right) for left, right in pairs if _same_kind(left, right)]
+    if not priceable:
+        return
+    rows, row_index = _index([left for left, _ in priceable])
+    columns, column_index = _index([right for _, right in priceable])
+    if len(rows) * len(columns) > PREPRICE_MAX_CELLS:
+        return
+    matrix = np.full((len(rows), len(columns)), _UNPRICED, dtype=np.int32)
+    matrix[
+        [row_index[left] for left, _ in priceable],
+        [column_index[right] for _, right in priceable],
+    ] = all_flat([left for left, _ in priceable], [right for _, right in priceable])
+    _install(_Block(row_index, column_index, matrix))
