@@ -727,8 +727,6 @@ class StringFormatter(GraphtageFormatter):
         """Prints an ending quote for the string, if necessary"""
         if edit.from_node.quoted:
             self.is_quoted = True
-            if isinstance(edit.to_node, LeafNode) and isinstance(edit.to_node.object, bytes):
-                printer.write("b")
             printer.write('"')
         else:
             self.is_quoted = False
@@ -883,6 +881,25 @@ class StringFormatter(GraphtageFormatter):
             self.write_end_quote(p, edit)
 
 
+def _num_characters(string_like: str | bytes | int) -> int:
+    """Returns the number of characters that a :class:`StringNode` object represents.
+
+    Iterating over :class:`bytes` yields :class:`int` byte values rather than length-one sequences, so the
+    per-character nodes that :func:`string_edit_distance` builds for a :class:`bytes` object each wrap an
+    :class:`int`. Such a node still represents exactly one character.
+
+    Args:
+        string_like: the object wrapped by a :class:`StringNode`.
+
+    Returns:
+        int: the number of characters that :obj:`string_like` represents.
+
+    """
+    if isinstance(string_like, int):
+        return 1
+    return len(string_like)
+
+
 class StringNode(LeafNode):
     """A node containing a string"""
 
@@ -897,11 +914,20 @@ class StringNode(LeafNode):
         super().__init__(string_like)
         self.quoted = quoted
 
+    def calculate_total_size(self) -> int:
+        """A string's size is its number of characters.
+
+        Returns:
+            int: the number of characters in the wrapped object.
+
+        """
+        return _num_characters(self.object)
+
     def edits(self, node: TreeNode) -> Edit:
         if isinstance(node, StringNode):
             if self.object == node.object:
                 return Match(self, node, 0)
-            elif len(self.object) == 1 and len(node.object) == 1:
+            elif _num_characters(self.object) == 1 and _num_characters(node.object) == 1:
                 return Match(self, node, 1)
             return StringEdit(self, node)
         else:
