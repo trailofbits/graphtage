@@ -60,6 +60,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#bounded">Bounded</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#boundedcomparator">BoundedComparator</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#constantbound">ConstantBound</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#identityinterval">IdentityInterval</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#infinity">Infinity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#range">Range</a></li>
 </ul>
@@ -282,6 +283,278 @@ with the smaller <a class="reference external" href="https://docs.python.org/3/b
 <dt class="sig sig-object py" id="graphtage.bounds.ConstantBound.tighten_bounds">
 <span class="sig-name descname"><span class="pre">tighten_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#graphtage.bounds.ConstantBound.tighten_bounds" title="Link to this definition"></a></dt>
 <dd><p>Since the bounds are already definitive, this always returns <code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="identityinterval">
+<h3>IdentityInterval<a class="headerlink" href="#identityinterval" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">graphtage.bounds.</span></span><span class="sig-name descname"><span class="pre">IdentityInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Interval</span></code></p>
+<p>An <code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.Interval</span></code> that also hashes on the identity of its data.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.Interval</span></code> hashes on <code class="docutils literal notranslate"><span class="pre">(begin,</span> <span class="pre">end)</span></code> alone, but its equality test compares
+<code class="docutils literal notranslate"><span class="pre">data</span></code> as well. <code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.IntervalTree</span></code> stores its intervals in <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">set</span></code></a> objects, so
+intervals that share a span but carry different data all land in one hash bucket, and every insertion
+and lookup degenerates into a linear scan of equality tests. <a class="reference internal" href="#graphtage.bounds.make_distinct" title="graphtage.bounds.make_distinct"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_distinct()</span></code></a> hits that case
+directly: the bounded objects it receives start out with near-identical bounds.</p>
+<p>Mixing <code class="docutils literal notranslate"><span class="pre">id(data)</span></code> into the hash spreads those intervals across buckets. <a class="reference internal" href="#graphtage.bounds.make_distinct" title="graphtage.bounds.make_distinct"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_distinct()</span></code></a> needs
+one interval per bounded object regardless of how those objects compare, so distinguishing them by
+identity matches what the function already assumes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not look up an <a class="reference internal" href="#graphtage.bounds.IdentityInterval" title="graphtage.bounds.IdentityInterval"><code class="xref py py-class docutils literal notranslate"><span class="pre">IdentityInterval</span></code></a> with a plain <code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.Interval</span></code>, or the
+other way around. The two hash differently, so the lookup misses even when the intervals compare
+equal. <code class="xref py py-class docutils literal notranslate"><span class="pre">intervaltree.IntervalTree</span></code> builds no intervals of its own on the <code class="docutils literal notranslate"><span class="pre">add</span></code>,
+<code class="docutils literal notranslate"><span class="pre">remove</span></code>, and overlap-query paths that <a class="reference internal" href="#graphtage.bounds.make_distinct" title="graphtage.bounds.make_distinct"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_distinct()</span></code></a> uses, so the tree here only ever
+holds and probes instances of this class.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__cmp__">
+<span class="sig-name descname"><span class="pre">__cmp__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__cmp__" title="Link to this definition"></a></dt>
+<dd><p>Tells whether other sorts before, after or equal to this
+Interval.</p>
+<p>Sorting is by begins, then by ends, then by data fields.</p>
+<p>If data fields are not both sortable types, data fields are
+compared alphabetically by type name.
+:param other: Interval
+:return: -1, 0, 1
+:rtype: int</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__eq__" title="Link to this definition"></a></dt>
+<dd><p>Whether the begins equal, the ends equal, and the data fields
+equal. Compare range_matches().
+:param other: Interval
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__gt__">
+<span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__gt__" title="Link to this definition"></a></dt>
+<dd><p>Greater than operator. Parrots __cmp__()
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__lt__">
+<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__lt__" title="Link to this definition"></a></dt>
+<dd><p>Less than operator. Parrots __cmp__()
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__reduce__" title="Link to this definition"></a></dt>
+<dd><p>For pickle-ing.
+:return: pickle data
+:rtype: tuple</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__repr__" title="Link to this definition"></a></dt>
+<dd><p>Executable string representation of this Interval.
+:return: string representation
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.__str__" title="Link to this definition"></a></dt>
+<dd><p>Executable string representation of this Interval.
+:return: string representation
+:rtype: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval._get_fields">
+<span class="sig-name descname"><span class="pre">_get_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval._get_fields" title="Link to this definition"></a></dt>
+<dd><p>Used by str, unicode, repr and __reduce__.</p>
+<p>Returns only the fields necessary to reconstruct the Interval.
+:return: reconstruction info
+:rtype: tuple</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval._raise_if_null">
+<span class="sig-name descname"><span class="pre">_raise_if_null</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval._raise_if_null" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if either self or other is a null Interval</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.begin">
+<span class="sig-name descname"><span class="pre">begin</span></span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.begin" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.contains_interval">
+<span class="sig-name descname"><span class="pre">contains_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.contains_interval" title="Link to this definition"></a></dt>
+<dd><p>Whether other is contained in this Interval.
+:param other: Interval
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.contains_point">
+<span class="sig-name descname"><span class="pre">contains_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.contains_point" title="Link to this definition"></a></dt>
+<dd><p>Whether the Interval contains p.
+:param p: a point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.copy" title="Link to this definition"></a></dt>
+<dd><p>Shallow copy.
+:return: copy of self
+:rtype: Interval</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.count" title="Link to this definition"></a></dt>
+<dd><p>Return number of occurrences of value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.data" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.distance_to">
+<span class="sig-name descname"><span class="pre">distance_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.distance_to" title="Link to this definition"></a></dt>
+<dd><p>Returns the size of the gap between intervals, or 0
+if they touch or overlap.
+:param other: Interval or point
+:return: distance
+:rtype: Number</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.end">
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.end" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.ge">
+<span class="sig-name descname"><span class="pre">ge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.ge" title="Link to this definition"></a></dt>
+<dd><p>Greater than or overlaps. Returns True if no part of this Interval
+extends lower than other.
+:raises ValueError: if either self or other is a null Interval
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.gt">
+<span class="sig-name descname"><span class="pre">gt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.gt" title="Link to this definition"></a></dt>
+<dd><p>Strictly greater than. Returns True if no part of this Interval
+extends lower than or into other.
+:raises ValueError: if either self or other is a null Interval
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9223372036854775807</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.index" title="Link to this definition"></a></dt>
+<dd><p>Return first index of value.</p>
+<p>Raises ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.is_null">
+<span class="sig-name descname"><span class="pre">is_null</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.is_null" title="Link to this definition"></a></dt>
+<dd><p>Whether this equals the null interval.
+:return: True if end &lt;= begin else False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.le">
+<span class="sig-name descname"><span class="pre">le</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.le" title="Link to this definition"></a></dt>
+<dd><p>Less than or overlaps. Returns True if no part of this Interval
+extends higher than other.
+:raises ValueError: if either self or other is a null Interval
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.length">
+<span class="sig-name descname"><span class="pre">length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.length" title="Link to this definition"></a></dt>
+<dd><p>The distance covered by this Interval.
+:return: length
+:type: Number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.lt">
+<span class="sig-name descname"><span class="pre">lt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.lt" title="Link to this definition"></a></dt>
+<dd><p>Strictly less than. Returns True if no part of this Interval
+extends higher than or into other.
+:raises ValueError: if either self or other is a null Interval
+:param other: Interval or point
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.overlap_size">
+<span class="sig-name descname"><span class="pre">overlap_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.overlap_size" title="Link to this definition"></a></dt>
+<dd><p>Return the overlap size between two intervals or a point
+:param begin: beginning point of the range, or the point, or an Interval
+:param end: end point of the range. Optional if not testing ranges.
+:return: Return the overlap size, None if not overlap is found
+:rtype: depends on the given input (e.g., int will be returned for int interval and timedelta for
+datetime intervals)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.overlaps">
+<span class="sig-name descname"><span class="pre">overlaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.overlaps" title="Link to this definition"></a></dt>
+<dd><p>Whether the interval overlaps the given point, range or Interval.
+:param begin: beginning point of the range, or the point, or an Interval
+:param end: end point of the range. Optional if not testing ranges.
+:return: True or False
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="graphtage.bounds.IdentityInterval.range_matches">
+<span class="sig-name descname"><span class="pre">range_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.bounds.IdentityInterval.range_matches" title="Link to this definition"></a></dt>
+<dd><p>Whether the begins equal and the ends equal. Compare __eq__().
+:param other: Interval
+:return: True or False
+:rtype: bool</p>
 </dd></dl>
 
 </dd></dl>

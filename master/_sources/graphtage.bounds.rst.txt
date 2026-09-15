@@ -33,6 +33,15 @@ ConstantBound
    :inherited-members:
    :show-inheritance:
 
+IdentityInterval
+****************
+
+.. autoclass:: IdentityInterval
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
 Infinity
 ********
 
