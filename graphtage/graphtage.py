@@ -1034,7 +1034,9 @@ def string_edit_distance(s1: str, s2: str) -> EditDistance:
     """
     list1 = ListNode([StringNode(c) for c in s1])
     list2 = ListNode([StringNode(c) for c in s2])
-    return EditDistance(list1, list2, list1.children(), list2.children(), insert_remove_penalty=0)
+    return EditDistance(
+        list1, list2, list1.children(), list2.children(), insert_remove_penalty=0, preprice=False
+    )
 
 
 FILETYPES_BY_MIME: dict[str, 'Filetype'] = {}
