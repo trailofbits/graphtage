@@ -6865,15 +6865,10 @@ already automatically been configured to format them prior to the call to
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.StringNode.calculate_total_size">
 <span class="sig-name descname"><span class="pre">calculate_total_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.StringNode.calculate_total_size" title="Link to this definition"></a></dt>
-<dd><p>By default, leaf nodes’ sizes are equal to the length of their wrapped object’s string representation.</p>
-<p>This is equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>However, subclasses may override this function to return whatever size is required.</p>
+<dd><p>A string’s size is its number of characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The length of the string representation of <code class="xref py py-obj docutils literal notranslate"><span class="pre">self.object</span></code>.</p>
+<dd class="field-odd"><p>the number of characters in the wrapped object.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
