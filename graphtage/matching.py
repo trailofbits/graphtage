@@ -636,12 +636,24 @@ class WeightedBipartiteMatcher(Bounded, Generic[T]):
         return self._bounds
 
     def _make_edges_distinct(self):
+        """Tightens the edges until their bounds are definitive or non-overlapping.
+
+        Edges that already have definitive bounds are skipped altogether. :func:`graphtage.bounds.make_distinct`
+        would return without tightening anything in that case, but only after building an interval tree over every
+        edge, which for a large matching costs more than the matching itself.
+
+        Returns:
+            bool: :const:`True` the first time it is called, matching the protocol that
+            :func:`graphtage.bounds.repeat_until_tightened` expects.
+
+        """
         if self._edges_are_distinct:
             return False
-        else:
-            make_distinct(*itertools.chain(*self.edges))
-            self._edges_are_distinct = True
-            return True
+        edges = list(itertools.chain(*self.edges))
+        if not all(edge.bounds().definitive() for edge in edges):
+            make_distinct(*edges)
+        self._edges_are_distinct = True
+        return True
 
     @property
     def matching(self) -> Mapping[T, tuple[T, Bounded]]:
