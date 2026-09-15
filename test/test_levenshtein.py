@@ -257,3 +257,27 @@ class TestEditDistance(TestCase):
         self.assert_edit_script('cc', 'c', ['c>c', '-c'])
         self.assert_edit_script('aac', 'ab', ['a>a', '-a', 'c>b'])
         self.assert_edit_script('cbcbbb', 'caa', ['c>c', '-b', '-c', '-b', 'b>a', 'b>a'])
+
+    def test_edit_script_realizes_the_reported_cost(self):
+        """Checks that the reconstructed script costs what the edit reports as its distance.
+
+        :meth:`TestEditDistance.test_string_edit_distance_is_levenshtein` checks the reported distance and
+        :meth:`TestEditDistance.test_string_edit_distance_reconstruction` checks that the script rebuilds both
+        strings, but nothing checks that the script a user sees adds up to the cost the edit reports. A cost
+        computed anywhere other than from the script itself passes both of the older tests.
+
+        """
+        for _ in trange(200):
+            str_from = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 10)))
+            str_to = ''.join(random.choices(SMALL_ALPHABET, k=random.randint(0, 10)))
+            distance: EditDistance = string_edit_distance(str_from, str_to)
+            script = render_script(distance)
+            replayed_from, replayed_to, cost = replay_script(script)
+            pair = f"{str_from!r} -> {str_to!r}"
+            self.assertEqual(str_from, replayed_from, pair)
+            self.assertEqual(str_to, replayed_to, pair)
+            self.assertEqual(levenshtein_distance(str_from, str_to), cost, pair)
+            self.assertEqual(optimal_alignment(str_from, str_to), (cost, len(script)), pair)
+            bounds = distance.bounds()
+            self.assertTrue(bounds.definitive(), f"{pair} has bounds {bounds!s}")
+            self.assertEqual(cost, bounds.upper_bound, pair)
