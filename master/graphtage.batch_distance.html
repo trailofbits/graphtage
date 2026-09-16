@@ -64,6 +64,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#all-flat">all_flat</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#all-pairs">all_pairs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#available-backends">available_backends</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#clear">clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cost">cost</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preprice">preprice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preprice-product">preprice_product</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#register-backend">register_backend</a></li>
 </ul>
 </li>
@@ -147,7 +151,12 @@ many interpreter steps as the batch has matrix cells.</p>
 </dl>
 <p>Set the <code class="docutils literal notranslate"><span class="pre">GRAPHTAGE_BATCH_BACKEND</span></code> environment variable to a backend name to pin the choice, which is useful for
 benchmarking one backend against another and for testing that they agree.</p>
-<p>Nothing in Graphtage calls this module yet.</p>
+<p>Graphtage reaches the batch through <a class="reference internal" href="#graphtage.batch_distance.cost" title="graphtage.batch_distance.cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">cost()</span></code></a>, which prices a single pair the way
+<a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.levenshtein_distance" title="graphtage.levenshtein.levenshtein_distance"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.levenshtein.levenshtein_distance()</span></code></a> does but answers from a pre-computed block when one holds the
+pair. <a class="reference internal" href="graphtage.multiset.html#graphtage.multiset.MultiSetEdit" title="graphtage.multiset.MultiSetEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.multiset.MultiSetEdit</span></code></a> and <a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.EditDistance" title="graphtage.levenshtein.EditDistance"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.levenshtein.EditDistance</span></code></a> each face a cross
+product of node pairs whose edits are constructed one at a time, so they call <a class="reference internal" href="#graphtage.batch_distance.preprice" title="graphtage.batch_distance.preprice"><code class="xref py py-func docutils literal notranslate"><span class="pre">preprice()</span></code></a> or
+<a class="reference internal" href="#graphtage.batch_distance.preprice_product" title="graphtage.batch_distance.preprice_product"><code class="xref py py-func docutils literal notranslate"><span class="pre">preprice_product()</span></code></a> before constructing any of them and let every later <a class="reference internal" href="#graphtage.batch_distance.cost" title="graphtage.batch_distance.cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">cost()</span></code></a> read the answer out of the
+block.</p>
 <section id="batch-distance-classes">
 <h2>batch_distance classes<a class="headerlink" href="#batch-distance-classes" title="Link to this heading"></a></h2>
 <section id="batchbackend">
@@ -405,6 +414,83 @@ the environment and otherwise picks the fastest backend that will take the batch
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Tuple[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a>, …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="clear">
+<h3>clear<a class="headerlink" href="#clear" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.batch_distance.clear">
+<span class="sig-prename descclassname"><span class="pre">graphtage.batch_distance.</span></span><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.batch_distance.clear" title="Link to this definition"></a></dt>
+<dd><p>Discards every pre-priced block.</p>
+<p><a class="reference internal" href="#graphtage.batch_distance.cost" title="graphtage.batch_distance.cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">cost()</span></code></a> answers the same afterwards, because the blocks only hold what it would otherwise compute.</p>
+</dd></dl>
+
+</section>
+<section id="cost">
+<h3>cost<a class="headerlink" href="#cost" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.batch_distance.cost">
+<span class="sig-prename descclassname"><span class="pre">graphtage.batch_distance.</span></span><span class="sig-name descname"><span class="pre">cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#graphtage.batch_distance.cost" title="Link to this definition"></a></dt>
+<dd><p>Returns the Levenshtein distance between two strings, reading a pre-priced block when one holds it.</p>
+<p>This is what <a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.exact_string_distance" title="graphtage.levenshtein.exact_string_distance"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.levenshtein.exact_string_distance()</span></code></a> calls, and it returns exactly what
+<a class="reference internal" href="graphtage.levenshtein.html#graphtage.levenshtein.levenshtein_distance" title="graphtage.levenshtein.levenshtein_distance"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.levenshtein.levenshtein_distance()</span></code></a> returns for the same pair.</p>
+<p>A pair that no block holds is computed and <em>not</em> recorded. Recording it would make the cache grow with the
+number of distinct pairs a diff asks about, which is the whole cross product, and nothing would ever evict it.
+Blocks are installed deliberately, by a caller that knows it is about to ask for a whole rectangle of pairs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – The string to measure from.</p></li>
+<li><p><strong>b</strong> – The string to measure to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Levenshtein edit distance between the two strings.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="preprice">
+<h3>preprice<a class="headerlink" href="#preprice" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.batch_distance.preprice">
+<span class="sig-prename descclassname"><span class="pre">graphtage.batch_distance.</span></span><span class="sig-name descname"><span class="pre">preprice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pairs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.batch_distance.preprice" title="Link to this definition"></a></dt>
+<dd><p>Prices a list of pairs and keeps the answers for <a class="reference internal" href="#graphtage.batch_distance.cost" title="graphtage.batch_distance.cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">cost()</span></code></a>.</p>
+<p>This is the form for a caller whose pairs are not a whole rectangle, such as
+<a class="reference internal" href="graphtage.multiset.html#graphtage.multiset.MultiSetEdit" title="graphtage.multiset.MultiSetEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.multiset.MultiSetEdit</span></code></a>, which draws one pair from two leaves but two from two key/value
+pairs. Pairs that mix <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> with <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> are left out and go through the scalar path.</p>
+<p>Nothing is installed for a rectangle larger than <code class="xref py py-const docutils literal notranslate"><span class="pre">PREPRICE_MAX_CELLS</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pairs</strong> – The pairs to price, which may repeat.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="preprice-product">
+<h3>preprice_product<a class="headerlink" href="#preprice-product" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="graphtage.batch_distance.preprice_product">
+<span class="sig-prename descclassname"><span class="pre">graphtage.batch_distance.</span></span><span class="sig-name descname"><span class="pre">preprice_product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">from_strings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_strings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#graphtage.batch_distance.preprice_product" title="Link to this definition"></a></dt>
+<dd><p>Prices every pair drawn from two collections and keeps the answers for <a class="reference internal" href="#graphtage.batch_distance.cost" title="graphtage.batch_distance.cost"><code class="xref py py-func docutils literal notranslate"><span class="pre">cost()</span></code></a>.</p>
+<p>Call this before constructing the edits that will ask for those pairs. The block outlives this call, because
+the edits that read it are constructed and tightened long afterwards.</p>
+<p>Nothing is installed for a rectangle larger than <code class="xref py py-const docutils literal notranslate"><span class="pre">PREPRICE_MAX_CELLS</span></code>, and the pairs then go through the
+scalar path one at a time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_strings</strong> – The strings to measure from, which may repeat.</p></li>
+<li><p><strong>to_strings</strong> – The strings to measure to, which may repeat.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

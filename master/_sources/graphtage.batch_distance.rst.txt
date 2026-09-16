@@ -51,6 +51,26 @@ available_backends
 
 .. autofunction:: available_backends
 
+clear
+*****
+
+.. autofunction:: clear
+
+cost
+****
+
+.. autofunction:: cost
+
+preprice
+********
+
+.. autofunction:: preprice
+
+preprice_product
+****************
+
+.. autofunction:: preprice_product
+
 register_backend
 ****************
 

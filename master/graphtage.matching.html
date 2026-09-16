@@ -701,6 +701,24 @@ example, this could be a <code class="xref py py-class docutils literal notransl
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="graphtage.matching.WeightedBipartiteMatcher._make_edges_distinct">
+<span class="sig-name descname"><span class="pre">_make_edges_distinct</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher._make_edges_distinct" title="Link to this definition"></a></dt>
+<dd><p>Tightens the edges until their bounds are definitive or non-overlapping.</p>
+<p>Edges that already have definitive bounds are skipped altogether. <a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.make_distinct" title="graphtage.bounds.make_distinct"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.bounds.make_distinct()</span></code></a>
+would return without tightening anything in that case, but only after building an interval tree over every
+edge, which for a large matching costs more than the matching itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-const docutils literal notranslate"><span class="pre">True</span></code> the first time it is called, matching the protocol that
+<a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.repeat_until_tightened" title="graphtage.bounds.repeat_until_tightened"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.bounds.repeat_until_tightened()</span></code></a> expects.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.WeightedBipartiteMatcher.bounds">
 <span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="graphtage.bounds.html#graphtage.bounds.Range" title="graphtage.bounds.Range"><span class="pre">Range</span></a></span></span><a class="headerlink" href="#graphtage.matching.WeightedBipartiteMatcher.bounds" title="Link to this definition"></a></dt>
 <dd><p>Returns the bounds of this object.</p>
