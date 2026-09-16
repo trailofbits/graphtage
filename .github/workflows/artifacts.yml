@@ -70,9 +70,16 @@ jobs:
           printf '{"a": 1, "b": [2, 4]}' > "$RUNNER_TEMP/to.json"
           exit_status=0
           bindist/dist/graphtage --no-status --format yaml \
-            "$RUNNER_TEMP/from.json" "$RUNNER_TEMP/to.json" || exit_status=$?
+            "$RUNNER_TEMP/from.json" "$RUNNER_TEMP/to.json" 2> "$RUNNER_TEMP/stderr.txt" || exit_status=$?
           if [ "$exit_status" -ne 1 ]; then
             echo "Expected exit status 1 (differences found), got $exit_status" >&2
+            exit 1
+          fi
+          # A frozen binary can produce a correct diff and still write a traceback, if something it imports
+          # re-executes sys.executable -- which is the binary itself. `--no-status` promises an empty stderr.
+          if [ -s "$RUNNER_TEMP/stderr.txt" ]; then
+            echo "Expected --no-status to leave stderr empty. It wrote:" >&2
+            cat "$RUNNER_TEMP/stderr.txt" >&2
             exit 1
           fi
 
