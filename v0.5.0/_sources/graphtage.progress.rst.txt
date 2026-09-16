@@ -1,0 +1,16 @@
+graphtage.progress
+==================
+
+.. automodule:: graphtage.progress
+
+progress classes
+----------------
+
+StatusWriter
+************
+
+.. autoclass:: StatusWriter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

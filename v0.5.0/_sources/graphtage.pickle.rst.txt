@@ -1,0 +1,16 @@
+graphtage.pickle
+================
+
+.. automodule:: graphtage.pickle
+
+pickle classes
+--------------
+
+Pickle
+******
+
+.. autoclass:: Pickle
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

@@ -1,0 +1,16 @@
+graphtage.multiset
+==================
+
+.. automodule:: graphtage.multiset
+
+multiset classes
+----------------
+
+MultiSetEdit
+************
+
+.. autoclass:: MultiSetEdit
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

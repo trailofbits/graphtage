@@ -1,0 +1,4 @@
+graphtage.version
+=================
+
+.. automodule:: graphtage.version

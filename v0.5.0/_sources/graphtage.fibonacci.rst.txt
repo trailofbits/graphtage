@@ -1,0 +1,43 @@
+graphtage.fibonacci
+===================
+
+.. automodule:: graphtage.fibonacci
+
+fibonacci classes
+-----------------
+
+FibonacciHeap
+*************
+
+.. autoclass:: FibonacciHeap
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+HeapNode
+********
+
+.. autoclass:: HeapNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+MaxFibonacciHeap
+****************
+
+.. autoclass:: MaxFibonacciHeap
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ReversedComparator
+******************
+
+.. autoclass:: ReversedComparator
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:

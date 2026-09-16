@@ -1,0 +1,69 @@
+graphtage.csv
+=============
+
+.. automodule:: graphtage.csv
+
+csv classes
+-----------
+
+CSV
+***
+
+.. autoclass:: CSV
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CSVFormatter
+************
+
+.. autoclass:: CSVFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CSVNode
+*******
+
+.. autoclass:: CSVNode
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CSVRow
+******
+
+.. autoclass:: CSVRow
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CSVRowFormatter
+***************
+
+.. autoclass:: CSVRowFormatter
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+CSVRows
+*******
+
+.. autoclass:: CSVRows
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+csv functions
+-------------
+
+build_tree
+**********
+
+.. autofunction:: build_tree

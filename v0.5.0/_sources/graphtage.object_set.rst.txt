@@ -1,0 +1,25 @@
+graphtage.object_set
+====================
+
+.. automodule:: graphtage.object_set
+
+object_set classes
+------------------
+
+IdentityHash
+************
+
+.. autoclass:: IdentityHash
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
+
+ObjectSet
+*********
+
+.. autoclass:: ObjectSet
+   :members:
+   :undoc-members:
+   :inherited-members:
+   :show-inheritance:
