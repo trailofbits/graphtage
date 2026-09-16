@@ -17,6 +17,19 @@ TO_OBJ = {"a": 2, "b": [1, 2, 4], "c": {"d": "goodbye world"}}
 
 PROGRESS_BAR = b"Diffing:"
 
+HELPER_PROCESS_PROBE = """
+import multiprocessing.resource_tracker as resource_tracker
+
+from graphtage.progress import StatusWriter
+
+writer = StatusWriter(quiet=False)
+with writer.tqdm(desc="probe", total=1, leave=False) as bar:
+    bar.update(1)
+writer.flush(final=True)
+print(resource_tracker._resource_tracker._pid)
+"""
+"""Draws one progress bar the way :mod:`graphtage.__main__` does, then reports the resource tracker's process ID."""
+
 
 def run_graphtage(*args: str) -> tuple[bytes, bytes]:
     """Runs the command line in a subprocess and returns what it wrote to stdout and to stderr.
@@ -84,3 +97,25 @@ class TestProgress(TestCase):
                 )
         finally:
             printer.set_default_printer(original)
+
+    def test_drawing_a_progress_bar_starts_no_helper_process(self):
+        """Drawing a progress bar must not start a :mod:`multiprocessing.resource_tracker` helper process.
+
+        tqdm builds a :class:`multiprocessing.RLock` for its default write lock. Registering that lock's semaphore
+        starts the resource tracker, which re-executes :attr:`sys.executable` with the interpreter's own flags. Under
+        PyInstaller :attr:`sys.executable` is the Graphtage binary, so the helper re-ran Graphtage with ``-B -S -I``
+        and every diff through the macOS binary printed a traceback to stderr. Graphtage never uses multiprocessing,
+        so it installs a threading lock instead.
+
+        The sibling tests here cannot catch this: from a source checkout the helper is a real interpreter and exits
+        quietly, so stderr stays empty either way. This asserts on the mechanism, in a subprocess because the tracker
+        is process-wide and starts at most once.
+
+        """
+        result = subprocess.run([sys.executable, "-c", HELPER_PROCESS_PROBE], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            "None",
+            result.stdout.strip(),
+            "the resource tracker was started, so tqdm most likely built a multiprocessing lock",
+        )

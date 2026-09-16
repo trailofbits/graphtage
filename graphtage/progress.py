@@ -2,11 +2,18 @@
 
 import io
 import sys
+import threading
 from collections.abc import Iterable, Iterator
 from types import TracebackType
 from typing import IO, AnyStr, TextIO
 
 from tqdm import tqdm, trange
+
+# Graphtage draws its progress bars from a single process, so tqdm's default multiprocessing lock guards nothing.
+# Building that lock registers a semaphore with multiprocessing.resource_tracker, which starts a helper process by
+# re-executing sys.executable with the interpreter's own flags. Under PyInstaller sys.executable is the Graphtage
+# binary, so the helper re-runs Graphtage with flags that belong to a Python interpreter.
+tqdm.set_lock(threading.RLock())
 
 
 class StatusWriter(IO[str]):
