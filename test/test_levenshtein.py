@@ -3,7 +3,8 @@ from unittest import TestCase
 
 from tqdm import trange
 
-from graphtage import EditDistance, string_edit_distance
+import graphtage
+from graphtage import EditDistance, batch_distance, string_edit_distance
 from graphtage.edits import Edit, Insert, Match, Remove
 from graphtage.levenshtein import exact_string_distance, levenshtein_distance
 
@@ -352,3 +353,38 @@ class TestExactStringDistance(TestCase):
             while lattice.tighten_bounds():
                 pass
             self.assertEqual(lattice.bounds().upper_bound, exact_string_distance(s, t), f"{s!r} -> {t!r}")
+
+
+class TestPrePricing(TestCase):
+    """Covers the ``preprice`` argument of :class:`graphtage.levenshtein.EditDistance`."""
+
+    def setUp(self):
+        batch_distance.clear()
+
+    def tearDown(self):
+        batch_distance.clear()
+
+    def test_a_sequence_of_leaves_is_pre_priced(self):
+        """The cross product of two sequences of leaves is priced in one batch before any cell is built.
+
+        Prevents the pre-pricing call from being dropped from the constructor, which no comparison of results can
+        detect because both routes return the same distances.
+
+        """
+        from_node = graphtage.json.build_tree([f"item number {index}" for index in range(12)])
+        to_node = graphtage.json.build_tree([f"item no. {index}" for index in range(12)])
+        self.assertIsInstance(from_node.edits(to_node), EditDistance)
+        self.assertTrue(batch_distance._blocks)
+
+    def test_a_character_lattice_is_not_pre_priced(self):
+        """The lattice over the characters of two strings prices nothing in advance.
+
+        Prevents the character level :class:`EditDistance` from paying for a collection pass over every cell of
+        every string a diff renders, in exchange for a batch of single-character pairs whose distances are
+        settled by the equality short circuit before any dynamic program runs.
+
+        """
+        lattice = string_edit_distance('kittens are nice', 'sitting is nicer')
+        while lattice.tighten_bounds():
+            pass
+        self.assertEqual((), batch_distance._blocks)

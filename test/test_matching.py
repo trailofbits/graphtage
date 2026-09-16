@@ -1,11 +1,12 @@
 import itertools
 import random
 from unittest import TestCase
+from unittest.mock import patch
 
 import numpy as np
 from tqdm import tqdm, trange
 
-from graphtage.bounds import Range
+from graphtage.bounds import ConstantBound, Range, make_distinct
 from graphtage.matching import (
     MatchingFromNode,
     MatchingToNode,
@@ -118,3 +119,90 @@ class TestMatchingNode(TestCase):
 
     def test_edges_agrees_with_getitem(self):
         self.assertEqual([self.from_node[self.to_node]], list(self.from_node.edges()))
+
+
+class TestMakeEdgesDistinct(TestCase):
+    """Covers the shortcut in :meth:`graphtage.matching.WeightedBipartiteMatcher._make_edges_distinct`.
+
+    Every edge whose weight is a :class:`graphtage.StringEdit` knows its cost the moment it is constructed, so a
+    matching over leaves hands :func:`graphtage.bounds.make_distinct` nothing to tighten. It would still build an
+    interval tree over every edge before finding that out, which on a matching of a few hundred elements costs
+    more than solving the matching.
+
+    """
+
+    WEIGHTS = (
+        (7, 2, 9, 4),
+        (3, 8, 1, 6),
+        (5, 5, 2, 2),
+        (9, 1, 4, 8),
+    )
+
+    def constant_matcher(self, weights=None) -> WeightedBipartiteMatcher[int]:
+        """Builds a matcher whose every edge already has a definitive bound."""
+        weights = self.WEIGHTS if weights is None else weights
+        return WeightedBipartiteMatcher(
+            from_nodes=list(range(len(weights))),
+            to_nodes=list(range(len(weights[0]))),
+            get_edge=lambda f, t, weights=weights: ConstantBound(weights[f][t]),
+        )
+
+    @staticmethod
+    def solve(matcher: WeightedBipartiteMatcher[int]) -> dict[int, tuple[int, int]]:
+        """Tightens a matcher to completion and returns the pairs it chose with their weights."""
+        while matcher.tighten_bounds():
+            pass
+        return {f: (t, edge.bounds().upper_bound) for f, (t, edge) in matcher.matching.items()}
+
+    def test_definitive_edges_do_not_reach_make_distinct(self):
+        """A matching whose edges are all definitive skips the interval tree entirely.
+
+        Prevents the shortcut from being written but never taken, which no comparison of matchings can detect
+        because :func:`graphtage.bounds.make_distinct` tightens nothing in this case either.
+
+        """
+        with patch('graphtage.matching.make_distinct') as distinct:
+            matching = self.solve(self.constant_matcher())
+        distinct.assert_not_called()
+        self.assertEqual(4, len(matching))
+
+    def test_indefinite_edges_still_reach_make_distinct(self):
+        """An edge whose bounds still overlap another's is tightened before the matching is solved.
+
+        Prevents the shortcut from swallowing the case it does not apply to, which would hand
+        :func:`scipy.optimize.linear_sum_assignment` a matrix of upper bounds that overstate some pairs.
+
+        """
+        random.seed(0x5EED)
+        edges = [[RandomDecreasingRange() for _ in range(4)] for _ in range(4)]
+        matcher = WeightedBipartiteMatcher(
+            from_nodes=list(range(4)),
+            to_nodes=list(range(4)),
+            get_edge=lambda f, t: edges[f][t],
+        )
+        with patch('graphtage.matching.make_distinct', wraps=make_distinct) as distinct:
+            self.solve(matcher)
+        self.assertTrue(distinct.called)
+
+    def test_the_shortcut_does_not_change_the_matching(self):
+        """The pairs chosen are the same whether or not :func:`graphtage.bounds.make_distinct` runs.
+
+        Prevents the shortcut from leaving out a step that the matching depends on. The comparison is against the
+        implementation the shortcut replaced, run over the same weights.
+
+        """
+        def always_make_distinct(matcher):
+            if matcher._edges_are_distinct:
+                return False
+            make_distinct(*itertools.chain(*matcher.edges))
+            matcher._edges_are_distinct = True
+            return True
+
+        random.seed(0xDEC1DE)
+        for _ in range(20):
+            rows, columns = random.randint(1, 7), random.randint(1, 7)
+            weights = tuple(tuple(random.randint(0, 40) for _ in range(columns)) for _ in range(rows))
+            shortcut = self.solve(self.constant_matcher(weights))
+            with patch.object(WeightedBipartiteMatcher, '_make_edges_distinct', always_make_distinct):
+                forced = self.solve(self.constant_matcher(weights))
+            self.assertEqual(forced, shortcut, f"weights={weights!r}")

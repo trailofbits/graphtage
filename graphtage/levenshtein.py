@@ -76,6 +76,11 @@ def exact_string_distance(s: str | bytes, t: str | bytes) -> int:
     :class:`int` byte values, which never compare equal to a :class:`str` character, so a mixed pair costs one
     per aligned position exactly as the lattice charges for it.
 
+    The answer comes from :func:`graphtage.batch_distance.cost`, which reads a block that was priced in advance
+    when one holds this pair and computes the pair when none does. That is how a caller facing a whole cross
+    product of pairs pays for them in one vectorized batch rather than one at a time, and the number is the same
+    either way.
+
     Args:
         s: the string from which to match.
         t: the string to which to match.
@@ -84,23 +89,58 @@ def exact_string_distance(s: str | bytes, t: str | bytes) -> int:
         int: The Levenshtein edit distance metric between the two strings.
 
     """
-    if s == t:
-        return 0
-    elif not s:
-        return len(t)
-    elif not t:
-        return len(s)
-    # Stripping a shared prefix and suffix quadratically reduces the size of the matrix that
-    # levenshtein_distance builds. It cannot change the answer: characters that align with themselves are
-    # always free, and no optimal alignment crosses them.
-    overlap = min(len(s), len(t))
-    prefix = 0
-    while prefix < overlap and s[prefix] == t[prefix]:
-        prefix += 1
-    suffix = 0
-    while suffix < overlap - prefix and s[len(s) - suffix - 1] == t[len(t) - suffix - 1]:
-        suffix += 1
-    return levenshtein_distance(s[prefix:len(s) - suffix], t[prefix:len(t) - suffix])
+    # Deferred to break the cycle: batch_distance calls levenshtein_distance, above.
+    from . import batch_distance
+    return batch_distance.cost(s, t)
+
+
+def _leaf_strings(nodes: Sequence[TreeNode]) -> list[str | bytes]:
+    """Projects the leaves of a sequence onto the strings that pricing an edit against them compares.
+
+    This mirrors what :meth:`graphtage.LeafNode.edits` and :meth:`graphtage.StringNode.edits` pass to
+    :func:`exact_string_distance`: a :class:`graphtage.StringNode` is compared by its wrapped object, and every
+    other leaf by the string representation of it. Nodes that are not leaves are left out, because the edit between
+    two of them prices its own children rather than a pair of strings.
+
+    Args:
+        nodes: The nodes to project.
+
+    Returns:
+        List[str | bytes]: One string per leaf, in order.
+
+    """
+    from .graphtage import LeafNode, StringNode
+    strings: list[str | bytes] = []
+    for node in nodes:
+        if isinstance(node, StringNode):
+            strings.append(node.object)
+        elif isinstance(node, LeafNode):
+            strings.append(str(node.object))
+    return strings
+
+
+def _preprice_leaves(from_seq: Sequence[TreeNode], to_seq: Sequence[TreeNode], enabled: bool) -> None:
+    """Prices the cross product of two sequences' leaves in one batch.
+
+    :meth:`EditDistance._add_node` fills each cell of the Levenshtein matrix with
+    ``from_seq[column - 1].edits(to_seq[row - 1])``, and a leaf's edit knows its cost as soon as it is constructed.
+    Those are the same pairs a batch prices at once, so collecting them before the first cell is built replaces one
+    pure Python dynamic program per cell with one vectorized pass over all of them.
+
+    Args:
+        from_seq: The nodes to match from, after any shared prefix and suffix have been stripped.
+        to_seq: The nodes to match to, after any shared prefix and suffix have been stripped.
+        enabled: Whether to price anything at all, which is the ``preprice`` argument of
+            :meth:`EditDistance.__init__`.
+
+    """
+    from . import batch_distance
+    if not enabled or len(from_seq) * len(to_seq) < batch_distance.PREPRICE_MIN_PAIRS:
+        return
+    from_strings = _leaf_strings(from_seq)
+    to_strings = _leaf_strings(to_seq)
+    if len(from_strings) * len(to_strings) >= batch_distance.PREPRICE_MIN_PAIRS:
+        batch_distance.preprice_product(from_strings, to_strings)
 
 
 class EditDistance(SequenceEdit):
@@ -143,6 +183,8 @@ class EditDistance(SequenceEdit):
             from_seq: Sequence[TreeNode],
             to_seq: Sequence[TreeNode],
             insert_remove_penalty: int = 1,
+            *,
+            preprice: bool = True,
     ):
         """Initializes the edit distance edit.
 
@@ -152,6 +194,11 @@ class EditDistance(SequenceEdit):
             from_seq: A sequence of nodes that comprise :obj:`from_node`.
             to_seq: A sequence of nodes that comprise :obj:`to_node`.
             insert_remove_penalty: The penalty for inserting or removing a node (default is 1).
+            preprice: Whether to price the string pairs of the two sequences' leaves in one batch before any cell
+                of the matrix is built. Pass :const:`False` when the elements are single characters, as
+                :func:`graphtage.string_edit_distance` does: a character-level lattice is itself an
+                :class:`EditDistance`, and collecting its pairs would cost a pass over every cell of every string
+                that gets rendered in exchange for a batch of one-character pairs that cost nothing to begin with.
 
         """
         self.penalty: int = insert_remove_penalty
@@ -184,6 +231,7 @@ class EditDistance(SequenceEdit):
                                             len(self.shared_prefix):len(to_seq)-len(self.reversed_shared_suffix)
                                           ]
         log.debug(f"Levenshtein len(shared prefix)={len(self.shared_prefix)}, len(shared suffix)={len(self.reversed_shared_suffix)}, len(from_seq)={len(self.from_seq)}, len(to_seq)={len(self.to_seq)}")
+        _preprice_leaves(self.from_seq, self.to_seq, preprice)
         constant_cost = 0
         if len(from_seq) != len(to_seq):
             sizes: FibonacciHeap[TreeNode, int] = FibonacciHeap(key=lambda node: node.total_size)

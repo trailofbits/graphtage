@@ -63,6 +63,29 @@ class TestMultiSetEdit(TestCase):
     def test_dict_with_set_value(self):
         self.assertMultiSetEdit({"a": {1, 2}}, {"a": {1, 3}}, 1)
 
+    @staticmethod
+    def kvp(key: str, value: int) -> graphtage.KeyValuePairNode:
+        """Builds a key/value pair node outside any dictionary."""
+        return graphtage.KeyValuePairNode(graphtage.StringNode(key), graphtage.IntegerNode(value))
+
+    def test_repeated_key_value_pairs_match_as_many_times_as_they_repeat(self):
+        """A key that appears several times on each side is matched as many times as the smaller side holds it.
+
+        Prevents the multiplicity from being lost when the loop that decides which pairs share a key is separated
+        from the loop that builds their edits. A multiset can hold the same key/value pair more than once, and the
+        surplus on the longer side has to be left for the matcher rather than silently matched or dropped.
+
+        """
+        from_node = graphtage.MultiSetNode([self.kvp('a', 1) for _ in range(3)])
+        to_node = graphtage.MultiSetNode([self.kvp('a', 2) for _ in range(2)])
+        edit = from_node.edits(to_node)
+        self.assertIsInstance(edit, MultiSetEdit)
+        self.assertEqual(2, len(edit._matched_kvp_edits))
+        self.assertEqual(1, sum(edit.to_remove.values()))
+        self.assertEqual(0, sum(edit.to_insert.values()))
+        for kvp_edit in edit._matched_kvp_edits:
+            self.assertEqual(1, kvp_edit.bounds().upper_bound)
+
 
 class TestMatchingOptimality(TestCase):
     """Checks that the matching a diff of two string sets produces is optimal under exact edit costs.

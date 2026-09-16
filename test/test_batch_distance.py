@@ -1,11 +1,14 @@
 import os
 import random
 import time
+from io import StringIO
 from unittest import TestCase
 from unittest.mock import patch
 
 import numpy as np
 
+import graphtage
+from graphtage import batch_distance
 from graphtage.batch_distance import (
     BACKEND_ENV_VAR,
     NUMPY_MIN_PAIRS,
@@ -13,9 +16,11 @@ from graphtage.batch_distance import (
     all_flat,
     all_pairs,
     available_backends,
+    cost,
     register_backend,
 )
 from graphtage.levenshtein import levenshtein_distance
+from graphtage.printer import Printer
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 UNICODE_ALPHABET = 'a\u00e9\u6f22\u00df\u0301\U0001F600\U00010330'
@@ -320,3 +325,341 @@ class TestBytes(TestCase):
         with self.assertRaises(TypeError) as context:
             all_pairs([1], [2])
         self.assertIn('int', str(context.exception))
+
+
+class TestCostOracle(TestCase):
+    """Tests for :func:`graphtage.batch_distance.cost` and the blocks it reads."""
+
+    def setUp(self):
+        batch_distance.clear()
+
+    def tearDown(self):
+        batch_distance.clear()
+
+    def assert_cost_is_exact(self, from_strings, to_strings):
+        """Asserts that :func:`graphtage.batch_distance.cost` answers every pair exactly.
+
+        Args:
+            from_strings: The strings to measure from.
+            to_strings: The strings to measure to.
+
+        """
+        for left in from_strings:
+            for right in to_strings:
+                with self.subTest(left=left, right=right):
+                    self.assertEqual(levenshtein_distance(left, right), cost(left, right))
+
+    def test_cost_matches_levenshtein_distance_without_a_block(self):
+        """Every pair gets the same answer the scalar dynamic program gives, with nothing pre-priced.
+
+        Prevents the short circuits and the shared affix stripping in the miss path from changing the metric. The
+        corpus holds empty strings, repeated strings, strings that share an affix, non-ASCII text, and characters
+        outside the Basic Multilingual Plane.
+
+        """
+        self.assert_cost_is_exact(mixed_corpus(), mixed_corpus())
+
+    def test_cost_matches_levenshtein_distance_from_a_block(self):
+        """A pre-priced block answers with exactly what computing the pair would have answered.
+
+        Prevents a block from being indexed by the wrong axis, which a square grid of a symmetric metric would
+        hide, and prevents its :class:`numpy.int32` cells from being read back as anything but the distance.
+
+        """
+        rng = random.Random(51966)
+        from_strings = random_strings(rng, 14, ALPHABET, 0, 16)
+        to_strings = random_strings(rng, 11, ALPHABET, 0, 16)
+        batch_distance.preprice_product(from_strings, to_strings)
+        self.assert_cost_is_exact(from_strings, to_strings)
+
+    def test_a_block_answers_instead_of_the_scalar_path(self):
+        """A pre-priced pair is answered from the block rather than computed again.
+
+        Prevents the block from being installed but never consulted, which no comparison of answers can detect
+        because both paths return the same number.
+
+        """
+        rng = random.Random(31337)
+        from_strings = random_strings(rng, 8, ALPHABET, 4, 16)
+        to_strings = random_strings(rng, 8, ALPHABET, 4, 16)
+        batch_distance.preprice_product(from_strings, to_strings)
+        with patch.object(batch_distance, '_uncached_cost', side_effect=AssertionError('block was not consulted')):
+            self.assert_cost_is_exact(from_strings, to_strings)
+
+    def test_eviction_does_not_change_answers(self):
+        """Filling the block stack past its limit drops the oldest blocks without corrupting any answer.
+
+        Prevents an eviction policy that leaves a stale block in place or that drops the wrong end of the stack.
+        The pairs of the evicted blocks have to be recomputed, and those answers have to agree with the ones that
+        are still cached.
+
+        """
+        rng = random.Random(0xBADF00D)
+        batches = [
+            (random_strings(rng, 7, ALPHABET, 3, 12), random_strings(rng, 7, ALPHABET, 3, 12))
+            for _ in range(batch_distance.BLOCK_STACK_LIMIT + 4)
+        ]
+        for from_strings, to_strings in batches:
+            batch_distance.preprice_product(from_strings, to_strings)
+        self.assertEqual(batch_distance.BLOCK_STACK_LIMIT, len(batch_distance._blocks))
+        for from_strings, to_strings in batches:
+            self.assert_cost_is_exact(from_strings, to_strings)
+
+    def test_misses_are_not_memoized(self):
+        """Pricing a pair that no block holds leaves the cache exactly as it was.
+
+        Prevents the cache from growing with the number of distinct pairs a diff asks about, which is the whole
+        cross product, and which nothing would ever evict.
+
+        """
+        rng = random.Random(8675309)
+        for left, right in zip(
+                random_strings(rng, 200, ALPHABET, 1, 12),
+                random_strings(rng, 200, ALPHABET, 1, 12),
+                strict=True,
+        ):
+            cost(left, right)
+        self.assertEqual((), batch_distance._blocks)
+
+    def test_clear_discards_every_block(self):
+        """Clearing the cache leaves the answers alone and the stack empty."""
+        rng = random.Random(24601)
+        from_strings = random_strings(rng, 8, ALPHABET, 2, 10)
+        to_strings = random_strings(rng, 8, ALPHABET, 2, 10)
+        batch_distance.preprice_product(from_strings, to_strings)
+        self.assertEqual(1, len(batch_distance._blocks))
+        batch_distance.clear()
+        self.assertEqual((), batch_distance._blocks)
+        self.assert_cost_is_exact(from_strings, to_strings)
+
+    def test_pre_pricing_a_flat_list_leaves_unasked_pairs_absent(self):
+        """A pair the caller never offered is not read out of the rectangle its sides happen to span.
+
+        Prevents the unfilled cells of a sparse block from being mistaken for distances of zero, which is what a
+        zero-filled matrix would report for every pair the caller did not ask about.
+
+        """
+        batch_distance.preprice([('kitten', 'sitting'), ('flaw', 'lawn')])
+        self.assertEqual(3, cost('kitten', 'sitting'))
+        self.assertEqual(2, cost('flaw', 'lawn'))
+        self.assertEqual(levenshtein_distance('kitten', 'lawn'), cost('kitten', 'lawn'))
+        self.assertEqual(levenshtein_distance('flaw', 'sitting'), cost('flaw', 'sitting'))
+
+    def test_pairs_that_mix_str_and_bytes_are_left_to_the_scalar_path(self):
+        """A block never answers a pair whose sides are of different types, and the pair is still priced.
+
+        Prevents a mixed pair from being given one of the two readings of its symbols: ``ord('a')`` and
+        ``b'a'[0]`` are both 97 while ``'a' == b'a'`` is :const:`False`, so the batch declines such a pair and the
+        scalar path has to pick it up.
+
+        """
+        batch_distance.preprice([('abc', b'abc'), ('abc', 'abd')])
+        self.assertEqual(1, cost('abc', 'abd'))
+        self.assertEqual(3, cost('abc', b'abc'))
+        self.assertEqual(levenshtein_distance('abc', b'abc'), cost('abc', b'abc'))
+
+    def test_bytes_and_str_share_a_block_without_colliding(self):
+        """A block holding both kinds of string keeps each kind's answers to itself."""
+        batch_distance.preprice_product(['abc', b'abc'], ['abd', b'abxd'])
+        self.assertEqual(1, cost('abc', 'abd'))
+        self.assertEqual(2, cost(b'abc', b'abxd'))
+        self.assertEqual(levenshtein_distance('abc', b'abxd'), cost('abc', b'abxd'))
+
+    def test_an_oversized_rectangle_is_not_pre_priced(self):
+        """A batch whose distinct sides span too large a rectangle is left to the scalar path.
+
+        Prevents a sparse batch from allocating a matrix far larger than the number of answers it holds.
+
+        """
+        rng = random.Random(4096)
+        from_strings = random_strings(rng, 6, ALPHABET, 2, 8)
+        to_strings = random_strings(rng, 6, ALPHABET, 2, 8)
+        with patch.object(batch_distance, 'PREPRICE_MAX_CELLS', 8):
+            batch_distance.preprice_product(from_strings, to_strings)
+            batch_distance.preprice(list(zip(from_strings, to_strings, strict=True)))
+        self.assertEqual((), batch_distance._blocks)
+        self.assert_cost_is_exact(from_strings, to_strings)
+
+    def test_one_big_pair_goes_to_a_vectorized_backend(self):
+        """A single pair large enough to pay for the array setup is scanned rather than looped over.
+
+        Prevents the single-pair route from being gated on the number of pairs alone, which would send every long
+        pair that no block holds back through the pure Python dynamic program.
+
+        """
+        rng = random.Random(1024)
+        long_left = ''.join(rng.choices(ALPHABET, k=128))
+        long_right = ''.join(rng.choices(ALPHABET, k=128))
+        short_left, short_right = 'kitten', 'sitting'
+        self.assertGreaterEqual(len(long_left) * len(long_right), batch_distance.VECTORIZED_MIN_CELLS)
+        self.assertLess(len(short_left) * len(short_right), batch_distance.VECTORIZED_MIN_CELLS)
+        with patch.object(NumpyBackend, 'distances', autospec=True, side_effect=NumpyBackend.distances) as batched:
+            self.assertEqual(levenshtein_distance(short_left, short_right), cost(short_left, short_right))
+            batched.assert_not_called()
+            self.assertEqual(levenshtein_distance(long_left, long_right), cost(long_left, long_right))
+            self.assertTrue(batched.called, 'a pair this large should have been scanned')
+
+    def test_the_environment_variable_still_pins_a_single_big_pair(self):
+        """``GRAPHTAGE_BATCH_BACKEND`` is honored on the single-pair route as well as on a whole batch."""
+        rng = random.Random(2048)
+        left = ''.join(rng.choices(ALPHABET, k=96))
+        right = ''.join(rng.choices(ALPHABET, k=96))
+        with patch.object(NumpyBackend, 'distances', autospec=True, side_effect=NumpyBackend.distances) as batched:
+            with patch.dict(os.environ, {BACKEND_ENV_VAR: 'python'}):
+                self.assertEqual(levenshtein_distance(left, right), cost(left, right))
+            batched.assert_not_called()
+
+    def test_every_backend_pre_prices_the_same_answers(self):
+        """Pinning each backend in turn fills a block with identical answers.
+
+        Prevents a backend from being exact on its own entry points but wrong through the block, for instance by
+        returning a dtype that the block truncates.
+
+        """
+        rng = random.Random(0xFEEDFACE)
+        from_strings = random_strings(rng, 9, ALPHABET, 0, 14)
+        to_strings = random_strings(rng, 9, ALPHABET, 0, 14)
+        expected = oracle_pairs(from_strings, to_strings)
+        for backend in available_backends():
+            with self.subTest(backend=backend), patch.dict(os.environ, {BACKEND_ENV_VAR: backend}):
+                batch_distance.clear()
+                batch_distance.preprice_product(from_strings, to_strings)
+                answered = np.array(
+                    [[cost(left, right) for right in to_strings] for left in from_strings], dtype=np.int64
+                )
+                self.assertTrue(np.array_equal(answered, expected))
+
+
+def mutated_words(rng: random.Random, count: int, alphabet: str = ALPHABET) -> tuple[list[str], list[str]]:
+    """Draws a collection of strings and a copy of it with one substitution in each."""
+    words = random_strings(rng, count, alphabet, 6, 18)
+    mutated = []
+    for word in words:
+        position = rng.randrange(len(word))
+        mutated.append(word[:position] + rng.choice(alphabet) + word[position + 1:])
+    return words, mutated
+
+
+def diff_shapes() -> list[tuple[str, object, object, bool]]:
+    """Builds the documents that the pre-pricing parity tests diff.
+
+    Every shape is large enough to be pre-priced, and together they cover the ordered and unordered paths, keys as
+    well as values, and the kinds of string a leaf can wrap.
+
+    Returns:
+        List[Tuple[str, object, object, bool]]: A name, the document to diff from, the document to diff to, and
+        whether to build lists as unordered collections.
+
+    """
+    rng = random.Random(0x5CA1AB1E)
+    words, mutated = mutated_words(rng, 24)
+    keys, mutated_keys = mutated_words(rng, 40)
+    values, mutated_values = mutated_words(rng, 40)
+    non_ascii, mutated_non_ascii = mutated_words(rng, 16, UNICODE_ALPHABET)
+    multiline = [f"{left}\n{right}\n" for left, right in zip(words, mutated, strict=True)]
+    remultiline = [f"{right}\n{left}\n" for left, right in zip(words, mutated, strict=True)]
+    return [
+        ('ordered', words, mutated, False),
+        ('unordered', words, rng.sample(mutated, len(mutated)), True),
+        ('ragged', words, mutated[:17], False),
+        ('dict', dict(zip(keys, values, strict=True)), dict(zip(mutated_keys, mutated_values, strict=True)), False),
+        ('dict-shared-keys', dict(zip(keys, values, strict=True)), dict(zip(keys, mutated_values, strict=True)),
+         False),
+        ('bytes', [word.encode() for word in words], [word.encode() for word in mutated], False),
+        ('non-ascii', non_ascii, mutated_non_ascii, False),
+        ('multiline', multiline, remultiline, False),
+        ('nested', [{'k': word} for word in words], [{'k': word} for word in mutated], False),
+    ]
+
+
+class TestPrePricedDiffs(TestCase):
+    """Checks that pre-pricing changes how a diff is computed and never what it produces."""
+
+    NOT_PRE_PRICED = frozenset({'nested'})
+    """Shapes whose string pairs are spread over many small edits, none of them holding enough to batch.
+
+    A list of single-entry dictionaries is one: the outer sequence holds containers, which contribute no pair, and
+    each inner dictionary offers one pair of its own.
+
+    """
+
+    def setUp(self):
+        batch_distance.clear()
+
+    def tearDown(self):
+        batch_distance.clear()
+
+    @staticmethod
+    def render(from_obj, to_obj, unordered: bool) -> tuple[str, int]:
+        """Diffs two Python objects and returns the rendered diff and the total cost of its edits.
+
+        Args:
+            from_obj: The document to diff from.
+            to_obj: The document to diff to.
+            unordered: Whether to build lists as unordered collections.
+
+        Returns:
+            Tuple[str, int]: The rendered diff, and the sum of the costs of every edit in it.
+
+        """
+        options = graphtage.BuildOptions(ignore_list_order=unordered)
+        stream = StringIO()
+        printer = Printer(out_stream=stream, ansi_color=False, quiet=True)
+        diff = graphtage.json.build_tree(from_obj, options).diff(graphtage.json.build_tree(to_obj, options))
+        total = sum(
+            edit.bounds().upper_bound
+            for node in diff.dfs() for edit in node.edit_list if edit.has_non_zero_cost()
+        )
+        graphtage.FILETYPES_BY_TYPENAME['json'].get_default_formatter().print(printer, diff)
+        printer.flush(final=True)
+        return stream.getvalue(), total
+
+    def test_pre_pricing_does_not_change_a_diff(self):
+        """A pre-priced diff renders the same text at the same cost as one priced a pair at a time.
+
+        Prevents pre-pricing from feeding the matcher a different cost matrix than the scalar path would have,
+        which would change which nodes a diff matches. It also prevents the collection pass from projecting a node
+        onto a string that the edit it stands for never compares, which would leave the block holding an answer
+        for the wrong question.
+
+        """
+        for name, from_obj, to_obj, unordered in diff_shapes():
+            with self.subTest(shape=name):
+                priced = self.render(from_obj, to_obj, unordered)
+                if name not in self.NOT_PRE_PRICED:
+                    self.assertTrue(batch_distance._blocks, f"the {name} shape never got pre-priced")
+                batch_distance.clear()
+                with patch.object(batch_distance, 'PREPRICE_MIN_PAIRS', 1 << 40):
+                    scalar = self.render(from_obj, to_obj, unordered)
+                self.assertEqual((), batch_distance._blocks)
+                self.assertEqual(scalar, priced)
+
+    def test_a_pre_priced_diff_reads_its_costs_out_of_the_block(self):
+        """A diff whose pairs were pre-priced does not go back through the scalar dynamic program for them.
+
+        Prevents :func:`graphtage.levenshtein.exact_string_distance` from being left wired straight to
+        :func:`graphtage.levenshtein.levenshtein_distance`, which would install blocks that nothing ever reads and
+        show up as no change at all in what the diff produces. This watches the module level name that
+        :mod:`graphtage.batch_distance` does not use, so only the unbatched route trips it.
+
+        """
+        words, mutated = mutated_words(random.Random(0xB10CC), 24)
+        with patch('graphtage.levenshtein.levenshtein_distance', wraps=levenshtein_distance) as scalar:
+            self.render(words, mutated, False)
+        self.assertEqual(0, scalar.call_count, 'the pre-priced pairs were priced one at a time as well')
+
+    def test_every_backend_produces_the_same_diff(self):
+        """Pinning each backend in turn renders the same diff.
+
+        Prevents a backend from being exact in isolation and wrong once a diff depends on it, and makes
+        ``GRAPHTAGE_BATCH_BACKEND`` safe to use for benchmarking.
+
+        """
+        for name, from_obj, to_obj, unordered in diff_shapes():
+            rendered = {}
+            for backend in available_backends():
+                with self.subTest(shape=name, backend=backend), patch.dict(os.environ, {BACKEND_ENV_VAR: backend}):
+                    batch_distance.clear()
+                    rendered[backend] = self.render(from_obj, to_obj, unordered)
+            with self.subTest(shape=name):
+                self.assertEqual(1, len(set(rendered.values())), f"the backends disagree on the {name} shape")
