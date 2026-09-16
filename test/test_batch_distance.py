@@ -69,6 +69,18 @@ def mixed_corpus() -> list[str]:
     ]
 
 
+def no_backend_pin():
+    """Removes any ambient ``GRAPHTAGE_BATCH_BACKEND`` for the duration of the context.
+
+    A test that watches the *automatic* backend choice can only observe it when nothing pins one. Without this, a
+    developer who exports the variable to exercise the other backend gets spurious failures from tests that never
+    mention it.
+
+    """
+    unpinned = {name: value for name, value in os.environ.items() if name != BACKEND_ENV_VAR}
+    return patch.dict(os.environ, unpinned, clear=True)
+
+
 class TestBackendAgreement(TestCase):
     def test_backends_agree_with_levenshtein_distance(self):
         """Every backend returns exactly what ``levenshtein_distance`` returns, over a varied corpus.
@@ -245,7 +257,8 @@ class TestBackendSelection(TestCase):
             with patch.dict(os.environ, {BACKEND_ENV_VAR: 'python'}):
                 all_pairs(corpus, corpus)
             batched.assert_not_called()
-            all_pairs(corpus, corpus)
+            with no_backend_pin():
+                all_pairs(corpus, corpus)
             self.assertTrue(batched.called, 'this batch should have gone to the numpy backend on its own')
 
     def test_environment_variable_names_are_validated(self):
@@ -493,7 +506,9 @@ class TestCostOracle(TestCase):
         short_left, short_right = 'kitten', 'sitting'
         self.assertGreaterEqual(len(long_left) * len(long_right), batch_distance.VECTORIZED_MIN_CELLS)
         self.assertLess(len(short_left) * len(short_right), batch_distance.VECTORIZED_MIN_CELLS)
-        with patch.object(NumpyBackend, 'distances', autospec=True, side_effect=NumpyBackend.distances) as batched:
+        with no_backend_pin(), patch.object(
+            NumpyBackend, 'distances', autospec=True, side_effect=NumpyBackend.distances
+        ) as batched:
             self.assertEqual(levenshtein_distance(short_left, short_right), cost(short_left, short_right))
             batched.assert_not_called()
             self.assertEqual(levenshtein_distance(long_left, long_right), cost(long_left, long_right))

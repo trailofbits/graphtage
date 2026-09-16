@@ -269,6 +269,20 @@ option. To additionally suppress all but critical log messages, use `--quiet`. F
 via the `--log-level` option. `--debug` is equivalent to `--log-level=DEBUG`, and `--quiet` is equivalent to
 `--log-level=CRITICAL --no-status`.
 
+### Environment Variables
+`GRAPHTAGE_BATCH_BACKEND` pins the backend that computes Levenshtein distances in batch. Graphtage picks one by batch
+size: `python` prices a single pair at a time, and `numpy` advances a whole batch through one array pass per row. Both
+return identical distances, so set this variable only to benchmark one backend against the other, or to work around a
+problem with the automatic choice.
+
+| Value | Effect |
+|-------|--------|
+| `python` | Price every pair one at a time. |
+| `numpy` | Always use the batched scan. |
+| unset | Pick by batch size. This is the default. |
+
+An unrecognized value raises a `ValueError` rather than falling back to a default.
+
 ### Version Information
 `--version` or `-v` writes a line such as `Graphtage version 0.4.0` to STDERR. If you pass it without any input files,
 Graphtage prints the version and exits; if you pass input files as well, it prints the version and then computes the
