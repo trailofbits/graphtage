@@ -284,7 +284,7 @@ problem with the automatic choice.
 An unrecognized value raises a `ValueError` rather than falling back to a default.
 
 ### Version Information
-`--version` or `-v` writes a line such as `Graphtage version 0.4.0` to STDERR. If you pass it without any input files,
+`--version` or `-v` writes a line such as `Graphtage version 0.5.0` to STDERR. If you pass it without any input files,
 Graphtage prints the version and exits; if you pass input files as well, it prints the version and then computes the
 diff. `-dumpversion` writes the raw version to STDOUT and exits without reading any input.
 
