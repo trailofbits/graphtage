@@ -95,12 +95,15 @@ def register_mimetypes():
     if '.pkl' not in mimetypes.types_map and '.pickle' not in mimetypes.types_map:
         mimetypes.add_type('application/x-python-pickle', '.pkl')
         mimetypes.suffix_map['.pickle'] = '.pkl'
+    for flame_graph_extension in ('.folded', '.collapsed'):
+        if flame_graph_extension not in mimetypes.types_map:
+            mimetypes.add_type('text/x-flame-graph', flame_graph_extension)
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(
         description='A diff utility for tree-like files such as JSON, JSON5, XML, HTML, YAML, TOML, INI, CSV, plist, '
-                    'and Python pickle.'
+                    'Python pickle, and flame graphs.'
     )
     parser.add_argument('FROM_PATH', type=str, nargs='?', default='-',
                         help='the source file to diff; pass \'-\' to read from STDIN')
