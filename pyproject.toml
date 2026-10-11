@@ -73,6 +73,7 @@ include = [
 include = [
     "graphtage/**/*.py",
     "test/**/*.py",
+    "docs/library.rst",
     "LICENSE",
     "README.md",
     "pyproject.toml",

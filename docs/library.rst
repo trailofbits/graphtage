@@ -197,6 +197,160 @@ are the object's public attributes::
 
 Both functions accept the same :obj:`options` argument as the filetype tree builders.
 
+.. _consuming-diffs:
+
+Inspecting and Consuming Diffs
+------------------------------
+
+Use :func:`graphtage.pydiff.diff` to keep the result of a comparison, or call
+:meth:`graphtage.TreeNode.diff` on trees built by a filetype. The result is an annotated copy of the **source**
+tree, not the destination tree or a patch applied to the source. Existing children, including removed children,
+remain in :meth:`graphtage.TreeNode.children`; insertions are recorded separately on their container::
+
+    >>> from graphtage import EditedTreeNode, Match
+    >>> from graphtage.pydiff import diff
+    >>> before = {"a": 1, "b": [1, 3], "c": [4, 5]}
+    >>> after = {"a": 2, "b": [1, 2, 3], "c": [5]}
+    >>> result = diff(before, after)
+    >>> isinstance(result, EditedTreeNode)
+    True
+    >>> result.to_obj() == before
+    True
+    >>> items = next(entry.value for entry in result.children() if entry.key.to_obj() == "b")
+    >>> [child.to_obj() for child in items.children()], [node.to_obj() for node in items.inserted]
+    ([1, 3], [2])
+    >>> isinstance(items.inserted[0], EditedTreeNode)
+    False
+
+Each node in the source copy also retains its original node type and has these
+:class:`graphtage.EditedTreeNode` attributes:
+
+.. list-table:: Diff annotations
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Attribute
+     - Meaning
+   * - ``removed``
+     - A :class:`graphtage.Remove` marked this node for removal. Descendants of a removed subtree need not
+       each be marked.
+   * - ``inserted``
+     - Nodes added to this container by :class:`graphtage.Insert`. They come from the destination tree and
+       need not be :class:`graphtage.EditedTreeNode` instances. There is no ``inserted`` flag on a new child.
+   * - ``matched_to``
+     - The destination node assigned by :class:`graphtage.Match`, including zero-cost matches.
+       Other edit types need not set it.
+   * - ``edit``
+     - The edit assigned to this node, or ``None``. For example, matching an unchanged container can leave
+       its descendants' ``edit`` attributes unset.
+   * - ``edit_list``
+     - Edits assigned to this node by the diff callbacks. Container edits can be compound, so concatenating
+       these lists over the tree is not a flat list of changes and can count the same change more than once.
+
+A :class:`graphtage.Match` does not necessarily mean "unchanged". Numeric value changes normally use a non-zero-cost
+``Match``, so checking only for :class:`graphtage.Replace` misses them. Check
+:meth:`graphtage.Edit.has_non_zero_cost` after guarding against ``edit is None``::
+
+    >>> scalar = diff(1, 2)
+    >>> isinstance(scalar.edit, Match), scalar.edit.has_non_zero_cost()
+    (True, True)
+    >>> scalar.to_obj(), scalar.matched_to.to_obj()
+    (1, 2)
+
+Strings can use :class:`graphtage.StringEdit`, which does not populate ``matched_to``. For changes other than
+insertions and removals, ``edit.to_node`` gives the destination node. A ``Replace`` represents a wholesale
+replacement, which can involve a container.
+
+The following iterator reports removed and inserted subtrees, changed leaves (including dictionary keys), and
+wholesale replacements. It visits the root too, checks insertions on every container, and stops at removed or
+replaced subtrees. It does not report compound container edits again when reporting their descendants::
+
+    >>> from graphtage import LeafNode, Replace
+    >>> def summarize(node):
+    ...     if node.removed:
+    ...         yield ("removed", node.to_obj())
+    ...         return
+    ...     edit = node.edit
+    ...     if edit is not None and edit.has_non_zero_cost():
+    ...         if isinstance(node, LeafNode) or isinstance(edit, Replace):
+    ...             yield ("changed", node.to_obj(), edit.to_node.to_obj())
+    ...             return
+    ...     for inserted in node.inserted:
+    ...         yield ("inserted", inserted.to_obj())
+    ...     for child in node.children():
+    ...         yield from summarize(child)
+    >>> list(summarize(result))
+    [('changed', 1, 2), ('inserted', 2), ('removed', 4)]
+    >>> list(summarize(diff([], [2])))
+    [('inserted', 2)]
+    >>> list(summarize(diff("cat", "cut")))
+    [('changed', 'cat', 'cut')]
+    >>> list(summarize(diff([[4, 5]], [])))
+    [('removed', [4, 5])]
+    >>> list(summarize(diff([1], 42)))
+    [('changed', [1], 42)]
+    >>> list(summarize(diff([1], [1])))
+    []
+
+:meth:`graphtage.TreeNode.to_obj` reads a node's stored value; it does not apply diff annotations. For scalar,
+list, and mapping nodes, it returns Python values suitable for downstream processing. Convert an inserted node
+or an edit's destination node to obtain its new value. Representations are node-specific: for example,
+``KeyValuePairNode.to_obj()`` returns a pair of nodes, and custom objects need not round-trip to their original
+class. Use :meth:`graphtage.TreeNode.copy` and :meth:`graphtage.TreeNode.copy_from` when building your own tree
+representation of changes, with copies of any children that already have parents.
+
+Locating Edits with Contexts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you need to know where a change happened, start with
+:meth:`graphtage.TreeNode.get_all_edit_contexts` on the **two input trees**. This computes edits without annotating
+the source and yields ``(ancestor_path, edit)`` pairs. It expands compound edits and omits zero-cost matches.
+:meth:`graphtage.TreeNode.get_all_edits` yields the same edits without paths, and the command-line
+``--edit-digest`` option uses the context API.
+
+In the current implementation, the path starts with the destination root; subsequent entries follow
+``from_node`` through the nested sub-edits. A root-level scalar edit therefore has only the destination root in
+its path. These are edit-context paths, not guaranteed parent/child chains in a single tree or ready-made JSON
+Pointers. For an insertion the final entry is the inserted destination node, while ``edit.insert_into`` names
+the source container. Use the edit's attributes to distinguish the operation::
+
+    >>> from graphtage import Insert, KeyValuePairNode, Remove
+    >>> from graphtage.pydiff import build_tree
+    >>> def describe_edit(edit):
+    ...     if isinstance(edit, Insert):
+    ...         return ("inserted", edit.to_insert.to_obj())
+    ...     if isinstance(edit, Remove):
+    ...         return ("removed", edit.from_node.to_obj())
+    ...     return ("changed", edit.from_node.to_obj(), edit.to_node.to_obj())
+    >>> source, target = build_tree(before), build_tree(after)
+    >>> contexts = list(source.get_all_edit_contexts(target))
+    >>> records = []
+    >>> for ancestors, edit in contexts:
+    ...     keys = tuple(n.key.to_obj() for n in ancestors[1:] if isinstance(n, KeyValuePairNode))
+    ...     records.append((keys, describe_edit(edit)))
+    >>> records
+    [(('a',), ('changed', 1, 2)), (('b',), ('inserted', 2)), (('c',), ('removed', 4))]
+    >>> ancestors, insertion = contexts[1]
+    >>> ancestors[0] is target, ancestors[-1] is insertion.to_insert
+    (True, True)
+    >>> insertion.insert_into.to_obj(), insertion.to_insert.to_obj()
+    ([1, 3], 2)
+    >>> source.edited, target.edited
+    (False, False)
+    >>> scalar_source, scalar_target = build_tree(1), build_tree(2)
+    >>> [(path == (scalar_target,), describe_edit(edit))
+    ...  for path, edit in scalar_source.get_all_edit_contexts(scalar_target)]
+    [(True, ('changed', 1, 2))]
+    >>> list(build_tree([1]).get_all_edit_contexts(build_tree([1])))
+    []
+
+Here ``keys`` identifies enclosing dictionary entries only; it is not a complete location for list elements or
+key edits. :meth:`graphtage.TreeNode.print_parent_context` can render a node's location relative to its parent,
+as ``--edit-digest`` does. For machine-readable locations, interpret the container types for your input model.
+In particular, ``inserted`` alone does not encode insertion positions; consult the container's edit sequence
+when order matters. ``Insert.from_node`` is the node being inserted and ``Insert.to_node`` is the container;
+``Remove.to_node`` is also the container, not a replacement value.
+
 Diffing Python Source Code
 --------------------------
 
