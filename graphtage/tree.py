@@ -393,14 +393,20 @@ class TreeNode(metaclass=TreeNodeMeta):
 
     @abstractmethod
     def to_obj(self):
-        """Returns a pure Python representation of this node.
+        """Returns this node's Python representation.
 
         For example, a node representing a list, like :class:`graphtage.ListNode`, should return a Python :class:`list`.
         A node representing a mapping, like :class:`graphtage.MappingNode`, should return a Python :class:`dict`.
-        Container nodes should recursively call :meth:`TreeNode.to_obj` on all of their children.
+        Container nodes normally convert their children recursively. Specific node types can return other
+        representations; for example, :class:`graphtage.KeyValuePairNode` returns a pair of nodes.
 
-        This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
-        options like `--match-if` and `--match-unless`.
+        Use this to inspect values when consuming a diff programmatically, or to provide objects for command-line
+        expression evaluation with options like ``--match-if`` and ``--match-unless``. The representation is
+        node-specific and need not recreate the original input class.
+
+        On an :class:`EditedTreeNode`, this reads the stored source value without applying edit annotations:
+        removed children remain and insertions are not added. Convert an inserted node or an edit's destination
+        node separately to read its new value.
 
         """
         raise NotImplementedError()
@@ -562,9 +568,12 @@ class TreeNode(metaclass=TreeNodeMeta):
             node: The node to which to transform this one.
 
         Returns:
-            Iterator[Tuple[Tuple["TreeNode", ...], Edit]: An iterator over pairs of paths from `node` to the edited
-            node, as well as its edit. Note that this iterator will automatically
-            :func:`explode <explode_edits>` any :class:`CompoundEdit` in the sequence.
+            Iterator[Tuple[Tuple["TreeNode", ...], Edit]]: Pairs of edit-context paths and non-zero-cost edits.
+            The path starts with the destination root (``node``), then follows each nested sub-edit's
+            ``from_node``. A root-level non-compound edit has only ``node`` in its path. An insertion ends
+            with the inserted node; its destination container is available as ``edit.insert_into``.
+            Paths need not be parent/child chains in a single tree. The iterator automatically
+            :func:`explodes <explode_edits>` compound edits and does not annotate either input tree.
 
         """
         edit = self.edits(node)
