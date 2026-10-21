@@ -393,9 +393,14 @@ class XMLFormatter(GraphtageFormatter):
     def print_XMLElement(self, printer: Printer, node: XMLElement):
         printer.write('<')
         self.print(printer, node.tag)
-        if node.attrib:
-            self.print(printer, node.attrib)
-        if node._children._children or (node.text is not None and '\n' in node.text.object):
+        # Always hand attrib to the formatter. An empty from-side DictNode is
+        # falsy, so a truthiness guard dropped Insert edits on the first attribute.
+        self.print(printer, node.attrib)
+        child_edit = getattr(node._children, 'edit', None)
+        has_child_edits = child_edit is not None and not isinstance(child_edit, Match)
+        if node._children._children or has_child_edits or (
+            node.text is not None and '\n' in node.text.object
+        ):
             printer.write('>')
             if node.text is not None:
                 self.print(printer, node.text)
