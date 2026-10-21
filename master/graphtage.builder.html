@@ -478,12 +478,15 @@
 <dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
-node, as well as its edit. Note that this iterator will automatically
-<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+<dd class="field-even"><p>Pairs of edit-context paths and non-zero-cost edits.
+The path starts with the destination root (<code class="docutils literal notranslate"><span class="pre">node</span></code>), then follows each nested sub-edit’s
+<code class="docutils literal notranslate"><span class="pre">from_node</span></code>. A root-level non-compound edit has only <code class="docutils literal notranslate"><span class="pre">node</span></code> in its path. An insertion ends
+with the inserted node; its destination container is available as <code class="docutils literal notranslate"><span class="pre">edit.insert_into</span></code>.
+Paths need not be parent/child chains in a single tree. The iterator automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explodes</span></code> compound edits and does not annotate either input tree.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]]</p>
 </dd>
 </dl>
 </dd></dl>

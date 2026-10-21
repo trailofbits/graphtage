@@ -495,12 +495,15 @@ another list of the same length.</p></li>
 <dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
-node, as well as its edit. Note that this iterator will automatically
-<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+<dd class="field-even"><p>Pairs of edit-context paths and non-zero-cost edits.
+The path starts with the destination root (<code class="docutils literal notranslate"><span class="pre">node</span></code>), then follows each nested sub-edit’s
+<code class="docutils literal notranslate"><span class="pre">from_node</span></code>. A root-level non-compound edit has only <code class="docutils literal notranslate"><span class="pre">node</span></code> in its path. An insertion ends
+with the inserted node; its destination container is available as <code class="docutils literal notranslate"><span class="pre">edit.insert_into</span></code>.
+Paths need not be parent/child chains in a single tree. The iterator automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explodes</span></code> compound edits and does not annotate either input tree.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -589,12 +592,17 @@ printed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVNode.to_obj">
 <span class="sig-name descname"><span class="pre">to_obj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVNode.to_obj" title="Link to this definition"></a></dt>
-<dd><p>Returns a pure Python representation of this node.</p>
+<dd><p>Returns this node’s Python representation.</p>
 <p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
 A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
-Container nodes should recursively call <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.to_obj()</span></code> on all of their children.</p>
-<p>This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
-options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
+Container nodes normally convert their children recursively. Specific node types can return other
+representations; for example, <a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.KeyValuePairNode</span></code></a> returns a pair of nodes.</p>
+<p>Use this to inspect values when consuming a diff programmatically, or to provide objects for command-line
+expression evaluation with options like <code class="docutils literal notranslate"><span class="pre">--match-if</span></code> and <code class="docutils literal notranslate"><span class="pre">--match-unless</span></code>. The representation is
+node-specific and need not recreate the original input class.</p>
+<p>On an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>, this reads the stored source value without applying edit annotations:
+removed children remain and insertions are not added. Convert an inserted node or an edit’s destination
+node separately to read its new value.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -808,12 +816,15 @@ another list of the same length.</p></li>
 <dd class="field-odd"><p><strong>node</strong> – The node to which to transform this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An iterator over pairs of paths from <cite>node</cite> to the edited
-node, as well as its edit. Note that this iterator will automatically
-<code class="xref py py-func docutils literal notranslate"><span class="pre">explode</span></code> any <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundEdit</span></code> in the sequence.</p>
+<dd class="field-even"><p>Pairs of edit-context paths and non-zero-cost edits.
+The path starts with the destination root (<code class="docutils literal notranslate"><span class="pre">node</span></code>), then follows each nested sub-edit’s
+<code class="docutils literal notranslate"><span class="pre">from_node</span></code>. A root-level non-compound edit has only <code class="docutils literal notranslate"><span class="pre">node</span></code> in its path. An insertion ends
+with the inserted node; its destination container is available as <code class="docutils literal notranslate"><span class="pre">edit.insert_into</span></code>.
+Paths need not be parent/child chains in a single tree. The iterator automatically
+<code class="xref py py-func docutils literal notranslate"><span class="pre">explodes</span></code> compound edits and does not annotate either input tree.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]</p>
+<dd class="field-odd"><p>Iterator[Tuple[Tuple[“TreeNode”, …], <a class="reference internal" href="graphtage.html#graphtage.Edit" title="graphtage.Edit">Edit</a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -902,12 +913,17 @@ printed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.csv.CSVRow.to_obj">
 <span class="sig-name descname"><span class="pre">to_obj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.csv.CSVRow.to_obj" title="Link to this definition"></a></dt>
-<dd><p>Returns a pure Python representation of this node.</p>
+<dd><p>Returns this node’s Python representation.</p>
 <p>For example, a node representing a list, like <a class="reference internal" href="graphtage.html#graphtage.ListNode" title="graphtage.ListNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.ListNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
 A node representing a mapping, like <a class="reference internal" href="graphtage.html#graphtage.MappingNode" title="graphtage.MappingNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.MappingNode</span></code></a>, should return a Python <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>.
-Container nodes should recursively call <code class="xref py py-meth docutils literal notranslate"><span class="pre">TreeNode.to_obj()</span></code> on all of their children.</p>
-<p>This is used solely for the providing objects to operate on in the commandline expressions evaluation, for
-options like <cite>–match-if</cite> and <cite>–match-unless</cite>.</p>
+Container nodes normally convert their children recursively. Specific node types can return other
+representations; for example, <a class="reference internal" href="graphtage.html#graphtage.KeyValuePairNode" title="graphtage.KeyValuePairNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.KeyValuePairNode</span></code></a> returns a pair of nodes.</p>
+<p>Use this to inspect values when consuming a diff programmatically, or to provide objects for command-line
+expression evaluation with options like <code class="docutils literal notranslate"><span class="pre">--match-if</span></code> and <code class="docutils literal notranslate"><span class="pre">--match-unless</span></code>. The representation is
+node-specific and need not recreate the original input class.</p>
+<p>On an <code class="xref py py-class docutils literal notranslate"><span class="pre">EditedTreeNode</span></code>, this reads the stored source value without applying edit annotations:
+removed children remain and insertions are not added. Convert an inserted node or an edit’s destination
+node separately to read its new value.</p>
 </dd></dl>
 
 <dl class="py property">

@@ -53,6 +53,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#applying-edits-to-nodes">Applying Edits to Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formatting-and-printing-results">Formatting and Printing Results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#diffing-in-memory-python-objects">Diffing In-Memory Python Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspecting-and-consuming-diffs">Inspecting and Consuming Diffs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#locating-edits-with-contexts">Locating Edits with Contexts</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#diffing-python-source-code">Diffing Python Source Code</a></li>
 </ul>
 </li>
@@ -272,6 +276,165 @@ are the object’s public attributes:</p>
 </pre></div>
 </div>
 <p>Both functions accept the same <code class="xref py py-obj docutils literal notranslate"><span class="pre">options</span></code> argument as the filetype tree builders.</p>
+</section>
+<section id="inspecting-and-consuming-diffs">
+<span id="consuming-diffs"></span><h2>Inspecting and Consuming Diffs<a class="headerlink" href="#inspecting-and-consuming-diffs" title="Link to this heading"></a></h2>
+<p>Use <a class="reference internal" href="graphtage.pydiff.html#graphtage.pydiff.diff" title="graphtage.pydiff.diff"><code class="xref py py-func docutils literal notranslate"><span class="pre">graphtage.pydiff.diff()</span></code></a> to keep the result of a comparison, or call
+<a class="reference internal" href="graphtage.html#graphtage.TreeNode.diff" title="graphtage.TreeNode.diff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.diff()</span></code></a> on trees built by a filetype. The result is an annotated copy of the <strong>source</strong>
+tree, not the destination tree or a patch applied to the source. Existing children, including removed children,
+remain in <a class="reference internal" href="graphtage.html#graphtage.TreeNode.children" title="graphtage.TreeNode.children"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.children()</span></code></a>; insertions are recorded separately on their container:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">EditedTreeNode</span><span class="p">,</span> <span class="n">Match</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">diff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">before</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">after</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">before</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">EditedTreeNode</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span> <span class="o">==</span> <span class="n">before</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">items</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">children</span><span class="p">()</span> <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">child</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">children</span><span class="p">()],</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">inserted</span><span class="p">]</span>
+<span class="go">([1, 3], [2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">items</span><span class="o">.</span><span class="n">inserted</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">EditedTreeNode</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>Each node in the source copy also retains its original node type and has these
+<a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditedTreeNode</span></code></a> attributes:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Diff annotations</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">removed</span></code></p></td>
+<td><p>A <a class="reference internal" href="graphtage.html#graphtage.Remove" title="graphtage.Remove"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Remove</span></code></a> marked this node for removal. Descendants of a removed subtree need not
+each be marked.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inserted</span></code></p></td>
+<td><p>Nodes added to this container by <a class="reference internal" href="graphtage.html#graphtage.Insert" title="graphtage.Insert"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Insert</span></code></a>. They come from the destination tree and
+need not be <a class="reference internal" href="graphtage.html#graphtage.EditedTreeNode" title="graphtage.EditedTreeNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.EditedTreeNode</span></code></a> instances. There is no <code class="docutils literal notranslate"><span class="pre">inserted</span></code> flag on a new child.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">matched_to</span></code></p></td>
+<td><p>The destination node assigned by <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Match</span></code></a>, including zero-cost matches.
+Other edit types need not set it.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">edit</span></code></p></td>
+<td><p>The edit assigned to this node, or <code class="docutils literal notranslate"><span class="pre">None</span></code>. For example, matching an unchanged container can leave
+its descendants’ <code class="docutils literal notranslate"><span class="pre">edit</span></code> attributes unset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">edit_list</span></code></p></td>
+<td><p>Edits assigned to this node by the diff callbacks. Container edits can be compound, so concatenating
+these lists over the tree is not a flat list of changes and can count the same change more than once.</p></td>
+</tr>
+</tbody>
+</table>
+<p>A <a class="reference internal" href="graphtage.html#graphtage.Match" title="graphtage.Match"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Match</span></code></a> does not necessarily mean “unchanged”. Numeric value changes normally use a non-zero-cost
+<code class="docutils literal notranslate"><span class="pre">Match</span></code>, so checking only for <a class="reference internal" href="graphtage.html#graphtage.Replace" title="graphtage.Replace"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.Replace</span></code></a> misses them. Check
+<a class="reference internal" href="graphtage.html#graphtage.Edit.has_non_zero_cost" title="graphtage.Edit.has_non_zero_cost"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.Edit.has_non_zero_cost()</span></code></a> after guarding against <code class="docutils literal notranslate"><span class="pre">edit</span> <span class="pre">is</span> <span class="pre">None</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scalar</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">scalar</span><span class="o">.</span><span class="n">edit</span><span class="p">,</span> <span class="n">Match</span><span class="p">),</span> <span class="n">scalar</span><span class="o">.</span><span class="n">edit</span><span class="o">.</span><span class="n">has_non_zero_cost</span><span class="p">()</span>
+<span class="go">(True, True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scalar</span><span class="o">.</span><span class="n">to_obj</span><span class="p">(),</span> <span class="n">scalar</span><span class="o">.</span><span class="n">matched_to</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span>
+<span class="go">(1, 2)</span>
+</pre></div>
+</div>
+<p>Strings can use <a class="reference internal" href="graphtage.html#graphtage.StringEdit" title="graphtage.StringEdit"><code class="xref py py-class docutils literal notranslate"><span class="pre">graphtage.StringEdit</span></code></a>, which does not populate <code class="docutils literal notranslate"><span class="pre">matched_to</span></code>. For changes other than
+insertions and removals, <code class="docutils literal notranslate"><span class="pre">edit.to_node</span></code> gives the destination node. A <code class="docutils literal notranslate"><span class="pre">Replace</span></code> represents a wholesale
+replacement, which can involve a container.</p>
+<p>The following iterator reports removed and inserted subtrees, changed leaves (including dictionary keys), and
+wholesale replacements. It visits the root too, checks insertions on every container, and stops at removed or
+replaced subtrees. It does not report compound container edits again when reporting their descendants:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">LeafNode</span><span class="p">,</span> <span class="n">Replace</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">summarize</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">removed</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="p">(</span><span class="s2">&quot;removed&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">... </span>        <span class="k">return</span>
+<span class="gp">... </span>    <span class="n">edit</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">edit</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">edit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">edit</span><span class="o">.</span><span class="n">has_non_zero_cost</span><span class="p">():</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">LeafNode</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">Replace</span><span class="p">):</span>
+<span class="gp">... </span>            <span class="k">yield</span> <span class="p">(</span><span class="s2">&quot;changed&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">(),</span> <span class="n">edit</span><span class="o">.</span><span class="n">to_node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">... </span>            <span class="k">return</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">inserted</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">inserted</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="p">(</span><span class="s2">&quot;inserted&quot;</span><span class="p">,</span> <span class="n">inserted</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+<span class="gp">... </span>        <span class="k">yield from</span> <span class="n">summarize</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+<span class="go">[(&#39;changed&#39;, 1, 2), (&#39;inserted&#39;, 2), (&#39;removed&#39;, 4)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">diff</span><span class="p">([],</span> <span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
+<span class="go">[(&#39;inserted&#39;, 2)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="s2">&quot;cut&quot;</span><span class="p">)))</span>
+<span class="go">[(&#39;changed&#39;, &#39;cat&#39;, &#39;cut&#39;)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">diff</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]],</span> <span class="p">[])))</span>
+<span class="go">[(&#39;removed&#39;, [4, 5])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">diff</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="mi">42</span><span class="p">)))</span>
+<span class="go">[(&#39;changed&#39;, [1], 42)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summarize</span><span class="p">(</span><span class="n">diff</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="graphtage.html#graphtage.TreeNode.to_obj" title="graphtage.TreeNode.to_obj"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.to_obj()</span></code></a> reads a node’s stored value; it does not apply diff annotations. For scalar,
+list, and mapping nodes, it returns Python values suitable for downstream processing. Convert an inserted node
+or an edit’s destination node to obtain its new value. Representations are node-specific: for example,
+<code class="docutils literal notranslate"><span class="pre">KeyValuePairNode.to_obj()</span></code> returns a pair of nodes, and custom objects need not round-trip to their original
+class. Use <a class="reference internal" href="graphtage.html#graphtage.TreeNode.copy" title="graphtage.TreeNode.copy"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.copy()</span></code></a> and <a class="reference internal" href="graphtage.html#graphtage.TreeNode.copy_from" title="graphtage.TreeNode.copy_from"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.copy_from()</span></code></a> when building your own tree
+representation of changes, with copies of any children that already have parents.</p>
+<section id="locating-edits-with-contexts">
+<h3>Locating Edits with Contexts<a class="headerlink" href="#locating-edits-with-contexts" title="Link to this heading"></a></h3>
+<p>When you need to know where a change happened, start with
+<a class="reference internal" href="graphtage.html#graphtage.TreeNode.get_all_edit_contexts" title="graphtage.TreeNode.get_all_edit_contexts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.get_all_edit_contexts()</span></code></a> on the <strong>two input trees</strong>. This computes edits without annotating
+the source and yields <code class="docutils literal notranslate"><span class="pre">(ancestor_path,</span> <span class="pre">edit)</span></code> pairs. It expands compound edits and omits zero-cost matches.
+<a class="reference internal" href="graphtage.html#graphtage.TreeNode.get_all_edits" title="graphtage.TreeNode.get_all_edits"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.get_all_edits()</span></code></a> yields the same edits without paths, and the command-line
+<code class="docutils literal notranslate"><span class="pre">--edit-digest</span></code> option uses the context API.</p>
+<p>In the current implementation, the path starts with the destination root; subsequent entries follow
+<code class="docutils literal notranslate"><span class="pre">from_node</span></code> through the nested sub-edits. A root-level scalar edit therefore has only the destination root in
+its path. These are edit-context paths, not guaranteed parent/child chains in a single tree or ready-made JSON
+Pointers. For an insertion the final entry is the inserted destination node, while <code class="docutils literal notranslate"><span class="pre">edit.insert_into</span></code> names
+the source container. Use the edit’s attributes to distinguish the operation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Insert</span><span class="p">,</span> <span class="n">KeyValuePairNode</span><span class="p">,</span> <span class="n">Remove</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">graphtage.pydiff</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_tree</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">describe_edit</span><span class="p">(</span><span class="n">edit</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">Insert</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;inserted&quot;</span><span class="p">,</span> <span class="n">edit</span><span class="o">.</span><span class="n">to_insert</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edit</span><span class="p">,</span> <span class="n">Remove</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;removed&quot;</span><span class="p">,</span> <span class="n">edit</span><span class="o">.</span><span class="n">from_node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;changed&quot;</span><span class="p">,</span> <span class="n">edit</span><span class="o">.</span><span class="n">from_node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">(),</span> <span class="n">edit</span><span class="o">.</span><span class="n">to_node</span><span class="o">.</span><span class="n">to_obj</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">before</span><span class="p">),</span> <span class="n">build_tree</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">contexts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">get_all_edit_contexts</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ancestors</span><span class="p">,</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">contexts</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">keys</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">KeyValuePairNode</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">keys</span><span class="p">,</span> <span class="n">describe_edit</span><span class="p">(</span><span class="n">edit</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">records</span>
+<span class="go">[((&#39;a&#39;,), (&#39;changed&#39;, 1, 2)), ((&#39;b&#39;,), (&#39;inserted&#39;, 2)), ((&#39;c&#39;,), (&#39;removed&#39;, 4))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ancestors</span><span class="p">,</span> <span class="n">insertion</span> <span class="o">=</span> <span class="n">contexts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ancestors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="n">target</span><span class="p">,</span> <span class="n">ancestors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="n">insertion</span><span class="o">.</span><span class="n">to_insert</span>
+<span class="go">(True, True)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">insertion</span><span class="o">.</span><span class="n">insert_into</span><span class="o">.</span><span class="n">to_obj</span><span class="p">(),</span> <span class="n">insertion</span><span class="o">.</span><span class="n">to_insert</span><span class="o">.</span><span class="n">to_obj</span><span class="p">()</span>
+<span class="go">([1, 3], 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span><span class="o">.</span><span class="n">edited</span><span class="p">,</span> <span class="n">target</span><span class="o">.</span><span class="n">edited</span>
+<span class="go">(False, False)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scalar_source</span><span class="p">,</span> <span class="n">scalar_target</span> <span class="o">=</span> <span class="n">build_tree</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">build_tree</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[(</span><span class="n">path</span> <span class="o">==</span> <span class="p">(</span><span class="n">scalar_target</span><span class="p">,),</span> <span class="n">describe_edit</span><span class="p">(</span><span class="n">edit</span><span class="p">))</span>
+<span class="gp">... </span> <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">edit</span> <span class="ow">in</span> <span class="n">scalar_source</span><span class="o">.</span><span class="n">get_all_edit_contexts</span><span class="p">(</span><span class="n">scalar_target</span><span class="p">)]</span>
+<span class="go">[(True, (&#39;changed&#39;, 1, 2))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">build_tree</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">get_all_edit_contexts</span><span class="p">(</span><span class="n">build_tree</span><span class="p">([</span><span class="mi">1</span><span class="p">])))</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">keys</span></code> identifies enclosing dictionary entries only; it is not a complete location for list elements or
+key edits. <a class="reference internal" href="graphtage.html#graphtage.TreeNode.print_parent_context" title="graphtage.TreeNode.print_parent_context"><code class="xref py py-meth docutils literal notranslate"><span class="pre">graphtage.TreeNode.print_parent_context()</span></code></a> can render a node’s location relative to its parent,
+as <code class="docutils literal notranslate"><span class="pre">--edit-digest</span></code> does. For machine-readable locations, interpret the container types for your input model.
+In particular, <code class="docutils literal notranslate"><span class="pre">inserted</span></code> alone does not encode insertion positions; consult the container’s edit sequence
+when order matters. <code class="docutils literal notranslate"><span class="pre">Insert.from_node</span></code> is the node being inserted and <code class="docutils literal notranslate"><span class="pre">Insert.to_node</span></code> is the container;
+<code class="docutils literal notranslate"><span class="pre">Remove.to_node</span></code> is also the container, not a replacement value.</p>
+</section>
 </section>
 <section id="diffing-python-source-code">
 <h2>Diffing Python Source Code<a class="headerlink" href="#diffing-python-source-code" title="Link to this heading"></a></h2>
