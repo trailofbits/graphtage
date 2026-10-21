@@ -10,7 +10,7 @@ accepted by this module.
 import html
 import os
 import xml.etree.ElementTree as ET
-from collections.abc import Collection, Iterator, Sequence
+from collections.abc import Collection, Iterable, Iterator, Sequence
 
 from .bounds import Range
 from .edits import AbstractCompoundEdit, Insert, Match, Remove
@@ -54,6 +54,15 @@ class XMLElementEdit(AbstractCompoundEdit):
             self.text_edit: Edit | None = Remove(to_remove=from_node.text, remove_from=from_node)
         else:
             self.text_edit: Edit | None = None
+        if from_node.tail is not None and to_node.tail is not None:
+            self.tail_edit: Edit | None = from_node.tail.edits(to_node.tail)
+        elif from_node.tail is None and to_node.tail is not None:
+            self.tail_edit = Insert(to_insert=to_node.tail, insert_into=from_node)
+        elif to_node.tail is None and from_node.tail is not None:
+            self.tail_edit = Remove(to_remove=from_node.tail, remove_from=from_node)
+        else:
+            self.tail_edit = None
+        """The edit to transform the text after this element's closing tag."""
         self.child_edit: Edit = from_node._children.edits(to_node._children)
         """The edit to transform this node's children."""
         super().__init__(
@@ -69,7 +78,8 @@ class XMLElementEdit(AbstractCompoundEdit):
             text_bounds = self.text_edit.bounds()
         else:
             text_bounds = Range(0, 0)
-        return text_bounds + self.tag_edit.bounds() + self.attrib_edit.bounds() + self.child_edit.bounds()
+        tail_bounds = self.tail_edit.bounds() if self.tail_edit is not None else Range(0, 0)
+        return text_bounds + tail_bounds + self.tag_edit.bounds() + self.attrib_edit.bounds() + self.child_edit.bounds()
 
     def edits(self) -> Iterator[Edit]:
         yield self.tag_edit
@@ -77,10 +87,13 @@ class XMLElementEdit(AbstractCompoundEdit):
         if self.text_edit is not None:
             yield self.text_edit
         yield self.child_edit
+        if self.tail_edit is not None:
+            yield self.tail_edit
 
     def is_complete(self) -> bool:
         return self.tag_edit.is_complete() and (self.text_edit is None or self.text_edit.is_complete()) \
-            and self.attrib_edit.is_complete() and self.child_edit.is_complete()
+            and self.attrib_edit.is_complete() and self.child_edit.is_complete() \
+            and (self.tail_edit is None or self.tail_edit.is_complete())
 
     def tighten_bounds(self) -> bool:
         if self.tag_edit.tighten_bounds():
@@ -89,7 +102,9 @@ class XMLElementEdit(AbstractCompoundEdit):
             return True
         elif self.attrib_edit.tighten_bounds():
             return True
-        return bool(self.child_edit.tighten_bounds())
+        elif self.child_edit.tighten_bounds():
+            return True
+        return self.tail_edit is not None and bool(self.tail_edit.tighten_bounds())
 
 
 class XMLElementObj:
@@ -99,7 +114,8 @@ class XMLElementObj:
             tag: str,
             attrib: dict[str, str],
             text: str | None = None,
-            children: Sequence['XMLElementObj'] | None = ()
+            children: Sequence['XMLElementObj'] | None = (),
+            tail: str | None = None
     ):
         """Initializes an XML Element Object.
 
@@ -108,6 +124,7 @@ class XMLElementObj:
             attrib: The attributes of the element.
             text: The text of the element.
             children: The children of the element.
+            tail: The text after the element's closing tag, before the next sibling.
         """
         self.tag: str = tag
         """The tag of this element."""
@@ -117,10 +134,12 @@ class XMLElementObj:
         """The text of this element."""
         self.children: Sequence[XMLElementObj] | None = children
         """The children of this element."""
+        self.tail: str | None = tail
+        """The text after this element."""
 
     def __repr__(self):
         return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, " \
-               f"children={self.children!r})"
+               f"children={self.children!r}, tail={self.tail!r})"
 
     def __str__(self):
         ret = f'<{self.tag}'
@@ -128,14 +147,18 @@ class XMLElementObj:
             val = html.escape(v).replace('"', '\\"')
             ret = f"{ret} {k!s}=\"{val!s}\""
         if not self.text and not self.children:
-            return f"{ret} />"
-        ret = f"{ret}>"
-        if self.text is not None:
-            ret = f"{ret}{html.escape(self.text)!s}"
-        if self.children is not None:
-            for child in self.children:
-                ret = f"{ret}{child!s}"
-        return f"{ret}</{self.tag}>"
+            ret = f"{ret} />"
+        else:
+            ret = f"{ret}>"
+            if self.text is not None:
+                ret = f"{ret}{html.escape(self.text)!s}"
+            if self.children is not None:
+                for child in self.children:
+                    ret = f"{ret}{child!s}"
+            ret = f"{ret}</{self.tag}>"
+        if self.tail is not None:
+            ret += html.escape(self.tail)
+        return ret
 
 
 class XMLElementChildren(ListNode):
@@ -161,11 +184,12 @@ class XMLElement(ContainerNode):
     def __init__(
             self,
             tag: StringNode,
-            attrib: dict[StringNode, StringNode] | None = None,
+            attrib: dict[StringNode, StringNode] | DictNode | FixedKeyDictNode | None = None,
             text: StringNode | None = None,
-            children: Sequence['XMLElement'] = (),
+            children: Sequence['XMLElement'] | XMLElementChildren = (),
             allow_key_edits: bool = True,
-            auto_match_keys: bool = True
+            auto_match_keys: bool = True,
+            tail: StringNode | None = None
     ):
         """Initializes an XML element.
 
@@ -175,13 +199,17 @@ class XMLElement(ContainerNode):
             text: The text of the element.
             children: The children of the element.
             allow_key_edits: Whether or not to allow keys to be edited when matching element attributes.
+            auto_match_keys: Whether to automatically match attributes with equal keys.
+            tail: The text after the element's closing tag, before the next sibling.
         """
         self.tag: StringNode = tag
         """The tag of this element."""
         tag.quoted = False
         if attrib is None:
             attrib = {}
-        if allow_key_edits:
+        if isinstance(attrib, (DictNode, FixedKeyDictNode)):
+            self.attrib = attrib
+        elif allow_key_edits:
             self.attrib: DictNode = DictNode.from_dict(attrib)
             self.attrib.auto_match_keys = auto_match_keys
             """The attributes of this element."""
@@ -195,9 +223,23 @@ class XMLElement(ContainerNode):
         """The text of this element."""
         if self.text is not None:
             self.text.quoted = False
-        self._children: XMLElementChildren = XMLElementChildren(children)
+        self._children: XMLElementChildren = children if isinstance(children, XMLElementChildren) \
+            else XMLElementChildren(children)
         if isinstance(self, EditedTreeNode):
             self._children = self._children.make_edited()
+        self.tail: StringNode | None = tail
+        """The text after this element."""
+        if self.tail is not None:
+            self.tail.quoted = False
+
+    def copy_from(self, children: Iterable[TreeNode]) -> 'XMLElement':
+        # Optional text/tail slots cannot be reconstructed by positional arguments to __init__.
+        copied = iter(children)
+        tag, attrib = next(copied), next(copied)
+        text = next(copied) if self.text is not None else None
+        elements = next(copied)
+        tail = next(copied) if self.tail is not None else None
+        return self.__class__(tag=tag, attrib=attrib, text=text, children=elements, tail=tail)
 
     def to_obj(self):
         if self.text is None:
@@ -208,15 +250,18 @@ class XMLElement(ContainerNode):
             tag=self.tag.to_obj(),
             attrib=self.attrib.to_obj(),
             text=text_obj,
-            children=self._children.to_obj()
+            children=self._children.to_obj(),
+            tail=self.tail.to_obj() if self.tail is not None else None
         )
 
     def children(self) -> Collection[TreeNode]:
         ret = (self.tag, self.attrib)
         if self.text is not None:
-            return (*ret, self.text, self._children)
-        else:
-            return (*ret, self._children)
+            ret = (*ret, self.text)
+        ret = (*ret, self._children)
+        if self.tail is not None:
+            ret = (*ret, self.tail)
+        return ret
 
     def __iter__(self) -> Iterator[TreeNode]:
         return iter(self.children())
@@ -225,7 +270,7 @@ class XMLElement(ContainerNode):
         return len(self.children())
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r})"
+        return f"{self.__class__.__name__}(tag={self.tag!r}, attrib={self.attrib!r}, text={self.text!r}, children={self._children!r}, tail={self.tail!r})"
 
     def __str__(self):
         return str(self.to_obj())
@@ -240,11 +285,7 @@ class XMLElement(ContainerNode):
             return XMLElementEdit(self, node)
 
     def calculate_total_size(self) -> int:
-        if self.text is None:
-            t_size = 0
-        else:
-            t_size = self.text.total_size
-        return t_size + self.tag.total_size + self.attrib.total_size + self._children.total_size
+        return sum(child.total_size for child in self.children())
 
     def __eq__(self, other):
         if not isinstance(other, XMLElement):
@@ -260,7 +301,7 @@ class XMLElement(ContainerNode):
         else:
             other_text = ''
         return other.tag == self.tag and other.attrib == self.attrib \
-               and other_text == my_text and other._children == self._children
+               and other_text == my_text and other._children == self._children and other.tail == self.tail
 
     def print_parent_context(self, printer: Printer, for_child: TreeNode):
         if for_child is self.tag:
@@ -299,7 +340,8 @@ def build_tree(
         text=text,
         children=[build_tree(child, options) for child in root],
         allow_key_edits=options is None or options.allow_key_edits,
-        auto_match_keys=options is None or options.auto_match_keys
+        auto_match_keys=options is None or options.auto_match_keys,
+        tail=StringNode(root.tail) if root.tail else None
     )
 
 
@@ -310,8 +352,11 @@ class XMLChildFormatter(SequenceFormatter):
         super().__init__('', '', '')
 
     def item_newline(self, printer: Printer, is_first: bool = False, is_last: bool = False):
-        if not is_first:
-            printer.newline()
+        # Inter-element whitespace is already stored in .text and .tail.
+        pass
+
+    def items_indent(self, printer: Printer) -> Printer:
+        return printer
 
     def print_ListNode(self, *args, **kwargs):
         super().print_SequenceNode(*args, **kwargs)
@@ -360,10 +405,6 @@ class XMLStringFormatter(StringFormatter):
 
         """
         return html.escape(c)
-
-    def write_char(self, printer: Printer, c: str, index: int, num_edits: int, removed=False, inserted=False):
-        if c != '\n' or index < num_edits - 1:
-            super().write_char(printer, c, index, num_edits, removed, inserted)
 
 
 class XMLFormatter(GraphtageFormatter):
@@ -416,6 +457,11 @@ class XMLFormatter(GraphtageFormatter):
             printer.write('>')
         else:
             printer.write(' />')
+        element_edit = getattr(node, 'edit', None)
+        if isinstance(element_edit, XMLElementEdit) and element_edit.tail_edit is not None:
+            self.print(printer, element_edit.tail_edit)
+        elif node.tail is not None:
+            self.print(printer, node.tail)
 
 
 class XML(Filetype):
@@ -463,14 +509,27 @@ class HTML(XML):
 
 # Tell JSON how to format XML:
 def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
+    def field(name: str, value: TreeNode, edit: Edit | None = None) -> KeyValuePairNode:
+        # Own the view's nodes without changing the XML tree's parents. Keep the original
+        # edit for rendering: EditedTreeNode.copy() deliberately clears its edit state.
+        copied = value.make_edited()
+        copied.edit = edit if edit is not None else getattr(value, 'edit', None)
+        return KeyValuePairNode(StringNode(name), copied)
+
     kvps = [
-        KeyValuePairNode(StringNode('tag'), node.tag),
+        field('tag', node.tag),
     ]
     if len(node.attrib) > 0:
-        kvps.append(KeyValuePairNode(StringNode('attrs'), node.attrib))
+        kvps.append(field('attrs', node.attrib))
     if node.text is not None:
-        kvps.append(KeyValuePairNode(StringNode('text'), node.text))
-    kvps.append(KeyValuePairNode(StringNode('children'), node._children))
+        kvps.append(field('text', node.text))
+    kvps.append(field('children', node._children))
+    element_edit = getattr(node, 'edit', None)
+    if isinstance(element_edit, XMLElementEdit) and element_edit.tail_edit is not None:
+        tail_edit = element_edit.tail_edit
+        kvps.append(field('tail', tail_edit.from_node, tail_edit))
+    elif node.tail is not None:
+        kvps.append(field('tail', node.tail))
     self.print(printer, DictNode(kvps))
 
 
