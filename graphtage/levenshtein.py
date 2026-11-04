@@ -41,27 +41,43 @@ def levenshtein_distance(s: str | bytes, t: str | bytes) -> int:
         int: The Levenshtein edit distance metric between the two strings.
 
     """
-    rows = len(s) + 1
-    cols = len(t) + 1
-    dist: list[list[int]] = [[0] * cols for _ in range(rows)]
+    rows = len(s)
+    cols = len(t)
+    if type(s) in (str, bytes) and type(t) in (str, bytes):
+        # Remove equal boundaries before allocating the working row.
+        start = 0
+        while start < rows and start < cols and s[start] == t[start]:
+            start += 1
+        while rows > start and cols > start and s[rows - 1] == t[cols - 1]:
+            rows -= 1
+            cols -= 1
+        s, t = s[start:rows], t[start:cols]
+        rows -= start
+        cols -= start
+        if rows > cols:
+            s, t = t, s
+            rows, cols = cols, rows
 
-    for i in range(1, rows):
-        dist[i][0] = i
+    if not rows or not cols:
+        return rows + cols
 
-    for i in range(1, cols):
-        dist[0][i] = i
+    # Each cell needs only its left, upper, and previous diagonal costs.
+    dist = list(range(rows + 1))
+    for col in range(1, cols + 1):
+        diagonal = dist[0]
+        left = col
+        dist[0] = col
+        for row in range(1, rows + 1):
+            above = dist[row]
+            value = diagonal if s[row - 1] == t[col - 1] else diagonal + 1
+            if above < value:
+                value = above + 1
+            if left < value:
+                value = left + 1
+            dist[row] = left = value
+            diagonal = above
 
-    for col in range(1, cols):
-        for row in range(1, rows):
-            if s[row - 1] == t[col - 1]:
-                cost = 0
-            else:
-                cost = 1
-            dist[row][col] = min(dist[row - 1][col] + 1,
-                                 dist[row][col - 1] + 1,
-                                 dist[row - 1][col - 1] + cost)
-
-    return dist[rows - 1][cols - 1]
+    return dist[-1]
 
 
 def exact_string_distance(s: str | bytes, t: str | bytes) -> int:
