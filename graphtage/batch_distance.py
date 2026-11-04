@@ -236,7 +236,8 @@ def _scan(
     The horizontal dependency ``current[j] = min(base[j], current[j - 1] + 1)`` is what normally stops a row from
     being vectorized. Subtracting ``j`` from both sides turns it into a running minimum of ``base[j] - j``, which
     :func:`numpy.minimum.accumulate` computes in a single pass, so a row costs a constant number of array
-    operations instead of one interpreter step per cell.
+    operations instead of one interpreter step per cell. Subtracting the row index as well leaves deletion
+    costs unchanged and makes diagonal costs the previous row minus one minus the symbol match.
 
     Pairs of differing lengths share the chunk. A pair is read out of the row in which ``i`` reaches the length of
     its shorter side, at the column given by the length of its longer side, so the padding beyond those never
@@ -254,21 +255,39 @@ def _scan(
     """
     pairs, rows = short.shape
     columns = long.shape[1] + 1
-    column_index = np.arange(columns, dtype=np.int32)
-    previous = np.tile(column_index, (pairs, 1))
-    current = np.empty_like(previous)
+    # Shifted distances lie in [-2 * rows, 0].
+    row_dtype = np.int8 if rows <= 64 else (np.int16 if rows <= 16384 else np.int32)
+    # Store distance minus both indices in one row buffer.
+    state = np.zeros((pairs, columns), dtype=row_dtype)
+    scan_state = state[0] if pairs == 1 else state
+    previous_left, previous_right = scan_state[..., :-1], scan_state[..., 1:]
     result = np.zeros(pairs, dtype=np.int64)
-    for i in range(1, rows + 1):
-        substitution = (short[:, i - 1][:, None] != long).astype(np.int32)
-        current[:, 0] = i
-        np.minimum(previous[:, :-1] + substitution, previous[:, 1:] + 1, out=current[:, 1:])
-        current -= column_index
-        np.minimum.accumulate(current, axis=1, out=current)
-        current += column_index
-        finished = short_lengths == i
-        if finished.any():
-            result[finished] = current[finished, long_lengths[finished]]
-        previous, current = current, previous
+    completions = [None] * (rows + 1)
+    for index, length in enumerate(short_lengths):
+        if completions[length] is None:
+            completions[length] = []
+        completions[length].append(index)
+    equal, subtract, add = np.equal, np.subtract, np.add
+    minimum, accumulate = np.minimum, np.minimum.accumulate
+    # Bound the extra storage used to compare several rows at once.
+    block_rows = max(1, (256 * 1024) // max(1, long.size * 4))
+    for start in range(0, rows, block_rows):
+        diagonal_costs = np.empty((min(block_rows, rows - start), pairs, columns - 1), dtype=row_dtype)
+        equal(short[:, start:start + block_rows].T[:, :, None], long, out=diagonal_costs)
+        add(diagonal_costs, 1, out=diagonal_costs)
+        scan_costs = diagonal_costs[:, 0] if pairs == 1 else diagonal_costs
+        for i, costs in enumerate(scan_costs, start + 1):
+            # Each comparison row is consumed once, so reuse it for diagonals
+            # before updating the overlapping distance row in place.
+            subtract(previous_left, costs, out=costs)
+            # The previous row is nonincreasing, so its prefix minimum
+            # is unchanged; combine it after scanning contiguous costs.
+            accumulate(costs, axis=-1, out=costs)
+            minimum(costs, previous_right, out=previous_right)
+            finished = completions[i]
+            if finished is not None:
+                lengths = long_lengths[finished]
+                result[finished] = state[finished, lengths] + lengths + i
     return result
 
 
