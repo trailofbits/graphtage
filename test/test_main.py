@@ -68,6 +68,16 @@ class TestCommandLine(unittest.TestCase):
         status, _ = self.run_graphtage(from_path, to_path)
         self.assertEqual(EXIT_ERROR, status)
 
+    def test_folded_stacks_are_detected_by_extension(self):
+        """`mimetypes` does not know the flame graph extensions, so `register_mimetypes` has to add them."""
+        for extension in ('folded', 'collapsed'):
+            with self.subTest(extension=extension):
+                from_path = self.write(f'one.{extension}', 'main;work 100\n')
+                to_path = self.write(f'two.{extension}', 'main;work 120\n')
+                status, output = self.run_graphtage(from_path, to_path)
+                self.assertEqual(EXIT_DIFFERENCES_FOUND, status)
+                self.assertIn('100 -> 120', output)
+
     def test_dumpversion_prints_a_bare_version_string(self):
         """`-dumpversion` joined over the version string, so it printed `0 . 3 . 1` instead of `0.3.1`."""
         out = io.StringIO()
