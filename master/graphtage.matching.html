@@ -272,20 +272,19 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.difference">
-<span class="sig-name descname"><span class="pre">difference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference" title="Link to this definition"></a></dt>
-<dd><p>Return the difference of two or more sets as a new set.</p>
-<p>(i.e. all elements that are in this set but not the others.)</p>
+<span class="sig-name descname"><span class="pre">difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements in the set that are not in the others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.difference_update">
-<span class="sig-name descname"><span class="pre">difference_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference_update" title="Link to this definition"></a></dt>
-<dd><p>Remove all elements of another set from this set.</p>
+<span class="sig-name descname"><span class="pre">difference_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.difference_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, removing elements found in others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.discard">
-<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.discard" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.discard" title="Link to this definition"></a></dt>
 <dd><p>Remove an element from a set if it is a member.</p>
 <p>Unlike set.remove(), the discard() method does not raise
 an exception when an element is missing from the set.</p>
@@ -293,15 +292,14 @@ an exception when an element is missing from the set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.intersection">
-<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection" title="Link to this definition"></a></dt>
-<dd><p>Return the intersection of two sets as a new set.</p>
-<p>(i.e. all elements that are in both sets.)</p>
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements common to the set and all others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.intersection_update">
-<span class="sig-name descname"><span class="pre">intersection_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection_update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the intersection of itself and another.</p>
+<span class="sig-name descname"><span class="pre">intersection_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.intersection_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, keeping only elements found in it and all others.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -313,25 +311,25 @@ an exception when an element is missing from the set.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.issubset">
 <span class="sig-name descname"><span class="pre">issubset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issubset" title="Link to this definition"></a></dt>
-<dd><p>Test whether every element in the set is in other.</p>
+<dd><p>Report whether another set contains this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.issuperset">
 <span class="sig-name descname"><span class="pre">issuperset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.issuperset" title="Link to this definition"></a></dt>
-<dd><p>Test whether every element in other is in the set.</p>
+<dd><p>Report whether this set contains another set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.pop">
 <span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.pop" title="Link to this definition"></a></dt>
-<dd><p>Remove and return an arbitrary set element.
-Raises KeyError if the set is empty.</p>
+<dd><p>Remove and return an arbitrary set element.</p>
+<p>Raises KeyError if the set is empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.remove" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.remove" title="Link to this definition"></a></dt>
 <dd><p>Remove an element from a set; it must be a member.</p>
 <p>If the element is not a member, raise a KeyError.</p>
 </dd></dl>
@@ -339,14 +337,13 @@ Raises KeyError if the set is empty.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.symmetric_difference">
 <span class="sig-name descname"><span class="pre">symmetric_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matching</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><span class="pre">Matching</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference" title="Link to this definition"></a></dt>
-<dd><p>Return the symmetric difference of two sets as a new set.</p>
-<p>(i.e. all elements that are in exactly one of the sets.)</p>
+<dd><p>Return a new set with elements in either the set or other but not both.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.symmetric_difference_update">
-<span class="sig-name descname"><span class="pre">symmetric_difference_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference_update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the symmetric difference of itself and another.</p>
+<span class="sig-name descname"><span class="pre">symmetric_difference_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.symmetric_difference_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, keeping only elements found in either set, but not in both.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -365,15 +362,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.union">
-<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.union" title="Link to this definition"></a></dt>
-<dd><p>Return the union of sets as a new set.</p>
-<p>(i.e. all elements that are in either set.)</p>
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.union" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements from the set and all others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.Matching.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the union of itself and others.</p>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.Matching.update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, adding elements from all others.</p>
 </dd></dl>
 
 </dd></dl>
@@ -520,20 +516,19 @@ by the built-in frozenset type.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.difference">
-<span class="sig-name descname"><span class="pre">difference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference" title="Link to this definition"></a></dt>
-<dd><p>Return the difference of two or more sets as a new set.</p>
-<p>(i.e. all elements that are in this set but not the others.)</p>
+<span class="sig-name descname"><span class="pre">difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements in the set that are not in the others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.difference_update">
-<span class="sig-name descname"><span class="pre">difference_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference_update" title="Link to this definition"></a></dt>
-<dd><p>Remove all elements of another set from this set.</p>
+<span class="sig-name descname"><span class="pre">difference_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.difference_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, removing elements found in others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.discard">
-<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.discard" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.discard" title="Link to this definition"></a></dt>
 <dd><p>Remove an element from a set if it is a member.</p>
 <p>Unlike set.remove(), the discard() method does not raise
 an exception when an element is missing from the set.</p>
@@ -541,15 +536,14 @@ an exception when an element is missing from the set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.intersection">
-<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection" title="Link to this definition"></a></dt>
-<dd><p>Return the intersection of two sets as a new set.</p>
-<p>(i.e. all elements that are in both sets.)</p>
+<span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements common to the set and all others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.intersection_update">
-<span class="sig-name descname"><span class="pre">intersection_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection_update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the intersection of itself and another.</p>
+<span class="sig-name descname"><span class="pre">intersection_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.intersection_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, keeping only elements found in it and all others.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -561,13 +555,13 @@ an exception when an element is missing from the set.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.issubset">
 <span class="sig-name descname"><span class="pre">issubset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issubset" title="Link to this definition"></a></dt>
-<dd><p>Test whether every element in the set is in other.</p>
+<dd><p>Report whether another set contains this set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.issuperset">
 <span class="sig-name descname"><span class="pre">issuperset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.issuperset" title="Link to this definition"></a></dt>
-<dd><p>Test whether every element in other is in the set.</p>
+<dd><p>Report whether this set contains another set.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -578,13 +572,13 @@ an exception when an element is missing from the set.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.pop">
 <span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.pop" title="Link to this definition"></a></dt>
-<dd><p>Remove and return an arbitrary set element.
-Raises KeyError if the set is empty.</p>
+<dd><p>Remove and return an arbitrary set element.</p>
+<p>Raises KeyError if the set is empty.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.remove">
-<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.remove" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.remove" title="Link to this definition"></a></dt>
 <dd><p>Remove an element from a set; it must be a member.</p>
 <p>If the element is not a member, raise a KeyError.</p>
 </dd></dl>
@@ -592,14 +586,13 @@ Raises KeyError if the set is empty.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.symmetric_difference">
 <span class="sig-name descname"><span class="pre">symmetric_difference</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matching</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#set" title="(in Python v3.15)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#graphtage.matching.Edge" title="graphtage.matching.Edge"><span class="pre">Edge</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#graphtage.matching.Matching" title="graphtage.matching.Matching"><span class="pre">Matching</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference" title="Link to this definition"></a></dt>
-<dd><p>Return the symmetric difference of two sets as a new set.</p>
-<p>(i.e. all elements that are in exactly one of the sets.)</p>
+<dd><p>Return a new set with elements in either the set or other but not both.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.symmetric_difference_update">
-<span class="sig-name descname"><span class="pre">symmetric_difference_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference_update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the symmetric difference of itself and another.</p>
+<span class="sig-name descname"><span class="pre">symmetric_difference_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.symmetric_difference_update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, keeping only elements found in either set, but not in both.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -618,15 +611,14 @@ Raises KeyError if the set is empty.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.union">
-<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.union" title="Link to this definition"></a></dt>
-<dd><p>Return the union of sets as a new set.</p>
-<p>(i.e. all elements that are in either set.)</p>
+<span class="sig-name descname"><span class="pre">union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.union" title="Link to this definition"></a></dt>
+<dd><p>Return a new set with elements from the set and all others.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.matching.PathSet.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.update" title="Link to this definition"></a></dt>
-<dd><p>Update a set with the union of itself and others.</p>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.matching.PathSet.update" title="Link to this definition"></a></dt>
+<dd><p>Update the set, adding elements from all others.</p>
 </dd></dl>
 
 </dd></dl>

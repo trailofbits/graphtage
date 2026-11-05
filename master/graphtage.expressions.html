@@ -957,7 +957,8 @@ like parenthesis).</p>
 <dd><p>Return True if <cite>value</cite> is in <cite>cls</cite>.</p>
 <p><cite>value</cite> is in <cite>cls</cite> if:
 1) <cite>value</cite> is a member of <cite>cls</cite>, or
-2) <cite>value</cite> is the value of one of the <cite>cls</cite>’s members.</p>
+2) <cite>value</cite> is the value of one of the <cite>cls</cite>’s members.
+3) <cite>value</cite> is a pseudo-member (flags)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1200,9 +1201,8 @@ like parenthesis).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.ParseError.add_note">
-<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.ParseError.add_note" title="Link to this definition"></a></dt>
-<dd><p>Exception.add_note(note) –
-add a note to the exception</p>
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">note</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.ParseError.add_note" title="Link to this definition"></a></dt>
+<dd><p>Add a note to the exception</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1212,9 +1212,8 @@ add a note to the exception</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="graphtage.expressions.ParseError.with_traceback">
-<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.ParseError.with_traceback" title="Link to this definition"></a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tb</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#graphtage.expressions.ParseError.with_traceback" title="Link to this definition"></a></dt>
+<dd><p>Set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 </dd></dl>
