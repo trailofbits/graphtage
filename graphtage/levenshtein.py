@@ -501,7 +501,83 @@ class EditDistance(SequenceEdit):
             # We only need the last cell in the costs matrix, so switch to using a dict to clean up the others:
             self.costs = {len(self.to_seq): {len(self.from_seq): self.costs[len(self.to_seq)][len(self.from_seq)]}}
 
+    def _character_edits(self) -> bool:
+        """Computes the edit script of an untouched character lattice without building every cell's edit.
+
+        The lattices that :func:`graphtage.string_edit_distance` builds compare one-character
+        :class:`graphtage.StringNode` objects with no insertion or removal penalty, so every transition cost is
+        known up front: a diagonal costs zero or one, and an insertion or removal costs the node's size of one. This
+        runs the recurrence of :meth:`EditDistance._best_match`, with the same (cost, path length, direction)
+        ordering, over rolling rows of integers, records one byte of direction per cell, and creates edits only for
+        the cells on the selected path.
+
+        Returns:
+            bool: :const:`True` if the edits were computed; :const:`False` if the general algorithm must be used.
+
+        """
+        from .graphtage import StringNode
+
+        rows, cols = len(self.to_seq), len(self.from_seq)
+        # A lattice that has started tightening already holds edits that the general algorithm will reuse. The
+        # general algorithm also stores path lengths as uint16, so leave inputs that could overflow it alone.
+        if (self._fringe_row != -1 or self._fringe_col != 0 or self.penalty != 0 or not rows or not cols
+                or rows + cols > 65535):
+            return False
+        # Exact types: a subclass could change how nodes compare, edit or size themselves.
+        for node in itertools.chain(self.from_seq, self.to_seq):
+            if type(node) is not StringNode or type(node.object) is not str or node.total_size != 1:
+                return False
+
+        source = [node.object for node in self.from_seq]
+        target = [node.object for node in self.to_seq]
+        costs = list(range(cols + 1))
+        lengths = list(range(cols + 1))
+        directions = []
+        for row, to_char in enumerate(target, 1):
+            next_costs = [row] + [0] * cols
+            next_lengths = [row] + [0] * cols
+            direction_row = bytearray(cols)
+            for col, from_char in enumerate(source, 1):
+                # Candidates in _best_match's order; a later one wins only if strictly better.
+                cost, length, direction = costs[col - 1] + (from_char != to_char), lengths[col - 1] + 1, 0
+                insert_cost, insert_length = costs[col] + 1, lengths[col] + 1
+                if insert_cost < cost or (insert_cost == cost and insert_length < length):
+                    cost, length, direction = insert_cost, insert_length, 1
+                remove_cost, remove_length = next_costs[col - 1] + 1, next_lengths[col - 1] + 1
+                if remove_cost < cost or (remove_cost == cost and remove_length < length):
+                    cost, length, direction = remove_cost, remove_length, 2
+                next_costs[col], next_lengths[col] = cost, length
+                direction_row[col - 1] = direction
+            directions.append(direction_row)
+            costs, lengths = next_costs, next_lengths
+
+        result: list[Edit] = [Match(fn, tn, 0) for fn, tn in self.reversed_shared_suffix]
+        row, col = rows, cols
+        while row or col:
+            direction = 2 if row == 0 else 1 if col == 0 else directions[row - 1][col - 1]
+            if direction == 0:
+                fn, tn = self.from_seq[col - 1], self.to_seq[row - 1]
+                result.append(Match(fn, tn, int(fn.object != tn.object)))
+                row -= 1
+                col -= 1
+            elif direction == 1:
+                result.append(Insert(self.to_seq[row - 1], self.from_node, penalty=0))
+                row -= 1
+            else:
+                result.append(Remove(self.from_seq[col - 1], self.from_node, penalty=0))
+                col -= 1
+        # Leave the lattice in the state that completing and cleaning it up would.
+        self.__edits = result
+        self._fringe_row, self._fringe_col = rows, cols
+        self._last_fringe = [(rows, cols - 1), (rows - 1, cols)]
+        self.edit_matrix = None
+        self.path_costs = None
+        self.costs = {rows: {cols: np.uint64(costs[-1])}}
+        return True
+
     def edits(self) -> Iterator[Edit]:
+        if self.__edits is None and type(self) is EditDistance:
+            self._character_edits()
         if self.__edits is None:
             reversed_suffix: list[Edit] = [
                 Match(from_node, to_node, 0) for from_node, to_node in self.reversed_shared_suffix
