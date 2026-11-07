@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import unittest
 
+import graphtage
 from graphtage import version
 from graphtage.__main__ import EXIT_DIFFERENCES_FOUND, EXIT_ERROR, EXIT_SUCCESS, main
 
@@ -67,6 +68,25 @@ class TestCommandLine(unittest.TestCase):
         to_path = self.write('two.json5', '{a: 1,\n')
         status, _ = self.run_graphtage(from_path, to_path)
         self.assertEqual(EXIT_ERROR, status)
+
+    def test_every_output_format_renders_every_markup_input(self):
+        """Diffing XML or HTML with `--format` set to anything but `xml` or `html` used to raise `ValueError`."""
+        inputs = {
+            'json': ('{"r": {"d": "x"}}\n', '{"r": {"d": "y", "e": 1}}\n'),
+            'xml': ('<r><d>x</d></r>\n', '<r><d>y</d><e/></r>\n'),
+            'html': ('<html><body><p>x</p></body></html>\n', '<html><body><p>y</p><b/></body></html>\n'),
+        }
+        for input_type, (from_contents, to_contents) in inputs.items():
+            from_path = self.write(f'one.{input_type}', from_contents)
+            to_path = self.write(f'two.{input_type}', to_contents)
+            for output_format in graphtage.FILETYPES_BY_TYPENAME:
+                with self.subTest(input_type=input_type, output_format=output_format):
+                    status, output = self.run_graphtage('--format', output_format, from_path, from_path)
+                    self.assertEqual(EXIT_SUCCESS, status)
+                    self.assertNotEqual('', output.strip())
+                    status, output = self.run_graphtage('--format', output_format, from_path, to_path)
+                    self.assertEqual(EXIT_DIFFERENCES_FOUND, status)
+                    self.assertIn('y', output)
 
     def test_dumpversion_prints_a_bare_version_string(self):
         """`-dumpversion` joined over the version string, so it printed `0 . 3 . 1` instead of `0.3.1`."""

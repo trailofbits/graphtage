@@ -30,6 +30,7 @@ from .json import JSONFormatter
 from .printer import Fore, Printer
 from .sequences import SequenceFormatter
 from .tree import Edit, EditedTreeNode, GraphtageFormatter, TreeNode
+from .yaml import YAMLFormatter
 
 
 class XMLElementEdit(AbstractCompoundEdit):
@@ -507,8 +508,8 @@ class HTML(XML):
         )
 
 
-# Tell JSON how to format XML:
-def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLElement):
+# Tell the mapping-based formatters how to format XML, as a mapping of the element's fields:
+def _print_XMLElement_as_mapping(self: GraphtageFormatter, printer: Printer, node: XMLElement):
     def field(name: str, value: TreeNode, edit: Edit | None = None) -> KeyValuePairNode:
         # Own the view's nodes without changing the XML tree's parents. Keep the original
         # edit for rendering: EditedTreeNode.copy() deliberately clears its edit state.
@@ -533,4 +534,7 @@ def _json_print_XMLElement(self: JSONFormatter, printer: Printer, node: XMLEleme
     self.print(printer, DictNode(kvps))
 
 
-JSONFormatter.print_XMLElement = _json_print_XMLElement
+JSONFormatter.print_XMLElement = _print_XMLElement_as_mapping
+# Without this, YAML falls back to its generic container printer, which re-parents the element's live children and
+# raises ValueError.
+YAMLFormatter.print_XMLElement = _print_XMLElement_as_mapping
