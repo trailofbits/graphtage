@@ -881,8 +881,11 @@ def preprice(pairs: Sequence[Pair]) -> None:
     if len(rows) * len(columns) > PREPRICE_MAX_CELLS:
         return
     matrix = np.full((len(rows), len(columns)), _UNPRICED, dtype=np.int32)
-    matrix[
-        [row_index[left] for left, _ in priceable],
-        [column_index[right] for _, right in priceable],
-    ] = all_flat([left for left, _ in priceable], [right for _, right in priceable])
+    slice_size = 4096  # Price a bounded slice at a time, so only one slice's pair lists are live.
+    for start in range(0, len(priceable), slice_size):
+        part = priceable[start:start + slice_size]
+        matrix[
+            [row_index[left] for left, _ in part],
+            [column_index[right] for _, right in part],
+        ] = all_flat([left for left, _ in part], [right for _, right in part])
     _install(_Block(row_index, column_index, matrix))
