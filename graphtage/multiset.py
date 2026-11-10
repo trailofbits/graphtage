@@ -31,21 +31,21 @@ pair cost its own pure Python dynamic program.
 """
 
 
-def _first_with_key(to_set: HashableCounter[TreeNode], key: TreeNode) -> TreeNode | None:
-    """Returns the first key/value pair in a multiset whose key equals the one given.
+def _first_with_key(to_set: HashableCounter[TreeNode]) -> dict[TreeNode, TreeNode]:
+    """Indexes the key/value pairs in a multiset by key.
 
     Args:
-        to_set: The multiset to search.
-        key: The key to look for.
+        to_set: The multiset to index.
 
     Returns:
-        Optional[TreeNode]: The matching key/value pair, or :const:`None` if the multiset holds none.
+        Dict[TreeNode, TreeNode]: Each key mapped to the first key/value pair in the multiset with that key.
 
     """
+    first: dict[TreeNode, TreeNode] = {}
     for t in to_set:
-        if isinstance(t, graphtage.KeyValuePairNode) and t.key == key:
-            return t
-    return None
+        if isinstance(t, graphtage.KeyValuePairNode):
+            first.setdefault(t.key, t)
+    return first
 
 
 def _match_by_key(
@@ -65,11 +65,13 @@ def _match_by_key(
         List[Tuple[TreeNode, TreeNode, int]]: Each matched pair and the number of times it matched.
 
     """
+    # Built once up front: a pair stays the first with its key even after its count drops to zero.
+    first_with_key = _first_with_key(to_set)
     matched: list[tuple[TreeNode, TreeNode, int]] = []
     for f in from_set:
         if not isinstance(f, graphtage.KeyValuePairNode):
             continue
-        t = _first_with_key(to_set, f.key)
+        t = first_with_key.get(f.key)
         if t is None:
             continue
         num_matched = min(from_set[f], to_set[t])
