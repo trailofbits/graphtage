@@ -263,7 +263,11 @@ class JSONStringFormatter(StringFormatter):
             printer.write(json.dumps(c)[1:-1])
 
         """
-        # json.dumps will enclose the string in quotes, so remove them
+        if type(c) is str:
+            # Ordinary characters need no quoted string or escaped buffer.
+            if len(c) == 1 and ' ' <= c <= '~' and c != '"' and c != '\\':
+                return c
+            return json.encoder.encode_basestring_ascii(c)[1:-1]
         return json.dumps(c)[1:-1]
 
 
