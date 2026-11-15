@@ -244,16 +244,19 @@ def _get_formatter(
 ) -> Callable[[Printer, T], Any] | None:
     if base_formatter.__class__ not in tested:
         grandchildren = []
-        for c in node_type.mro():
-            if hasattr(base_formatter, f'print_{c.__name__}'):
-                return getattr(base_formatter, f'print_{c.__name__}')
+        for index, c in enumerate(node_type.mro()):
+            method_name = f'print_{c.__name__}'
+            if hasattr(base_formatter, method_name):
+                return getattr(base_formatter, method_name)
             for sub_formatter in base_formatter.sub_formatters:
                 if sub_formatter not in tested:
-                    if hasattr(sub_formatter, f'print_{c.__name__}'):
-                        return getattr(sub_formatter, f'print_{c.__name__}')
-                    grandchildren.extend(sub_formatter.sub_formatters)
+                    if hasattr(sub_formatter, method_name):
+                        return getattr(sub_formatter, method_name)
+                    if index == 0:
+                        grandchildren.extend(sub_formatter.sub_formatters)
         tested.add(base_formatter.__class__)
-        tested |= {s.__class__ for s in base_formatter.sub_formatters}
+        for sub_formatter in base_formatter.sub_formatters:
+            tested.add(sub_formatter.__class__)
         for grandchild in grandchildren:
             ret = _get_formatter(node_type, grandchild, tested)
             if ret is not None:
